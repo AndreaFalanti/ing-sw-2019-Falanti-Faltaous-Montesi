@@ -27,10 +27,10 @@ public class Player {
     public void addScore(int value) { }
 
     public AmmoValue getAmmo() {
+        return null;
     }
 
-    public void setAmmo(AmmoValue value) {
-    }
+    public void setAmmo(AmmoValue value) { }
 
     public PlayerColor getColor() {
         return null;
