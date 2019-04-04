@@ -3,7 +3,7 @@ package it.polimi.se2019.model;
 import java.util.*;
 
 
-public abstract class ActionMessage {
+public abstract class Action {
 
     private PlayerColor player;
 
