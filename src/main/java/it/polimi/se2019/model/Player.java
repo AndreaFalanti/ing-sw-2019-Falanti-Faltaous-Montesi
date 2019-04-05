@@ -23,6 +23,8 @@ public class Player {
 
     private Position pos;
 
+    private String name;
+
 
     public void addScore(int value) { }
 
@@ -67,5 +69,7 @@ public class Player {
 
     public void move(Position value) {
     }
+
+    public String getName () { return  null;}
 
 }

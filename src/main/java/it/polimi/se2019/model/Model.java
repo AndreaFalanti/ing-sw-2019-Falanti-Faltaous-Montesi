@@ -64,4 +64,6 @@ public class Model {
     public void setSkullNum(int value) {
     }
 
+    public Player getPlayerFromColor (PlayerColor color) { return null; }
+
 }

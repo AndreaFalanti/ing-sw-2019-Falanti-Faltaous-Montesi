@@ -5,9 +5,9 @@ import java.util.*;
 
 public class NormalTile extends Tile {
 
-    private AmmoCard ammo;
+    private AmmoCard ammoCard;
 
-    public void setAmmo(AmmoCard value) {
+    public void setAmmoCard(AmmoCard value) {
     }
 
     @Override

@@ -11,4 +11,6 @@ public class Board {
         return null;
     }
 
+    public Tile getTileFromPosition (Position pos) { return null; }
+
 }
