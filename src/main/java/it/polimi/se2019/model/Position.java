@@ -3,6 +3,14 @@ package it.polimi.se2019.model;
 import java.util.*;
 
 public class Position {
-    public int x;
-    public int y;
+    private int x;
+    private int y;
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }

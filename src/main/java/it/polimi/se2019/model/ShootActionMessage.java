@@ -3,11 +3,11 @@ package it.polimi.se2019.model;
 import java.util.*;
 
 
-public abstract class ShootActionMessage extends ActionMessage {
-    
-    public abstract void perform(Model model);
+public class ShootActionMessage extends Action {
+    @Override
+    public void perform(Model model) {}
 
-    
-    public abstract boolean isValid(Model model);
+    @Override
+    public boolean isValid(Model model) { return true; }
 
 }
