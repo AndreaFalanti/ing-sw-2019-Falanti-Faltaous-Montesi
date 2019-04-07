@@ -3,16 +3,28 @@ package it.polimi.se2019.model;
 import java.util.*;
 
 public class Deck<T> {
-    private ArrayList<T> deck;
 
-    private ArrayList<T> cards;
+    private ArrayList<T> deck = new ArrayList<>();
+    private ArrayList<T> cards = new ArrayList<>();
 
 
     public T drawCard() {
-        return null;
+
+        T drawedCard;
+
+        if(deck == null)
+               shuffle(deck);
+
+        drawedCard = deck.get(deck.size() - 1);
+        deck.remove(deck.size() - 1);
+
+        return drawedCard;
     }
 
-    public void shuffle() { }
+    public void shuffle(ArrayList<T> deck) {
 
-    public void regenerate() { }
+        deck = cards ;
+        Collections.shuffle(deck);
+    }
+
 }
