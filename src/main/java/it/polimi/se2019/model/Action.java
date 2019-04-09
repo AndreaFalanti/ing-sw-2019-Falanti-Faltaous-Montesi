@@ -5,11 +5,13 @@ import java.util.*;
 
 public abstract class Action {
 
-    private PlayerColor player;
+    private PlayerColor mPlayerColor;
+    private Position mPos;
 
-    private Position pos;
 
-
+    public Action(PlayerColor playerColor) {
+        this.mPlayerColor = playerColor;
+    }
 
     public abstract void perform(Model model);
 

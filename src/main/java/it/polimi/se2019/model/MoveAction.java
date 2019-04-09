@@ -4,6 +4,14 @@ import java.util.*;
 
 
 public class MoveAction extends Action {
+    Position mDestination;
+
+    public MoveAction(PlayerColor playerColor, Position destination) {
+        super(playerColor);
+
+        this.mDestination = destination;
+    }
+
     @Override
     public void perform(Model model) { }
 
