@@ -4,6 +4,19 @@ import java.util.*;
 
 
 public class Board {
+    private class Builder {
+        private Board mToBuild = new Board();
+
+        public Board build() {
+            return mToBuild;
+        }
+    }
+
+    public Builder initializer() {
+        return new Builder();
+    }
+
+    public Board() { }
 
     private Tile[ ][ ] scheme;
 
