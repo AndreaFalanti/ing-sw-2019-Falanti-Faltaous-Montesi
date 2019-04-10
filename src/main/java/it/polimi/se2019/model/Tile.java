@@ -18,4 +18,6 @@ public abstract class Tile {
     public boolean[] getDoors() {
         return null;
     }
+
+    public abstract String getTileType();
 }

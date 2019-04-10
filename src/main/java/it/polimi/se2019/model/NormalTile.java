@@ -13,4 +13,8 @@ public class NormalTile extends Tile {
     @Override
     public void grabObjects(Player player) { }
 
+    @Override
+    public String getTileType() {
+        return "normal";
+    }
 }

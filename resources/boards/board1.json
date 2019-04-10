@@ -1,40 +1,34 @@
 {
+    "width" : 2,
+    "height" : 3,
     "tiles" : [
         {
-            "coos"      : [0, 0],
             "type"      : "normal",
+            "position"      : [0, 0],
             "color"     : "blue",
-            "doors"     : ["south"],
-            "corridors" : ["east"]
+            "doors"     : ["south"]
         },
         {
-            "coos"      : [0, 1],
             "type"      : "normal",
+            "position"      : [0, 1],
             "color"     : "blue",
-            "doors"     : [],
-            "corridors" : ["west"]
+            "doors"     : []
         },
         {
-            "coos"      : [1, 0],
             "type"      : "spawn",
+            "position"      : [1, 0],
             "color"     : "red",
-            "doors"     : ["north"],
-            "corridors" : ["east"]
+            "doors"     : ["north"]
         },
         {
-            "coos"      : [1, 1],
             "type"      : "normal",
+            "position"      : [1, 1],
             "color"     : "red",
-            "doors"     : ["south"],
-            "corridors" : ["west"]
+            "doors"     : ["south"]
         },
         {
-            "coos" : [2, 0],
-            "type" : "empty"
-        },
-        {
-            "coos"      : [2, 1],
             "type"      : "normal",
+            "position"  : [2, 1],
             "color"     : "white",
             "doors"     : ["north"],
             "corridors" : ["east"]

@@ -12,4 +12,9 @@ public class SpawnTile extends Tile {
 
     @Override
     public void grabObjects(Player player) { }
+
+    @Override
+    public String getTileType() {
+        return "spawn";
+    }
 }
