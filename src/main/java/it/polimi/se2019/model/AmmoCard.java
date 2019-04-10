@@ -4,20 +4,20 @@ import java.util.*;
 
 
 public class AmmoCard {
+    private AmmoValue mAmmoGain;
+    private boolean mDrawPowerUp;
 
-    public AmmoCard() {
+    public AmmoCard(AmmoValue ammo, boolean drawPowerUp) {
+        mAmmoGain = ammo;
+        mDrawPowerUp = drawPowerUp;
     }
 
-    private AmmoValue ammoGain;
-
-    private boolean drawPowerUp;
-
-
-    public void addAmmo() {
+    public AmmoValue getAmmoGain () {
+        return mAmmoGain;
     }
 
     public boolean getDrawPowerUp() {
-        return true;
+        return mDrawPowerUp;
     }
 
 }

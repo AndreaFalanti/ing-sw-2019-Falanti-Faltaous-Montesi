@@ -1,11 +1,28 @@
 package it.polimi.se2019.model;
 
-import java.util.*;
-
 
 public class Damage {
+    private int mDamage;
+    private int mMarksNum;
 
-    private int damage;
+    public Damage () {
+        mDamage = 0;
+        mMarksNum = 0;
+    }
 
-    private int mark;
+    public Damage (int dmg, int marks) throws IllegalArgumentException {
+        if (dmg < 0 || marks < 0) {
+            throw new IllegalArgumentException ();
+        }
+        mDamage = dmg;
+        mMarksNum = marks;
+    }
+
+    public int getDamage() {
+        return mDamage;
+    }
+
+    public int getMarksNum() {
+        return mMarksNum;
+    }
 }

@@ -1,25 +1,23 @@
 package it.polimi.se2019.model;
 
-import java.util.*;
-
 
 public class AmmoValue {
-    private int red;
-    private int yellow;
-    private int blue;
+    private int mRed;
+    private int mYellow;
+    private int mBlue;
 
     public static final int MAX_AMMO = 3;
 
     public AmmoValue () {
-        red = 0;
-        yellow = 0;
-        blue = 0;
+        mRed = 0;
+        mYellow = 0;
+        mBlue = 0;
     }
 
     public AmmoValue (int r, int y, int b) {
-        red = r;
-        yellow = y;
-        blue = b;
+        mRed = r;
+        mYellow = y;
+        mBlue = b;
     }
 
     /**
@@ -27,13 +25,13 @@ public class AmmoValue {
      * @param value AmmoValue to add
      */
     public void add(AmmoValue value) {
-        red += value.red;
-        yellow += value.yellow;
-        blue += value.blue;
+        mRed += value.mRed;
+        mYellow += value.mYellow;
+        mBlue += value.mBlue;
 
-        red = clampValue(red);
-        yellow = clampValue(yellow);
-        blue = clampValue(blue);
+        mRed = clampValue(mRed);
+        mYellow = clampValue(mYellow);
+        mBlue = clampValue(mBlue);
     }
 
     /**
@@ -42,11 +40,11 @@ public class AmmoValue {
      * @throws NotEnoughAmmoException Thrown if any type of ammo is negative
      */
     public void subtract(AmmoValue value) throws NotEnoughAmmoException {
-        red -= value.red;
-        yellow -= value.yellow;
-        blue -= value.blue;
+        mRed -= value.mRed;
+        mYellow -= value.mYellow;
+        mBlue -= value.mBlue;
 
-        if (red < 0 || yellow < 0 || blue < 0) {
+        if (mRed < 0 || mYellow < 0 || mBlue < 0) {
             throw new NotEnoughAmmoException("Not enough ammo to pay cost");
         }
     }
@@ -65,15 +63,15 @@ public class AmmoValue {
     }
 
     public int getRed () {
-        return red;
+        return mRed;
     }
 
     public int getYellow () {
-        return yellow;
+        return mYellow;
     }
 
     public int getBlue () {
-        return blue;
+        return mBlue;
     }
 
 }

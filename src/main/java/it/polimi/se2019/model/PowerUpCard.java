@@ -4,21 +4,19 @@ import java.util.*;
 
 
 public class PowerUpCard {
+    private String mName;
+    private AmmoValue mAmmoValue;
+    private PowerUpBehaviour mBehaviour;
 
-    private String name;
+    public PowerUpCard (String name, AmmoValue ammo, PowerUpBehaviour behaviour) throws IllegalArgumentException {
 
-    private AmmoValue ammoValue;
+    }
 
-    private PowerUpBehaviour behaviour;
-
-
-
-    public void getColor() {
-        
+    public TileColor getColor() {
+        return null;
     }
 
     public String getName() {
-        
         return "";
     }
 
