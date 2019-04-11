@@ -8,20 +8,49 @@ public class PowerUpCard {
     private AmmoValue mAmmoValue;
     private PowerUpBehaviour mBehaviour;
 
+    /**
+     *
+     * @param name Card name
+     * @param ammo Ammo value of the card
+     * @param behaviour Card effect
+     * @throws IllegalArgumentException Thrown if AmmoValue total isn't of 1 ammo cube
+     */
     public PowerUpCard (String name, AmmoValue ammo, PowerUpBehaviour behaviour) throws IllegalArgumentException {
+        if (ammo.getRed() + ammo.getYellow() + ammo.getBlue() != 1) {
+            throw new IllegalArgumentException ();
+        }
 
+        mName = name;
+        mAmmoValue = ammo;
+        mBehaviour = behaviour;
     }
 
+    /**
+     * Get card color from its AmmoValue
+     * @return card color
+     */
     public TileColor getColor() {
-        return null;
+        if (mAmmoValue.getRed() == 1) {
+            return TileColor.RED;
+        }
+        else if (mAmmoValue.getYellow() == 1) {
+            return TileColor.YELLOW;
+        }
+        else {
+            return TileColor.BLUE;
+        }
     }
 
     public String getName() {
-        return "";
+        return mName;
     }
 
+    /**
+     * Activate card effect
+     * @param player Target player for the effect processing
+     */
     public void activate(Player player) {
-        
+        mBehaviour.activate(player);
     }
 
 }

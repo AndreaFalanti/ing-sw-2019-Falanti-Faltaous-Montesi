@@ -42,5 +42,13 @@ public class PowerUpCardTest {
         PowerUpCard card = new PowerUpCard("Newton", new AmmoValue(0,1,0), null);
         TileColor color = card.getColor();
         assertEquals(TileColor.YELLOW, color);
+
+        PowerUpCard card2 = new PowerUpCard("Newton", new AmmoValue(1,0,0), null);
+        TileColor color2 = card2.getColor();
+        assertEquals(TileColor.RED, color2);
+
+        PowerUpCard card3 = new PowerUpCard("Newton", new AmmoValue(0,0,1), null);
+        TileColor color3 = card3.getColor();
+        assertEquals(TileColor.BLUE, color3);
     }
 }
