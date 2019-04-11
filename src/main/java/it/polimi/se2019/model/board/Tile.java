@@ -8,7 +8,7 @@ public abstract class Tile {
     private TileColor color;
 
     @JsonAdapter(DoorsDeserializer.class)
-    private boolean[] doors;
+    private int doors;
 
 
     public abstract void grabObjects(Player player);
