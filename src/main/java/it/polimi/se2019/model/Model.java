@@ -1,6 +1,6 @@
 package it.polimi.se2019.model;
 
-import java.util.*;
+import it.polimi.se2019.model.board.Board;
 
 
 public class Model {

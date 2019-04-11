@@ -1,12 +1,10 @@
 package it.polimi.se2019.view;
 
-import it.polimi.se2019.model.Board;
+import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
-
-import java.util.*;
 
 public abstract class View implements Observable, Observer {
 

@@ -1,7 +1,7 @@
 package it.polimi.se2019.controller;
 
 
-import it.polimi.se2019.model.Board;
+import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 

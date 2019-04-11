@@ -1,11 +1,13 @@
-package it.polimi.se2019.model;
+package it.polimi.se2019.model.board;
 
-import java.util.*;
+import com.google.gson.annotations.JsonAdapter;
+import it.polimi.se2019.model.Player;
 
 
 public abstract class Tile {
     private TileColor color;
 
+    @JsonAdapter(DoorsDeserializer.class)
     private boolean[] doors;
 
 

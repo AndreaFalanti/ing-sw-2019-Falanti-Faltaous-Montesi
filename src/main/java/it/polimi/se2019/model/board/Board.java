@@ -1,9 +1,8 @@
-package it.polimi.se2019.model;
+package it.polimi.se2019.model.board;
 
-import com.google.gson.Gson;
+import it.polimi.se2019.model.Position;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class Board {
     /**
@@ -28,8 +27,8 @@ public class Board {
      * @return the constructed board object
      */
     public static Board fromJson(String toParse) {
-        Gson gson = new Gson();
-        Map board = gson.fromJson(toParse, Map.class);
+        // TODO: use the exclusion + custom deserializer method
+        return null;
     }
 
     public static Builder initializer() {

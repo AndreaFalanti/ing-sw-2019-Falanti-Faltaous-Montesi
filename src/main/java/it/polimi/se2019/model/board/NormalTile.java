@@ -1,6 +1,7 @@
-package it.polimi.se2019.model;
+package it.polimi.se2019.model.board;
 
-import java.util.*;
+import it.polimi.se2019.model.AmmoCard;
+import it.polimi.se2019.model.Player;
 
 
 public class NormalTile extends Tile {

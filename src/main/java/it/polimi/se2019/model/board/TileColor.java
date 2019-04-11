@@ -1,4 +1,4 @@
-package it.polimi.se2019.model;
+package it.polimi.se2019.model.board;
 
 import java.util.*;
 
