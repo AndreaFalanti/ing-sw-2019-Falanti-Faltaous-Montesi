@@ -5,7 +5,7 @@ import com.google.gson.*;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class DoorsDeserializer implements JsonDeserializer<Integer> {
+class DoorsDeserializer implements JsonDeserializer<Integer> {
     @Override
     public Integer deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         return new Gson().fromJson(jsonElement, List.class).stream()

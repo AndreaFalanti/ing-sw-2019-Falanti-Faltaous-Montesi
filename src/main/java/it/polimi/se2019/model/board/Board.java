@@ -5,16 +5,6 @@ import it.polimi.se2019.model.Position;
 import java.util.ArrayList;
 
 public class Board {
-    /**
-     * Builder for initializing Board objects
-     */
-    private static class Builder {
-        private Board mToBuild = new Board();
-
-        public Board build() {
-            return mToBuild;
-        }
-    }
 
     // fields
     private ArrayList<Tile> mTiles;
