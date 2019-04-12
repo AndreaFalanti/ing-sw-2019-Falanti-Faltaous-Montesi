@@ -8,21 +8,73 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class BuilderTest {
-    Builder mTestBoard;
-    Builder mTestBuilder;
+import static junit.framework.TestCase.assertEquals;
 
-    @Before
-    void instantiate() throws FileNotFoundException {
+public class BuilderTest {
+    private final String mExampleBoardJsonString = "" +
+            "{" +
+            "   \"width\" : 1," +
+            "   \"height\" : 1," +
+            "   \"tiles\" : [" +
+            "       {" +
+            "           \"type\" : \"normal\"," +
+            "           \"position\" : [0, 0]" +
+            "           \"color\" : \"blue\"," +
+            "           \"doors\" : []" +
+            "       }" +
+            "   ]" +
+            "}";
+
+    @Test
+    void testCombineRightBothEmpty() {
+        Builder builder1 = new Builder();
+        Builder builder2 = new Builder();
+
+        Builder combined = builder1.combineRight(builder2);
+
+        assertEquals(new Board(), combined);
     }
 
     @Test
-    void testCombineRightDuplicateBoard() {
-        otherBuilder = mTestBuilder.clone();
+    void testCombineRightCombineWithEmpty() {
 
-        Builder combinedBuilder = mTestBuilder.combineRight(otherBuilder.build());
+        Builder builder = new Builder().fromJson(mExampleBoardJsonString);
+        Builder emptyBuilder = new Builder();
 
-        assertEquals(combinedBuilder,
-                     );
+        Builder combined = builder.combineRight(emptyBuilder);
+
+        // combined should be exactly equals to the first combined half
+        // (since the second was empty)
+        assertEquals(builder, combined);
+    }
+
+    @Test
+    void testCombineRightCombineWithItself() {
+        final String expectedBoardJsonString = "" +
+                "{" +
+                "   \"width\" : 2," +
+                "   \"height\" : 1," +
+                "   \"tiles\" : [" +
+                "       {" +
+                "           \"type\" : \"normal\"," +
+                "           \"position\" : [0, 0]" +
+                "           \"color\" : \"blue\"," +
+                "           \"doors\" : []" +
+                "       }," +
+                "       {" +
+                "           \"type\" : \"normal\"," +
+                "           \"position\" : [1, 0]" +
+                "           \"color\" : \"blue\"," +
+                "           \"doors\" : []" +
+                "       }" +
+                "   ]" +
+                "}";
+
+        Builder builder = new Builder().fromJson(mExampleBoardJsonString);
+        Builder builderTwin = builder.clone();
+
+        Builder combined = builder.combineRight(builderTwin);
+
+        assertEquals(new Builder().fromJson(expectedBoardJsonString), combined);
     }
 }

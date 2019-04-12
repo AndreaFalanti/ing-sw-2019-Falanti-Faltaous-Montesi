@@ -13,7 +13,7 @@ class Builder {
         return this;
     }
 
-    public Builder combine(Board board) {
+    public Builder combineRight(Builder toCombineWith) {
         /*
          123  1234
         1--- 1----
@@ -28,14 +28,14 @@ class Builder {
         -------
          */
 
-
-
+        // TODO: implementation
+        return this;
     }
 
 
     public Builder configuration1() {
-        mToBuild = fromJson(FIRST_HALF_FRONT_PATH)
-                .combine(Board.fromJson(SECOND_HALF_FRONT_PATH));
+
+        // TODO: implementation
         return this;
     }
 
