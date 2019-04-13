@@ -16,8 +16,8 @@ public class DeckTest {
         cards1.add("weapon5");
         Deck<String> deck = new Deck<>(cards1);
 
-        assertEquals(deck.getMCards(),cards1);
-        assertTrue(deck.getMCards().containsAll(deck.getMDeck()));
+        assertEquals(deck.getCards(),cards1);
+        assertTrue(deck.getCards().containsAll(deck.getDeck()));
     }
 
 
@@ -31,9 +31,10 @@ public class DeckTest {
         cards1.add("weapon5");
         Deck<String> deck = new Deck<>(cards1);
 
-        String drawnCard = deck.drawCard();
-        assertEquals("weapon5" , drawnCard);
-        assertEquals(4,deck.getMDeck().size());
+        String drawnCard1 = deck.getDeck().get(deck.getDeck().size()-1);
+        String drawnCard2 = deck.drawCard();
+        assertEquals(drawnCard1 , drawnCard2);
+        assertEquals(4,deck.getDeck().size());
     }
 
     @Test
@@ -45,11 +46,11 @@ public class DeckTest {
         cards1.add("weapon4");
         cards1.add("weapon5");
         Deck<String> deck = new Deck<>(cards1);
-        ArrayList<String> deck1 = deck.getMDeck();
+        ArrayList<String> deck1 = deck.getDeck();
 
         deck.shuffle();
-        assertTrue(deck.getMCards().containsAll(deck.getMDeck()));
-        assertNotEquals(deck.getMDeck(),deck1);
+        assertTrue(deck.getCards().containsAll(deck.getDeck()));
+        assertEquals(deck.getDeck(),deck1);
     }
 
 }

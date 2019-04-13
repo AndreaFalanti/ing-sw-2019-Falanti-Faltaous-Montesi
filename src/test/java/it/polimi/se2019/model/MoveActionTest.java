@@ -23,7 +23,7 @@ public class MoveActionTest {
         moveOnce.perform(model);
 
         assertEquals(new Position(1, 1),
-                     model.getPlayerByColor(PlayerColor.BLUE).getPosition());
+                model.getPlayerByColor(PlayerColor.BLUE).getPosition());
     }
 
 }

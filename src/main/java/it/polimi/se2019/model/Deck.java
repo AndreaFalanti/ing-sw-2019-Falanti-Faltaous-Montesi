@@ -30,11 +30,11 @@ public class Deck<T> {
         Collections.shuffle(mDeck);
     }
 
-    public ArrayList<T> getMCards(){
+    public ArrayList<T> getCards(){
         return mCards;
     }
 
-    public ArrayList<T> getMDeck(){
+    public ArrayList<T> getDeck(){
         return mDeck;
     }
 
