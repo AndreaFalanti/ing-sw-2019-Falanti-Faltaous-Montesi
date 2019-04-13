@@ -4,26 +4,20 @@ import java.util.*;
 
 
 public class Player {
+    private AmmoValue mAmmo;
+    private PowerUpCard[] mPowerUpCards;
+    private Weapon[] mWeapons;
+    private PlayerColor mColor;
+    private int mDeathsNum;
+    private PlayerColor[] mDamageTaken;
+    private HashMap<PlayerColor, Integer> mMarks;
+    private int mScore;
+    private Position mPos;
+    private String mName;
 
-    private AmmoValue ammo;
+    public Player (String name, PlayerColor color) {
 
-    private PowerUpCard[] powerUps;
-
-    private Weapon[] weapons;
-
-    private PlayerColor color;
-
-    private int deathsNum;
-
-    private PlayerColor[] damageTaken;
-
-    private HashMap<PlayerColor, Integer> marks;
-
-    private int score;
-
-    private Position pos;
-
-    private String name;
+    }
 
 
     public void addScore(int value) { }
@@ -32,7 +26,7 @@ public class Player {
         return null;
     }
 
-    public void setAmmo(AmmoValue value) { }
+    public void addAmmo(AmmoValue value) { }
 
     public PlayerColor getColor() {
         return null;
@@ -42,7 +36,7 @@ public class Player {
         return 0;
     }
 
-    public void setDeathsNum(int value) {
+    public void incrementDeaths() {
     }
 
     public Weapon[] getWeapons() {
@@ -56,7 +50,7 @@ public class Player {
         return null;
     }
 
-    public void setPowerUps(PowerUpCard value) {
+    public void addPowerUp(PowerUpCard value) {
     }
 
     public int getScore() {

@@ -12,8 +12,8 @@ public class AmmoValueTest {
         AmmoValue ammo2 = new AmmoValue(1, 0, 1);
 
         ammo1.add(ammo2);
-        assertArrayEquals(new int[] {ammo1.getRed(), ammo1.getYellow(), ammo1.getBlue()},
-                new int[] {3, 1, 3});
+        assertArrayEquals(new int[] {3, 1, 3},
+                new int[] {ammo1.getRed(), ammo1.getYellow(), ammo1.getBlue()});
     }
 
     @Test
@@ -28,8 +28,8 @@ public class AmmoValueTest {
             fail ();
         }
 
-        assertArrayEquals(new int[] {ammo1.getRed(), ammo1.getYellow(), ammo1.getBlue()},
-                new int[] {1, 1, 2});
+        assertArrayEquals( new int[] {1, 1, 2},
+                new int[] {ammo1.getRed(), ammo1.getYellow(), ammo1.getBlue()});
     }
 
     @Test
