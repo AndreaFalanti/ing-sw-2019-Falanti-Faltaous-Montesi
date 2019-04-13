@@ -53,4 +53,12 @@ public class PowerUpCard {
         mBehaviour.activate(player);
     }
 
+    @Override
+    public String toString() {
+        return "PowerUpCard{" +
+                "mName='" + mName + '\'' +
+                ", mAmmoValue=" + mAmmoValue +
+                ", mBehaviour=" + mBehaviour +
+                '}';
+    }
 }

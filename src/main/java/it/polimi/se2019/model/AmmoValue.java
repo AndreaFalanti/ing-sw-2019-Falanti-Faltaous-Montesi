@@ -88,4 +88,12 @@ public class AmmoValue {
         return mBlue;
     }
 
+    @Override
+    public String toString() {
+        return "AmmoValue{" +
+                "mRed=" + mRed +
+                ", mYellow=" + mYellow +
+                ", mBlue=" + mBlue +
+                '}';
+    }
 }

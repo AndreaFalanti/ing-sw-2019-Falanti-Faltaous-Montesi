@@ -1,136 +1,134 @@
-{
-  "cards": [
-    {
-      "card": {
-        "ammoGain": {
-          "red": 1,
-          "yellow": 0,
-          "blue": 1
-        },
-        "drawPowerUp": true
+[
+  {
+    "card": {
+      "mAmmoGain": {
+        "mRed": 1,
+        "mYellow": 0,
+        "mBlue": 1
       },
-      "quantity": 4
+      "mDrawPowerUp": true
     },
-    {
-      "card": {
-        "ammoGain": {
-          "red": 0,
-          "yellow": 1,
-          "blue": 1
-        },
-        "drawPowerUp": true
+    "quantity": 4
+  },
+  {
+    "card": {
+      "mAmmoGain": {
+        "mRed": 0,
+        "mYellow": 1,
+        "mBlue": 1
       },
-      "quantity": 4
+      "mDrawPowerUp": true
     },
-    {
-      "card": {
-        "ammoGain": {
-          "red": 1,
-          "yellow": 1,
-          "blue": 0
-        },
-        "drawPowerUp": true
+    "quantity": 4
+  },
+  {
+    "card": {
+      "mAmmoGain": {
+        "mRed": 1,
+        "mYellow": 1,
+        "mBlue": 0
       },
-      "quantity": 4
+      "mDrawPowerUp": true
     },
-    {
-      "card": {
-        "ammoGain": {
-          "red": 2,
-          "yellow": 0,
-          "blue": 0
-        },
-        "drawPowerUp": true
+    "quantity": 4
+  },
+  {
+    "card": {
+      "mAmmoGain": {
+        "mRed": 2,
+        "mYellow": 0,
+        "mBlue": 0
       },
-      "quantity": 2
+      "mDrawPowerUp": true
     },
-    {
-      "card": {
-        "ammoGain": {
-          "red": 0,
-          "yellow": 0,
-          "blue": 2
-        },
-        "drawPowerUp": true
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mAmmoGain": {
+        "mRed": 0,
+        "mYellow": 0,
+        "mBlue": 2
       },
-      "quantity": 2
+      "mDrawPowerUp": true
     },
-    {
-      "card": {
-        "ammoGain": {
-          "red": 0,
-          "yellow": 2,
-          "blue": 0
-        },
-        "drawPowerUp": true
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mAmmoGain": {
+        "mRed": 0,
+        "mYellow": 2,
+        "mBlue": 0
       },
-      "quantity": 2
+      "mDrawPowerUp": true
     },
-    {
-      "card": {
-        "ammoGain": {
-          "red": 0,
-          "yellow": 1,
-          "blue": 2
-        },
-        "drawPowerUp": false
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mAmmoGain": {
+        "mRed": 0,
+        "mYellow": 1,
+        "mBlue": 2
       },
-      "quantity": 3
+      "mDrawPowerUp": false
     },
-    {
-      "card": {
-        "ammoGain": {
-          "red": 2,
-          "yellow": 1,
-          "blue": 0
-        },
-        "drawPowerUp": false
+    "quantity": 3
+  },
+  {
+    "card": {
+      "mAmmoGain": {
+        "mRed": 2,
+        "mYellow": 1,
+        "mBlue": 0
       },
-      "quantity": 3
+      "mDrawPowerUp": false
     },
-    {
-      "card": {
-        "ammoGain": {
-          "red": 1,
-          "yellow": 0,
-          "blue": 2
-        },
-        "drawPowerUp": false
+    "quantity": 3
+  },
+  {
+    "card": {
+      "mAmmoGain": {
+        "mRed": 1,
+        "mYellow": 0,
+        "mBlue": 2
       },
-      "quantity": 3
+      "mDrawPowerUp": false
     },
-    {
-      "card": {
-        "ammoGain": {
-          "red": 1,
-          "yellow": 2,
-          "blue": 0
-        },
-        "drawPowerUp": false
+    "quantity": 3
+  },
+  {
+    "card": {
+      "mAmmoGain": {
+        "mRed": 1,
+        "mYellow": 2,
+        "mBlue": 0
       },
-      "quantity": 3
+      "mDrawPowerUp": false
     },
-    {
-      "card": {
-        "ammoGain": {
-          "red": 0,
-          "yellow": 2,
-          "blue": 1
-        },
-        "drawPowerUp": false
+    "quantity": 3
+  },
+  {
+    "card": {
+      "mAmmoGain": {
+        "mRed": 0,
+        "mYellow": 2,
+        "mBlue": 1
       },
-      "quantity": 3
+      "mDrawPowerUp": false
     },
-    {
-      "card": {
-        "ammoGain": {
-          "red": 2,
-          "yellow": 0,
-          "blue": 1
-        },
-        "drawPowerUp": false
+    "quantity": 3
+  },
+  {
+    "card": {
+      "mAmmoGain": {
+        "mRed": 2,
+        "mYellow": 0,
+        "mBlue": 1
       },
-      "quantity": 3
-    }
-  ]
-}
+      "mDrawPowerUp": false
+    },
+    "quantity": 3
+  }
+]

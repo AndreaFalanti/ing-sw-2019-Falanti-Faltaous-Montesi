@@ -30,6 +30,7 @@ public class AmmoCardTest {
 
         for (AmmoCard ammocard : deck) {
             assertNotNull(ammocard);
+            assertNotNull(ammocard.getAmmoGain());
         }
     }
 }

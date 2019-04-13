@@ -31,4 +31,12 @@ public class Damage {
     public int getMarksNum() {
         return mMarksNum;
     }
+
+    @Override
+    public String toString() {
+        return "Damage{" +
+                "mDamage=" + mDamage +
+                ", mMarksNum=" + mMarksNum +
+                '}';
+    }
 }
