@@ -20,4 +20,10 @@ public class AmmoCard {
         return mDrawPowerUp;
     }
 
+    public static ArrayList<AmmoCard> returnDeckFromJson (String json) {
+        return null;
+    }
+
+
+
 }

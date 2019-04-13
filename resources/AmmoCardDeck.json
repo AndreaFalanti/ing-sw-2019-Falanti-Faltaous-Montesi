@@ -1,113 +1,136 @@
 {
   "cards": [
     {
-      "ammoGain" : {
-        "red" : 1,
-        "yellow" : 0,
-        "blue" : 1
+      "card": {
+        "ammoGain": {
+          "red": 1,
+          "yellow": 0,
+          "blue": 1
+        },
+        "drawPowerUp": true
       },
-      "drawPowerUp" : true,
       "quantity": 4
     },
     {
-      "ammoGain" : {
-        "red" : 0,
-        "yellow" : 1,
-        "blue" : 1
+      "card": {
+        "ammoGain": {
+          "red": 0,
+          "yellow": 1,
+          "blue": 1
+        },
+        "drawPowerUp": true
       },
-      "drawPowerUp" : true,
       "quantity": 4
     },
     {
-      "ammoGain" : {
-        "red" : 1,
-        "yellow" : 1,
-        "blue" : 0
+      "card": {
+        "ammoGain": {
+          "red": 1,
+          "yellow": 1,
+          "blue": 0
+        },
+        "drawPowerUp": true
       },
-      "drawPowerUp" : true,
       "quantity": 4
     },
     {
-      "ammoGain" : {
-        "red" : 2,
-        "yellow" : 0,
-        "blue" : 0
+      "card": {
+        "ammoGain": {
+          "red": 2,
+          "yellow": 0,
+          "blue": 0
+        },
+        "drawPowerUp": true
       },
-      "drawPowerUp" : true,
       "quantity": 2
     },
     {
-      "ammoGain" : {
-        "red" : 0,
-        "yellow" : 0,
-        "blue" : 2
+      "card": {
+        "ammoGain": {
+          "red": 0,
+          "yellow": 0,
+          "blue": 2
+        },
+        "drawPowerUp": true
       },
-      "drawPowerUp" : true,
       "quantity": 2
     },
     {
-      "ammoGain" : {
-        "red" : 0,
-        "yellow" : 2,
-        "blue" : 0
+      "card": {
+        "ammoGain": {
+          "red": 0,
+          "yellow": 2,
+          "blue": 0
+        },
+        "drawPowerUp": true
       },
-      "drawPowerUp" : true,
       "quantity": 2
     },
     {
-      "ammoGain" : {
-        "red" : 0,
-        "yellow" : 1,
-        "blue" : 2
+      "card": {
+        "ammoGain": {
+          "red": 0,
+          "yellow": 1,
+          "blue": 2
+        },
+        "drawPowerUp": false
       },
-      "drawPowerUp" : false,
       "quantity": 3
     },
     {
-      "ammoGain" : {
-        "red" : 2,
-        "yellow" : 1,
-        "blue" : 0
+      "card": {
+        "ammoGain": {
+          "red": 2,
+          "yellow": 1,
+          "blue": 0
+        },
+        "drawPowerUp": false
       },
-      "drawPowerUp" : false,
       "quantity": 3
     },
     {
-      "ammoGain" : {
-        "red" : 1,
-        "yellow" : 0,
-        "blue" : 2
+      "card": {
+        "ammoGain": {
+          "red": 1,
+          "yellow": 0,
+          "blue": 2
+        },
+        "drawPowerUp": false
       },
-      "drawPowerUp" : false,
       "quantity": 3
     },
     {
-      "ammoGain" : {
-        "red" : 1,
-        "yellow" : 2,
-        "blue" : 0
+      "card": {
+        "ammoGain": {
+          "red": 1,
+          "yellow": 2,
+          "blue": 0
+        },
+        "drawPowerUp": false
       },
-      "drawPowerUp" : false,
       "quantity": 3
     },
     {
-      "ammoGain" : {
-        "red" : 0,
-        "yellow" : 2,
-        "blue" : 1
+      "card": {
+        "ammoGain": {
+          "red": 0,
+          "yellow": 2,
+          "blue": 1
+        },
+        "drawPowerUp": false
       },
-      "drawPowerUp" : false,
       "quantity": 3
     },
     {
-      "ammoGain" : {
-        "red" : 2,
-        "yellow" : 0,
-        "blue" : 1
+      "card": {
+        "ammoGain": {
+          "red": 2,
+          "yellow": 0,
+          "blue": 1
+        },
+        "drawPowerUp": false
       },
-      "drawPowerUp" : false,
       "quantity": 3
     }
-    
   ]
 }

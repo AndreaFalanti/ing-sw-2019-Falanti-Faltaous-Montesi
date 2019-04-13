@@ -5,6 +5,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PowerUpCardTest {
+    /**
+     * Test constructor with valid parameters.
+     */
     @Test
     public void testPowerUpCardConstructor () {
         try {
@@ -17,6 +20,9 @@ public class PowerUpCardTest {
         }
     }
 
+    /**
+     * Test constructor with invalid parameters, it should throw an exception.
+     */
     @Test
     public void testPowerUpCardConstructorIllegalArgumentException () {
         try {
@@ -37,6 +43,9 @@ public class PowerUpCardTest {
         }
     }
 
+    /**
+     * Test that color returned is matching the not zero value contained in ammoValue.
+     */
     @Test
     public void testGetColor() {
         PowerUpCard card = new PowerUpCard("Newton", new AmmoValue(0,1,0), null);

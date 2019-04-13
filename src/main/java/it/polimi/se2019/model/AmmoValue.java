@@ -14,10 +14,24 @@ public class AmmoValue {
         mBlue = 0;
     }
 
-    public AmmoValue (int r, int y, int b) {
+    /**
+     *
+     * @param r Red ammo value
+     * @param y Yellow ammo value
+     * @param b Blue ammo value
+     * @throws IllegalArgumentException Thrown if any ammo value is negative or above MAX_AMMO value
+     */
+    public AmmoValue (int r, int y, int b) throws IllegalArgumentException {
+        if (!isValueValid(r) || !isValueValid(y) || !isValueValid(b)) {
+            throw new IllegalArgumentException();
+        }
         mRed = r;
         mYellow = y;
         mBlue = b;
+    }
+
+    private boolean isValueValid (int value) {
+        return value <= MAX_AMMO && value >= 0;
     }
 
     /**
@@ -37,7 +51,7 @@ public class AmmoValue {
     /**
      * Subtract operation between AmmoValue
      * @param value AmmoValue to subtract
-     * @throws NotEnoughAmmoException Thrown if any type of ammo is negative
+     * @throws NotEnoughAmmoException Thrown if any type of ammo of result is negative
      */
     public void subtract(AmmoValue value) throws NotEnoughAmmoException {
         mRed -= value.mRed;

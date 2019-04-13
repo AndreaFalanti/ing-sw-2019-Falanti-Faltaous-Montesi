@@ -5,6 +5,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class DamageTest {
+    /**
+     * Test constructor with valid parameters.
+     */
     @Test
     public void testDamageConstructor () {
         try {
@@ -16,6 +19,9 @@ public class DamageTest {
         }
     }
 
+    /**
+     * Test constructor with invalid parameters, it should throw an exception.
+     */
     @Test
     public void testDamageConstructorIllegalArgumentException () {
         try {
