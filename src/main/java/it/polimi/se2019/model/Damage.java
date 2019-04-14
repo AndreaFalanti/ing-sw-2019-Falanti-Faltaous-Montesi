@@ -18,7 +18,7 @@ public class Damage {
      */
     public Damage (int dmg, int marks) throws IllegalArgumentException {
         if (dmg < 0 || marks < 0) {
-            throw new IllegalArgumentException ();
+            throw new IllegalArgumentException ("At least one value is negative");
         }
         mDamage = dmg;
         mMarksNum = marks;

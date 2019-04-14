@@ -3,7 +3,6 @@ package it.polimi.se2019.util;
 import org.junit.Test;
 
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -29,7 +28,7 @@ public class ResourceHandlerTest {
                                                   (String) resourceHandler.get("testJsonString")));
     }
 
-    @Test(expected = NonexistentResourceException.class)
+    @Test(expected = NonExistentResourceException.class)
     public void testGetRequestNonexistentResource() {
         ResourceHandler resourceHandler = new ResourceHandler();
 
