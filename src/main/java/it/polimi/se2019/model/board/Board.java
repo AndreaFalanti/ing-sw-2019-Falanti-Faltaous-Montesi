@@ -67,6 +67,38 @@ public class Board {
         return getWidth() * getHeight();
     };
 
-    public Tile getTileFromPosition (Position pos) { return null; }
+    private int getIndexFromPosition (Position pos) {
+        int requestedIndex = mWidth * pos.getY() + pos.getX();
+        if (requestedIndex > getSize()) {
+            //TODO: is better to use a custom exception?
+            throw new IllegalArgumentException();
+        }
+
+        return requestedIndex;
+    }
+
+    public Tile getTileFromPosition (Position pos) {
+        return mTiles.get(getIndexFromPosition(pos));
+    }
+
+    public int getTileDistance (Position pos1, Position pos2) {
+        Tile tile1 = getTileFromPosition(pos1);
+        Tile tile2 = getTileFromPosition(pos2);
+
+        //same room, can use manhattan distance
+        if (tile1.getColor() == tile2.getColor()) {
+            return Math.abs(pos1.getX() - pos2.getX()) + Math.abs(pos1.getY() - pos2.getY());
+        }
+
+        //TODO: incomplete, finish it when you have time
+        return -1;
+    }
+
+    private Tile getUpperTile (Position pos) {
+        if (pos.getY() == 0) {
+            return null;
+        }
+        return mTiles.get(getIndexFromPosition(pos) - mWidth);
+    }
 
 }

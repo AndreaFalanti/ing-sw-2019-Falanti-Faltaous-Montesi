@@ -2,16 +2,12 @@ package it.polimi.se2019.model.board;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.board.DoorsDeserializer;
-import org.boon.Boon;
+import it.polimi.se2019.model.Position;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import static junit.framework.TestCase.assertEquals;
@@ -68,5 +64,19 @@ public class BoardTest {
         Board clonedBoard = board.deepCopy();
 
         assertEquals(board, clonedBoard);
+    }
+
+    @Test
+    public void getTileFromPosition() {
+        Position pos = new Position(0, 0);
+        Board board = Board.fromJson(mExampleBoardJsonString);
+
+        Tile tile = board.getTileFromPosition(pos);
+        assertEquals(board.getTiles().get(0), tile);
+    }
+
+    @Test
+    public void getTileDistance() {
+        //TODO: we need a valid board to test this method (at least 3 * 3)
     }
 }
