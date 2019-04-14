@@ -6,9 +6,18 @@ import it.polimi.se2019.model.Player;
 
 public class NormalTile extends Tile {
 
-    private AmmoCard ammoCard;
+    private AmmoCard mAmmoCard;
 
     public void setAmmoCard(AmmoCard value) {
+    }
+
+    @Override
+    public NormalTile deepCopy() {
+        NormalTile result = new NormalTile();
+
+        result.mAmmoCard = mAmmoCard.deepCopy();
+
+        return result;
     }
 
     @Override

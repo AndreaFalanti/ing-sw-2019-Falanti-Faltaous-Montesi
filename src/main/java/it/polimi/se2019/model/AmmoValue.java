@@ -22,6 +22,16 @@ public class AmmoValue {
         blue = b;
     }
 
+    public AmmoValue deepCopy() {
+        AmmoValue result = new AmmoValue();
+
+        result.red = red;
+        result.yellow = red;
+        result.blue = red;
+
+        return result;
+    }
+
     /**
      * Add operation between AmmoValue
      * @param value AmmoValue to add

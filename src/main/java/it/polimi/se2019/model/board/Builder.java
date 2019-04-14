@@ -6,11 +6,23 @@ package it.polimi.se2019.model.board;
 class Builder {
     public final String FIRST_HALF_FRONT_PATH = "resources/first_half_front.json";
 
-    private Board mToBuild = new Board();
+    private Board mToBuild;
+
+    public Builder() {
+        mToBuild = new Board();
+    }
+
+    public Builder(Board board) {
+        mToBuild = board;
+    }
 
     public Builder fromJson(String jsonStr) {
         mToBuild = Board.fromJson(jsonStr);
         return this;
+    }
+
+    public Builder deepCopy() {
+        return new Builder(mToBuild);
     }
 
     public Builder combineRight(Builder toCombineWith) {
@@ -31,7 +43,6 @@ class Builder {
         // TODO: implementation
         return this;
     }
-
 
     public Builder configuration1() {
 

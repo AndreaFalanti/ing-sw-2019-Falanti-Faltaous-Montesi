@@ -14,6 +14,8 @@ public abstract class Weapon {
 
     private AmmoValue reloadCost;
 
+    public abstract Weapon deepCopy();
+
     public abstract void shoot(Player shooter);
 
     public String getName() {

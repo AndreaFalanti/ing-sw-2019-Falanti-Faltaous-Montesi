@@ -71,7 +71,7 @@ public class BuilderTest {
                 "}";
 
         Builder builder = new Builder().fromJson(mExampleBoardJsonString);
-        Builder builderTwin = builder.clone();
+        Builder builderTwin = builder.deepCopy();
 
         Builder combined = builder.combineRight(builderTwin);
 

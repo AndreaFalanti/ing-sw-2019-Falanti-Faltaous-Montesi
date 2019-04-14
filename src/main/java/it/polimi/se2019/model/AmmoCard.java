@@ -8,9 +8,19 @@ public class AmmoCard {
     public AmmoCard() {
     }
 
-    private AmmoValue ammoGain;
+    private AmmoValue mAmmoGain;
 
-    private boolean drawPowerUp;
+    private boolean mDrawPowerUp;
+
+    public AmmoCard deepCopy() {
+        AmmoCard result = new AmmoCard();
+
+        result.mAmmoGain = mAmmoGain.deepCopy();
+
+        result.mDrawPowerUp = mDrawPowerUp;
+
+        return result;
+    }
 
 
     public void addAmmo() {
