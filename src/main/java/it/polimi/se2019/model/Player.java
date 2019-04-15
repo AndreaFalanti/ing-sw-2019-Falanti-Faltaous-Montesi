@@ -20,50 +20,50 @@ public class Player {
     }
 
 
-    public void addScore(int value) { }
-
-    public AmmoValue getAmmo() {
-        return null;
+    public void addScore(int value) {
+        this.mScore += value;
     }
 
-    public void addAmmo(AmmoValue value) { }
+    public AmmoValue getAmmo() {
+        return mAmmo;
+    }
+
+    //public void addAmmo(AmmoValue value) { }
 
     public PlayerColor getColor() {
-        return null;
+        return mColor;
     }
 
     public int getDeathsNum() {
-        return 0;
+        return mDeathsNum;
     }
 
     public void incrementDeaths() {
+        mDeathsNum += 1;
     }
 
     public Weapon[] getWeapons() {
-        return null;
+        return mWeapons;
     }
 
-    public void addWeapon(Weapon value) {
-    }
+    public void addWeapon(Weapon value) { }
 
     public PowerUpCard getPowerUps() {
         return null;
     }
 
-    public void addPowerUp(PowerUpCard value) {
-    }
+    public void addPowerUp(PowerUpCard value) { }
 
     public int getScore() {
-        return 0;
+        return mScore;
     }
 
     public Position getPos() {
-        return null;
+        return mPos;
     }
 
-    public void move(Position value) {
-    }
+    public void move(Position value) { }
 
-    public String getName () { return  null;}
+    public String getName () { return  mName;}
 
 }
