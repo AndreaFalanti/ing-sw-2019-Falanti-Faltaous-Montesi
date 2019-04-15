@@ -28,14 +28,17 @@ public class Board {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Board))
+        if (other == this)
+            return true;
+
+        if (other.getClass() != other.getClass())
             return false;
 
-        Board bOther = (Board) other;
+        Board casted = (Board) other;
 
-        return bOther.mHeight == mHeight &&
-                bOther.mWidth == mWidth &&
-                bOther.mTiles.equals(mTiles);
+        return mHeight == casted.mHeight &&
+                mWidth == casted.mWidth &&
+                mTiles.equals(casted.mTiles);
     }
 
     public Board deepCopy() {

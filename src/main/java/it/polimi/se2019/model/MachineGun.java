@@ -13,4 +13,8 @@ public class MachineGun extends Weapon {
         return null;
     }
 
+    @Override
+    public Weapon deepCopy() {
+        return null;
+    }
 }
