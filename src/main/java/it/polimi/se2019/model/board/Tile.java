@@ -8,8 +8,9 @@ public abstract class Tile {
     private TileColor mColor;
 
     @JsonAdapter(DoorsDeserializer.class)
-    private int doors;
+    private int mDoors;
 
+    public abstract Tile deepCopy();
     public Tile finishDeepCopy(Tile childTile) {
         Tile result = childTile;
 
@@ -18,7 +19,16 @@ public abstract class Tile {
         return result;
     }
 
-    public abstract Tile deepCopy();
+    public boolean equals(Tile other) {
+        if (this == other)
+            return true;
+
+        if (getClass() != other.getClass())
+            return false;
+
+        return mColor == other.mColor &&
+                mDoors == other.mDoors;
+    }
 
     public abstract void grabObjects(Player player);
 

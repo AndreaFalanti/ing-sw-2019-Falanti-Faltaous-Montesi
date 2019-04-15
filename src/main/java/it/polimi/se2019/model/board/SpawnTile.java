@@ -24,6 +24,21 @@ public class SpawnTile extends Tile {
         return (SpawnTile) finishDeepCopy(result);
     }
 
+    public boolean equals(Tile other) {
+        if (this == other)
+            return true;
+
+        if (getClass() != other.getClass())
+            return false;
+
+        if (!super.equals(other))
+            return false;
+
+        SpawnTile casted = (SpawnTile) other;
+
+        return mWeapons.equals(casted.mWeapons);
+    }
+
     @Override
     public void grabObjects(Player player) { }
 

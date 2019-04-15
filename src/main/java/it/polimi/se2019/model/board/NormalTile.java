@@ -20,6 +20,21 @@ public class NormalTile extends Tile {
         return result;
     }
 
+    public boolean equals(Tile other) {
+        if (this == other)
+            return true;
+
+        if (getClass() != other.getClass())
+            return false;
+
+        if (!super.equals(other))
+            return false;
+
+        NormalTile casted = (NormalTile) other;
+
+        return mAmmoCard.equals(casted.mAmmoCard);
+    }
+
     @Override
     public void grabObjects(Player player) { }
 

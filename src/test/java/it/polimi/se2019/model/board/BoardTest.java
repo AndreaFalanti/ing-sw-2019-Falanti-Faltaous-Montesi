@@ -29,14 +29,7 @@ public class BoardTest {
         "}";
 
     private String mJsonString;
-    private Gson mBoardGson;
-
-    @Before
-    public void instantiateBoardGson() {
-        mBoardGson = new GsonBuilder()
-                .registerTypeAdapter(Board.class, new DoorsDeserializer())
-                .create();
-    }
+    private Gson mBoardGson = new Gson();
 
     @Before
     public void instantiateJsonString() throws FileNotFoundException {
