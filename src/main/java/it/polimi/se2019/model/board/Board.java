@@ -1,16 +1,48 @@
 package it.polimi.se2019.model.board;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Board {
 
-    // fields
-    private ArrayList<Tile> mTiles;
+    private static Gson GSON = new GsonBuilder()
+            .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Tile.class, "type")
+                .registerSubtype(NormalTile.class, "normal")
+                .registerSubtype(SpawnTile.class, "spawn"))
+            .setFieldNamingStrategy(new CustomFieldNamingStrategy())
+            .create();
+
     private int mWidth;
     private int mHeight;
+    private ArrayList<Tile> mTiles;
+
+    /**
+     * Default constructor for empty board
+     */
+    public Board() {
+        mWidth = 0;
+        mTiles = new ArrayList<>(0);
+    }
+
+    /**
+     * Default helper constructor that fills board with default-constructed
+     * normal tiles
+     * @param width width of constructed board
+     * @param height height og constructed board
+     */
+    public Board(int width, int height) {
+        mWidth = width;
+        mHeight = height;
+        mTiles = IntStream.range(0, width * height)
+                .mapToObj(i -> new NormalTile())
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
 
     /**
      * Constructs a board parsing a json string
@@ -18,8 +50,20 @@ public class Board {
      * @return the constructed board object
      */
     public static Board fromJson(String toParse) {
-        // TODO: use the exclusion + custom deserializer method
-        return null;
+        return GSON.fromJson(toParse, Board.class);
+    }
+
+    /**
+     * Serializes board into a json string and returns it
+     * @return the serialized board in the form of a json string
+     */
+    public String toJson() {
+        return GSON.toJson(this);
+    }
+
+    @Override
+    public String toString() {
+        return toJson();
     }
 
     public static Builder initializer() {
@@ -80,13 +124,17 @@ public class Board {
         return requestedIndex;
     }
 
-    public Tile getTileFromPosition (Position pos) {
+    public Tile getTileAt (Position pos) {
         return mTiles.get(getIndexFromPosition(pos));
     }
 
+    public void setTileAt (Position pos, Tile toSet) {
+        mTiles.set(getIndexFromPosition(pos), toSet);
+    }
+
     public int getTileDistance (Position pos1, Position pos2) {
-        Tile tile1 = getTileFromPosition(pos1);
-        Tile tile2 = getTileFromPosition(pos2);
+        Tile tile1 = getTileAt(pos1);
+        Tile tile2 = getTileAt(pos2);
 
         //same room, can use manhattan distance
         if (tile1.getColor() == tile2.getColor()) {

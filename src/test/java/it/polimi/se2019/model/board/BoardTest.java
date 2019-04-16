@@ -1,14 +1,9 @@
 package it.polimi.se2019.model.board;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.util.JsonString;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -21,25 +16,31 @@ public class BoardTest {
         "   \"tiles\" : [" +
         "       {" +
         "           \"type\" : \"normal\"," +
-        "           \"position\" : [0, 0]" +
+        "           \"position\" : [0, 0]," +
         "           \"color\" : \"blue\"," +
         "           \"doors\" : []" +
         "       }" +
         "   ]" +
         "}";
-
-    private String mJsonString;
-    private Gson mBoardGson = new Gson();
+    private Board mExampleBoard;
 
     @Before
-    public void instantiateJsonString() throws FileNotFoundException {
-        mJsonString = new Scanner(new File("resources/board1.json")).useDelimiter("\\Z").next();
+    public void instantiateExampleBoard() {
+        mExampleBoard = new Board(1, 1);
+        mExampleBoard.setTileAt(new Position(0, 0),
+                                new NormalTile(TileColor.BLUE, 0));
     }
 
     @Test
-    public void testFromJson() {
-        assertEquals(mBoardGson.fromJson(mJsonString, Board.class),
-                     Board.fromJson(mJsonString));
+    public void testFromJsonBoardWithOneTile() {
+        assertEquals(mExampleBoard,
+                     Board.fromJson(mExampleBoardJsonString));
+    }
+
+    @Test
+    public void testToJsonBoardWithOneTile() {
+        assertEquals(new JsonString(mExampleBoard.toJson()),
+                     new JsonString(mExampleBoardJsonString));
     }
 
     @Test
@@ -64,7 +65,7 @@ public class BoardTest {
         Position pos = new Position(0, 0);
         Board board = Board.fromJson(mExampleBoardJsonString);
 
-        Tile tile = board.getTileFromPosition(pos);
+        Tile tile = board.getTileAt(pos);
         assertEquals(board.getTiles().get(0), tile);
     }
 

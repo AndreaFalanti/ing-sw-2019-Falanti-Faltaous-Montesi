@@ -3,12 +3,17 @@ package it.polimi.se2019.model.board;
 import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.Player;
 
-
 public abstract class Tile {
     private TileColor mColor;
 
-    @JsonAdapter(DoorsDeserializer.class)
     private int mDoors;
+
+    protected Tile() {}
+
+    protected Tile(TileColor color, int doors) {
+        mColor = color;
+        mDoors = doors;
+    }
 
     public abstract Tile deepCopy();
     public Tile finishDeepCopy(Tile childTile) {

@@ -8,6 +8,14 @@ public class NormalTile extends Tile {
 
     private AmmoCard mAmmoCard;
 
+    public NormalTile() {
+        super();
+    }
+
+    public NormalTile(TileColor color, int doors) {
+        super(color, doors);
+    }
+
     public void setAmmoCard(AmmoCard value) {
     }
 
