@@ -1,4 +1,4 @@
-package it.polimi.se2019.model.board;
+package it.polimi.se2019.model.board.serialization;
 
 import com.google.gson.FieldNamingStrategy;
 

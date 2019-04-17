@@ -16,8 +16,7 @@ public class BoardTest {
         "   \"tiles\" : [" +
         "       {" +
         "           \"type\" : \"normal\"," +
-        "           \"position\" : [0, 0]," +
-        "           \"color\" : \"blue\"," +
+        "           \"color\" : \"BLUE\"," +
         "           \"doors\" : []" +
         "       }" +
         "   ]" +
@@ -39,8 +38,8 @@ public class BoardTest {
 
     @Test
     public void testToJsonBoardWithOneTile() {
-        assertEquals(new JsonString(mExampleBoard.toJson()),
-                     new JsonString(mExampleBoardJsonString));
+        assertEquals(new JsonString(mExampleBoardJsonString),
+                     new JsonString(mExampleBoard.toJson()));
     }
 
     @Test
@@ -49,6 +48,13 @@ public class BoardTest {
         Board board2 = Board.fromJson(mExampleBoardJsonString);
 
         assertTrue(board1.equals(board2));
+    }
+
+    @Test
+    public void testEqualsClonesAreEqual() {
+        Board clone = mExampleBoard.deepCopy();
+
+        assertEquals(mExampleBoard, clone);
     }
 
     @Test

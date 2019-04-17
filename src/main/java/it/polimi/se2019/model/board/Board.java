@@ -3,6 +3,7 @@ package it.polimi.se2019.model.board;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.board.serialization.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 import java.util.ArrayList;

@@ -23,7 +23,8 @@ public class NormalTile extends Tile {
     public NormalTile deepCopy() {
         NormalTile result = new NormalTile();
 
-        result.mAmmoCard = mAmmoCard.deepCopy();
+        // TODO: uncomment when AmmoCard is implemented
+        // result.mAmmoCard = mAmmoCard.deepCopy();
 
         return result;
     }
