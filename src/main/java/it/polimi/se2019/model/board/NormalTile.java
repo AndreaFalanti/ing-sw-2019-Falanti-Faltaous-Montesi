@@ -26,7 +26,7 @@ public class NormalTile extends Tile {
         // TODO: uncomment when AmmoCard is implemented
         // result.mAmmoCard = mAmmoCard.deepCopy();
 
-        return result;
+        return (NormalTile) finishDeepCopy(this);
     }
 
     public boolean equals(Tile other) {
@@ -45,7 +45,8 @@ public class NormalTile extends Tile {
             return casted.mAmmoCard == null;
         }
 
-        return mAmmoCard.equals(casted.mAmmoCard);
+        return true; // TODO: implement equals in AmmoCard properly
+                     // return mAmmoCard.equals(casted.mAmmoCard);
     }
 
     @Override

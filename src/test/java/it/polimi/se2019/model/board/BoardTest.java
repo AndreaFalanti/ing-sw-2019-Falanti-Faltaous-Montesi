@@ -33,6 +33,7 @@ public class BoardTest {
     @Test
     public void testFromJsonBoardWithOneTile() {
         Board testBoard = Board.fromJson(mExampleBoardJsonString);
+
         assertEquals(mExampleBoard, testBoard);
     }
 
@@ -51,14 +52,7 @@ public class BoardTest {
     }
 
     @Test
-    public void testEqualsClonesAreEqual() {
-        Board clone = mExampleBoard.deepCopy();
-
-        assertEquals(mExampleBoard, clone);
-    }
-
-    @Test
-    public void testDeepCopy() {
+    public void testDeepCopyCloneIsEqualToOriginal() {
         Board board = Board.fromJson(mExampleBoardJsonString);
 
         Board clonedBoard = board.deepCopy();
