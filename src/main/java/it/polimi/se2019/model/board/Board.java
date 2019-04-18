@@ -166,4 +166,8 @@ public class Board {
         return -1;
     }
 
+    public boolean hasVisibility (Position observerPos, Position targetPos) {
+        return false;
+    }
+
 }

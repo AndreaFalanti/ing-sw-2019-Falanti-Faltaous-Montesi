@@ -1,5 +1,6 @@
 package it.polimi.se2019.model;
 
+import it.polimi.se2019.model.board.TileColor;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

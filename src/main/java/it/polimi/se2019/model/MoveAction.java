@@ -1,7 +1,5 @@
 package it.polimi.se2019.model;
 
-import java.util.*;
-
 
 public class MoveAction extends Action {
     Position mDestination;
@@ -13,10 +11,10 @@ public class MoveAction extends Action {
     }
 
     @Override
-    public void perform(Model model) { }
+    public void perform(Game game) { }
 
     @Override
-    public boolean isValid(Model model) {
+    public boolean isValid(Game game) {
         return true;
     }
 }

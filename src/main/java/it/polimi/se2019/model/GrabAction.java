@@ -1,7 +1,5 @@
 package it.polimi.se2019.model;
 
-import java.util.*;
-
 
 public class GrabAction extends Action {
     Position mDestination;
@@ -12,9 +10,9 @@ public class GrabAction extends Action {
         this.mDestination = destination;
     }
     @Override
-    public void perform(Model model) {}
+    public void perform(Game game) {}
 
     @Override
-    public boolean isValid(Model model) { return true; }
+    public boolean isValid(Game game) { return true; }
 
 }

@@ -37,9 +37,9 @@ public class AmmoValue {
     public AmmoValue deepCopy() {
         AmmoValue result = new AmmoValue();
 
-        result.red = red;
-        result.yellow = red;
-        result.blue = red;
+        result.mRed = mRed;
+        result.mYellow = mYellow;
+        result.mBlue = mBlue;
 
         return result;
     }
