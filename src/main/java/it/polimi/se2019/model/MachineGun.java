@@ -1,5 +1,7 @@
 package it.polimi.se2019.model;
 
+import it.polimi.se2019.model.board.Board;
+
 import java.util.*;
 
 
@@ -15,4 +17,8 @@ public class MachineGun extends Weapon {
         return null;
     }
 
+    @Override
+    public Weapon deepCopy() {
+        return null;
+    }
 }

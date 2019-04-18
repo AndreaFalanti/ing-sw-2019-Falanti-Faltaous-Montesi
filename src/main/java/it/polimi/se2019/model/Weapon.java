@@ -1,5 +1,7 @@
 package it.polimi.se2019.model;
 
+import it.polimi.se2019.model.board.Board;
+
 import java.util.*;
 
 
@@ -11,6 +13,8 @@ public abstract class Weapon {
     private AmmoValue grabCost;
 
     private AmmoValue reloadCost;
+
+    public abstract Weapon deepCopy();
 
     public abstract void shoot(Player shooter);
 
