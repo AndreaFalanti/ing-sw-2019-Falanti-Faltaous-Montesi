@@ -3,7 +3,9 @@ package it.polimi.se2019.model;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import static java.util.Arrays.fill;
 import static org.junit.Assert.*;
 
 public class PlayerTest {
@@ -25,16 +27,57 @@ public class PlayerTest {
         assertEquals(1,player1.getDeathsNum());
 
     }
+
     @Test
     public void testAddWeapon() {
-        Player player = new Player("testPlayer", PlayerColor.BLUE);
-
+        Player player1 = new Player("testPlayer", PlayerColor.BLUE);
+        MachineGun weapon1 = new MachineGun("Weapon1");
+        MachineGun weapon2 = new MachineGun("Weapon2");
+        MachineGun weapon3 = new MachineGun("Weapon3");
         try{
-            player.addWeapon();
+            player1.addWeapon(weapon1);
+            player1.addWeapon(weapon2);
+            player1.addWeapon(weapon3);
+            assertArrayEquals(new Weapon[] {weapon1,weapon2,weapon3},player1.getWeapons());
         }
-        catch (fullHandException e){
+        catch (FullHandException e){
             fail();
         }
+    }
+
+    @Test
+    public void testAddWeaponFullHandException() {
+        Player player1 = new Player("testPlayer", PlayerColor.BLUE);
+        MachineGun weapon1 = new MachineGun("Weapon1");
+        MachineGun weapon2 = new MachineGun("Weapon2");
+        MachineGun weapon3 = new MachineGun("Weapon3");
+        MachineGun weapon4 = new MachineGun("Weapon4");
+        try{
+            player1.addWeapon(weapon1);
+            player1.addWeapon(weapon2);
+            player1.addWeapon(weapon3);
+            player1.addWeapon(weapon4);
+            fail();
+        }
+        catch (FullHandException e){
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    public void testSufferDamage() {
+        Player player1 = new Player("testPlayer", PlayerColor.BLUE);
+        PlayerColor[] testDamage = player1.getDamageTaken();
+
+        fill(testDamage,PlayerColor.YELLOW);
+        player1.sufferDamage(PlayerColor.YELLOW, 12);
+        assertEquals(player1.getDamageTaken(),testDamage);
+    }
+
+    @Test
+    public void testIsDead() {
+        Player player1 = new Player("testPlayer", PlayerColor.BLUE);
+        player1.isDead();
     }
 
     @Test

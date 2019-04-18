@@ -4,10 +4,10 @@ import java.util.*;
 
 
 public class MachineGun extends Weapon {
+    private String name;
 
-
-    public MachineGun{
-        String name = "MachineGun";
+    public MachineGun(String nameW){
+        this.name = nameW;
     }
     public void shoot(Player shooter) { }
 

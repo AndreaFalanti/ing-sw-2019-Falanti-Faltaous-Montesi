@@ -4,7 +4,7 @@ import java.util.*;
 
 
 public abstract class Weapon {
-    private String name;
+
 
     private boolean loaded;
 
