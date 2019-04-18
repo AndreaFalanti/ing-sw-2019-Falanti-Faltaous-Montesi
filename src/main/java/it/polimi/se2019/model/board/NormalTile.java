@@ -33,13 +33,17 @@ public class NormalTile extends Tile {
         if (this == other)
             return true;
 
-        if (getClass() != other.getClass())
+        if (other == null || getClass() != other.getClass())
             return false;
 
         if (!super.equals(other))
             return false;
 
         NormalTile casted = (NormalTile) other;
+
+        if (mAmmoCard == null) {
+            return casted.mAmmoCard == null;
+        }
 
         return mAmmoCard.equals(casted.mAmmoCard);
     }

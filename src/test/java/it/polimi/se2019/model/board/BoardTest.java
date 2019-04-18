@@ -32,8 +32,8 @@ public class BoardTest {
 
     @Test
     public void testFromJsonBoardWithOneTile() {
-        assertEquals(mExampleBoard,
-                     Board.fromJson(mExampleBoardJsonString));
+        Board testBoard = Board.fromJson(mExampleBoardJsonString);
+        assertEquals(mExampleBoard, testBoard);
     }
 
     @Test

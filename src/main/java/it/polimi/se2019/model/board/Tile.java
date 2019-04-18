@@ -30,21 +30,27 @@ public abstract class Tile {
         if (this == other)
             return true;
 
-        if (getClass() != other.getClass())
+        if (other == null || getClass() != other.getClass())
             return false;
 
         return mColor == other.mColor &&
-                mDoors == other.mDoors;
+                mDoors.intValue() == other.mDoors.intValue();
     }
 
     public abstract void grabObjects(Player player);
 
     public TileColor getColor() {
-        return null;
+        return mColor;
     }
 
     public boolean[] getDoors() {
-        return null;
+        boolean[] doors = new boolean[4];
+        for (int i = 3; i >= 0; i--) {
+            //bitwise operation, 1 << i simply left shifts 1 of i positions to create correct masks.
+            doors[i] = (mDoors & (1 << i)) != 0;
+        }
+
+        return doors;
     }
 
     public abstract String getTileType();

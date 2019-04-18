@@ -76,14 +76,24 @@ public class Board {
         if (other == this)
             return true;
 
-        if (other.getClass() != other.getClass())
+        if (other == null || other.getClass() != other.getClass())
             return false;
 
         Board casted = (Board) other;
 
-        return mHeight == casted.mHeight &&
+        if (mHeight != casted.mHeight || mWidth != casted.mWidth
+                || mTiles.size() != casted.mTiles.size())
+            return false;
+
+        for (int i = 0; i < mTiles.size(); i++) {
+            if (!mTiles.get(i).equals(casted.mTiles.get(i)))
+                return false;
+        }
+
+        return true;
+        /*return mHeight == casted.mHeight &&
                 mWidth == casted.mWidth &&
-                mTiles.equals(casted.mTiles);
+                mTiles.equals(casted.mTiles);*/
     }
 
     public Board deepCopy() {
@@ -125,8 +135,18 @@ public class Board {
         return requestedIndex;
     }
 
+    public boolean isValidTilePosition (Position pos) {
+        // X >= 0 && Y >= 0 is checked in Position constructor
+        return pos.getX() < mWidth && pos.getY() < mHeight;
+    }
+
     public Tile getTileAt (Position pos) {
-        return mTiles.get(getIndexFromPosition(pos));
+        return isValidTilePosition(pos) ? mTiles.get(getIndexFromPosition(pos)) : null;
+    }
+
+    public Tile getTileAt (int x, int y) {
+        Position pos = new Position(x, y);
+        return getTileAt(pos);
     }
 
     public void setTileAt (Position pos, Tile toSet) {
@@ -144,13 +164,6 @@ public class Board {
 
         //TODO: incomplete, finish it when you have time
         return -1;
-    }
-
-    private Tile getUpperTile (Position pos) {
-        if (pos.getY() == 0) {
-            return null;
-        }
-        return mTiles.get(getIndexFromPosition(pos) - mWidth);
     }
 
 }
