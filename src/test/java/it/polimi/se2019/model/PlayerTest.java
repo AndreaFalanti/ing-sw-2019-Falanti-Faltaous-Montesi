@@ -70,8 +70,8 @@ public class PlayerTest {
         PlayerColor[] testDamage = player1.getDamageTaken();
 
         fill(testDamage,PlayerColor.YELLOW);
-        player1.sufferDamage(PlayerColor.YELLOW, 12);
-        assertEquals(player1.getDamageTaken(),testDamage);
+        player1.sufferedDamage(PlayerColor.YELLOW, 12);
+        assertArrayEquals(player1.getDamageTaken(),testDamage);
     }
 
     @Test
