@@ -22,11 +22,10 @@ public class Player {
     private Position mPos;
     private String mName;
     private boolean mIsDead;
-
+    public static final int MAX_MARKS = 3;
     public Player (String name, PlayerColor color) {
 
     }
-
 
     public void addScore(int value) {
         this.mScore += value;
@@ -53,7 +52,15 @@ public class Player {
 
     public PlayerColor[] getDamageTaken() { return mDamageTaken;}
 
-    public void sufferedMarks(PlayerColor attackingPlayer,int mark) { }
+    public void sufferedMarks(PlayerColor attackingPlayer,int marks) {
+        if(marks + getMarks().get(attackingPlayer) >= 3) {
+            mMarks.put(attackingPlayer,3);
+        }
+        else{
+            mMarks.put(attackingPlayer,marks);
+        }
+
+    }
 
     public HashMap<PlayerColor, Integer> getMarks() { return mMarks;}
 

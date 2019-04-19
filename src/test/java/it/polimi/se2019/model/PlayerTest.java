@@ -65,13 +65,26 @@ public class PlayerTest {
     }
 
     @Test
-    public void testSufferDamage() {
+    public void testSufferedDamage() {
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
         PlayerColor[] testDamage = player1.getDamageTaken();
 
         fill(testDamage,PlayerColor.YELLOW);
         player1.sufferedDamage(PlayerColor.YELLOW, 12);
         assertArrayEquals(player1.getDamageTaken(),testDamage);
+    }
+
+    @Test
+    public void testSufferedMarks() {
+        Player player1 = new Player("testPlayer",PlayerColor.BLUE);
+        PlayerColor testAttackingPlayer = PlayerColor.YELLOW;
+        int testMark1 = 2;
+        int testMark2 = 3;
+        
+        player1.sufferedMarks(testAttackingPlayer,testMark1);
+        assertTrue(testMark1 == player1.getMarks().get(PlayerColor.YELLOW));
+        player1.sufferedMarks(testAttackingPlayer,testMark2);
+        assertTrue(testMark2 == player1.getMarks().get(PlayerColor.YELLOW));
     }
 
     @Test
