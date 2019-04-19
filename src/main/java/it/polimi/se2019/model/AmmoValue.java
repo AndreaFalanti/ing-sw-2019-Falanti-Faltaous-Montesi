@@ -34,6 +34,16 @@ public class AmmoValue {
         return value <= MAX_AMMO && value >= 0;
     }
 
+    public AmmoValue deepCopy() {
+        AmmoValue result = new AmmoValue();
+
+        result.mRed = mRed;
+        result.mYellow = mYellow;
+        result.mBlue = mBlue;
+
+        return result;
+    }
+
     /**
      * Add operation between AmmoValue
      * @param value AmmoValue to add

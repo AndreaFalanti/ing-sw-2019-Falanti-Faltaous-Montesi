@@ -8,7 +8,7 @@ public class MoveActionTest {
 
     @Test
     public void testPerformSingleSquare() {
-        /*Model model = Model.initializer()
+        /*Game model = Game.initializer()
                 .setBoard(board.initializer()
                         .defaultConfiguation1()
                         .build())

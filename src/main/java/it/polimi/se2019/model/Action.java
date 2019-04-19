@@ -1,7 +1,5 @@
 package it.polimi.se2019.model;
 
-import java.util.*;
-
 
 public abstract class Action {
 
@@ -13,9 +11,9 @@ public abstract class Action {
         this.mPlayerColor = playerColor;
     }
 
-    public abstract void perform(Model model);
+    public abstract void perform(Game game);
 
-    public abstract boolean isValid(Model model);
+    public abstract boolean isValid(Game game);
 
     public PlayerColor getPlayer() {
         return null;

@@ -94,21 +94,48 @@ public class PlayerTest {
     }
 
     @Test
-    public void addPowerUp() {
+    public void testAddPowerUp() {
         //TODO: complete this test, need to check for an exception if hand is full?
-        /*Player player = new Player("Andrea", PlayerColor.GREY);
+        Player player = new Player("Andrea", PlayerColor.GREY);
         PowerUpCard card1 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
         PowerUpCard card2 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
         PowerUpCard card3 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
-        PowerUpCard card4 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
 
-        player.addPowerUp(card1);
-        player.addPowerUp(card2);
-        player.addPowerUp(card3);*/
+        try {
+            player.addPowerUp(card1);
+            player.addPowerUp(card2);
+            player.addPowerUp(card3);
+            assertArrayEquals(new PowerUpCard[] {card1, card2, card3, null}, player.getPowerUps());
+        }
+        catch (FullHandException e){
+            fail();
+        }
 
+        try {
+            player.addPowerUp(card3, true);
+            assertTrue(true);
+        }
+        catch (FullHandException e) {
+            fail();
+        }
     }
 
     @Test
-    public void move() {
+    public void testAddPowerUpFullHandException() {
+        Player player = new Player("Andrea", PlayerColor.GREY);
+        PowerUpCard card1 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
+        PowerUpCard card2 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
+        PowerUpCard card3 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
+
+        try {
+            player.addPowerUp(card1);
+            player.addPowerUp(card2);
+            player.addPowerUp(card3);
+            player.addPowerUp(card3);
+            fail();
+        }
+        catch (FullHandException e){
+            assertTrue(true);
+        }
     }
 }

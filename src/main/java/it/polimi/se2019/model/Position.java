@@ -1,21 +1,29 @@
 package it.polimi.se2019.model;
 
-import java.util.*;
-
 public class Position {
-    private int x;
-    private int y;
+    private int mX;
+    private int mY;
 
-    public Position(int x, int y) {
-        this.x = x;
-        this.y = y;
+    /**
+     *
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @throws IllegalArgumentException Thrown if at least one parameter is negative
+     */
+    public Position (int x, int y) {
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException("At least one value is negative");
+        }
+
+        mX = x;
+        mY = y;
     }
 
     public int getX() {
-        return x;
+        return mX;
     }
 
     public int getY() {
-        return y;
+        return mY;
     }
 }

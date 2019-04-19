@@ -5,30 +5,32 @@ import java.util.*;
 
 public class Player {
     private AmmoValue mAmmo;
-    private PowerUpCard[] mPowerUpCards;
+    private PowerUpCard[] mPowerUpCards = new PowerUpCard[4];
     private Weapon[] mWeapons = new Weapon[3];
     private PlayerColor mColor;
     private int mDeathsNum;
     private PlayerColor[] mDamageTaken = new PlayerColor[12];
-    private HashMap<PlayerColor, Integer> mMarks = new HashMap<PlayerColor, Integer>(){{
-        put(PlayerColor.YELLOW,0);
-        put(PlayerColor.GREEN,0);
-        put(PlayerColor.PURPLE,0);
-        put(PlayerColor.BLUE,0);
-        put(PlayerColor.GREY,0);
-        }
-    };
+    private EnumMap<PlayerColor, Integer> mMarks = new EnumMap<>(PlayerColor.class);
     private int mScore;
     private Position mPos;
     private String mName;
     private boolean mIsDead;
+
+    private void initializeMarksMap () {
+        mMarks.put(PlayerColor.YELLOW,0);
+        mMarks.put(PlayerColor.GREEN,0);
+        mMarks.put(PlayerColor.PURPLE,0);
+        mMarks.put(PlayerColor.BLUE,0);
+        mMarks.put(PlayerColor.GREY,0);
+    }
+
     public static final int MAX_MARKS = 3;
     public Player (String name, PlayerColor color) {
-
+            initializeMarksMap();
     }
 
     public void addScore(int value) {
-        this.mScore += value;
+        mScore += value;
     }
 
     public AmmoValue getAmmo() {
@@ -62,7 +64,7 @@ public class Player {
 
     }
 
-    public HashMap<PlayerColor, Integer> getMarks() { return mMarks;}
+    public EnumMap<PlayerColor, Integer> getMarks() { return mMarks;}
 
     public PlayerColor getColor() {
         return mColor;
@@ -99,11 +101,25 @@ public class Player {
 
     }
 
-    public PowerUpCard getPowerUps() {
-        return null;
+    public PowerUpCard[] getPowerUps() {
+        return mPowerUpCards;
     }
 
-    public void addPowerUp(PowerUpCard value) { }
+    public void addPowerUp(PowerUpCard value, boolean isRespawn) throws FullHandException {
+        int lengthToCheck = isRespawn ? mPowerUpCards.length : (mPowerUpCards.length - 1);
+        for (int i = 0; i < lengthToCheck; i++) {
+            if (mPowerUpCards[i] == null) {
+                mPowerUpCards[i] = value;
+                return;
+            }
+        }
+
+        throw new FullHandException ("PowerUp hand is full, can't draw another card");
+    }
+
+    public void addPowerUp (PowerUpCard value) throws FullHandException{
+        addPowerUp(value, false);
+    }
 
     public int getScore() {
         return mScore;
@@ -113,7 +129,9 @@ public class Player {
         return mPos;
     }
 
-    public void move(Position value) { }
+    public void move(Position value) {
+        mPos = value;
+    }
 
     public String getName () { return  mName;}
 
