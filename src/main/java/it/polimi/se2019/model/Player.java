@@ -41,6 +41,7 @@ public class Player {
         int i = 0;
         int j = 0;
 
+        damage += getMarks().get(attackingPlayer);
         while(i <= mDamageTaken.length - 1 && mDamageTaken[i] != null)
             i++;
         if(i <= mDamageTaken.length - 1) {
@@ -50,9 +51,12 @@ public class Player {
                 i++;
             }
         }
+        mMarks.put(attackingPlayer,0);
     }
 
-    public PlayerColor[] getDamageTaken() { return mDamageTaken;}
+    public PlayerColor[] getDamageTaken() {
+        return mDamageTaken;
+    }
 
     public void sufferedMarks(PlayerColor attackingPlayer,int marks) {
         if(marks + getMarks().get(attackingPlayer) >= 3) {
@@ -95,10 +99,17 @@ public class Player {
         }
     }
 
-    public boolean getIsDead() { return mIsDead; }
+    public boolean getIsDead() {
+        return mIsDead;
+    }
 
     public void isDead(){
-
+        if(mDamageTaken[11] != null) {
+            mIsDead = true;
+        }
+        else {
+            mIsDead = false;
+        }
     }
 
     public PowerUpCard[] getPowerUps() {
@@ -133,6 +144,7 @@ public class Player {
         mPos = value;
     }
 
-    public String getName () { return  mName;}
-
+    public String getName () {
+        return  mName;
+    }
 }

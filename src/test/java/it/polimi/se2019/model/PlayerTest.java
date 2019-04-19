@@ -68,10 +68,13 @@ public class PlayerTest {
     public void testSufferedDamage() {
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
         PlayerColor[] testDamage = player1.getDamageTaken();
+        PlayerColor testAttackingPlayer = PlayerColor.YELLOW;
 
-        fill(testDamage,PlayerColor.YELLOW);
-        player1.sufferedDamage(PlayerColor.YELLOW, 12);
+        fill(testDamage,testAttackingPlayer);
+        player1.sufferedMarks(testAttackingPlayer,3);
+        player1.sufferedDamage(testAttackingPlayer, 12 + player1.getMarks().get(testAttackingPlayer));
         assertArrayEquals(player1.getDamageTaken(),testDamage);
+        assertTrue(player1.getMarks().get(testAttackingPlayer) == 0);
     }
 
     @Test
@@ -80,17 +83,23 @@ public class PlayerTest {
         PlayerColor testAttackingPlayer = PlayerColor.YELLOW;
         int testMark1 = 2;
         int testMark2 = 3;
-        
+
         player1.sufferedMarks(testAttackingPlayer,testMark1);
-        assertTrue(testMark1 == player1.getMarks().get(PlayerColor.YELLOW));
+        assertTrue(testMark1 == player1.getMarks().get(testAttackingPlayer));
         player1.sufferedMarks(testAttackingPlayer,testMark2);
-        assertTrue(testMark2 == player1.getMarks().get(PlayerColor.YELLOW));
+        assertTrue(testMark2 == player1.getMarks().get(testAttackingPlayer));
     }
 
     @Test
     public void testIsDead() {
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
+
+        player1.sufferedDamage(PlayerColor.YELLOW, 9);
         player1.isDead();
+        assertFalse(player1.getIsDead());
+        player1.sufferedDamage(PlayerColor.YELLOW, 3);
+        player1.isDead();
+        assertTrue(player1.getIsDead());
     }
 
     @Test
