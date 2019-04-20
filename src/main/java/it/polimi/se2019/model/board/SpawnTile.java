@@ -24,11 +24,12 @@ public class SpawnTile extends Tile {
         return (SpawnTile) finishDeepCopy(result);
     }
 
-    public boolean equals(Tile other) {
+    @Override
+    public boolean equals(Object other) {
         if (this == other)
             return true;
 
-        if (getClass() != other.getClass())
+        if (other == null ||  getClass() != other.getClass())
             return false;
 
         if (!super.equals(other))
@@ -36,7 +37,7 @@ public class SpawnTile extends Tile {
 
         SpawnTile casted = (SpawnTile) other;
 
-        return mWeapons.equals(casted.mWeapons);
+        return Arrays.equals(mWeapons,  casted.mWeapons);
     }
 
     @Override

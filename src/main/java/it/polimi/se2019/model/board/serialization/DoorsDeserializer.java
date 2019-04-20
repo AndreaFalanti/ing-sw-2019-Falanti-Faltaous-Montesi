@@ -37,7 +37,7 @@ public class DoorsDeserializer implements JsonDeserializer<Integer>, JsonSeriali
 
         IntStream.range(0, 4)
                 .mapToObj(i -> ((src & i) != src) ? directions[i] : "none")
-                .filter(strDir -> strDir != "none")
+                .filter(strDir -> !strDir.equals("none"))
                 .forEach(strDir -> {
                     result.add(strDir);
                 });

@@ -76,7 +76,7 @@ public class Board {
         if (other == this)
             return true;
 
-        if (other == null || other.getClass() != other.getClass())
+        if (other == null || getClass() != other.getClass())
             return false;
 
         Board casted = (Board) other;
@@ -85,15 +85,16 @@ public class Board {
                 || mTiles.size() != casted.mTiles.size())
             return false;
 
+        // TODO: find out why using ArrayList.equals does not work
+        /* return mHeight == casted.mHeight &&
+                mWidth == casted.mWidth &&
+                mTiles.equals(casted.mTiles);*/
         for (int i = 0; i < mTiles.size(); i++) {
             if (!mTiles.get(i).equals(casted.mTiles.get(i)))
                 return false;
         }
 
         return true;
-        /*return mHeight == casted.mHeight &&
-                mWidth == casted.mWidth &&
-                mTiles.equals(casted.mTiles);*/
     }
 
     public Board deepCopy() {

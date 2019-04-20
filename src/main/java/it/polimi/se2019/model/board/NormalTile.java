@@ -29,7 +29,8 @@ public class NormalTile extends Tile {
         return (NormalTile) finishDeepCopy(this);
     }
 
-    public boolean equals(Tile other) {
+    @Override
+    public boolean equals(Object other) {
         if (this == other)
             return true;
 

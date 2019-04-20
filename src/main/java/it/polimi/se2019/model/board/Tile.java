@@ -26,15 +26,18 @@ public abstract class Tile {
         return result;
     }
 
-    public boolean equals(Tile other) {
+    @Override
+    public boolean equals(Object other) {
         if (this == other)
             return true;
 
         if (other == null || getClass() != other.getClass())
             return false;
 
-        return mColor == other.mColor &&
-                mDoors.intValue() == other.mDoors.intValue();
+        Tile casted = (Tile) other;
+
+        return mColor == casted.mColor &&
+                mDoors.intValue() == casted.mDoors.intValue();
     }
 
     public abstract void grabObjects(Player player);
