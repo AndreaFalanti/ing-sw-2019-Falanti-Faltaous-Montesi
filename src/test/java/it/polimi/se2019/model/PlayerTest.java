@@ -147,4 +147,25 @@ public class PlayerTest {
             assertTrue(true);
         }
     }
+
+    @Test
+    public void testDiscard() {
+        Player player = new Player("Andrea", PlayerColor.GREY);
+        PowerUpCard card1 = new PowerUpCard("Teleport", new AmmoValue(0, 1, 0), null);
+        PowerUpCard card2 = new PowerUpCard("Teleport", new AmmoValue(0, 1, 0), null);
+        PowerUpCard card3 = new PowerUpCard("Teleport", new AmmoValue(0, 1, 0), null);
+
+        try {
+            player.addPowerUp(card1);
+            player.addPowerUp(card2);
+            player.addPowerUp(card3);
+        }
+        catch (FullHandException e) {
+            fail();
+        }
+        player.discard(card2);
+        assertNull(player.getPowerUps()[1]);
+        assertEquals(card1, player.getPowerUps()[0]);
+    }
+
 }

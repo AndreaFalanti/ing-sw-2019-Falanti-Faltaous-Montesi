@@ -8,13 +8,14 @@ public class Player {
     private PowerUpCard[] mPowerUpCards = new PowerUpCard[4];
     private Weapon[] mWeapons = new Weapon[3];
     private PlayerColor mColor;
-    private int mDeathsNum;
+    private int mDeathsNum = 0;
     private PlayerColor[] mDamageTaken = new PlayerColor[12];
     private EnumMap<PlayerColor, Integer> mMarks = new EnumMap<>(PlayerColor.class);
-    private int mScore;
+    private int mScore=0;
     private Position mPos;
     private String mName;
-    private boolean mIsDead;
+    private boolean mIsDead = false;
+    public static final int MAX_MARKS = 3;
 
     private void initializeMarksMap () {
         mMarks.put(PlayerColor.YELLOW,0);
@@ -24,8 +25,9 @@ public class Player {
         mMarks.put(PlayerColor.GREY,0);
     }
 
-    public static final int MAX_MARKS = 3;
     public Player (String name, PlayerColor color) {
+            mName = name;
+            mColor = color;
             initializeMarksMap();
     }
 
@@ -65,10 +67,11 @@ public class Player {
         else{
             mMarks.put(attackingPlayer,marks);
         }
-
     }
 
-    public EnumMap<PlayerColor, Integer> getMarks() { return mMarks;}
+    public EnumMap<PlayerColor, Integer> getMarks() {
+        return mMarks;
+    }
 
     public PlayerColor getColor() {
         return mColor;
@@ -124,12 +127,20 @@ public class Player {
                 return;
             }
         }
-
         throw new FullHandException ("PowerUp hand is full, can't draw another card");
     }
 
     public void addPowerUp (PowerUpCard value) throws FullHandException{
         addPowerUp(value, false);
+    }
+
+    public void discard(PowerUpCard card) {
+        for (int i = 0; i < mPowerUpCards.length; i++) {
+            if (mPowerUpCards[i] == card) {
+                mPowerUpCards[i] = null;
+                return;
+            }
+        }
     }
 
     public int getScore() {
@@ -147,4 +158,5 @@ public class Player {
     public String getName () {
         return  mName;
     }
+
 }

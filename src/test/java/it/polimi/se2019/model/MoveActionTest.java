@@ -6,9 +6,9 @@ import static org.junit.Assert.*;
 
 public class MoveActionTest {
 
-    @Test
+    /*@Test
     public void testPerformSingleSquare() {
-        /*Game model = Game.initializer()
+        Game model = Game.initializer()
                 .setBoard(board.initializer()
                         .defaultConfiguation1()
                         .build())
@@ -24,6 +24,6 @@ public class MoveActionTest {
 
         assertEquals(new Position(1, 1),
                 model.getPlayerByColor(PlayerColor.BLUE).getPosition());
-                */
-    }
+
+    }*/
 }
