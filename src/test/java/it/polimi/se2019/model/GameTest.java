@@ -28,17 +28,25 @@ public class GameTest {
         ArrayList<Player> players = new ArrayList<>();
         fillPlayerList(players);
 
-        Game game = new Game(new Board(), players, 3);
+        Game game = new Game(new Board(), players, 4);
+        game.startNextTurn();
+        game.addDeath(PlayerColor.GREY);
         game.addDeath(PlayerColor.YELLOW);
         game.addDeath(PlayerColor.YELLOW);
-        game.addDeath(PlayerColor.YELLOW);
+        game.addDeath(PlayerColor.GREY);
+        assertFalse(game.isGameOver());
 
         //start turn for every player and conclude final frenzy
         for (int i = 0; i < players.size(); i++) {
-            assertFalse(game.isGameOver());
             game.startNextTurn();
+            assertFalse(game.isGameOver());
         }
+        game.startNextTurn();
         assertTrue(game.isGameOver());
+
+        assertEquals(8, game.getPlayerFromColor(PlayerColor.YELLOW).getScore());
+        assertEquals(6, game.getPlayerFromColor(PlayerColor.GREY).getScore());
+        assertEquals(0, game.getPlayerFromColor(PlayerColor.BLUE).getScore());
     }
 
     /**
@@ -58,8 +66,36 @@ public class GameTest {
         game.addDeath(PlayerColor.YELLOW);
         game.addDeath(PlayerColor.BLUE);
 
-        assertEquals(expectedResult, game.getDeaths());
+        assertEquals(expectedResult, game.getKills());
         assertTrue(game.isFinalFrenzy());
-        assertEquals(1, game.getFinalFrenzyTurnStart());
+        assertEquals(1, game.getFinalFrenzyTurnStart().intValue());
+    }
+
+    /**
+     * Test that correct player is returned and that, if color is not present, the method
+     * throw an exception.
+     */
+    @Test
+    public void getPlayerFromColor() {
+        ArrayList<Player> players = new ArrayList<>();
+        fillPlayerList(players);
+
+        Game game = new Game(new Board(), players, 5);
+        try {
+            Player p1 = game.getPlayerFromColor(PlayerColor.YELLOW);
+            assertEquals(players.get(1), p1);
+        }
+        catch (IllegalArgumentException e) {
+            fail();
+        }
+
+        try {
+            Player p2 = game.getPlayerFromColor(PlayerColor.PURPLE);
+            fail();
+        }
+        catch (IllegalArgumentException e) {
+            assertTrue(true);
+        }
+
     }
 }

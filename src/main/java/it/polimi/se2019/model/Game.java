@@ -3,6 +3,7 @@ package it.polimi.se2019.model;
 import it.polimi.se2019.model.board.Board;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class Game {
@@ -13,10 +14,12 @@ public class Game {
     private Deck<AmmoCard> mAmmoCardDeck;
     private int mTurnNumber;
     private int mSkullNum;
-    private ArrayList<PlayerColor> mDeaths = new ArrayList<>();
+    private ArrayList<PlayerColor> mKills = new ArrayList<>();
     private boolean mFinalFrenzy;
     private Integer mFinalFrenzyTurnStart;
     private int mActivePlayer;
+
+    private static final int[] KILLS_VALUE = {8, 6, 4, 2, 1, 1};
 
     public Game(Board board, ArrayList<Player> players, int killsToFinish) {
         if (board == null || killsToFinish < 0 || players.size() < 3) {
@@ -38,6 +41,10 @@ public class Game {
 
     public void startNextTurn() {
         mTurnNumber++;
+        if (isGameOver()) {
+            distributeKillScore();
+            return;
+        }
 
         if (mActivePlayer >= mPlayers.size() - 1) {
             mActivePlayer = 0;
@@ -50,7 +57,10 @@ public class Game {
     }
 
     public boolean isGameOver() {
-        return false;
+        // example: finalFrenzy is triggered on turn 4 and 3 player are present,
+        // at turn 4 + 3 + 1 = 8 the game is over (last turn is 7).
+        return mFinalFrenzyTurnStart != null
+                && mTurnNumber >= mFinalFrenzyTurnStart + mPlayers.size() + 1;
     }
 
     public int getTurnNumber() {
@@ -81,31 +91,59 @@ public class Game {
         return mSkullNum;
     }
 
-    public List<PlayerColor> getDeaths () {
-        return mDeaths;
+    public List<PlayerColor> getKills() {
+        return mKills;
     }
 
     public void addDeath (PlayerColor killer) {
-        mDeaths.add(killer);
+        mKills.add(killer);
 
-        if (mDeaths.size() == mSkullNum) {
+        if (mKills.size() == mSkullNum) {
             setFinalFrenzyStatus();
         }
     }
 
-    public Player getPlayerFromColor (PlayerColor color) { return null; }
+    public Player getPlayerFromColor (PlayerColor color) {
+        for (Player player : mPlayers) {
+            if (player.getColor() == color) {
+                return player;
+            }
+        }
+
+        throw new IllegalArgumentException("Can't find player with color: " + color);
+    }
 
     public boolean isFinalFrenzy () {
         return mFinalFrenzy;
     }
 
-    public int getFinalFrenzyTurnStart () {
+    public Integer getFinalFrenzyTurnStart () {
         return mFinalFrenzyTurnStart;
     }
 
     private void setFinalFrenzyStatus () {
         mFinalFrenzy = true;
         mFinalFrenzyTurnStart = mTurnNumber;
+    }
+
+    private void distributeKillScore () {
+        Map<PlayerColor, Integer> map = new EnumMap<>(PlayerColor.class);
+        for (PlayerColor kill : mKills) {
+            if (map.containsKey(kill)) {
+                map.put(kill, map.get(kill) + 1);
+            }
+            else {
+                map.put(kill, 1);
+            }
+        }
+        AtomicInteger i = new AtomicInteger(0);
+        map
+                .entrySet()
+                .stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .forEachOrdered( e -> {getPlayerFromColor(e.getKey()).addScore(KILLS_VALUE[i.get()]);
+                                        i.getAndIncrement();});
+
     }
 
 }
