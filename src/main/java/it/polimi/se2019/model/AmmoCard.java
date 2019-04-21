@@ -6,13 +6,10 @@ import java.util.*;
 
 
 public class AmmoCard {
-
-    public AmmoCard() {
-    }
-
     private AmmoValue mAmmoGain;
-
     private boolean mDrawPowerUp;
+
+    public AmmoCard() { }
 
     public AmmoCard(AmmoValue ammo, boolean drawPowerUp) {
         mAmmoGain = ammo;
@@ -38,10 +35,10 @@ public class AmmoCard {
         return mDrawPowerUp;
     }
 
-    public static ArrayList<AmmoCard> returnDeckFromJson (String json) {
+    public static List<AmmoCard> returnDeckFromJson (String json) {
         Gson gson = new Gson();
         AmmoCardStruct[] ammoCardStructs = gson.fromJson(json, AmmoCardStruct[].class);
-        ArrayList<AmmoCard> cards = new ArrayList<AmmoCard>();
+        ArrayList<AmmoCard> cards = new ArrayList<>();
         for (AmmoCardStruct struct : ammoCardStructs) {
             for (int i = 0; i < struct.quantity; i++) {
                 cards.add(struct.card);
@@ -51,8 +48,8 @@ public class AmmoCard {
     }
 
     private class AmmoCardStruct {
-        public AmmoCard card;
-        public int quantity;
+        AmmoCard card;
+        int quantity;
     }
 
     @Override

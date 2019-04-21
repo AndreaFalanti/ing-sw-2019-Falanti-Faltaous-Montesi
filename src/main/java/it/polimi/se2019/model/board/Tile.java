@@ -4,6 +4,8 @@ import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.board.serialization.DoorsDeserializer;
 
+import java.util.Objects;
+
 public abstract class Tile {
     private TileColor mColor;
 
@@ -24,6 +26,11 @@ public abstract class Tile {
         result.mColor = mColor;
 
         return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mColor, mDoors);
     }
 
     @Override

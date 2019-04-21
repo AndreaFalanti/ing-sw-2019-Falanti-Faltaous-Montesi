@@ -3,6 +3,8 @@ package it.polimi.se2019.model.board;
 import it.polimi.se2019.model.AmmoCard;
 import it.polimi.se2019.model.Player;
 
+import java.util.Objects;
+
 
 public class NormalTile extends Tile {
 
@@ -27,6 +29,11 @@ public class NormalTile extends Tile {
         // result.mAmmoCard = mAmmoCard.deepCopy();
 
         return (NormalTile) finishDeepCopy(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mAmmoCard);
     }
 
     @Override

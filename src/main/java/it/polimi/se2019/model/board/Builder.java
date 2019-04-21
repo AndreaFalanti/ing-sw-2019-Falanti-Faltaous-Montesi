@@ -1,5 +1,6 @@
 package it.polimi.se2019.model.board;
 
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 /**
@@ -21,6 +22,11 @@ class Builder {
     public Builder fromJson(String jsonStr) {
         mToBuild = Board.fromJson(jsonStr);
         return this;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(FIRST_HALF_FRONT_PATH, mToBuild);
     }
 
     @Override

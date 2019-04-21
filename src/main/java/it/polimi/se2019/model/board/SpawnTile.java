@@ -25,6 +25,11 @@ public class SpawnTile extends Tile {
     }
 
     @Override
+    public int hashCode() {
+        return Arrays.hashCode(mWeapons);
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (this == other)
             return true;
