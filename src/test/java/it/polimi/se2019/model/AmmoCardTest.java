@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -25,7 +25,7 @@ public class AmmoCardTest {
             fail();
         }
 
-        ArrayList<AmmoCard> deck = AmmoCard.returnDeckFromJson(json);
+        List<AmmoCard> deck = AmmoCard.returnDeckFromJson(json);
         assertEquals(EXPECTED_CARDS_NUM, deck.size());
 
         for (AmmoCard ammocard : deck) {
