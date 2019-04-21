@@ -1,12 +1,6 @@
 package it.polimi.se2019.model.board;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -18,38 +12,24 @@ public class BuilderTest {
             "   \"tiles\" : [" +
             "       {" +
             "           \"type\" : \"normal\"," +
-            "           \"position\" : [0, 0]" +
-            "           \"color\" : \"blue\"," +
+            "           \"color\" : \"BLUE\"," +
             "           \"doors\" : []" +
             "       }" +
             "   ]" +
             "}";
 
     @Test
-    void testCombineRightBothEmpty() {
+    public void testCombineRightBothEmpty() {
         Builder builder1 = new Builder();
         Builder builder2 = new Builder();
 
-        Builder combined = builder1.combineRight(builder2);
+        Builder combined = builder1.combineRight(builder2.build());
 
-        assertEquals(new Board(), combined);
+        assertEquals(new Builder(), combined);
     }
 
     @Test
-    void testCombineRightCombineWithEmpty() {
-
-        Builder builder = new Builder().fromJson(mExampleBoardJsonString);
-        Builder emptyBuilder = new Builder();
-
-        Builder combined = builder.combineRight(emptyBuilder);
-
-        // combined should be exactly equals to the first combined half
-        // (since the second was empty)
-        assertEquals(builder, combined);
-    }
-
-    @Test
-    void testCombineRightCombineWithItself() {
+    public void testCombineRightCombineWithItself() {
         final String expectedBoardJsonString = "" +
                 "{" +
                 "   \"width\" : 2," +
@@ -57,14 +37,12 @@ public class BuilderTest {
                 "   \"tiles\" : [" +
                 "       {" +
                 "           \"type\" : \"normal\"," +
-                "           \"position\" : [0, 0]" +
-                "           \"color\" : \"blue\"," +
+                "           \"color\" : \"BLUE\"," +
                 "           \"doors\" : []" +
                 "       }," +
                 "       {" +
                 "           \"type\" : \"normal\"," +
-                "           \"position\" : [1, 0]" +
-                "           \"color\" : \"blue\"," +
+                "           \"color\" : \"BLUE\"," +
                 "           \"doors\" : []" +
                 "       }" +
                 "   ]" +
@@ -73,7 +51,7 @@ public class BuilderTest {
         Builder builder = new Builder().fromJson(mExampleBoardJsonString);
         Builder builderTwin = builder.deepCopy();
 
-        Builder combined = builder.combineRight(builderTwin);
+        Builder combined = builder.combineRight(builderTwin.build());
 
         assertEquals(new Builder().fromJson(expectedBoardJsonString), combined);
     }

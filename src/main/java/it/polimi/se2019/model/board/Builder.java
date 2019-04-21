@@ -1,5 +1,7 @@
 package it.polimi.se2019.model.board;
 
+import java.util.stream.IntStream;
+
 /**
  * Builder for initializing Board objects
  */
@@ -21,32 +23,42 @@ class Builder {
         return this;
     }
 
-    public Builder deepCopy() {
-        return new Builder(mToBuild);
+    @Override
+    public boolean equals(Object other) {
+        if (other == this)
+            return true;
+
+        if (other == null || getClass() != other.getClass())
+            return false;
+
+        Builder casted = (Builder) other;
+
+        return mToBuild.equals(casted.mToBuild);
     }
 
-    public Builder combineRight(Builder toCombineWith) {
-        /*
-         123  1234
-        1--- 1----
-         456  5678
-        2--- 2----
-         789  9ABC
-        3--- 3----
+    public Builder deepCopy() {
+        return new Builder(mToBuild.deepCopy());
+    }
 
-        1234567
-        -------
-        89ABCDE
-        -------
-         */
+    @Override
+    public String toString() {
+        return mToBuild.toString();
+    }
 
-        // TODO: implementation
+    public Builder combineRight(Board toCombineWith) throws BadSizeException {
+        if (toCombineWith.getHeight() != mToBuild.getHeight())
+            throw new BadSizeException("Trying to combineRight boards with different heights!");
+
+        for (int i = 0; i < mToBuild.getRows().size(); i++) {
+            mToBuild.getRows().get(i).addAll(toCombineWith.getRows().get(i));
+        }
+
+        mToBuild.mWidth += toCombineWith.mWidth;
+
         return this;
     }
 
     public Builder configuration1() {
-
-        // TODO: implementation
         return this;
     }
 

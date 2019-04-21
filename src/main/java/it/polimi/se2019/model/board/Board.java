@@ -7,8 +7,11 @@ import it.polimi.se2019.model.board.serialization.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Board {
 
@@ -19,9 +22,9 @@ public class Board {
             .setFieldNamingStrategy(new CustomFieldNamingStrategy())
             .create();
 
-    private int mWidth;
-    private int mHeight;
-    private ArrayList<Tile> mTiles;
+    int mWidth;
+    int mHeight;
+    ArrayList<Tile> mTiles;
 
     /**
      * Default constructor for empty board
@@ -125,6 +128,12 @@ public class Board {
     public int getSize() {
         return getWidth() * getHeight();
     };
+
+    public List<List<Tile>> getRows() {
+        return IntStream.range(0, getHeight())
+                .mapToObj(i -> mTiles.subList(i * getWidth(), (i + 1) * getWidth()))
+                .collect(Collectors.toList());
+    }
 
     private int getIndexFromPosition (Position pos) {
         int requestedIndex = mWidth * pos.getY() + pos.getX();
