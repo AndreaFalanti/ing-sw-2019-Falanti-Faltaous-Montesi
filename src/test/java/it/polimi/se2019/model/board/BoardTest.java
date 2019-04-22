@@ -2,8 +2,11 @@ package it.polimi.se2019.model.board;
 
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.util.JsonString;
+import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.awt.*;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -26,6 +29,7 @@ public class BoardTest {
     // example boards used in various tests
     private Board mExampleUnitBoard;
     private Board mExampleEmptyBoard;
+    private Board mExampleSimpleWallBoard;
 
     @Before
     public void instantiateExampleBoards() {
@@ -36,6 +40,9 @@ public class BoardTest {
 
         // empty board
         mExampleEmptyBoard = new Board(3, 3);
+
+        // simple wall
+        mExampleSimpleWallBoard = Board.fromJson(Jsons.get("boards/tests/simple_wall"));
     }
 
     @Test
@@ -43,6 +50,51 @@ public class BoardTest {
         Board testBoard = Board.fromJson(mExampleBoardJsonString);
 
         assertEquals(mExampleUnitBoard, testBoard);
+    }
+
+    @Test
+    public void testFromJsonEmptyBoard() {
+        String testJsonString = "" +
+                "{" +
+                "   \"width\" : 1," +
+                "   \"height\" : 1," +
+                "   \"tiles\" : [" +
+                "       {" +
+                "           \"type\" : \"empty\"" +
+                "       }" +
+                "   ]" +
+                "}";
+
+        Board expectedBoard = new Board(1, 1);
+        expectedBoard.setTileAt(new Position(0, 0), null);
+
+        assertEquals(expectedBoard,
+                     Board.fromJson(testJsonString));
+    }
+
+    @Test
+    public void testFromJsonBoardWithEmptyTile() {
+        String testJsonString = "" +
+                "{" +
+                "   \"width\" : 2," +
+                "   \"height\" : 1," +
+                "   \"tiles\" : [" +
+                "       {" +
+                "           \"type\" : \"normal\"," +
+                "           \"color\" : \"BLUE\"," +
+                "           \"doors\" : []" +
+                "       }," +
+                "       {" +
+                "           \"type\" : \"empty\"" +
+                "       }" +
+                "   ]" +
+                "}";
+
+        Board expectedBoard = new Board(2, 1);
+        expectedBoard.setTileAt(new Position(0, 0), new NormalTile(TileColor.BLUE));
+        expectedBoard.setTileAt(new Position(1, 0), null);
+
+        assertEquals(expectedBoard, Board.fromJson(testJsonString));
     }
 
     @Test
@@ -94,32 +146,37 @@ public class BoardTest {
         assertTrue(board.isOutOfBounds(new Position(4, 0)));
     }
 
-    /* TODO: make these work
     @Test
-    public void testGetCellsInRangeTrivialRange() {
-        RangeInfo rangeInfo = mExampleEmptyBoard.getCellsWithinRange(new Position(1, 1), 1);
+    public void testGetRangeInfoTrivialRange() {
+        RangeInfo rangeInfo = mExampleEmptyBoard.getRangeInfo(new Position(1, 1), 1);
 
         assertEquals(
                 rangeInfo,
-                RangeInfo.fromString(
-                        "1 1 1" +
-                        "1 0 1" +
-                        "1 1 1"
+                RangeInfo.fromMatrix(
+                        new int[][]{
+                                {1, 1, 1},
+                                {1, 0, 1},
+                                {1, 1, 1}
+                        }
                 )
         );
     }
 
     @Test
-    public void testGetCellsInRangeSimpleWall() {
-        RangeInfo rangeInfo = mExampleSimpleWallBoard.getCellsWithinRange(new Position(1, 1), 1);
+    public void testGetRangeInfoSimpleWall() {
+        RangeInfo rangeInfo = mExampleSimpleWallBoard.getRangeInfo(new Position(1, 1), 1);
 
         assertEquals(
                 rangeInfo,
-                RangeInfo.fromString(
-                        "3 4 5 4" +
-                        "2 # # 3" +
-                        "1 0 1 2"
+                RangeInfo.fromMatrix(
+                        new int[][]{
+                                // -1 means impassable (i.e. wall/empty)
+                                {3, 4, 5, 4},
+                                {2, -1, -1, 3},
+                                {1, 0, 1, 2},
+                                {1, 1, 1, 2}
+                        }
                 )
         );
-     */
+    }
 }

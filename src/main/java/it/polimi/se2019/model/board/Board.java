@@ -2,8 +2,10 @@ package it.polimi.se2019.model.board;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.serialization.CustomFieldNamingStrategy;
+import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 import java.lang.reflect.Array;
@@ -30,6 +32,7 @@ public class Board {
     int mHeight;
 
     // all the board tiles
+    @JsonAdapter(CustomTilesDeserializer.class)
     ArrayList<Tile> mTiles;
 
     // trivial getters
@@ -134,7 +137,7 @@ public class Board {
                 mWidth == casted.mWidth &&
                 mTiles.equals(casted.mTiles);*/
         for (int i = 0; i < mTiles.size(); i++) {
-            if (!mTiles.get(i).equals(casted.mTiles.get(i)))
+            if (!Objects.equals(mTiles.get(i), casted.mTiles.get(i)))
                 return false;
         }
 

@@ -13,7 +13,9 @@ public class NormalTile extends Tile {
     public NormalTile() {
         super();
     }
-
+    public NormalTile(TileColor color) {
+        super(color, 0);
+    }
     public NormalTile(TileColor color, int doors) {
         super(color, doors);
     }
