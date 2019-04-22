@@ -8,14 +8,11 @@ import it.polimi.se2019.model.board.serialization.CustomFieldNamingStrategy;
 import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class Board {
 
@@ -102,6 +99,7 @@ public class Board {
     /**
      * Returns a default constructed board builder
      * @return the builder
+     * @deprecated will be substituted fully by json deserialization
      */
     @Deprecated
     public static Builder initializer() {
@@ -132,8 +130,8 @@ public class Board {
                 || mTiles.size() != casted.mTiles.size())
             return false;
 
-        // TODO: find out why using ArrayList.equals does not work
-        /* return mHeight == casted.mHeight &&
+        /* TODO: find out why using ArrayList.equals does not work
+           return mHeight == casted.mHeight &&
                 mWidth == casted.mWidth &&
                 mTiles.equals(casted.mTiles);*/
         for (int i = 0; i < mTiles.size(); i++) {

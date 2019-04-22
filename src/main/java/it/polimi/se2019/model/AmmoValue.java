@@ -21,7 +21,7 @@ public class AmmoValue {
      * @param b Blue ammo value
      * @throws IllegalArgumentException Thrown if any ammo value is negative or above MAX_AMMO value
      */
-    public AmmoValue (int r, int y, int b) throws IllegalArgumentException {
+    public AmmoValue (int r, int y, int b) {
         if (!isValueValid(r) || !isValueValid(y) || !isValueValid(b)) {
             throw new IllegalArgumentException();
         }
