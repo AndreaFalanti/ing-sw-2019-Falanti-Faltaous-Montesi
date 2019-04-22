@@ -203,4 +203,90 @@ public class Board {
         return false;
     }
 
+    /**
+     * Checks if {@code pos} is out of {@code this}'s bounds
+     * @param pos the checked position
+     * @return true if {@code pos} is out of bounds
+     */
+    public boolean isOutOfBounds(Position pos) {
+        return pos.getX() >= getWidth() || pos.getY() >= getHeight();
+    }
+
+    /**
+     * Calculated  the positions adjacent to {@code centralPos}, filtering those that are out of bounds
+     * @param centralPos interested central position
+     * @return List of positions that are adjacent to {@code centralPos} and are not out of bounds
+     */
+    public List<Position> getAdjacentPositions(Position centralPos) {
+        List<Position> result = new ArrayList<>(4);
+
+        for (int y = -1; y <= 1; ++y) {
+            for (int x = -1; x <= 1; ++x) {
+                if (x == 0 || y == 0) {
+                    Position adjacentPos = centralPos.add(new Position(x, y));
+                    if (!isOutOfBounds(adjacentPos))
+                        result.add(adjacentPos);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Checks if {@code from} and {@code to} are "connected", i.e. a player can freely move
+     * from {@code from} to {@code to}
+     * @param from where to start
+     * @param to  where to go
+     * @return true if a player can freely walk from {@code from} to {@code to}
+     */
+    public boolean areConnected(Position from, Position to) {
+        Tile fromTile = getTileAt(from);
+        Tile toTile   = getTileAt(to);
+
+        // can walk among tiles of the same color
+        if (fromTile.getColor().equals(toTile.getColor()))
+            return true;
+
+        // can walk among tiles of different color if there's a door
+        if ((fromTile.getDoors()[0] && toTile.getDoors()[2]) ||
+                (fromTile.getDoors()[1] && toTile.getDoors()[3]) ||
+                (fromTile.getDoors()[2] && toTile.getDoors()[0]) ||
+                (fromTile.getDoors()[3] && toTile.getDoors()[1]))
+            return true;
+
+        // no other way
+        return false;
+    }
+
+    /**
+     * Helper function for {@code getRangeInfoHelper}
+     */
+    // TODO: finish implementation
+    private RangeInfo getRangeInfoHelper(Position currPos, int range, int currDist, RangeInfo result) {
+        // if (result.isVisited(currPos))
+            // return result;
+
+        if (currDist > range)
+            return result;
+
+        // result.addDistAt(currPos, currDist);
+
+        getAdjacentPositions(currPos).stream()
+                .filter(adjPos -> areConnected(currPos, adjPos))
+                .forEach(newPos -> getRangeInfoHelper(newPos, range, currDist + 1, result));
+
+        return result;
+    }
+
+    /**
+     * Returns info about the requested range from the specified position
+     * (see RangeInfo for more info)
+     * @param rangeOrigin position of origin of range
+     * @param range the specified range
+     * @return the specified position
+     */
+    public RangeInfo getRangeInfo(Position rangeOrigin, int range) {
+        return getRangeInfoHelper(rangeOrigin, range, 0, new RangeInfo());
+    }
 }
