@@ -5,9 +5,6 @@ import java.util.Set;
 import java.util.function.Function;
 
 public class ResourceHandler {
-    // path to
-    static final String PATH_TO_RESOURCES_FOLDER = "./resources/";
-
     // fields
     private final HashMap<String, Resource> mResources = new HashMap<>();
     private String mBasePath;
@@ -20,7 +17,7 @@ public class ResourceHandler {
     public void registerResource(Function<String, Resource> loader, String path, String customName) {
         if (path.isEmpty())
             throw new IllegalArgumentException("Cannot load resource from empty path!");
-        mResources.put(customName, loader.apply(PATH_TO_RESOURCES_FOLDER + path));
+        mResources.put(customName, loader.apply(path));
     }
     public void registerResource(Function<String, Resource> loader, String path) {
         // check if base paths exists, if so save it for later (to remove it)
