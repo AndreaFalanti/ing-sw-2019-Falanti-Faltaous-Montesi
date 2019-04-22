@@ -6,8 +6,6 @@ import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.*;
-
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 

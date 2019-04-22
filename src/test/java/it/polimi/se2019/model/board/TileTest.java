@@ -2,8 +2,6 @@ package it.polimi.se2019.model.board;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class TileTest {
     @Test
     public void getDoors() {

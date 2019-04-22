@@ -2,8 +2,6 @@ package it.polimi.se2019.model;
 
 import it.polimi.se2019.model.board.TileColor;
 
-import java.util.*;
-
 
 public class PowerUpCard {
     private String mName;

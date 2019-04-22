@@ -1,6 +1,6 @@
 package it.polimi.se2019.model;
 
-import java.util.*;
+import java.util.EnumMap;
 
 
 public class Player {

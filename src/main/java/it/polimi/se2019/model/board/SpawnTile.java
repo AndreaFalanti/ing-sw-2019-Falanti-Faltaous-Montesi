@@ -4,7 +4,6 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.Weapon;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 
 public class SpawnTile extends Tile {

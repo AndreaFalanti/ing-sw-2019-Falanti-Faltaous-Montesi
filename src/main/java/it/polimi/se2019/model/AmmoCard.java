@@ -2,7 +2,8 @@ package it.polimi.se2019.model;
 
 import com.google.gson.Gson;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AmmoCard {

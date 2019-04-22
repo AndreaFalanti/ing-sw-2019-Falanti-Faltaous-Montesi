@@ -1,13 +1,9 @@
 package it.polimi.se2019.resource_handler;
 
-import it.polimi.se2019.resource_handler.JsonResource;
-import it.polimi.se2019.resource_handler.NonExistentResourceException;
-import it.polimi.se2019.resource_handler.ResourceHandler;
 import org.junit.Test;
 
 import java.util.function.BiPredicate;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ResourceHandlerTest {

@@ -1,6 +1,6 @@
 package it.polimi.se2019.view;
 
-import java.util.*;
+import java.util.Scanner;
 
 
 public class CLIView extends View {

@@ -1,7 +1,5 @@
 package it.polimi.se2019.util;
 
-import com.google.gson.JsonDeserializer;
-
 import java.util.Objects;
 
 /**

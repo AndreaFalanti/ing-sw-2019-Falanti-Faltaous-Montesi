@@ -1,6 +1,7 @@
 package it.polimi.se2019.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Deck<T> {
     private ArrayList<T> mDeck ;

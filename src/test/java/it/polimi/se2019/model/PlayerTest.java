@@ -2,9 +2,6 @@ package it.polimi.se2019.model;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import static java.util.Arrays.fill;
 import static org.junit.Assert.*;
 
