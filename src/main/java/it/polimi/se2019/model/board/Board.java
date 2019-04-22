@@ -6,6 +6,7 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.serialization.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 
 public class Board {
 
+    // GSON used to deal with serialization/deserialization
     private static Gson GSON = new GsonBuilder()
             .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Tile.class, "type")
                 .registerSubtype(NormalTile.class, "normal")
@@ -23,9 +25,29 @@ public class Board {
             .setFieldNamingStrategy(new CustomFieldNamingStrategy())
             .create();
 
-    int mWidth;
-    int mHeight;
-    ArrayList<Tile> mTiles;
+    // width and height
+    private int mWidth;
+    private int mHeight;
+
+    // all the board tiles
+    private ArrayList<Tile> mTiles;
+
+    // trivial getters
+    public ArrayList<Tile> getTiles() {
+        return mTiles;
+    }
+
+    public int getWidth() {
+        return mWidth;
+    }
+
+    public int getHeight() {
+        return mHeight;
+    }
+
+    public int getSize() {
+        return getWidth() * getHeight();
+    };
 
     /**
      * Default constructor for empty board
@@ -36,8 +58,7 @@ public class Board {
     }
 
     /**
-     * Default helper constructor that fills board with default-constructed
-     * normal tiles
+     * Constructor that fills board with default-constructed normal tiles
      * @param width width of constructed board
      * @param height height og constructed board
      */
@@ -66,15 +87,29 @@ public class Board {
         return GSON.toJson(this);
     }
 
+    /**
+     * Turns the board into a string
+     * @return a string representation of the board
+     */
     @Override
     public String toString() {
         return toJson();
     }
 
+    /**
+     * Returns a default constructed board builder
+     * @return the builder
+     */
+    @Deprecated
     public static Builder initializer() {
         return new Builder();
     }
 
+    /**
+     * Checks if two boards are equal
+     * @param other board to check equality against
+     * @return true if the boards are equal, false otherwise
+     */
     @Override
     public int hashCode() {
         return Objects.hash(mWidth, mHeight, mTiles);
@@ -106,6 +141,10 @@ public class Board {
         return true;
     }
 
+    /**
+     * Returns clone of the board
+     * @return a clone of the board
+     */
     public Board deepCopy() {
         Board result = new Board();
 
@@ -117,28 +156,6 @@ public class Board {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         return result;
-    }
-
-    public ArrayList<Tile> getTiles() {
-        return mTiles;
-    }
-
-    public int getWidth() {
-        return mWidth;
-    }
-
-    public int getHeight() {
-        return mHeight;
-    }
-
-    public int getSize() {
-        return getWidth() * getHeight();
-    };
-
-    public List<List<Tile>> getRows() {
-        return IntStream.range(0, getHeight())
-                .mapToObj(i -> mTiles.subList(i * getWidth(), (i + 1) * getWidth()))
-                .collect(Collectors.toList());
     }
 
     private int getIndexFromPosition (Position pos) {
