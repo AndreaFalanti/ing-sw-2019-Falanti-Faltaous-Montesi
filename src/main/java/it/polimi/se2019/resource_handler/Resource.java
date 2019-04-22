@@ -1,4 +1,4 @@
-package it.polimi.se2019.util;
+package it.polimi.se2019.resource_handler;
 
 public abstract class Resource {
     private String mPath;

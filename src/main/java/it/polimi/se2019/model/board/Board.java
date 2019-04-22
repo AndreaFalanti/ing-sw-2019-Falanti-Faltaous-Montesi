@@ -26,11 +26,11 @@ public class Board {
             .create();
 
     // width and height
-    private int mWidth;
-    private int mHeight;
+    int mWidth;
+    int mHeight;
 
     // all the board tiles
-    private ArrayList<Tile> mTiles;
+    ArrayList<Tile> mTiles;
 
     // trivial getters
     public ArrayList<Tile> getTiles() {
@@ -139,6 +139,13 @@ public class Board {
         }
 
         return true;
+    }
+
+    // TODO: add doc
+    public List<List<Tile>> getRows() {
+        return IntStream.range(0, getHeight())
+                .mapToObj(i -> mTiles.subList(i * getWidth(), (i + 1) * getWidth()))
+                .collect(Collectors.toList());
     }
 
     /**

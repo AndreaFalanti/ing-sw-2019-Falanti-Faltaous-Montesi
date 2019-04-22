@@ -1,7 +1,6 @@
 package it.polimi.se2019.model.board;
 
 import java.util.Objects;
-import java.util.stream.IntStream;
 
 /**
  * Builder for initializing Board objects
