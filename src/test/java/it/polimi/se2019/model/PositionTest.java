@@ -32,4 +32,25 @@ public class PositionTest {
             assertTrue(true);
         }
     }
+
+    /**
+     * Test equality
+     */
+    @Test
+    public void testEquals() {
+        assertTrue(new Position(0, 0).equals(new Position(0, 0)));
+    }
+
+    /**
+     * Test addition
+     */
+    @Test
+    public void testAddSimpleAddition() {
+        Position pos1 = new Position(0, 2);
+        Position pos2 = new Position(2, 0);
+
+        Position result = pos1.add(pos2);
+
+        assertEquals(result, new Position(2, 2));
+    }
 }

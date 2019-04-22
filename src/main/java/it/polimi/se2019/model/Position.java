@@ -1,8 +1,18 @@
 package it.polimi.se2019.model;
 
 public class Position {
+    // coordinates
     private int mX;
     private int mY;
+
+    // trivial getters
+    public int getX() {
+        return mX;
+    }
+
+    public int getY() {
+        return mY;
+    }
 
     /**
      *
@@ -19,11 +29,30 @@ public class Position {
         mY = y;
     }
 
-    public int getX() {
-        return mX;
+    /**
+     * Adds 2 positions together and returns the result
+     * @param toAdd position to add
+     * @return result of sum
+     */
+    public Position add(final Position toAdd) {
+        return new Position(mX + toAdd.getX(), mY + toAdd.getY());
     }
 
-    public int getY() {
-        return mY;
+    /**
+     * Checks equality
+     * @param other position to check equality against
+     * @return true if {@code this} and {@code other} are equal
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (other == this)
+            return true;
+
+        if (other == null || getClass() != other.getClass())
+            return false;
+
+        Position casted = (Position) other;
+
+        return mX == casted.mX && mY == casted.mY;
     }
 }
