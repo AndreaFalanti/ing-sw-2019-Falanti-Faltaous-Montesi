@@ -9,6 +9,10 @@ import static org.junit.Assert.*;
 
 public class GameTest {
 
+    /**
+     * Used to fill a list with valid players.
+     * @param list List to fill
+     */
     private void fillPlayerList (ArrayList<Player> list) {
         Player p1 = new Player("a", PlayerColor.BLUE);
         Player p2 = new Player("b", PlayerColor.YELLOW);
@@ -21,7 +25,8 @@ public class GameTest {
 
     /**
      * Tests that, after kills set in game are reached, isGameOver is true only when all players have done
-     * their last turn in final frenzy mode.
+     * their last turn in final frenzy mode. This also mean testing all mechanics related to game over and
+     * final frenzy, like total kills score distribution and actions available in final frenzy.
      */
     @Test
     public void testIsGameOver() {
@@ -30,6 +35,9 @@ public class GameTest {
 
         Game game = new Game(new Board(), players, 4);
         game.startNextTurn();
+        assertEquals(2, game.getRemainingActions());
+        game.startNextTurn();
+
         game.addDeath(PlayerColor.GREY);
         game.addDeath(PlayerColor.YELLOW);
         game.addDeath(PlayerColor.YELLOW);
@@ -37,8 +45,18 @@ public class GameTest {
         assertFalse(game.isGameOver());
 
         //start turn for every player and conclude final frenzy
+        //turn order (player index): 2 -> 0 -> 1 -> gameOver
         for (int i = 0; i < players.size(); i++) {
             game.startNextTurn();
+
+            //play before first player, has 2 actions
+            if (game.getActivePlayer() == 2) {
+                assertEquals(2, game.getRemainingActions());
+            }
+            //play as or after first player, has only one action in final frenzy
+            else {
+                assertEquals(1, game.getRemainingActions());
+            }
             assertFalse(game.isGameOver());
         }
         game.startNextTurn();
