@@ -15,7 +15,7 @@ public class PowerUpCard {
      * @param behaviour Card effect
      * @throws IllegalArgumentException Thrown if AmmoValue total isn't of 1 ammo cube
      */
-    public PowerUpCard (String name, AmmoValue ammo, PowerUpBehaviour behaviour) throws IllegalArgumentException {
+    public PowerUpCard (String name, AmmoValue ammo, PowerUpBehaviour behaviour) {
         if (ammo.getRed() + ammo.getYellow() + ammo.getBlue() != 1) {
             throw new IllegalArgumentException ();
         }

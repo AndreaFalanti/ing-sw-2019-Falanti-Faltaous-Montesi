@@ -8,21 +8,33 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Game {
     private Board mBoard;
-    private ArrayList<Player> mPlayers;
+    private List<Player> mPlayers;
     private Deck<PowerUpCard> mPowerUpCardDeck;
     private Deck<Weapon> mWeapons;
     private Deck<AmmoCard> mAmmoCardDeck;
     private int mTurnNumber;
     private int mSkullNum;
-    private ArrayList<PlayerColor> mKills = new ArrayList<>();
+    private List<PlayerColor> mKills = new ArrayList<>();
     private boolean mFinalFrenzy;
     private Integer mFinalFrenzyTurnStart;
     private int mActivePlayer;
+    private int mRemainingActions;
+    private boolean mFirstPlayerDoneFinalFrenzy = false;
 
+    //same for total kills and player kill points distribution
     private static final int[] KILLS_VALUE = {8, 6, 4, 2, 1, 1};
+    private static final int[] FLIPPED_PLAYER_VALUE = {2, 1, 1, 1};
 
-    public Game(Board board, ArrayList<Player> players, int killsToFinish) {
-        if (board == null || killsToFinish < 0 || players.size() < 3) {
+    /**
+     *
+     * @param board Board selected for the game
+     * @param players List of players
+     * @param killsToFinish Number of kills before triggering final frenzy
+     * @throws IllegalArgumentException Thrown if board or players are null,
+     *          player size is < 3 or killsNum is negative
+     */
+    public Game(Board board, List<Player> players, int killsToFinish) {
+        if (board == null || players == null || killsToFinish < 0 || players.size() < 3) {
             throw new IllegalArgumentException();
         }
         mBoard = board;
@@ -35,34 +47,7 @@ public class Game {
         mTurnNumber = 0;
     }
 
-    public List<Player> getVisiblePlayers(Player player) {
-        return null;
-    }
-
-    public void startNextTurn() {
-        mTurnNumber++;
-        if (isGameOver()) {
-            distributeKillScore();
-            return;
-        }
-
-        if (mActivePlayer >= mPlayers.size() - 1) {
-            mActivePlayer = 0;
-        }
-        else {
-            mActivePlayer++;
-        }
-
-        //TODO: message to all clients containing new active player and turn number
-    }
-
-    public boolean isGameOver() {
-        // example: finalFrenzy is triggered on turn 4 and 3 player are present,
-        // at turn 4 + 3 + 1 = 8 the game is over (last turn is 7).
-        return mFinalFrenzyTurnStart != null
-                && mTurnNumber >= mFinalFrenzyTurnStart + mPlayers.size() + 1;
-    }
-
+    //region GETTERS
     public int getTurnNumber() {
         return mTurnNumber;
     }
@@ -95,6 +80,61 @@ public class Game {
         return mKills;
     }
 
+    public int getActivePlayer() {
+        return mActivePlayer;
+    }
+
+    public boolean isFinalFrenzy () {
+        return mFinalFrenzy;
+    }
+
+    public Integer getFinalFrenzyTurnStart () {
+        return mFinalFrenzyTurnStart;
+    }
+    //endregion
+
+    public List<Player> getVisiblePlayers(Player player) {
+        return null;
+    }
+
+    /**
+     * Start next turn, incrementing turn number, changing active player and setting number of actions.
+     * If it's game over, distribute kill points to players and finish the game.
+     */
+    public void startNextTurn() {
+        mTurnNumber++;
+        if (isGameOver()) {
+            distributeKillScore();
+            return;
+        }
+
+        if (mActivePlayer >= mPlayers.size() - 1) {
+            mActivePlayer = 0;
+        }
+        else {
+            mActivePlayer++;
+        }
+
+        mRemainingActions = calculateTurnActions();
+
+        //TODO: message to all clients containing new active player and turn number
+    }
+
+    /**
+     * Calculate if game is finished (all players have done their final frenzy rounds).
+     * @return true if final frenzy is over, false if not
+     */
+    public boolean isGameOver() {
+        // example: finalFrenzy is triggered on turn 4 and 3 player are present,
+        // at turn 4 + 3 + 1 = 8 the game is over (last turn is 7).
+        return mFinalFrenzyTurnStart != null
+                && mTurnNumber >= mFinalFrenzyTurnStart + mPlayers.size() + 1;
+    }
+
+    /**
+     * Add a kill to kills list. If skullNum is reached, starts final frenzy.
+     * @param killer Player color of the killer
+     */
     public void addDeath (PlayerColor killer) {
         mKills.add(killer);
 
@@ -103,6 +143,11 @@ public class Game {
         }
     }
 
+    /**
+     * Return a player from given color.
+     * @param color Color of the player to return
+     * @return Player with given color
+     */
     public Player getPlayerFromColor (PlayerColor color) {
         for (Player player : mPlayers) {
             if (player.getColor() == color) {
@@ -113,19 +158,42 @@ public class Game {
         throw new IllegalArgumentException("Can't find player with color: " + color);
     }
 
-    public boolean isFinalFrenzy () {
-        return mFinalFrenzy;
+    public int getRemainingActions () {
+        return mRemainingActions;
     }
 
-    public Integer getFinalFrenzyTurnStart () {
-        return mFinalFrenzyTurnStart;
+    public boolean hasFirstPlayerDoneFinalFrenzy () {
+        return mFirstPlayerDoneFinalFrenzy;
     }
 
+    /**
+     * Set final frenzy status to true and set starting turn of final frenzy.
+     */
     private void setFinalFrenzyStatus () {
         mFinalFrenzy = true;
         mFinalFrenzyTurnStart = mTurnNumber;
     }
 
+    /**
+     * Get number of actions that active player can do this turn.
+     * @return number of actions
+     */
+    private int calculateTurnActions () {
+        if (isFinalFrenzy() && mActivePlayer == 0) {
+            mFirstPlayerDoneFinalFrenzy = true;
+            return 1;
+        }
+        else if (isFinalFrenzy() && mFirstPlayerDoneFinalFrenzy) {
+            return 1;
+        }
+        else {
+            return 2;
+        }
+    }
+
+    /**
+     * Give players bonus score points based on kills done during the game.
+     */
     private void distributeKillScore () {
         Map<PlayerColor, Integer> map = new EnumMap<>(PlayerColor.class);
         for (PlayerColor kill : mKills) {
