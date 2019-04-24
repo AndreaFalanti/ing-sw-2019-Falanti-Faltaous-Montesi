@@ -4,7 +4,9 @@ import java.util.Objects;
 
 /**
  * Builder for initializing Board objects
+ * @deprecated Deserialization from json will suffice
  */
+@Deprecated
 class Builder {
     public final String FIRST_HALF_FRONT_PATH = "resources/first_half_front.json";
 

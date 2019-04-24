@@ -8,21 +8,44 @@ import java.util.Objects;
 
 public class NormalTile extends Tile {
 
+    // normal tiles contain an ammo card
     private AmmoCard mAmmoCard;
 
+    /**
+     * Constructs empty BLUE tile with no ammo card
+     */
     public NormalTile() {
         super();
     }
+
+    /**
+     * Constructs empty tile of given color with no ammo card
+     * @param color color of constructed tile
+     */
     public NormalTile(TileColor color) {
         super(color, 0);
     }
+
+    /**
+     * Constructs empty tile of given color and doors with no ammo card
+     * @param color color of constructed tile
+     */
     public NormalTile(TileColor color, int doors) {
         super(color, doors);
     }
 
+    /**
+     *
+     * @param value ammo card to set
+     */
     public void setAmmoCard(AmmoCard value) {
+        // TODO: implement
     }
 
+    /**
+     *
+     * @return clone of {@code this}
+     */
     @Override
     public NormalTile deepCopy() {
         NormalTile result = new NormalTile();
@@ -33,11 +56,20 @@ public class NormalTile extends Tile {
         return (NormalTile) finishDeepCopy(this);
     }
 
+    /**
+     *
+     * @return hashcode associated to {@code this}
+     */
     @Override
     public int hashCode() {
         return Objects.hash(mAmmoCard);
     }
 
+    /**
+     *
+     * @param other object compared to {@code this}
+     * @return true if {@code other} is equal to {@code this}
+     */
     @Override
     public boolean equals(Object other) {
         if (this == other)
@@ -59,9 +91,14 @@ public class NormalTile extends Tile {
                      // return mAmmoCard.equals(casted.mAmmoCard);
     }
 
+    // TODO: add doc
     @Override
     public void grabObjects(Player player) { }
 
+    /**
+     *
+     * @return string representation of {@code this}'s tile type
+     */
     @Override
     public String getTileType() {
         return "normal";

@@ -7,7 +7,7 @@ import it.polimi.se2019.model.board.serialization.DoorsDeserializer;
 import java.util.Objects;
 
 public abstract class Tile {
-    private TileColor mColor;
+    private TileColor mColor = TileColor.BLUE;
 
     @JsonAdapter(DoorsDeserializer.class)
     private Integer mDoors;
