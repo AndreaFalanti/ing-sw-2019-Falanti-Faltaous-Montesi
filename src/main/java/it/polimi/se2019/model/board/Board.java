@@ -6,11 +6,13 @@ import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.serialization.CustomFieldNamingStrategy;
 import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
+import it.polimi.se2019.util.MatrixUtils;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -88,8 +90,8 @@ public class Board {
     }
 
     /**
-     * Turns the board into a string
-     * @return a string representation of the board
+     *
+     * @return string representation of the board
      */
     @Override
     public String toString() {
@@ -107,15 +109,19 @@ public class Board {
     }
 
     /**
-     * Checks if two boards are equal
-     * @param other board to check equality against
-     * @return true if the boards are equal, false otherwise
+     *
+     * @return hashcode associated to {@code this}
      */
     @Override
     public int hashCode() {
         return Objects.hash(mWidth, mHeight, mTiles);
     }
 
+    /**
+     *
+     * @param other board to check equality against
+     * @return true if {@code other} is equal to {@code this}
+     */
     @Override
     public boolean equals(Object other) {
         if (other == this)
@@ -142,7 +148,10 @@ public class Board {
         return true;
     }
 
-    // TODO: add doc
+    /**
+     * Get tiles as a rectangular matrix
+     * @return a matrix representation of this board's tiles
+     */
     public List<List<Tile>> getRows() {
         return IntStream.range(0, getHeight())
                 .mapToObj(i -> mTiles.subList(i * getWidth(), (i + 1) * getWidth()))
@@ -166,6 +175,7 @@ public class Board {
         return result;
     }
 
+    // TODO: write doc
     private int getIndexFromPosition (Position pos) {
         int requestedIndex = mWidth * pos.getY() + pos.getX();
         if (requestedIndex > getSize()) {
@@ -176,24 +186,23 @@ public class Board {
         return requestedIndex;
     }
 
+    // TODO: write doc
     public boolean isValidTilePosition (Position pos) {
         // X >= 0 && Y >= 0 is checked in Position constructor
         return pos.getX() < mWidth && pos.getY() < mHeight;
     }
 
+    // TODO: write doc
     public Tile getTileAt (Position pos) {
         return isValidTilePosition(pos) ? mTiles.get(getIndexFromPosition(pos)) : null;
     }
 
-    public Tile getTileAt (int x, int y) {
-        Position pos = new Position(x, y);
-        return getTileAt(pos);
-    }
-
+    // TODO: write doc
     public void setTileAt (Position pos, Tile toSet) {
         mTiles.set(getIndexFromPosition(pos), toSet);
     }
 
+    // TODO: write doc
     public int getTileDistance (Position pos1, Position pos2) {
         Tile tile1 = getTileAt(pos1);
         Tile tile2 = getTileAt(pos2);
@@ -207,6 +216,7 @@ public class Board {
         return -1;
     }
 
+    // TODO: write doc
     public boolean hasVisibility (Position observerPos, Position targetPos) {
         return false;
     }
@@ -217,7 +227,9 @@ public class Board {
      * @return true if {@code pos} is out of bounds
      */
     public boolean isOutOfBounds(Position pos) {
-        return pos.getX() >= getWidth() || pos.getY() >= getHeight();
+        // TODO: reconcile with negative pos exception
+        return pos.getX() < 0 || pos.getY() < 0 ||
+                pos.getX() >= getWidth() || pos.getY() >= getHeight();
     }
 
     /**
@@ -252,6 +264,10 @@ public class Board {
         Tile fromTile = getTileAt(from);
         Tile toTile   = getTileAt(to);
 
+        // anything involving walls is not walkable...
+        if (fromTile == null || toTile == null)
+            return false;
+
         // can walk among tiles of the same color
         if (fromTile.getColor().equals(toTile.getColor()))
             return true;
@@ -270,16 +286,21 @@ public class Board {
     /**
      * Helper function for {@code getRangeInfoHelper}
      */
-    // TODO: finish implementation
     private RangeInfo getRangeInfoHelper(Position currPos, int range, int currDist, RangeInfo result) {
-        // if (result.isVisited(currPos))
-            // return result;
+        OptionalInt pastDist = result.getDistAt(currPos);
 
+        // if already visited and not worse (less or equally distant), stop
+        if (pastDist.isPresent() && pastDist.getAsInt() <= currDist)
+            return result;
+
+        // if over the specified range, stop
         if (currDist > range)
             return result;
 
-        // result.addDistAt(currPos, currDist);
+        // otherwise position is interesting; associate it with distance and add it to results
+        result.addDistAt(currPos, currDist);
 
+        // recurse among adjacent tiles that can be reached
         getAdjacentPositions(currPos).stream()
                 .filter(adjPos -> areConnected(currPos, adjPos))
                 .forEach(newPos -> getRangeInfoHelper(newPos, range, currDist + 1, result));
@@ -295,6 +316,6 @@ public class Board {
      * @return the specified position
      */
     public RangeInfo getRangeInfo(Position rangeOrigin, int range) {
-        return getRangeInfoHelper(rangeOrigin, range, 0, new RangeInfo());
+        return getRangeInfoHelper(rangeOrigin, range, 0, new RangeInfo(rangeOrigin));
     }
 }

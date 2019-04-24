@@ -149,32 +149,32 @@ public class BoardTest {
         RangeInfo rangeInfo = mExampleEmptyBoard.getRangeInfo(new Position(1, 1), 1);
 
         assertEquals(
-                rangeInfo,
-                RangeInfo.fromMatrix(
+                RangeInfo.fromMatrix(new Position(1),
                         new int[][]{
-                                {1, 1, 1},
-                                {1, 0, 1},
-                                {1, 1, 1}
+                                // N.B. -1 means impassable (i.e. wall/empty) or over the range specified
+                                {-1, 1, -1},
+                                { 1, 0,  1},
+                                {-1, 1, -1}
                         }
-                )
+                ),
+                rangeInfo
         );
     }
 
     @Test
     public void testGetRangeInfoSimpleWall() {
-        RangeInfo rangeInfo = mExampleSimpleWallBoard.getRangeInfo(new Position(1, 1), 1);
+        RangeInfo rangeInfo = mExampleSimpleWallBoard.getRangeInfo(new Position(1, 2), 5);
 
-        assertEquals(
-                rangeInfo,
-                RangeInfo.fromMatrix(
-                        new int[][]{
-                                // -1 means impassable (i.e. wall/empty)
-                                {3, 4, 5, 4},
-                                {2, -1, -1, 3},
-                                {1, 0, 1, 2},
-                                {1, 1, 1, 2}
-                        }
-                )
+        RangeInfo expected = RangeInfo.fromMatrix(new Position(1, 2),
+                new int[][]{
+                        // N.B. -1 means impassable (i.e. wall/empty) or over the range specified
+                        {3,  4,  5, 4},
+                        {2, -1, -1, 3},
+                        {1,  0,  1, 2},
+                        {2,  1,  2, 3}
+                }
         );
+
+        assertEquals(expected, rangeInfo);
     }
 }

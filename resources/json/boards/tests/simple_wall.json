@@ -1,6 +1,6 @@
 {
   "width" : 4,
-  "height" : 3,
+  "height" : 4,
   "tiles" : [
     {
       "type" : "normal",
@@ -28,15 +28,25 @@
       "color" : "BLUE"
     },
     {
+      "type" : "empty"
+    },
+    {
+      "type" : "empty"
+    },
+    {
       "type" : "normal",
       "doors" : [],
       "color" : "BLUE"
     },
     {
-      "type" : "empty"
+      "type" : "normal",
+      "doors" : [],
+      "color" : "BLUE"
     },
     {
-      "type" : "empty"
+      "type" : "normal",
+      "doors" : [],
+      "color" : "BLUE"
     },
     {
       "type" : "normal",
