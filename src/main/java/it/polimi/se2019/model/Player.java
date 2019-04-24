@@ -2,7 +2,6 @@ package it.polimi.se2019.model;
 
 import java.util.EnumMap;
 
-
 public class Player {
     private AmmoValue mAmmo;
     private PowerUpCard[] mPowerUpCards = new PowerUpCard[4];
@@ -138,7 +137,7 @@ public class Player {
         for (int i = 0; i < mPowerUpCards.length; i++) {
             if (mPowerUpCards[i] == card) {
                 mPowerUpCards[i] = null;
-                return;
+                return ;
             }
         }
     }
@@ -155,8 +154,15 @@ public class Player {
         mPos = value;
     }
 
-    public String getName () {
+    public String getName() {
         return  mName;
     }
 
+    public void respawnPlayer(Position value) {
+        for (int i = 0; i < mDamageTaken.length; i++) {
+            mDamageTaken[i] = null;
+        }
+        isDead();
+        move(value);
+    }
 }

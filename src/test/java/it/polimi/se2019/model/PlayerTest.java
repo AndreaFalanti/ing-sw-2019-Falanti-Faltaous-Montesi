@@ -2,6 +2,8 @@ package it.polimi.se2019.model;
 
 import org.junit.Test;
 
+//import javax.swing.text.Position;
+
 import static java.util.Arrays.fill;
 import static org.junit.Assert.*;
 
@@ -101,7 +103,7 @@ public class PlayerTest {
 
     @Test
     public void testAddPowerUp() {
-        //TODO: complete this test, need to check for an exception if hand is full?
+
         Player player = new Player("Andrea", PlayerColor.GREY);
         PowerUpCard card1 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
         PowerUpCard card2 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
@@ -163,6 +165,23 @@ public class PlayerTest {
         player.discard(card2);
         assertNull(player.getPowerUps()[1]);
         assertEquals(card1, player.getPowerUps()[0]);
+    }
+
+    @Test
+    public void testRespawnPlayer(){
+        Player player1 = new Player("testPlayer", PlayerColor.BLUE);
+        PlayerColor[] testDamage = player1.getDamageTaken();
+        PlayerColor testAttackingPlayer = PlayerColor.YELLOW;
+        Position testPosition = new Position(1,0);
+        PlayerColor[] nullVector = new PlayerColor[12];
+
+        fill(testDamage,testAttackingPlayer);
+        player1.sufferedDamage(testAttackingPlayer, 12);
+        player1.isDead();
+        player1.respawnPlayer(testPosition);
+        assertArrayEquals(nullVector,player1.getDamageTaken());
+        assertEquals(testPosition,player1.getPos());
+        assertFalse(player1.getIsDead());
     }
 
 }
