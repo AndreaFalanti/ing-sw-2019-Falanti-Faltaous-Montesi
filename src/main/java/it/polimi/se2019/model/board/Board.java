@@ -6,7 +6,6 @@ import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.serialization.CustomFieldNamingStrategy;
 import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
-import it.polimi.se2019.util.MatrixUtils;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class Board {
     ArrayList<Tile> mTiles;
 
     // trivial getters
-    public ArrayList<Tile> getTiles() {
+    public List<Tile> getTiles() {
         return mTiles;
     }
 
@@ -49,7 +48,7 @@ public class Board {
 
     public int getSize() {
         return getWidth() * getHeight();
-    };
+    }
 
     /**
      * Default constructor for empty board

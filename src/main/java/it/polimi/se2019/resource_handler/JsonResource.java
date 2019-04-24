@@ -28,4 +28,6 @@ public class JsonResource extends Resource {
     public String get() {
         return mContents;
     }
+
+    public void set(String contents) { mContents = contents; }
 }

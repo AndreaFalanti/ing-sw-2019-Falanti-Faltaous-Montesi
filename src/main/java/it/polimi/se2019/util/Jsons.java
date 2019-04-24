@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Singleton containing all json resources
@@ -32,8 +33,8 @@ public class Jsons {
     private static void loadJsonsAt(Path path) throws BadLoadException {
         resourceHandler.setBasePath(path.toString());
 
-        try {
-            Files.walk(path)
+        try (Stream<Path> walk = Files.walk(path)) {
+            walk
                     .filter(Files::isRegularFile)
                     .forEach(jsonFile ->
                             resourceHandler.registerResource(JsonResource::loadFromPath, jsonFile.toString())

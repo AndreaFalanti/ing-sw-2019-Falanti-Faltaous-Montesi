@@ -2,21 +2,18 @@ package it.polimi.se2019.model.board;
 
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.util.MatrixUtils;
-import it.polimi.se2019.util.StringUtils;
 
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.OptionalInt;
-import java.util.stream.Collectors;
 
 /**
  * Info about a range of cells around a given position
  */
 public class RangeInfo {
     // distances from origin associated with interested positions
-    // TODO: remove public
-    public final HashMap<Position, Integer> mDistances = new HashMap<>();
+    private final Map<Position, Integer> mDistances = new HashMap<>();
 
     // max distance
     private int mMaxDistance = 0;

@@ -1,5 +1,6 @@
 package it.polimi.se2019.model;
 
+import it.polimi.se2019.util.Jsons;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -17,13 +18,7 @@ public class AmmoCardTest {
      */
     @Test
     public void testReturnDeckFromJson() {
-        String json = null;
-        try {
-            json = new String (Files.readAllBytes(Paths.get(ResourcePaths.AMMO_CARDS_JSON)));
-        }
-        catch (IOException e){
-            fail();
-        }
+        String json = Jsons.get("AmmoCardDeck");
 
         List<AmmoCard> deck = AmmoCard.returnDeckFromJson(json);
         assertEquals(EXPECTED_CARDS_NUM, deck.size());
