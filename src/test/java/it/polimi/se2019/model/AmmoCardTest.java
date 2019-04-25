@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 public class AmmoCardTest {
     private static final int EXPECTED_CARDS_NUM = 36;
 
-     /**
+    /**
      * Test that all ammoCards are instantiated from json and not null
      */
     @Test

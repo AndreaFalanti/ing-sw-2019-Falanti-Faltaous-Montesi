@@ -250,7 +250,7 @@ public class Game {
         Player targetPlayer = getPlayerFromColor(target);
 
         targetPlayer.onDamageTaken(damage, shooter);
-        if (targetPlayer.getIsDead()) {
+        if (targetPlayer.isDead()) {
             registerKill(shooter);
             distributePlayerKillScore(target);
             // Remove temporarily player from board

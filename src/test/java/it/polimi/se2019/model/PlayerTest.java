@@ -94,11 +94,11 @@ public class PlayerTest {
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
 
         player1.sufferedDamage(PlayerColor.YELLOW, 9);
-        player1.isDead();
-        assertFalse(player1.getIsDead());
+        player1.setDeadStatus();
+        assertFalse(player1.isDead());
         player1.sufferedDamage(PlayerColor.YELLOW, 3);
-        player1.isDead();
-        assertTrue(player1.getIsDead());
+        player1.setDeadStatus();
+        assertTrue(player1.isDead());
     }
 
     @Test
@@ -177,11 +177,11 @@ public class PlayerTest {
 
         fill(testDamage,testAttackingPlayer);
         player1.sufferedDamage(testAttackingPlayer, 12);
-        player1.isDead();
+        player1.setDeadStatus();
         player1.respawnPlayer(testPosition);
         assertArrayEquals(nullVector,player1.getDamageTaken());
         assertEquals(testPosition,player1.getPos());
-        assertFalse(player1.getIsDead());
+        assertFalse(player1.isDead());
     }
 
 }

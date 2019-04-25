@@ -13,7 +13,7 @@ public class Player {
     private int mScore=0;
     private Position mPos;
     private String mName;
-    private boolean mIsDead = false;
+    private boolean mDead = false;
     private boolean mBoardFlipped = false;
     public static final int MAX_MARKS = 3;
 
@@ -56,8 +56,8 @@ public class Player {
         return mWeapons;
     }
 
-    public boolean getIsDead() {
-        return mIsDead;
+    public boolean isDead() {
+        return mDead;
     }
 
     public PowerUpCard[] getPowerUps() {
@@ -132,12 +132,12 @@ public class Player {
         }
     }
 
-    public void isDead(){
+    public void setDeadStatus(){
         if(mDamageTaken[11] != null) {
-            mIsDead = true;
+            mDead = true;
         }
         else {
-            mIsDead = false;
+            mDead = false;
         }
     }
 
@@ -173,13 +173,13 @@ public class Player {
         for (int i = 0; i < mDamageTaken.length; i++) {
             mDamageTaken[i] = null;
         }
-        isDead();
+        setDeadStatus();
         move(value);
     }
 
     public void onDamageTaken (Damage damage, PlayerColor shooterColor) {
         sufferedDamage(shooterColor, damage.getDamage());
         sufferedMarks(shooterColor, damage.getMarksNum());
-        isDead();
+        setDeadStatus();
     }
 }
