@@ -38,10 +38,10 @@ public class GameTest {
         assertEquals(2, game.getRemainingActions());
         game.startNextTurn();
 
-        game.addDeath(PlayerColor.GREY);
-        game.addDeath(PlayerColor.YELLOW);
-        game.addDeath(PlayerColor.YELLOW);
-        game.addDeath(PlayerColor.GREY);
+        game.registerKill(PlayerColor.GREY);
+        game.registerKill(PlayerColor.YELLOW);
+        game.registerKill(PlayerColor.YELLOW);
+        game.registerKill(PlayerColor.GREY);
         assertFalse(game.isGameOver());
 
         //start turn for every player and conclude final frenzy
@@ -50,7 +50,7 @@ public class GameTest {
             game.startNextTurn();
 
             //play before first player, has 2 actions
-            if (game.getActivePlayer() == 2) {
+            if (game.getActivePlayerIndex() == 2) {
                 assertEquals(2, game.getRemainingActions());
             }
             //play as or after first player, has only one action in final frenzy
@@ -81,8 +81,8 @@ public class GameTest {
 
         Game game = new Game(new Board(), players, 2);
         game.startNextTurn();
-        game.addDeath(PlayerColor.YELLOW);
-        game.addDeath(PlayerColor.BLUE);
+        game.registerKill(PlayerColor.YELLOW);
+        game.registerKill(PlayerColor.BLUE);
 
         assertEquals(expectedResult, game.getKills());
         assertTrue(game.isFinalFrenzy());
@@ -114,6 +114,24 @@ public class GameTest {
         catch (IllegalArgumentException e) {
             assertTrue(true);
         }
+    }
 
+    @Test
+    public void distributePlayerKillScore() {
+        ArrayList<Player> players = new ArrayList<>();
+        fillPlayerList(players);
+        // blue, yellow, grey
+
+        Game game = new Game(new Board(), players, 4);
+        game.startNextTurn();
+        game.handleDamageIteration(game.getActivePlayer().getColor(), PlayerColor.GREY, new Damage(5, 0));
+        game.startNextTurn();
+        game.handleDamageIteration(game.getActivePlayer().getColor(), PlayerColor.GREY, new Damage(7, 0));
+
+        assertEquals(1, game.getKills().size());
+        assertEquals(PlayerColor.YELLOW, game.getKills().get(0));
+        assertEquals(7, game.getPlayerFromColor(PlayerColor.BLUE).getScore());
+        assertEquals(8, game.getPlayerFromColor(PlayerColor.YELLOW).getScore());
+        assertEquals(0, game.getPlayerFromColor(PlayerColor.GREY).getScore());
     }
 }

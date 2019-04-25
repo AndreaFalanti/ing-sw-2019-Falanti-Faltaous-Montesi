@@ -14,6 +14,7 @@ public class Player {
     private Position mPos;
     private String mName;
     private boolean mIsDead = false;
+    private boolean mBoardFlipped = false;
     public static final int MAX_MARKS = 3;
 
     private void initializeMarksMap () {
@@ -30,12 +31,62 @@ public class Player {
             initializeMarksMap();
     }
 
-    public void addScore(int value) {
-        mScore += value;
-    }
-
+    //region GETTERS
     public AmmoValue getAmmo() {
         return mAmmo;
+    }
+
+    public PlayerColor[] getDamageTaken() {
+        return mDamageTaken;
+    }
+
+    public EnumMap<PlayerColor, Integer> getMarks() {
+        return mMarks;
+    }
+
+    public PlayerColor getColor() {
+        return mColor;
+    }
+
+    public int getDeathsNum() {
+        return mDeathsNum;
+    }
+
+    public Weapon[] getWeapons() {
+        return mWeapons;
+    }
+
+    public boolean getIsDead() {
+        return mIsDead;
+    }
+
+    public PowerUpCard[] getPowerUps() {
+        return mPowerUpCards;
+    }
+
+    public int getScore() {
+        return mScore;
+    }
+
+    public Position getPos() {
+        return mPos;
+    }
+
+    public String getName() {
+        return  mName;
+    }
+
+    public boolean isBoardFlipped() {
+        return mBoardFlipped;
+    }
+    //endregion
+
+    public void flipBoard () {
+        mBoardFlipped = true;
+    }
+
+    public void addScore(int value) {
+        mScore += value;
     }
 
     public void sufferedDamage(PlayerColor attackingPlayer,int damage) {
@@ -55,10 +106,6 @@ public class Player {
         mMarks.put(attackingPlayer,0);
     }
 
-    public PlayerColor[] getDamageTaken() {
-        return mDamageTaken;
-    }
-
     public void sufferedMarks(PlayerColor attackingPlayer,int marks) {
         if(marks + getMarks().get(attackingPlayer) >= 3) {
             mMarks.put(attackingPlayer,3);
@@ -68,24 +115,8 @@ public class Player {
         }
     }
 
-    public EnumMap<PlayerColor, Integer> getMarks() {
-        return mMarks;
-    }
-
-    public PlayerColor getColor() {
-        return mColor;
-    }
-
-    public int getDeathsNum() {
-        return mDeathsNum;
-    }
-
     public void incrementDeaths() {
         mDeathsNum += 1;
-    }
-
-    public Weapon[] getWeapons() {
-        return mWeapons;
     }
 
     public void addWeapon(Weapon value) throws FullHandException {
@@ -101,10 +132,6 @@ public class Player {
         }
     }
 
-    public boolean getIsDead() {
-        return mIsDead;
-    }
-
     public void isDead(){
         if(mDamageTaken[11] != null) {
             mIsDead = true;
@@ -112,10 +139,6 @@ public class Player {
         else {
             mIsDead = false;
         }
-    }
-
-    public PowerUpCard[] getPowerUps() {
-        return mPowerUpCards;
     }
 
     public void addPowerUp(PowerUpCard value, boolean isRespawn) throws FullHandException {
@@ -142,20 +165,8 @@ public class Player {
         }
     }
 
-    public int getScore() {
-        return mScore;
-    }
-
-    public Position getPos() {
-        return mPos;
-    }
-
     public void move(Position value) {
         mPos = value;
-    }
-
-    public String getName() {
-        return  mName;
     }
 
     public void respawnPlayer(Position value) {
@@ -164,5 +175,11 @@ public class Player {
         }
         isDead();
         move(value);
+    }
+
+    public void onDamageTaken (Damage damage, PlayerColor shooterColor) {
+        sufferedDamage(shooterColor, damage.getDamage());
+        sufferedMarks(shooterColor, damage.getMarksNum());
+        isDead();
     }
 }

@@ -17,7 +17,7 @@ public class Game {
     private List<PlayerColor> mKills = new ArrayList<>();
     private boolean mFinalFrenzy;
     private Integer mFinalFrenzyTurnStart;
-    private int mActivePlayer;
+    private int mActivePlayerIndex;
     private int mRemainingActions;
     private boolean mFirstPlayerDoneFinalFrenzy = false;
 
@@ -43,7 +43,7 @@ public class Game {
 
         mFinalFrenzy = false;
         //set active player the last one in list so that at first turn it actually set it to 0
-        mActivePlayer = mPlayers.size() - 1;
+        mActivePlayerIndex = mPlayers.size() - 1;
         mTurnNumber = 0;
     }
 
@@ -80,8 +80,12 @@ public class Game {
         return mKills;
     }
 
-    public int getActivePlayer() {
-        return mActivePlayer;
+    public int getActivePlayerIndex() {
+        return mActivePlayerIndex;
+    }
+
+    public Player getActivePlayer () {
+        return mPlayers.get(mActivePlayerIndex);
     }
 
     public boolean isFinalFrenzy () {
@@ -90,6 +94,14 @@ public class Game {
 
     public Integer getFinalFrenzyTurnStart () {
         return mFinalFrenzyTurnStart;
+    }
+
+    public int getRemainingActions () {
+        return mRemainingActions;
+    }
+
+    public boolean hasFirstPlayerDoneFinalFrenzy () {
+        return mFirstPlayerDoneFinalFrenzy;
     }
     //endregion
 
@@ -104,15 +116,15 @@ public class Game {
     public void startNextTurn() {
         mTurnNumber++;
         if (isGameOver()) {
-            distributeKillScore();
+            distributeTotalKillsScore();
             return;
         }
 
-        if (mActivePlayer >= mPlayers.size() - 1) {
-            mActivePlayer = 0;
+        if (mActivePlayerIndex >= mPlayers.size() - 1) {
+            mActivePlayerIndex = 0;
         }
         else {
-            mActivePlayer++;
+            mActivePlayerIndex++;
         }
 
         mRemainingActions = calculateTurnActions();
@@ -135,7 +147,7 @@ public class Game {
      * Add a kill to kills list. If skullNum is reached, starts final frenzy.
      * @param killer Player color of the killer
      */
-    public void addDeath (PlayerColor killer) {
+    public void registerKill (PlayerColor killer) {
         mKills.add(killer);
 
         if (mKills.size() == mSkullNum) {
@@ -158,14 +170,6 @@ public class Game {
         throw new IllegalArgumentException("Can't find player with color: " + color);
     }
 
-    public int getRemainingActions () {
-        return mRemainingActions;
-    }
-
-    public boolean hasFirstPlayerDoneFinalFrenzy () {
-        return mFirstPlayerDoneFinalFrenzy;
-    }
-
     /**
      * Set final frenzy status to true and set starting turn of final frenzy.
      */
@@ -179,7 +183,7 @@ public class Game {
      * @return number of actions
      */
     private int calculateTurnActions () {
-        if (isFinalFrenzy() && mActivePlayer == 0) {
+        if (isFinalFrenzy() && mActivePlayerIndex == 0) {
             mFirstPlayerDoneFinalFrenzy = true;
             return 1;
         }
@@ -194,24 +198,64 @@ public class Game {
     /**
      * Give players bonus score points based on kills done during the game.
      */
-    private void distributeKillScore () {
+    private void distributeTotalKillsScore() {
+        PlayerColor[] colorArray = mKills.toArray(new PlayerColor[0]);
+        scoreCalculation(colorArray, KILLS_VALUE, 0, false);
+    }
+
+    /**
+     * Distribute score to players that have done damage to killed player.
+     * @param deadPlayerColor Dead player's color
+     */
+    public void distributePlayerKillScore (PlayerColor deadPlayerColor) {
+        Player deadPlayer = getPlayerFromColor(deadPlayerColor);
+        boolean boardFlipped = deadPlayer.isBoardFlipped();
+        int[] scoreValues = (boardFlipped) ? FLIPPED_PLAYER_VALUE : KILLS_VALUE;
+        int scoreOffset = (boardFlipped) ? 0 : deadPlayer.getDeathsNum();
+        scoreCalculation(deadPlayer.getDamageTaken(), scoreValues, scoreOffset, !boardFlipped);
+    }
+
+    /**
+     * Calculate score and give it to players.
+     * @param colors Array of PlayerColor to iterate for score calculation
+     * @param scoreValues Score values to apply
+     * @param scoreStartingPos Offset in score values, 0 if not present
+     * @param firstBloodBonus Give bonus point for first blood?
+     */
+    private void scoreCalculation (PlayerColor[] colors, int[] scoreValues, int scoreStartingPos,
+                                   boolean firstBloodBonus) {
+        if (firstBloodBonus) {
+            getPlayerFromColor(colors[0]).addScore(1);
+        }
+
         Map<PlayerColor, Integer> map = new EnumMap<>(PlayerColor.class);
-        for (PlayerColor kill : mKills) {
-            if (map.containsKey(kill)) {
-                map.put(kill, map.get(kill) + 1);
+        for (PlayerColor color : colors) {
+            if (map.containsKey(color)) {
+                map.put(color, map.get(color) + 1);
             }
             else {
-                map.put(kill, 1);
+                map.put(color, 1);
             }
         }
-        AtomicInteger i = new AtomicInteger(0);
+        AtomicInteger i = new AtomicInteger(scoreStartingPos);
         map
                 .entrySet()
                 .stream()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .forEachOrdered( e -> {getPlayerFromColor(e.getKey()).addScore(KILLS_VALUE[i.get()]);
-                                        i.getAndIncrement();});
-
+                .forEachOrdered( e -> {getPlayerFromColor(e.getKey()).addScore(scoreValues[i.get()]);
+                    i.getAndIncrement();});
     }
 
+    public void handleDamageIteration (PlayerColor shooter, PlayerColor target, Damage damage) {
+        Player targetPlayer = getPlayerFromColor(target);
+
+        targetPlayer.onDamageTaken(damage, shooter);
+        if (targetPlayer.getIsDead()) {
+            registerKill(shooter);
+            distributePlayerKillScore(target);
+            // Remove temporarily player from board
+            targetPlayer.move(null);
+            // TODO: respawn message to dead player
+        }
+    }
 }
