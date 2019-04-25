@@ -85,6 +85,10 @@ public class Player {
         mBoardFlipped = true;
     }
 
+    public boolean isOverkilled () {
+        return mDamageTaken[11] != null;
+    }
+
     public void addScore(int value) {
         mScore += value;
     }
@@ -133,7 +137,7 @@ public class Player {
     }
 
     public void setDeadStatus(){
-        if(mDamageTaken[11] != null) {
+        if(mDamageTaken[10] != null) {
             mDead = true;
         }
         else {

@@ -4,6 +4,7 @@ import it.polimi.se2019.model.board.Board;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 
 public class Game {
@@ -15,6 +16,7 @@ public class Game {
     private int mTurnNumber;
     private int mSkullNum;
     private List<PlayerColor> mKills = new ArrayList<>();
+    private List<PlayerColor> mOverkills = new ArrayList<>();
     private boolean mFinalFrenzy;
     private Integer mFinalFrenzyTurnStart;
     private int mActivePlayerIndex;
@@ -80,6 +82,10 @@ public class Game {
         return mKills;
     }
 
+    public List<PlayerColor> getOverkills() {
+        return mOverkills;
+    }
+
     public int getActivePlayerIndex() {
         return mActivePlayerIndex;
     }
@@ -120,6 +126,14 @@ public class Game {
             return;
         }
 
+        for (Player player : mPlayers) {
+            if (player.isDead()) {
+                //TODO: notify respawn to dead player, that will choose respawn position from
+                // its view and call controller
+                return;
+            }
+        }
+
         if (mActivePlayerIndex >= mPlayers.size() - 1) {
             mActivePlayerIndex = 0;
         }
@@ -153,6 +167,14 @@ public class Game {
         if (mKills.size() == mSkullNum) {
             setFinalFrenzyStatus();
         }
+    }
+
+    /**
+     * Add an overkill to overkills list.
+     * @param killer Player color of the killer
+     */
+    public void registerOverkill (PlayerColor killer) {
+        mOverkills.add(killer);
     }
 
     /**
@@ -196,11 +218,20 @@ public class Game {
     }
 
     /**
-     * Give players bonus score points based on kills done during the game.
+     * Give players bonus score points based on kills and overkills done during the game.
      */
     private void distributeTotalKillsScore() {
         PlayerColor[] colorArray = mKills.toArray(new PlayerColor[0]);
-        scoreCalculation(colorArray, KILLS_VALUE, 0, false);
+        if (!mOverkills.isEmpty()) {
+            PlayerColor[] colorArray2 = mOverkills.toArray(new PlayerColor[0]);
+            PlayerColor[] totalKilltrack = Stream.concat(Arrays.stream(colorArray), Arrays.stream(colorArray2))
+                    .toArray(PlayerColor[]::new);
+
+            scoreCalculation(totalKilltrack, KILLS_VALUE, 0, false);
+        }
+        else {
+            scoreCalculation(colorArray, KILLS_VALUE, 0, false);
+        }
     }
 
     /**
@@ -246,16 +277,37 @@ public class Game {
                     i.getAndIncrement();});
     }
 
-    public void handleDamageIteration (PlayerColor shooter, PlayerColor target, Damage damage) {
+    /**
+     * Handle game logic about damage action, updating damage taken by target and registering a kill if player is dead.
+     * @param shooter Player color of the shooter
+     * @param target Player color of the target
+     * @param damage Damage done to target
+     */
+    public void handleDamageInteraction(PlayerColor shooter, PlayerColor target, Damage damage) {
         Player targetPlayer = getPlayerFromColor(target);
 
         targetPlayer.onDamageTaken(damage, shooter);
-        if (targetPlayer.isDead()) {
-            registerKill(shooter);
-            distributePlayerKillScore(target);
-            // Remove temporarily player from board
-            targetPlayer.move(null);
-            // TODO: respawn message to dead player
+    }
+
+    public void onTurnEnd () {
+        // counter that indicates how many kills the active player has done
+        int killsScored = 0;
+        for (Player player : mPlayers) {
+            if (player.isDead()) {
+                killsScored++;
+                registerKill(getActivePlayer().getColor());
+                if (player.isOverkilled()) {
+                    registerOverkill(getActivePlayer().getColor());
+                }
+                distributePlayerKillScore(player.getColor());
+                // Remove temporarily player from board
+                player.move(null);
+            }
+        }
+
+        // extra point for double kill or multiple kills.
+        if (killsScored >= 2) {
+            getActivePlayer().addScore(1);
         }
     }
 }

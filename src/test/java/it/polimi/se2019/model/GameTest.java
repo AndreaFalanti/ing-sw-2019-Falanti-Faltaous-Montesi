@@ -124,9 +124,10 @@ public class GameTest {
 
         Game game = new Game(new Board(), players, 4);
         game.startNextTurn();
-        game.handleDamageIteration(game.getActivePlayer().getColor(), PlayerColor.GREY, new Damage(5, 0));
+        game.handleDamageInteraction(game.getActivePlayer().getColor(), PlayerColor.GREY, new Damage(5, 0));
         game.startNextTurn();
-        game.handleDamageIteration(game.getActivePlayer().getColor(), PlayerColor.GREY, new Damage(7, 0));
+        game.handleDamageInteraction(game.getActivePlayer().getColor(), PlayerColor.GREY, new Damage(7, 0));
+        game.onTurnEnd();
 
         assertEquals(1, game.getKills().size());
         assertEquals(PlayerColor.YELLOW, game.getKills().get(0));
