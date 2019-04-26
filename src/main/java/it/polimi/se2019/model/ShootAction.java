@@ -1,13 +1,8 @@
 package it.polimi.se2019.model;
 
 
-public class ShootAction extends Action {
-    Position mDestination;
-
-    public ShootAction(PlayerColor playerColor, Position destination) {
-        super(playerColor);
-
-        this.mDestination = destination;
+public class ShootAction implements Action {
+    public ShootAction() {
     }
 
     @Override

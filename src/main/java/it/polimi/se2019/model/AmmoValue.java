@@ -30,6 +30,18 @@ public class AmmoValue {
         mBlue = b;
     }
 
+    public int getRed () {
+        return mRed;
+    }
+
+    public int getYellow () {
+        return mYellow;
+    }
+
+    public int getBlue () {
+        return mBlue;
+    }
+
     private boolean isValueValid (int value) {
         return value <= MAX_AMMO && value >= 0;
     }
@@ -74,6 +86,15 @@ public class AmmoValue {
     }
 
     /**
+     * Verify that every ammo type is bigger or equal than parameter passed.
+     * @param value AmmoValue to confront with
+     * @return True if every ammo type is >= than the other respective one, false otherwise
+     */
+    public boolean isBiggerOrEqual (AmmoValue value) {
+        return mRed >= value.mRed && mYellow >= value.mYellow && mBlue >= value.mBlue;
+    }
+
+    /**
      * Clamp ammo value if exceed max defined value
      * @param value Ammo value to clamp
      * @return  Value clamped
@@ -84,18 +105,6 @@ public class AmmoValue {
         }
 
         return value;
-    }
-
-    public int getRed () {
-        return mRed;
-    }
-
-    public int getYellow () {
-        return mYellow;
-    }
-
-    public int getBlue () {
-        return mBlue;
     }
 
     @Override

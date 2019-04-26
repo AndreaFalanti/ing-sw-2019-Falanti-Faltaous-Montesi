@@ -79,6 +79,10 @@ public class Player {
     public boolean isBoardFlipped() {
         return mBoardFlipped;
     }
+
+    public Weapon getWeapon(int index) {
+        return mWeapons[index];
+    }
     //endregion
 
     public void flipBoard () {
@@ -185,5 +189,17 @@ public class Player {
         sufferedDamage(shooterColor, damage.getDamage());
         sufferedMarks(shooterColor, damage.getMarksNum());
         setDeadStatus();
+    }
+
+    public void reloadWeapon (int weaponIndex) {
+        Weapon weapon = getWeapon(weaponIndex);
+
+        //TODO: useless exception in AmmoValue subtract? (verified in controller)
+        try {
+            getAmmo().subtract(weapon.getReloadCost());
+            weapon.setLoaded(true);
+        } catch (NotEnoughAmmoException e) {
+            e.printStackTrace();
+        }
     }
 }

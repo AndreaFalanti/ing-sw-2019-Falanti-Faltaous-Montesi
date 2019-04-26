@@ -35,4 +35,8 @@ public abstract class Weapon {
     public boolean isLoaded() {
         return false;
     }
+
+    public void setLoaded(boolean loaded) {
+        this.loaded = loaded;
+    }
 }
