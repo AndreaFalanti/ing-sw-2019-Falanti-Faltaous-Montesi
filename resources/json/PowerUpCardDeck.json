@@ -1,0 +1,134 @@
+[
+  {
+    "card": {
+      "mName": "Targeting scope",
+      "mAmmoValue": {
+        "mRed": 1,
+        "mYellow": 0,
+        "mBlue": 0
+      }
+    },
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mName": "Targeting scope",
+      "mAmmoValue": {
+        "mRed": 0,
+        "mYellow": 1,
+        "mBlue": 0
+      }
+    },
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mName": "Targeting scope",
+      "mAmmoValue": {
+        "mRed": 0,
+        "mYellow": 0,
+        "mBlue": 1
+      }
+    },
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mName": "Tagback grenade",
+      "mAmmoValue": {
+        "mRed": 1,
+        "mYellow": 0,
+        "mBlue": 0
+      }
+    },
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mName": "Tagback grenade",
+      "mAmmoValue": {
+        "mRed": 0,
+        "mYellow": 1,
+        "mBlue": 0
+      }
+    },
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mName": "Tagback grenade",
+      "mAmmoValue": {
+        "mRed": 0,
+        "mYellow": 0,
+        "mBlue": 1
+      }
+    },
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mName": "Newton",
+      "mAmmoValue": {
+        "mRed": 1,
+        "mYellow": 0,
+        "mBlue": 0
+      }
+    },
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mName": "Newton",
+      "mAmmoValue": {
+        "mRed": 0,
+        "mYellow": 1,
+        "mBlue": 0
+      }
+    },
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mName": "Newton",
+      "mAmmoValue": {
+        "mRed": 0,
+        "mYellow": 0,
+        "mBlue": 1
+      }
+    },
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mName": "Teleport",
+      "mAmmoValue": {
+        "mRed": 1,
+        "mYellow": 0,
+        "mBlue": 0
+      }
+    },
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mName": "Teleport",
+      "mAmmoValue": {
+        "mRed": 0,
+        "mYellow": 1,
+        "mBlue": 0
+      }
+    },
+    "quantity": 2
+  },
+  {
+    "card": {
+      "mName": "Teleport",
+      "mAmmoValue": {
+        "mRed": 0,
+        "mYellow": 0,
+        "mBlue": 1
+      }
+    },
+    "quantity": 2
+  }
+]

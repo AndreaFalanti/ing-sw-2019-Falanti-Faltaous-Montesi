@@ -1,6 +1,7 @@
 package it.polimi.se2019.model;
 
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.util.Jsons;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -47,6 +48,14 @@ public class Game {
         //set active player the last one in list so that at first turn it actually set it to 0
         mActivePlayerIndex = mPlayers.size() - 1;
         mTurnNumber = 0;
+
+        List<AmmoCard> ammoCards = AmmoCard.returnDeckFromJson(Jsons.get("AmmoCardDeck"));
+        mAmmoCardDeck = new Deck<>(ammoCards);
+
+        List<PowerUpCard> powerUpCards = PowerUpCard.returnDeckFromJson(Jsons.get("PowerUpCardDeck"));
+        mPowerUpCardDeck = new Deck<>(powerUpCards);
+
+        //TODO: add weapons deck when it's ready
     }
 
     //region GETTERS
@@ -289,6 +298,9 @@ public class Game {
         targetPlayer.onDamageTaken(damage, shooter);
     }
 
+    /**
+     * Called on turn end, handle all mechanics and rules that activate at turn's end.
+     */
     public void onTurnEnd () {
         // counter that indicates how many kills the active player has done
         int killsScored = 0;

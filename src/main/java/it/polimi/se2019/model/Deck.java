@@ -1,13 +1,13 @@
 package it.polimi.se2019.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Deck<T> {
-    private ArrayList<T> mDeck ;
-    private ArrayList<T> mCards ;
+    private List<T> mDeck ;
+    private List<T> mCards ;
 
-    public Deck(ArrayList<T> cards) {
+    public Deck(List<T> cards) {
         this.mCards = cards;
         shuffle();
     }
@@ -31,11 +31,11 @@ public class Deck<T> {
         Collections.shuffle(mDeck);
     }
 
-    public ArrayList<T> getCards(){
+    public List<T> getCards(){
         return mCards;
     }
 
-    public ArrayList<T> getDeck(){
+    public List<T> getDeck(){
         return mDeck;
     }
 

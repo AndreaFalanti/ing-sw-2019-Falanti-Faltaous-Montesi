@@ -1,6 +1,10 @@
 package it.polimi.se2019.model;
 
+import com.google.gson.Gson;
 import it.polimi.se2019.model.board.TileColor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PowerUpCard {
@@ -45,12 +49,62 @@ public class PowerUpCard {
         return mName;
     }
 
+    public AmmoValue getAmmoValue() {
+        return mAmmoValue;
+    }
+
+    public PowerUpBehaviour getBehaviour() {
+        return mBehaviour;
+    }
+
     /**
      * Activate card effect
      * @param player Target player for the effect processing
      */
     public void activate(Player player) {
         mBehaviour.activate(player);
+    }
+
+    /**
+     * Return a complete list of PowerUpCards parsed from a json.
+     * @param json Json to parse
+     * @return List of PowerUpCards
+     */
+    public static List<PowerUpCard> returnDeckFromJson (String json) {
+        Gson gson = new Gson();
+        PowerUpStruct[] powerUpStructs = gson.fromJson(json, PowerUpStruct[].class);
+        ArrayList<PowerUpCard> cards = new ArrayList<>();
+        for (PowerUpStruct struct : powerUpStructs) {
+            switch (struct.card.mName) {
+                case "Targeting scope":
+                    struct.card.mBehaviour = new TargetingScopeBehaviour();
+                    break;
+                case "Teleport":
+                    struct.card.mBehaviour = new TeleportBehaviour();
+                    break;
+                case "Tagback grenade":
+                    struct.card.mBehaviour = new TagbackGrenadeBehaviour();
+                    break;
+                case "Newton":
+                    struct.card.mBehaviour = new NewtonBehaviour();
+                    break;
+                default:
+                    throw new IllegalArgumentException("PowerUp name not recognized, can't set proper behaviour");
+            }
+
+            for (int i = 0; i < struct.quantity; i++) {
+                cards.add(struct.card);
+            }
+        }
+        return cards;
+    }
+
+    /**
+     * Helper class for PowerUpCard deserialization.
+     */
+    private class PowerUpStruct {
+        PowerUpCard card;
+        int quantity;
     }
 
     @Override
