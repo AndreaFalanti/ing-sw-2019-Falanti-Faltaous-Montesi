@@ -2,8 +2,7 @@ package it.polimi.se2019.model;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+//import javax.swing.text.Position;
 
 import static java.util.Arrays.fill;
 import static org.junit.Assert.*;
@@ -95,16 +94,16 @@ public class PlayerTest {
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
 
         player1.sufferedDamage(PlayerColor.YELLOW, 9);
-        player1.isDead();
-        assertFalse(player1.getIsDead());
+        player1.setDeadStatus();
+        assertFalse(player1.isDead());
         player1.sufferedDamage(PlayerColor.YELLOW, 3);
-        player1.isDead();
-        assertTrue(player1.getIsDead());
+        player1.setDeadStatus();
+        assertTrue(player1.isDead());
     }
 
     @Test
     public void testAddPowerUp() {
-        //TODO: complete this test, need to check for an exception if hand is full?
+
         Player player = new Player("Andrea", PlayerColor.GREY);
         PowerUpCard card1 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
         PowerUpCard card2 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
@@ -166,6 +165,23 @@ public class PlayerTest {
         player.discard(card2);
         assertNull(player.getPowerUps()[1]);
         assertEquals(card1, player.getPowerUps()[0]);
+    }
+
+    @Test
+    public void testRespawnPlayer(){
+        Player player1 = new Player("testPlayer", PlayerColor.BLUE);
+        PlayerColor[] testDamage = player1.getDamageTaken();
+        PlayerColor testAttackingPlayer = PlayerColor.YELLOW;
+        Position testPosition = new Position(1,0);
+        PlayerColor[] nullVector = new PlayerColor[12];
+
+        fill(testDamage,testAttackingPlayer);
+        player1.sufferedDamage(testAttackingPlayer, 12);
+        player1.setDeadStatus();
+        player1.respawn(testPosition);
+        assertArrayEquals(nullVector,player1.getDamageTaken());
+        assertEquals(testPosition,player1.getPos());
+        assertFalse(player1.isDead());
     }
 
 }

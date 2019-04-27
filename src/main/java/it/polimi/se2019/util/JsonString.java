@@ -1,9 +1,10 @@
 package it.polimi.se2019.util;
 
-import com.google.gson.JsonDeserializer;
-
 import java.util.Objects;
 
+/**
+ * Utility wrapper class mostly used to quickly compare json strings properly in tests
+ */
 public class JsonString {
     private String mContents;
 

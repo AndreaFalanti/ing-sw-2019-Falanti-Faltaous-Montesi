@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 
 public class DoorsDeserializer implements JsonDeserializer<Integer>, JsonSerializer<Integer> {
     @Override
-    public Integer deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+    public Integer deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) {
         return new Gson().fromJson(jsonElement, List.class).stream()
                 .map(String.class::cast)
                 .mapToInt(strDoor -> {
@@ -38,9 +38,7 @@ public class DoorsDeserializer implements JsonDeserializer<Integer>, JsonSeriali
         IntStream.range(0, 4)
                 .mapToObj(i -> ((src & i) != src) ? directions[i] : "none")
                 .filter(strDir -> !strDir.equals("none"))
-                .forEach(strDir -> {
-                    result.add(strDir);
-                });
+                .forEach(strDir -> result.add(strDir));
 
         return result;
     }

@@ -1,7 +1,6 @@
 package it.polimi.se2019.model;
 
-import java.util.*;
-
+import java.util.EnumMap;
 
 public class Player {
     private AmmoValue mAmmo;
@@ -14,7 +13,8 @@ public class Player {
     private int mScore=0;
     private Position mPos;
     private String mName;
-    private boolean mIsDead = false;
+    private boolean mDead = false;
+    private boolean mBoardFlipped = false;
     public static final int MAX_MARKS = 3;
 
     private void initializeMarksMap () {
@@ -31,12 +31,70 @@ public class Player {
             initializeMarksMap();
     }
 
-    public void addScore(int value) {
-        mScore += value;
-    }
-
+    //region GETTERS
     public AmmoValue getAmmo() {
         return mAmmo;
+    }
+
+    public PlayerColor[] getDamageTaken() {
+        return mDamageTaken;
+    }
+
+    public EnumMap<PlayerColor, Integer> getMarks() {
+        return mMarks;
+    }
+
+    public PlayerColor getColor() {
+        return mColor;
+    }
+
+    public int getDeathsNum() {
+        return mDeathsNum;
+    }
+
+    public Weapon[] getWeapons() {
+        return mWeapons;
+    }
+
+    public boolean isDead() {
+        return mDead;
+    }
+
+    public PowerUpCard[] getPowerUps() {
+        return mPowerUpCards;
+    }
+
+    public int getScore() {
+        return mScore;
+    }
+
+    public Position getPos() {
+        return mPos;
+    }
+
+    public String getName() {
+        return  mName;
+    }
+
+    public boolean isBoardFlipped() {
+        return mBoardFlipped;
+    }
+
+    public Weapon getWeapon(int index) {
+        return mWeapons[index];
+    }
+    //endregion
+
+    public void flipBoard () {
+        mBoardFlipped = true;
+    }
+
+    public boolean isOverkilled () {
+        return mDamageTaken[11] != null;
+    }
+
+    public void addScore(int value) {
+        mScore += value;
     }
 
     public void sufferedDamage(PlayerColor attackingPlayer,int damage) {
@@ -56,10 +114,6 @@ public class Player {
         mMarks.put(attackingPlayer,0);
     }
 
-    public PlayerColor[] getDamageTaken() {
-        return mDamageTaken;
-    }
-
     public void sufferedMarks(PlayerColor attackingPlayer,int marks) {
         if(marks + getMarks().get(attackingPlayer) >= 3) {
             mMarks.put(attackingPlayer,3);
@@ -69,24 +123,8 @@ public class Player {
         }
     }
 
-    public EnumMap<PlayerColor, Integer> getMarks() {
-        return mMarks;
-    }
-
-    public PlayerColor getColor() {
-        return mColor;
-    }
-
-    public int getDeathsNum() {
-        return mDeathsNum;
-    }
-
     public void incrementDeaths() {
         mDeathsNum += 1;
-    }
-
-    public Weapon[] getWeapons() {
-        return mWeapons;
     }
 
     public void addWeapon(Weapon value) throws FullHandException {
@@ -102,21 +140,13 @@ public class Player {
         }
     }
 
-    public boolean getIsDead() {
-        return mIsDead;
-    }
-
-    public void isDead(){
-        if(mDamageTaken[11] != null) {
-            mIsDead = true;
+    public void setDeadStatus(){
+        if(mDamageTaken[10] != null) {
+            mDead = true;
         }
         else {
-            mIsDead = false;
+            mDead = false;
         }
-    }
-
-    public PowerUpCard[] getPowerUps() {
-        return mPowerUpCards;
     }
 
     public void addPowerUp(PowerUpCard value, boolean isRespawn) throws FullHandException {
@@ -138,25 +168,39 @@ public class Player {
         for (int i = 0; i < mPowerUpCards.length; i++) {
             if (mPowerUpCards[i] == card) {
                 mPowerUpCards[i] = null;
-                return;
+                return ;
             }
         }
-    }
-
-    public int getScore() {
-        return mScore;
-    }
-
-    public Position getPos() {
-        return mPos;
     }
 
     public void move(Position value) {
         mPos = value;
     }
 
-    public String getName () {
-        return  mName;
+    public void respawn(Position value) {
+        for (int i = 0; i < mDamageTaken.length; i++) {
+            mDamageTaken[i] = null;
+        }
+        incrementDeaths();
+        setDeadStatus();
+        move(value);
     }
 
+    public void onDamageTaken (Damage damage, PlayerColor shooterColor) {
+        sufferedDamage(shooterColor, damage.getDamage());
+        sufferedMarks(shooterColor, damage.getMarksNum());
+        setDeadStatus();
+    }
+
+    public void reloadWeapon (int weaponIndex) {
+        Weapon weapon = getWeapon(weaponIndex);
+
+        //TODO: useless exception in AmmoValue subtract? (verified in controller)
+        try {
+            getAmmo().subtract(weapon.getReloadCost());
+            weapon.setLoaded(true);
+        } catch (NotEnoughAmmoException e) {
+            e.printStackTrace();
+        }
+    }
 }

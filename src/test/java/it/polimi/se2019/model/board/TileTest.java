@@ -2,11 +2,13 @@ package it.polimi.se2019.model.board;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
 
 public class TileTest {
     @Test
-    public void getDoors() {
+    public void testGetDoors() {
         NormalTile tile1 = new NormalTile(TileColor.RED, 8);
         NormalTile tile2 = new NormalTile(TileColor.RED, 0);
         NormalTile tile3 = new NormalTile(TileColor.RED, 15);
@@ -19,5 +21,13 @@ public class TileTest {
 
         //TODO: JUnit 4.12 is required to test easily booleans array, should we update?
         //assertArrayEquals(b1, tile1.getDoors());
+    }
+
+    @Test
+    public void testGetDoorsDirections() {
+        Tile testTile = new NormalTile(TileColor.BLUE, 0b1000 + 0b0001);
+
+        assertEquals(testTile.getDoorsDirections(),
+                     Arrays.asList(Direction.NORTH, Direction.WEST));
     }
 }

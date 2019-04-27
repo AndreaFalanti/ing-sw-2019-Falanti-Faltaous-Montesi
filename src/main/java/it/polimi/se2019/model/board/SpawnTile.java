@@ -4,7 +4,6 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.Weapon;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 
 public class SpawnTile extends Tile {
@@ -12,6 +11,7 @@ public class SpawnTile extends Tile {
 
 
     public void addWeapon(Weapon value) {
+        // TODO: implement
     }
 
     public SpawnTile deepCopy() {
@@ -46,7 +46,9 @@ public class SpawnTile extends Tile {
     }
 
     @Override
-    public void grabObjects(Player player) { }
+    public void grabObjects(Player player) {
+        // TODO: implement
+    }
 
     @Override
     public String getTileType() {

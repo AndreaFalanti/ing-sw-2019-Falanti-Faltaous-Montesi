@@ -2,7 +2,7 @@ package it.polimi.se2019.model;
 
 import it.polimi.se2019.model.board.Board;
 
-import java.util.*;
+import java.util.ArrayList;
 
 
 public abstract class Weapon {
@@ -34,5 +34,9 @@ public abstract class Weapon {
 
     public boolean isLoaded() {
         return false;
+    }
+
+    public void setLoaded(boolean loaded) {
+        this.loaded = loaded;
     }
 }

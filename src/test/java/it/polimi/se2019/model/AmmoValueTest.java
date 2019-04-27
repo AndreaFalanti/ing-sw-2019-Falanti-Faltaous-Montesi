@@ -90,4 +90,26 @@ public class AmmoValueTest {
             assertTrue(true);
         }
     }
+
+    /**
+     * Test 3 cases: when all ammo1 values are bigger than ammo2, when they are all equals and
+     * when all ammo1 values are smaller than ammo2 ones.
+     */
+    @Test
+    public void testIsBiggerOrEqual() {
+        AmmoValue ammo1 = new AmmoValue(3, 2, 3);
+        AmmoValue ammo2 = new AmmoValue(2, 1, 0);
+
+        assertTrue(ammo1.isBiggerOrEqual(ammo2));
+
+        ammo1 = new AmmoValue(2, 1, 3);
+        ammo2 = new AmmoValue(2, 1, 3);
+
+        assertTrue(ammo1.isBiggerOrEqual(ammo2));
+
+        ammo1 = new AmmoValue(1, 1, 2);
+        ammo2 = new AmmoValue(2, 1, 3);
+
+        assertFalse(ammo1.isBiggerOrEqual(ammo2));
+    }
 }

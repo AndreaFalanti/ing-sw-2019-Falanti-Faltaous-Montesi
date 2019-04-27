@@ -1,0 +1,9 @@
+it.polimi.se2019
+it.polimi.se2019.controller
+it.polimi.se2019.model
+it.polimi.se2019.model.board
+it.polimi.se2019.model.board.serialization
+it.polimi.se2019.resource_handler
+it.polimi.se2019.util
+it.polimi.se2019.util.gson.extras.typeadapters
+it.polimi.se2019.view

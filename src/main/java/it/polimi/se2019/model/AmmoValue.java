@@ -21,13 +21,25 @@ public class AmmoValue {
      * @param b Blue ammo value
      * @throws IllegalArgumentException Thrown if any ammo value is negative or above MAX_AMMO value
      */
-    public AmmoValue (int r, int y, int b) throws IllegalArgumentException {
+    public AmmoValue (int r, int y, int b) {
         if (!isValueValid(r) || !isValueValid(y) || !isValueValid(b)) {
             throw new IllegalArgumentException();
         }
         mRed = r;
         mYellow = y;
         mBlue = b;
+    }
+
+    public int getRed () {
+        return mRed;
+    }
+
+    public int getYellow () {
+        return mYellow;
+    }
+
+    public int getBlue () {
+        return mBlue;
     }
 
     private boolean isValueValid (int value) {
@@ -74,6 +86,15 @@ public class AmmoValue {
     }
 
     /**
+     * Verify that every ammo type is bigger or equal than parameter passed.
+     * @param value AmmoValue to confront with
+     * @return True if every ammo type is >= than the other respective one, false otherwise
+     */
+    public boolean isBiggerOrEqual (AmmoValue value) {
+        return mRed >= value.mRed && mYellow >= value.mYellow && mBlue >= value.mBlue;
+    }
+
+    /**
      * Clamp ammo value if exceed max defined value
      * @param value Ammo value to clamp
      * @return  Value clamped
@@ -84,18 +105,6 @@ public class AmmoValue {
         }
 
         return value;
-    }
-
-    public int getRed () {
-        return mRed;
-    }
-
-    public int getYellow () {
-        return mYellow;
-    }
-
-    public int getBlue () {
-        return mBlue;
     }
 
     @Override

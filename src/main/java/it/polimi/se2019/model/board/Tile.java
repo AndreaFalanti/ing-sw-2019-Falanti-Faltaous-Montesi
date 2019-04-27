@@ -4,13 +4,14 @@ import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.board.serialization.DoorsDeserializer;
 
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Stream;
 
 public abstract class Tile {
-    private TileColor mColor;
+    private TileColor mColor = TileColor.BLUE;
 
     @JsonAdapter(DoorsDeserializer.class)
-    private Integer mDoors;
+    private Integer mDoors = 0;
 
     protected Tile() {}
 
@@ -61,6 +62,18 @@ public abstract class Tile {
         }
 
         return doors;
+    }
+
+    public List<Direction> getDoorsDirections() {
+        List<Direction> result = new ArrayList<>();
+        boolean[] doors = getDoors();
+
+        if (doors[3]) result.add(Direction.NORTH);
+        if (doors[2]) result.add(Direction.EAST);
+        if (doors[1]) result.add(Direction.SOUTH);
+        if (doors[0]) result.add(Direction.WEST);
+
+        return result;
     }
 
     public abstract String getTileType();

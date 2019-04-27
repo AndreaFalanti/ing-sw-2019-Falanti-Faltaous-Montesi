@@ -1,20 +1,48 @@
 package it.polimi.se2019.model;
 
 
-public class MoveAction extends Action {
-    Position mDestination;
+public class MoveAction implements Action {
+    private PlayerColor mTarget;
+    private Position mDestination;
+    private boolean mTeleport;
 
     public MoveAction(PlayerColor playerColor, Position destination) {
-        super(playerColor);
+        mTarget = playerColor;
+        mDestination = destination;
+        mTeleport = false;
+    }
 
-        this.mDestination = destination;
+    public MoveAction(PlayerColor playerColor, Position destination, boolean isTeleport) {
+        mTarget = playerColor;
+        mDestination = destination;
+        mTeleport = isTeleport;
+    }
+
+    public PlayerColor getTarget() {
+        return mTarget;
+    }
+
+    public Position getDestination() {
+        return mDestination;
+    }
+
+    public boolean isTeleport() {
+        return mTeleport;
     }
 
     @Override
-    public void perform(Game game) { }
+    public void perform(Game game) {
+        game.getPlayerFromColor(mTarget).move(mDestination);
+    }
 
     @Override
     public boolean isValid(Game game) {
-        return true;
+        if (mTeleport) {
+            return true;
+        }
+        else {
+            Position playerPos = game.getPlayerFromColor(mTarget).getPos();
+            return game.getBoard().getTileDistance(playerPos, mDestination) <= 3;
+        }
     }
 }
