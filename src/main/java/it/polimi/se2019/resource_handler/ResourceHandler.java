@@ -34,7 +34,10 @@ public class ResourceHandler {
         Resource resource =  mResources.get(resourceKey);
 
         if (resource == null)
-            throw new NonExistentResourceException(resourceKey);
+            throw new IllegalArgumentException("Trying to reference nonexistent resource!\n" +
+                    "invalid key: " + resourceKey + "\n" +
+                    "list of valid keys: " + listResourceNames() + "\n"
+            );
 
         return resource.get();
     }

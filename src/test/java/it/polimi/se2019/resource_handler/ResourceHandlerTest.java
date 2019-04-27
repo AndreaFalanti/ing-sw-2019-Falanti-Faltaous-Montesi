@@ -23,14 +23,11 @@ public class ResourceHandlerTest {
                 "   \"value\" : \"hello test!\"\n" +
                 "}";
 
-        BiPredicate<String, String> strEqualsIgnoreWhitespace = (String lhs, String rhs) ->
-            lhs.replaceAll("\\s+","").equals(rhs.replaceAll("\\s+",""));
-
         assertEquals(new JsonString(expectedJsonString),
                      new JsonString((String) resourceHandler.get("testJsonString")));
     }
 
-    @Test(expected = NonExistentResourceException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testGetRequestNonexistentResource() {
         ResourceHandler resourceHandler = new ResourceHandler();
 

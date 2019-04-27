@@ -295,6 +295,7 @@ public class Board {
 
     // TODO: WIP
     public List<Position> allSeenBy(Position observerPos) {
+        return null;
     }
 
     /**
