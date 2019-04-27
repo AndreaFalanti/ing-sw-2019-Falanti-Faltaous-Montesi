@@ -8,6 +8,7 @@ public class ResourceHandler {
     // fields
     private final HashMap<String, Resource> mResources = new HashMap<>();
     private String mBasePath;
+    private static final String OS = System.getProperty("os.name").toLowerCase();
 
     // methods
     public void setBasePath(String basePath) {
@@ -31,6 +32,9 @@ public class ResourceHandler {
     }
 
     public Object get(String resourceKey) {
+        if (isWindowsOS()) {
+            resourceKey = resourceKey.replace('/', '\\');
+        }
         Resource resource =  mResources.get(resourceKey);
 
         if (resource == null)
@@ -44,6 +48,10 @@ public class ResourceHandler {
 
     public Set<String> listResourceNames() {
         return mResources.keySet();
+    }
+
+    private static boolean isWindowsOS () {
+        return OS.contains("win");
     }
 }
 
