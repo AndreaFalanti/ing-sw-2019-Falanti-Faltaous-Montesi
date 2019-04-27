@@ -3,6 +3,7 @@ package it.polimi.se2019.model.board;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.JsonAdapter;
+import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.serialization.CustomFieldNamingStrategy;
 import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
@@ -186,14 +187,15 @@ public class Board {
     }
 
     // TODO: write doc
-    public boolean isValidTilePosition (Position pos) {
-        // X >= 0 && Y >= 0 is checked in Position constructor
-        return pos.getX() < mWidth && pos.getY() < mHeight;
-    }
-
-    // TODO: write doc
     public Tile getTileAt (Position pos) {
-        return isValidTilePosition(pos) ? mTiles.get(getIndexFromPosition(pos)) : null;
+        if (isOutOfBounds(pos))
+            throw new IndexOutOfBoundsException("Trying to reference tile outside of the board's bounds!\n" +
+                    "board width: " + getWidth() + "\n" +
+                    "board height: " + getHeight() + "\n" +
+                    "out-of-bounds position: " + pos
+            );
+
+        return mTiles.get(getIndexFromPosition(pos));
     }
 
     // TODO: write doc
@@ -226,9 +228,73 @@ public class Board {
      * @return true if {@code pos} is out of bounds
      */
     public boolean isOutOfBounds(Position pos) {
-        // TODO: reconcile with negative pos exception
         return pos.getX() < 0 || pos.getY() < 0 ||
                 pos.getX() >= getWidth() || pos.getY() >= getHeight();
+    }
+
+    /**
+     * Checks if two positions are in the same room
+     * @param lhs first position of the positions to check
+     * @param rhs second position of the positions to check
+     * @return true if the {@code lhs} and {@code rhs} are in the same room
+     */
+    public boolean areInSameRoom(Position lhs, Position rhs) {
+        return getTileAt(lhs).getColor().equals(getTileAt(rhs).getColor());
+    }
+
+    /**
+     * Like {@code canSee} but works only if {@code observerPos} and {@code observedPos} are in the same room
+     * @param observerPos position from where {@code observedPos} is observed
+     * @param observedPos position observed by {@code observerPos}
+     * @return true if {@code observedPos} can be seen from {@code observerPos}
+     */
+    public boolean canSeeInsideRoom(Position observerPos, Position observedPos) {
+        Tile observerTile = getTileAt(observerPos);
+        Tile observedTile = getTileAt(observedPos);
+
+        // there should be no observers crawling on walls...
+        if (observerTile == null)
+            throw new IllegalArgumentException("Assuming observer is on a wall");
+
+        // walls cannot be seen
+        if (observedTile == null)
+            return false;
+
+        // observers can see inside their room
+        if (areInSameRoom(observerPos, observedPos))
+            return true;
+
+        return false;
+    }
+
+    /**
+     * Checks if {@code observedPos} can be seen from {@code observerPos}, taking doors into account
+     * @param observerPos position from where {@code observedPos} is observed
+     * @param observedPos position observed by {@code observerPos}
+     * @return true if {@code observedPos} can be seen from {@code observerPos}
+     */
+    public boolean canSee(Position observerPos, Position observedPos) {
+        Tile observerTile = getTileAt(observerPos);
+        Tile observedTile = getTileAt(observedPos);
+
+        // two positions inside the same room can see each others
+        if (canSeeInsideRoom(observerPos, observedPos))
+            return true;
+
+        // observer can peek behind a door to see a target in another room
+        for (Direction doorDir : observerTile.getDoorsDirections()) {
+            Position newObserver = observerPos.add(doorDir.toPosition());
+
+            if (!isOutOfBounds(newObserver) && canSeeInsideRoom(newObserver, observedPos))
+                return true;
+        }
+
+        return false;
+
+    }
+
+    // TODO: WIP
+    public List<Position> allSeenBy(Position observerPos) {
     }
 
     /**

@@ -68,10 +68,10 @@ public abstract class Tile {
         List<Direction> result = new ArrayList<>();
         boolean[] doors = getDoors();
 
-        if (doors[0]) result.add(Direction.NORTH);
-        if (doors[1]) result.add(Direction.EAST);
-        if (doors[2]) result.add(Direction.SOUTH);
-        if (doors[3]) result.add(Direction.WEST);
+        if (doors[3]) result.add(Direction.NORTH);
+        if (doors[2]) result.add(Direction.EAST);
+        if (doors[1]) result.add(Direction.SOUTH);
+        if (doors[0]) result.add(Direction.WEST);
 
         return result;
     }
