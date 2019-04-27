@@ -37,7 +37,7 @@ public class Game {
      *          player size is < 3 or killsNum is negative
      */
     public Game(Board board, List<Player> players, int killsToFinish) {
-        if (board == null || players == null || killsToFinish < 0 || players.size() < 3) {
+        if (board == null || players == null || killsToFinish <= 0 || players.size() < 3) {
             throw new IllegalArgumentException();
         }
         mBoard = board;
@@ -170,7 +170,7 @@ public class Game {
      * Add a kill to kills list. If skullNum is reached, starts final frenzy.
      * @param killer Player color of the killer
      */
-    public void registerKill (PlayerColor killer) {
+    private void registerKill (PlayerColor killer) {
         mKills.add(killer);
 
         if (mKills.size() == mSkullNum) {
@@ -182,7 +182,7 @@ public class Game {
      * Add an overkill to overkills list.
      * @param killer Player color of the killer
      */
-    public void registerOverkill (PlayerColor killer) {
+    private void registerOverkill (PlayerColor killer) {
         mOverkills.add(killer);
     }
 
@@ -247,7 +247,7 @@ public class Game {
      * Distribute score to players that have done damage to killed player.
      * @param deadPlayerColor Dead player's color
      */
-    public void distributePlayerKillScore (PlayerColor deadPlayerColor) {
+    private void distributePlayerKillScore (PlayerColor deadPlayerColor) {
         Player deadPlayer = getPlayerFromColor(deadPlayerColor);
         boolean boardFlipped = deadPlayer.isBoardFlipped();
         int[] scoreValues = (boardFlipped) ? FLIPPED_PLAYER_VALUE : KILLS_VALUE;
@@ -270,11 +270,14 @@ public class Game {
 
         Map<PlayerColor, Integer> map = new EnumMap<>(PlayerColor.class);
         for (PlayerColor color : colors) {
-            if (map.containsKey(color)) {
-                map.put(color, map.get(color) + 1);
-            }
-            else {
-                map.put(color, 1);
+            // last color could be null if player is not overkilled
+            if (color != null) {
+                if (map.containsKey(color)) {
+                    map.put(color, map.get(color) + 1);
+                }
+                else {
+                    map.put(color, 1);
+                }
             }
         }
         AtomicInteger i = new AtomicInteger(scoreStartingPos);

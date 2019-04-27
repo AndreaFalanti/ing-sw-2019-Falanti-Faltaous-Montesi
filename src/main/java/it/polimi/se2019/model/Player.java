@@ -177,10 +177,11 @@ public class Player {
         mPos = value;
     }
 
-    public void respawnPlayer(Position value) {
+    public void respawn(Position value) {
         for (int i = 0; i < mDamageTaken.length; i++) {
             mDamageTaken[i] = null;
         }
+        incrementDeaths();
         setDeadStatus();
         move(value);
     }

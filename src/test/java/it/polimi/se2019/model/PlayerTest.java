@@ -178,7 +178,7 @@ public class PlayerTest {
         fill(testDamage,testAttackingPlayer);
         player1.sufferedDamage(testAttackingPlayer, 12);
         player1.setDeadStatus();
-        player1.respawnPlayer(testPosition);
+        player1.respawn(testPosition);
         assertArrayEquals(nullVector,player1.getDamageTaken());
         assertEquals(testPosition,player1.getPos());
         assertFalse(player1.isDead());
