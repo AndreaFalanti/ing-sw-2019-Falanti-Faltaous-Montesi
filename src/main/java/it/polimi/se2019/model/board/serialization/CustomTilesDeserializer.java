@@ -10,7 +10,7 @@ import java.util.List;
 public class CustomTilesDeserializer implements JsonDeserializer<List<Tile>>, JsonSerializer<List<Tile>> {
 
     @Override
-    public List<Tile> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+    public List<Tile> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) {
         List<Tile> result = new ArrayList<>();
 
         JsonArray jTiles = jsonElement.getAsJsonArray();

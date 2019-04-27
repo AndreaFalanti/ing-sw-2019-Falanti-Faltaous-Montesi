@@ -23,7 +23,7 @@ public abstract class View implements Observable, Observer {
     public abstract void interact();
 
     public void notifyController() {
-
+        // TODO: implement
     }
 
     public PlayerColor getActivePlayer() {

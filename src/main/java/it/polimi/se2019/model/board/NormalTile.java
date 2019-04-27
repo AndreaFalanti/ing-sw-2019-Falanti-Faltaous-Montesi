@@ -53,7 +53,7 @@ public class NormalTile extends Tile {
         // TODO: uncomment when AmmoCard is implemented
         // result.mAmmoCard = mAmmoCard.deepCopy();
 
-        return (NormalTile) finishDeepCopy(this);
+        return (NormalTile) finishDeepCopy(result);
     }
 
     /**
@@ -93,7 +93,9 @@ public class NormalTile extends Tile {
 
     // TODO: add doc
     @Override
-    public void grabObjects(Player player) { }
+    public void grabObjects(Player player) {
+        // TODO: implement
+    }
 
     /**
      *

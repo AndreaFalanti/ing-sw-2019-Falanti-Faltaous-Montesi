@@ -6,6 +6,11 @@ import java.util.stream.Collectors;
 
 public class MatrixUtils {
     /**
+     * This class is meant as a static wrapper for utility methods
+     */
+    private MatrixUtils() {}
+
+    /**
      * Checks if matrix is rectangular (a null matrix is not rectangular)
      * @param toCheck the matrix to check
      * @param <T> the type of the elements contained by the matrix

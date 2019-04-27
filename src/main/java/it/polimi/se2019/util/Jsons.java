@@ -30,7 +30,7 @@ public class Jsons {
     /**
      * Utility function to load all json files residing at a given path
      */
-    private static void loadJsonsAt(Path path) throws BadLoadException {
+    private static void loadJsonsAt(Path path) {
         resourceHandler.setBasePath(path.toString());
 
         try (Stream<Path> walk = Files.walk(path)) {
@@ -62,7 +62,7 @@ public class Jsons {
      * @return the json string corresponding the the given resource key
      * @throws NonExistentResourceException when the requested resource key is nonexistent
      */
-    public static String get(String resourceKey) throws NonExistentResourceException {
+    public static String get(String resourceKey) {
         loadResources();
 
         return (String) resourceHandler.get(resourceKey);

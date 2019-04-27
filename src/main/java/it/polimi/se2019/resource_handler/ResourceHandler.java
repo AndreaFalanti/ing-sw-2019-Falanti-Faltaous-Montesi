@@ -30,14 +30,14 @@ public class ResourceHandler {
                 path.substring(baseEndIndex, path.indexOf('.')));
     }
 
-    public Object get(String resourceKey) throws NonExistentResourceException {
+    public Object get(String resourceKey) {
         Resource resource =  mResources.get(resourceKey);
 
         if (resource == null)
             throw new NonExistentResourceException(resourceKey);
 
         return resource.get();
-    };
+    }
 
     public Set<String> listResourceNames() {
         return mResources.keySet();

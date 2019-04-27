@@ -20,14 +20,8 @@ public class Position {
      *
      * @param x X coordinate
      * @param y Y coordinate
-     * @throws IllegalArgumentException Thrown if at least one parameter is negative
      */
     public Position (int x, int y) {
-        // TODO: see if this exception has to be kept. Negative positions might be useful
-        // if (x < 0 || y < 0) {
-            // throw new IllegalArgumentException("At least one value is negative");
-        // }
-
         mX = x;
         mY = y;
     }
@@ -35,14 +29,8 @@ public class Position {
     /**
      *
      * @param xAndY X and Y coordinate
-     * @throws IllegalArgumentException Thrown if at least one parameter is negative
      */
     public Position(int xAndY) {
-        // TODO: see if this exception has to be kept. Negative positions might be useful
-        // if (x < 0 || y < 0) {
-        // throw new IllegalArgumentException("At least one value is negative");
-        // }
-
         mX = xAndY;
         mY = xAndY;
     }

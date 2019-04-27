@@ -10,7 +10,7 @@ public abstract class Tile {
     private TileColor mColor = TileColor.BLUE;
 
     @JsonAdapter(DoorsDeserializer.class)
-    private Integer mDoors;
+    private Integer mDoors = 0;
 
     protected Tile() {}
 
