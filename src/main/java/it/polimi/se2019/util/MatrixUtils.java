@@ -1,5 +1,7 @@
 package it.polimi.se2019.util;
 
+import it.polimi.se2019.model.Position;
+
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -59,4 +61,30 @@ public class MatrixUtils {
                 .map(strRow -> strRow + "\n")
                 .collect(Collectors.joining()));
     }
+
+    // TODO: write doc
+    public static <T> boolean haveSameSize(T[][] lhs, T[][] rhs) {
+        if (!isValidRectangularMatrix(lhs) || !isValidRectangularMatrix(rhs))
+            throw new IllegalArgumentException("lhs and rhs should both be valid rectangulare matrices!");
+
+        return lhs.length == rhs.length && lhs[0].length == rhs[0].length;
+    }
+
+    // TODO: write doc
+    public static <T> Position findPosOf(T[][] matrix, T toFind) {
+        if (!isValidRectangularMatrix(matrix))
+            throw new IllegalArgumentException("need a rectangular matrix");
+
+        Position res = new Position(0, 0);
+        for (int y = 0; y < matrix.length; ++y) {
+            for (int x = 0; x < matrix[0].length; ++x) {
+                if (matrix[y][x].equals(toFind))
+                    res = new Position(x, y);
+            }
+        }
+
+        return res;
+    }
+
+
 }

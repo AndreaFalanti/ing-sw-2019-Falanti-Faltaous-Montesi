@@ -3,17 +3,14 @@ package it.polimi.se2019.model.board;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.util.MatrixUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.OptionalInt;
+import java.util.*;
 
 /**
  * Info about a range of cells around a given position
  */
 public class RangeInfo {
-    // distances from origin associated with interested positions
-    private final Map<Position, Integer> mDistances = new HashMap<>();
+    // info associated with interested positions
+    private final Map<Position, CellInfo> mInfo = new HashMap<>();
 
     // max distance
     private int mMaxDistance = 0;
@@ -27,31 +24,32 @@ public class RangeInfo {
         mObserverPos = observerPos;
     }
 
-    public static RangeInfo fromMatrix(Position observerPos, int[][] distMatrix) {
+    public static RangeInfo fromMatrix(Position observerPos, Integer[][] distMatrix, Boolean[][] sightMatrix) {
         RangeInfo result = new RangeInfo();
 
         // set observer pos
         result.setObserverPos(observerPos);
 
-        // check if matrix is valid
+        // check if matrices are valid
         if (!MatrixUtils.isValidRectangularMatrix(distMatrix))
-            throw new IllegalArgumentException("Called RangeInfo.fromMatrix with invalid rectangular matrix!");
+            throw new IllegalArgumentException("distance matrix is not a valid rectangular matrix!");
+        if (!MatrixUtils.isValidRectangularMatrix(sightMatrix))
+            throw new IllegalArgumentException("sight matrix is not a valid rectangular matrix!");
+        if (!MatrixUtils.haveSameSize(distMatrix, sightMatrix))
+            throw new IllegalArgumentException("sight matrix and distance matrix must be the same size");
 
         // find position of 0
-        Position posOf0 = new Position(0);
-        for (int y = 0; y < distMatrix.length; ++y) {
-            for (int x = 0; x < distMatrix[0].length; ++x) {
-                if (distMatrix[y][x] == 0)
-                    posOf0 = new Position(x, y);
-            }
-        }
+        Position posOf0 = MatrixUtils.findPosOf(distMatrix, 0);
 
-        // convert matrix into distances hashmap
+        // convert matrices into info hashmap
         for (int y = 0; y < distMatrix.length; ++y) {
             for (int x = 0; x < distMatrix[0].length; ++x) {
                 int dist = distMatrix[y][x];
-                if (dist != -1)
-                    result.addDistAt(new Position(x, y).add(observerPos).subtract(posOf0), dist);
+                boolean visible = sightMatrix[y][x];
+
+                // non-visible  and unreachable positions are not stored to save space
+                if (dist != -1 || !visible)
+                    result.addInfoAt(new Position(x, y).add(observerPos).subtract(posOf0), new CellInfo(visible, dist));
             }
         }
 
@@ -75,63 +73,74 @@ public class RangeInfo {
 
         RangeInfo casted = (RangeInfo) other;
 
-        return mDistances.equals(casted.mDistances);
+        return mInfo.equals(casted.mInfo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mDistances);
+        return Objects.hash(mInfo);
     }
 
     @Override
     public String toString() {
         // get matrix representation of RangeInfo
-        Integer[][] matrixResult = new Integer[mMaxDistance * 2 + 1][mMaxDistance * 2 + 1];
-        mDistances.entrySet().stream()
+        Integer[][] distanceMatrix = new Integer[mMaxDistance * 2 + 1][mMaxDistance * 2 + 1];
+        Integer[][] sightMatrix    = new Integer[mMaxDistance * 2 + 1][mMaxDistance * 2 + 1];
+        mInfo.entrySet().stream()
                 .forEach(entry -> {
                     Position realPos = entry.getKey();
                     Position posRelativeToObserver = realPos.subtract(mObserverPos);
                     Position showPos = posRelativeToObserver.add(new Position(mMaxDistance));
 
-                    matrixResult[showPos.getY()][showPos.getX()] = entry.getValue();
+                    distanceMatrix[showPos.getY()][showPos.getX()] = entry.getValue().getDistance();
+                    sightMatrix   [showPos.getY()][showPos.getX()] = entry.getValue().isVisible() ? 1 : 0;
                 });
 
         // convert matrix representation into pretty string (adding the observer position)
         return mObserverPos + "\n" +
-                MatrixUtils.toPrettyString(matrixResult, ele -> {
+                MatrixUtils.toPrettyString(distanceMatrix, ele -> {
                     if (ele == null) {
                         return "# ";
                     } else {
                         return ele + " ";
                     }
-                });
+                }) + "\n" +
+                MatrixUtils.toPrettyString(sightMatrix, ele -> ele.toString()) + "\n";
     }
 
     /**
-     * Checks if particular has been already visited
+     * Checks if particular position has been already visited
      * @param pos the interested position
      * @return true if {@code pos} has already been visited
      */
     public boolean isVisited(Position pos) {
-        return mDistances.containsKey(pos);
-    }
-
-    /**
-     * Adds given
-     * @param at
-     * @param dist
-     */
-    public void addDistAt(Position at, int dist) {
-        if (dist > mMaxDistance)
-            mMaxDistance = dist;
-
-        mDistances.put(at, dist);
+        return mInfo.containsKey(pos);
     }
 
     // TODO: add doc
-    public OptionalInt getDistAt(Position at) {
-        return mDistances.containsKey(at) ?
-                OptionalInt.of(mDistances.get(at)) :
-                OptionalInt.empty();
+    public void addInfoAt(Position at, CellInfo info) {
+        if (info.getDistance() > mMaxDistance)
+            mMaxDistance = info.getDistance();
+
+        mInfo.put(at, info);
+    }
+
+    // TODO: add doc
+    public void addDistAt(Position at, int dist) {
+        addInfoAt(at, new CellInfo(dist));
+    }
+
+    // TODO: add doc
+    public int getDistAt(Position at) {
+        return mInfo.containsKey(at) ?
+                mInfo.get(at).getDistance() :
+                -1;
+    }
+
+    // TODO: add doc
+    public boolean isVisibleAt(Position at) {
+        return mInfo.containsKey(at) ?
+                mInfo.get(at).isVisible() :
+                false;
     }
 }

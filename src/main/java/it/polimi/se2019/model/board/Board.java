@@ -353,10 +353,12 @@ public class Board {
      * Helper function for {@code getRangeInfoHelper}
      */
     private RangeInfo getRangeInfoHelper(Position currPos, int range, int currDist, RangeInfo result) {
-        OptionalInt pastDist = result.getDistAt(currPos);
+        int pastDist = result.getDistAt(currPos);
 
         // if already visited and not worse (less or equally distant), stop
-        if (pastDist.isPresent() && pastDist.getAsInt() <= currDist)
+        // TODO: there is probably a bug here
+        // TODO: decide weather to use -1 or empty optional for unreachable position
+        if (result.isVisited(currPos) && pastDist <= currDist)
             return result;
 
         // if over the specified range, stop
