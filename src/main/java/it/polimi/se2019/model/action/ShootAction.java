@@ -1,8 +1,10 @@
-package it.polimi.se2019.model;
+package it.polimi.se2019.model.action;
 
+import it.polimi.se2019.model.Game;
 
 public class ShootAction implements Action {
-    public ShootAction() {
+
+    public ShootAction () {
     }
 
     @Override

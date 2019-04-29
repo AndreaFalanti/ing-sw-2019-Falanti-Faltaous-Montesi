@@ -93,6 +93,22 @@ public class Player {
         return mDamageTaken[11] != null;
     }
 
+    /**
+     * Get max grab distance of player. If it has at least 3 damage, unlock "adrenaline grab".
+     * @return 1 if damage < 3, 2 if >= 3
+     */
+    public int getMaxGrabDistance () {
+        return (mDamageTaken[2] != null) ? 2 : 1;
+    }
+
+    /**
+     * Return if player can perform "adrenaline move and shoot".
+     * @return true if has at least 6 damage, false otherwise
+     */
+    public boolean canMoveBeforeShooting () {
+        return mDamageTaken[5] != null;
+    }
+
     public void addScore(int value) {
         mScore += value;
     }

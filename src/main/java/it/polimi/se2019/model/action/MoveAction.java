@@ -1,5 +1,8 @@
-package it.polimi.se2019.model;
+package it.polimi.se2019.model.action;
 
+import it.polimi.se2019.model.Game;
+import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Position;
 
 public class MoveAction implements Action {
     private PlayerColor mTarget;
@@ -42,7 +45,16 @@ public class MoveAction implements Action {
         }
         else {
             Position playerPos = game.getPlayerFromColor(mTarget).getPos();
-            return game.getBoard().getTileDistance(playerPos, mDestination) <= 3;
+            if (!game.isFinalFrenzy()) {
+                return game.getBoard().getTileDistance(playerPos, mDestination) <= 3;
+            }
+            else if (!game.hasFirstPlayerDoneFinalFrenzy()) {
+                return game.getBoard().getTileDistance(playerPos, mDestination) <= 4;
+            }
+            // you can't only move if is final frenzy and you are after first player.
+            else {
+                return false;
+            }
         }
     }
 }

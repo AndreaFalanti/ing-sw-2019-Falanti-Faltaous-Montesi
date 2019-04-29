@@ -1,5 +1,7 @@
-package it.polimi.se2019.model;
+package it.polimi.se2019.model.action;
 
+import it.polimi.se2019.model.Game;
+import it.polimi.se2019.model.Position;
 
 public class GrabAction implements Action {
     private boolean mWeaponGrab;
