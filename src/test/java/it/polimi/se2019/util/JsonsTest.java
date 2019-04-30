@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 public class JsonsTest {
 
      /**
-      /*
       * Load all jsons using a Jsons class and check if test resources are available
      */
       // TODO: find out if it's better to do this using some sort of "mock resources directory"
