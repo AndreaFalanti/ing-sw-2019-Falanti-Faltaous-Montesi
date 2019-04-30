@@ -352,7 +352,7 @@ public class Board {
     /**
      * Helper function for {@code getRangeInfoHelper}
      */
-    private RangeInfo getRangeInfoHelper(Position currPos, int range, int currDist, RangeInfo result) {
+    private RangeInfo getRangeInfoHelper(Position originalPos, Position currPos, int range, int currDist, RangeInfo result) {
         int pastDist = result.getDistAt(currPos);
 
         // if already visited and not worse (less or equally distant), stop
@@ -365,13 +365,14 @@ public class Board {
         if (currDist > range)
             return result;
 
-        // otherwise position is interesting; associate it with distance and add it to results
+        // otherwise position is interesting; associate it with collected info and add it to results
         result.addDistAt(currPos, currDist);
+        if (canSee(originalPos, currPos)) result.toggleVisibleAt(currPos); // TODO: might be faster without using canSee
 
         // recurse among adjacent tiles that can be reached
         getAdjacentPositions(currPos).stream()
                 .filter(adjPos -> areConnected(currPos, adjPos))
-                .forEach(newPos -> getRangeInfoHelper(newPos, range, currDist + 1, result));
+                .forEach(newPos -> getRangeInfoHelper(originalPos, newPos, range, currDist + 1, result));
 
         return result;
     }
@@ -384,6 +385,6 @@ public class Board {
      * @return the specified position
      */
     public RangeInfo getRangeInfo(Position rangeOrigin, int range) {
-        return getRangeInfoHelper(rangeOrigin, range, 0, new RangeInfo(rangeOrigin));
+        return getRangeInfoHelper(rangeOrigin, rangeOrigin, range, 0, new RangeInfo(rangeOrigin));
     }
 }

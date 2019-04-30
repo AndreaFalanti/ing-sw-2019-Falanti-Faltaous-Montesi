@@ -184,33 +184,42 @@ public class BoardTest {
     public void testGetRangeInfoTrivialRange() {
         RangeInfo rangeInfo = mExampleEmptyBoard.getRangeInfo(new Position(1, 1), 1);
 
-        // assertEquals(
-                // RangeInfo.fromMatrix(new Position(1),
-                        // new int[][]{
-                                // // N.B. -1 means impassable (i.e. wall/empty) or over the range specified
-                                // {-1, 1, -1},
-                                // { 1, 0,  1},
-                                // {-1, 1, -1}
-                        // }
-                // ),
-                // rangeInfo
-        // );
+        RangeInfo expected = RangeInfo.fromMatrix(new Position(1),
+                new Integer[][]{
+                        {-1, 1, -1},
+                        { 1, 0,  1},
+                        {-1, 1, -1}
+                },
+                new Integer[][]{
+                        { 0, 1, 0},
+                        { 1, 1, 1},
+                        { 0, 1, 0}
+                }
+
+        );
+
+        assertEquals(expected.mInfo, rangeInfo.mInfo);
     }
 
     @Test
     public void testGetRangeInfoSimpleWall() {
         RangeInfo rangeInfo = mExampleSimpleWallBoard.getRangeInfo(new Position(1, 2), 5);
 
-        // RangeInfo expected = RangeInfo.fromMatrix(new Position(1, 2),
-                // new int[][]{
-                        // // N.B. -1 means impassable (i.e. wall/empty) or over the range specified
-                        // {3,  4,  5, 4},
-                        // {2, -1, -1, 3},
-                        // {1,  0,  1, 2},
-                        // {2,  1,  2, 3}
-                // }
-        // );
+        RangeInfo expected = RangeInfo.fromMatrix(new Position(1, 2),
+                new Integer[][]{
+                        {3,  4,  5, 4},
+                        {2, -1, -1, 3},
+                        {1,  0,  1, 2},
+                        {2,  1,  2, 3}
+                },
+                new Integer[][]{
+                        {1, 1, 1, 1},
+                        {1, 0, 0, 1},
+                        {1, 1, 1, 1},
+                        {1, 1, 1, 1}
+                }
+        );
 
-        // assertEquals(expected, rangeInfo);
+        assertEquals(expected.mInfo, rangeInfo.mInfo); // BUG: [2, 1] is not in actual
     }
 }

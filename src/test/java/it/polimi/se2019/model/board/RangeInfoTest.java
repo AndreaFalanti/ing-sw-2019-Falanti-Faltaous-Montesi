@@ -11,55 +11,74 @@ public class RangeInfoTest {
     private RangeInfo mTestRangeInfoOneByOne;
     private RangeInfo mTestRangeInfoTwoByTwo;
 
-    // @Before
-    // public void instantiateTestRangeInfos() {
-        // mTestRangeInfoOneByOne = RangeInfo.fromMatrix(new Position(0, 0),
-                // new Integer[][]{
-                        // {0}
-                // },
-                // new  Boolean[][]{
-                        // {true}
-                // });
-        // mTestRangeInfoTwoByTwo = RangeInfo.fromMatrix(new Position(0, 1),
-        // new int[][]{
-                // { 0, 1 },
-                // { 1, 2 }
-        // });
-    // }
-
-    // @Test
-    // public void testEquals() {
-        // assertEquals(mTestRangeInfoTwoByTwo, RangeInfo.fromMatrix(new Position(0, 1),
-        // new int[][]{
-                // { 0, 1 },
-                // { 1, 2 }
-        // }));
-    // }
-
-    @Test
-    public void testFromMatrixOneByOne() {
-        RangeInfo expected = new RangeInfo();
-        expected.addDistAt(new Position(0, 0), 0);
-
-        assertEquals(expected, mTestRangeInfoOneByOne);
+    @Before
+    public void instantiateTestRangeInfos() {
+        mTestRangeInfoOneByOne = RangeInfo.fromMatrix(new Position(0, 0),
+                new Integer[][]{
+                        {0}
+                },
+                new  Integer[][]{
+                        {1}
+                });
+        mTestRangeInfoTwoByTwo = RangeInfo.fromMatrix(new Position(0, 1),
+                new Integer[][]{
+                        { 0, 1 },
+                        { 1, 2 }
+                },
+                new Integer[][]{
+                        { 1, 1 },
+                        { 1, 1 }
+                });
     }
 
     @Test
-    public void testFromMatrixTwoByTwo() {
-        RangeInfo expected = new RangeInfo(new Position(0, 1));
-        expected.addDistAt(new Position(0, 1), 0);
-        expected.addDistAt(new Position(0, 2), 1);
-        expected.addDistAt(new Position(1, 1), 1);
-        expected.addDistAt(new Position(1, 2), 2);
+    public void testFromMatrix() {
+        RangeInfo tested = RangeInfo.fromMatrix(new Position(0, 1),
+                new Integer[][]{
+                        { 0, 1 },
+                        { 1, 2 }
+                },
+                new Integer[][]{
+                        { 1, 1 },
+                        { 1, 1 }
+                });
 
-        assertEquals(expected, mTestRangeInfoTwoByTwo);
+        assertEquals(0, tested.getDistAt(new Position(0, 1)));
+        assertEquals(1, tested.getDistAt(new Position(1, 1)));
+        assertEquals(1, tested.getDistAt(new Position(0, 2)));
+        assertEquals(2, tested.getDistAt(new Position(1, 2)));
+
+        assertTrue(tested.isVisibleAt(new Position(0, 1)));
+        assertTrue(tested.isVisibleAt(new Position(1, 1)));
+        assertTrue(tested.isVisibleAt(new Position(0, 2)));
+        assertTrue(tested.isVisibleAt(new Position(1, 2)));
+    }
+
+    @Test
+    public void testAddDistAt() {
+        mTestRangeInfoTwoByTwo.addDistAt(new Position(0, 0), 2);
+
+        assertEquals(2, mTestRangeInfoTwoByTwo.getDistAt(new Position(0, 0)));
+    }
+
+    @Test
+    public void testEquals() {
+        assertEquals(mTestRangeInfoTwoByTwo, RangeInfo.fromMatrix(new Position(0, 1),
+                new Integer[][]{
+                        { 0, 1 },
+                        { 1, 2 }
+                },
+                new Integer[][]{
+                        { 1, 1 },
+                        { 1, 1 }
+                }));
     }
 
     @Test
     public void testToStringOneByOne() {
         String expected = "" +
                 "[0, 0]\n" +
-                "0";
+                "0^\n";
 
         assertEquals(expected, mTestRangeInfoOneByOne.toString());
     }
@@ -68,11 +87,11 @@ public class RangeInfoTest {
     public void testToStringTwoByTwo() {
         String expected = "" +
                 "[0, 1]\n" +
-                "# # # # #\n" +
-                "# # # # #\n" +
-                "# # 0 1 #\n" +
-                "# # 1 2 #\n" +
-                "# # # # #";
+                "#  #  #  #  # \n" +
+                "#  #  #  #  # \n" +
+                "#  #  0^ 1^ # \n" +
+                "#  #  1^ 2^ # \n" +
+                "#  #  #  #  # \n";
 
         assertEquals(expected, mTestRangeInfoTwoByTwo.toString());
     }
