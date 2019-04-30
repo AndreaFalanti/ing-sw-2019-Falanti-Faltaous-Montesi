@@ -15,7 +15,7 @@ public class Player {
     private String mName;
     private boolean mDead = false;
     private boolean mBoardFlipped = false;
-    public static final int MAX_MARKS = 3;
+    private static final int MAX_MARKS = 3;
 
     private void initializeMarksMap () {
         mMarks.put(PlayerColor.YELLOW,0);
@@ -28,6 +28,7 @@ public class Player {
     public Player (String name, PlayerColor color) {
             mName = name;
             mColor = color;
+            mAmmo = new AmmoValue(1, 1, 1);
             initializeMarksMap();
     }
 
@@ -93,6 +94,10 @@ public class Player {
         return mDamageTaken[11] != null;
     }
 
+    public boolean hasNoDamage () {
+        return mDamageTaken[0] == null;
+    }
+
     /**
      * Get max grab distance of player. If it has at least 3 damage, unlock "adrenaline grab".
      * @return 1 if damage < 3, 2 if >= 3
@@ -131,8 +136,8 @@ public class Player {
     }
 
     public void sufferedMarks(PlayerColor attackingPlayer,int marks) {
-        if(marks + getMarks().get(attackingPlayer) >= 3) {
-            mMarks.put(attackingPlayer,3);
+        if(marks + getMarks().get(attackingPlayer) >= MAX_MARKS) {
+            mMarks.put(attackingPlayer, MAX_MARKS);
         }
         else{
             mMarks.put(attackingPlayer,marks);
