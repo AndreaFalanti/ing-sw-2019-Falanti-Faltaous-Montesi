@@ -198,7 +198,7 @@ public class BoardTest {
 
         );
 
-        assertEquals(expected.mInfo, rangeInfo.mInfo);
+        assertEquals(expected, rangeInfo);
     }
 
     @Test

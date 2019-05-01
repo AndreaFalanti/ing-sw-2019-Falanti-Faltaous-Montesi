@@ -9,10 +9,7 @@ import it.polimi.se2019.model.board.serialization.CustomFieldNamingStrategy;
 import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -293,6 +290,12 @@ public class Board {
 
     }
 
+    // TODO: add doc
+    public Set<Position> getAllSeenBy(Position observerPos) {
+        // TODO: replace 10 with infinity
+        return getRangeInfo(observerPos, 10).getVisiblePositions();
+    }
+
     /**
      * Calculated  the positions adjacent to {@code centralPos}, filtering those that are out of bounds
      * @param centralPos interested central position
@@ -348,11 +351,8 @@ public class Board {
      * Helper function for {@code getRangeInfoHelper}
      */
     private RangeInfo getRangeInfoHelper(Position originalPos, Position currPos, int range, int currDist, RangeInfo result) {
-        int pastDist = result.getDistAt(currPos);
-
         // if already visited and not worse (less or equally distant), stop
-        // TODO: decide weather to use -1 or empty optional for unreachable position
-        if (result.isVisited(currPos) && pastDist <= currDist)
+        if (result.isVisited(currPos) && result.getDistAt(currPos) <= currDist)
             return result;
 
         // if over the specified range, stop

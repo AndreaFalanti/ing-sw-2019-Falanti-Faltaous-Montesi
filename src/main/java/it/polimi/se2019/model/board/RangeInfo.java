@@ -10,7 +10,8 @@ import java.util.*;
  */
 public class RangeInfo {
     // info associated with interested positions
-    public final Map<Position, CellInfo> mInfo = new HashMap<>(); // TODO: remove public
+    final Map<Position, Integer> mDistances = new HashMap<>();
+    final Set<Position> mVisiblePositions = new HashSet<>();
 
     // max distance
     private int mMaxDistance = 0;
@@ -48,12 +49,20 @@ public class RangeInfo {
                 boolean visible = (sightMatrix[y][x] == 1);
 
                 // non-visible  and unreachable positions are not stored to save space
-                if (dist != -1 || visible)
-                    result.addInfoAt(new Position(x, y).add(observerPos).subtract(posOf0), new CellInfo(visible, dist));
+                Position posToStore = new Position(x, y).add(observerPos).subtract(posOf0);
+                if (dist != -1)
+                    result.addDistAt(posToStore, dist);
+                if (visible)
+                    result.toggleVisibleAt(posToStore);
             }
         }
 
         return result;
+    }
+
+    // trivial getters
+    public Set<Position> getVisiblePositions() {
+        return mVisiblePositions;
     }
 
     // trivial setters
@@ -72,12 +81,13 @@ public class RangeInfo {
 
         RangeInfo casted = (RangeInfo) other;
 
-        return mInfo.equals(casted.mInfo);
+        return mDistances.equals(casted.mDistances) &&
+                mVisiblePositions.equals(mVisiblePositions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mInfo);
+        return Objects.hash(mDistances, mVisiblePositions);
     }
 
     @Override
@@ -88,14 +98,14 @@ public class RangeInfo {
         MatrixUtils.fillRectangularMatrix(distanceMatrix,  mMaxDistance * 2 + 1, mMaxDistance * 2 + 1, -1);
         MatrixUtils.fillRectangularMatrix(sightMatrix,     mMaxDistance * 2 + 1, mMaxDistance * 2 + 1, 0);
 
-        mInfo.entrySet().stream()
+        mDistances.entrySet().stream()
                 .forEach(entry -> {
                     Position absolutePos = entry.getKey();
                     Position posRelToObserver = absolutePos.subtract(mObserverPos);
                     Position showPos = posRelToObserver.add(new Position(mMaxDistance));
 
-                    distanceMatrix[showPos.getY()][showPos.getX()] = entry.getValue().getDistance();
-                    sightMatrix   [showPos.getY()][showPos.getX()] = entry.getValue().isVisible() ? 1 : 0;
+                    distanceMatrix[showPos.getY()][showPos.getX()] = entry.getValue();
+                    sightMatrix   [showPos.getY()][showPos.getX()] = mVisiblePositions.contains(absolutePos) ? 1 : 0;
                 });
 
         // convert matrix representation into pretty string (adding the observer position)
@@ -116,38 +126,31 @@ public class RangeInfo {
      * @return true if {@code pos} has already been visited
      */
     public boolean isVisited(Position pos) {
-        return mInfo.containsKey(pos);
-    }
-
-    // info setters/getters
-    public void addInfoAt(Position at, CellInfo info) {
-        if (info.getDistance() > mMaxDistance)
-            mMaxDistance = info.getDistance();
-
-        mInfo.put(at, info);
-    }
-    public CellInfo getInfoAt(Position at) {
-        return mInfo.get(at);
+        return mDistances.containsKey(pos) || mVisiblePositions.contains(pos);
     }
 
     // setters for distance and sight
     public void addDistAt(Position at, int dist) {
-        addInfoAt(at, new CellInfo(dist));
+        if (dist > mMaxDistance)
+            mMaxDistance = dist;
+
+        mDistances.put(at, dist);
     }
     public void toggleVisibleAt(Position at) {
-        CellInfo newCellInfo = new CellInfo(!isVisibleAt(at), getDistAt(at));
-        addInfoAt(at, newCellInfo);
+        mVisiblePositions.add(at);
     }
 
     // getters for distance and sight
     public int getDistAt(Position at) {
-        CellInfo info = getInfoAt(at);
+        Integer dist = mDistances.get(at);
 
-        return (info != null) ? info.getDistance() : -1;
+        if (dist == null)
+            throw new IllegalArgumentException("Position \"at\" should be visited before you access the distance..." +
+                    " use method isVisited to check it beforehand");
+
+        return dist;
     }
     public boolean isVisibleAt(Position at) {
-        CellInfo info = getInfoAt(at);
-
-        return (info != null) ? info.isVisible() : false;
+        return mVisiblePositions.contains(at);
     }
 }
