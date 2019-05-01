@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.io.IOException
+import java.io.IOException;
 
 public class Server {
 
@@ -19,7 +19,8 @@ public class Server {
     private DataOutputStream out;
     private ArrayList<GameThread> games;
     private ArrayList<Socket> clients = new ArrayList<>();
-    private ArrayList<PlayerOnServer> = new ArrayList<>();
+    // TODO: name this variable
+    // private ArrayList<PlayerOnServer> = new ArrayList<>();
 
     public Server() throws IOException {
 
@@ -30,13 +31,16 @@ public class Server {
         }
         while (true) {
             try (Socket socket = serverSocket.accept()){
-                 PlayerOnServer player = new PlayerOnServer();
+                // TODO: pass proper argument
+                // PlayerOnServer player = new PlayerOnServer();
 
             }
         }
-    } catch (IOException e) {
-        e.printStackTrace();
     }
+    // TODO: fix this
+    // catch (IOException e) {
+      //   e.printStackTrace();
+    // }
 
 
 
