@@ -4,6 +4,7 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.util.MatrixUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Info about a range of cells around a given position
@@ -63,6 +64,20 @@ public class RangeInfo {
     // trivial getters
     public Set<Position> getVisiblePositions() {
         return mVisiblePositions;
+    }
+    // TODO: add doc
+    public Set<Position> getVisitedPositions(int minDist, int maxDist) {
+        return mDistances.entrySet().stream()
+                .filter(entry -> entry.getValue() <= maxDist && entry.getValue() >= minDist)
+                .map(entry -> entry.getKey())
+                .collect(Collectors.toSet());
+    }
+    public Set<Position> getVisitedPositions(int exactDist) {
+        return getVisitedPositions(exactDist, exactDist);
+    }
+    public Set<Position> getVisitedPositions() {
+        return mDistances.keySet().stream()
+                .collect(Collectors.toSet());
     }
 
     // trivial setters

@@ -295,6 +295,11 @@ public class Board {
         return getRangeInfo(observerPos).getVisiblePositions();
     }
 
+    // TODO: add doc
+    public Set<Position> getReachablePositions(Position observerPos, int minDist, int maxDist) {
+        return getRangeInfo(observerPos).getVisitedPositions(minDist, maxDist);
+    }
+
     /**
      * Calculated  the positions adjacent to {@code centralPos}, filtering those that are out of bounds
      * @param centralPos interested central position
