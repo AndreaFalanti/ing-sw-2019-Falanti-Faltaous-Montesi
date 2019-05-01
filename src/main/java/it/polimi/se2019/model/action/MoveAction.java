@@ -7,18 +7,23 @@ import it.polimi.se2019.model.Position;
 public class MoveAction implements Action {
     private PlayerColor mTarget;
     private Position mDestination;
-    private boolean mTeleport;
+    private boolean mNormalAction;
 
+    /**
+     * Simplified constructor for weapon additional effects
+     * @param playerColor Player color of the target
+     * @param destination Target destination
+     */
     public MoveAction(PlayerColor playerColor, Position destination) {
         mTarget = playerColor;
         mDestination = destination;
-        mTeleport = false;
+        mNormalAction = false;
     }
 
-    public MoveAction(PlayerColor playerColor, Position destination, boolean isTeleport) {
+    public MoveAction(PlayerColor playerColor, Position destination, boolean isNormalMove) {
         mTarget = playerColor;
         mDestination = destination;
-        mTeleport = isTeleport;
+        mNormalAction = isNormalMove;
     }
 
     public PlayerColor getTarget() {
@@ -29,8 +34,8 @@ public class MoveAction implements Action {
         return mDestination;
     }
 
-    public boolean isTeleport() {
-        return mTeleport;
+    public boolean isNormalAction() {
+        return mNormalAction;
     }
 
     @Override
@@ -40,8 +45,9 @@ public class MoveAction implements Action {
 
     @Override
     public boolean isValid(Game game) {
-        if (mTeleport) {
-            return true;
+        // player can't move himself if out of actions
+        if (mNormalAction && game.getRemainingActions() == 0) {
+            return false;
         }
         else {
             Position playerPos = game.getPlayerFromColor(mTarget).getPos();

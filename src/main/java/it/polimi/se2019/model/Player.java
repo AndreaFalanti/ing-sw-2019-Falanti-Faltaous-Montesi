@@ -84,6 +84,10 @@ public class Player {
     public Weapon getWeapon(int index) {
         return mWeapons[index];
     }
+
+    public PowerUpCard getPowerUpCard(int index) {
+        return mPowerUpCards[index];
+    }
     //endregion
 
     public void flipBoard () {
@@ -192,6 +196,10 @@ public class Player {
                 return ;
             }
         }
+    }
+
+    public void discard (int powerUpIndex) {
+        mPowerUpCards[powerUpIndex] = null;
     }
 
     public void move(Position value) {
