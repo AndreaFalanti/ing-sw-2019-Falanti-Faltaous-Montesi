@@ -220,6 +220,6 @@ public class BoardTest {
                 }
         );
 
-        assertEquals(expected.mInfo, rangeInfo.mInfo); // BUG: [2, 1] is not in actual
+        assertEquals(expected, rangeInfo);
     }
 }

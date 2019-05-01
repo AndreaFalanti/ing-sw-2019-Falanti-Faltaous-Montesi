@@ -293,11 +293,6 @@ public class Board {
 
     }
 
-    // TODO: WIP
-    public List<Position> allSeenBy(Position observerPos) {
-        return null;
-    }
-
     /**
      * Calculated  the positions adjacent to {@code centralPos}, filtering those that are out of bounds
      * @param centralPos interested central position
@@ -356,7 +351,6 @@ public class Board {
         int pastDist = result.getDistAt(currPos);
 
         // if already visited and not worse (less or equally distant), stop
-        // TODO: there is probably a bug here
         // TODO: decide weather to use -1 or empty optional for unreachable position
         if (result.isVisited(currPos) && pastDist <= currDist)
             return result;
