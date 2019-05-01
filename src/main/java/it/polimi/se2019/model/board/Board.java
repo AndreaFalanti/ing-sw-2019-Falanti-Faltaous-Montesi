@@ -292,8 +292,7 @@ public class Board {
 
     // TODO: add doc
     public Set<Position> getAllSeenBy(Position observerPos) {
-        // TODO: replace 10 with infinity
-        return getRangeInfo(observerPos, 10).getVisiblePositions();
+        return getRangeInfo(observerPos).getVisiblePositions();
     }
 
     /**
@@ -350,13 +349,9 @@ public class Board {
     /**
      * Helper function for {@code getRangeInfoHelper}
      */
-    private RangeInfo getRangeInfoHelper(Position originalPos, Position currPos, int range, int currDist, RangeInfo result) {
+    private RangeInfo getRangeInfoHelper(Position originalPos, Position currPos, int currDist, RangeInfo result) {
         // if already visited and not worse (less or equally distant), stop
         if (result.isVisited(currPos) && result.getDistAt(currPos) <= currDist)
-            return result;
-
-        // if over the specified range, stop
-        if (currDist > range)
             return result;
 
         // otherwise position is interesting; associate it with collected info and add it to results
@@ -366,19 +361,18 @@ public class Board {
         // recurse among adjacent tiles that can be reached
         getAdjacentPositions(currPos).stream()
                 .filter(adjPos -> areConnected(currPos, adjPos))
-                .forEach(newPos -> getRangeInfoHelper(originalPos, newPos, range, currDist + 1, result));
+                .forEach(newPos -> getRangeInfoHelper(originalPos, newPos, currDist + 1, result));
 
         return result;
     }
 
     /**
-     * Returns info about the requested range from the specified position
+     * Returns info about the board around the specified position
      * (see RangeInfo for more info)
      * @param rangeOrigin position of origin of range
-     * @param range the specified range
-     * @return the specified position
+     * @return info about range surrounding {@code rangeOrigin}
      */
-    public RangeInfo getRangeInfo(Position rangeOrigin, int range) {
-        return getRangeInfoHelper(rangeOrigin, rangeOrigin, range, 0, new RangeInfo(rangeOrigin));
+    public RangeInfo getRangeInfo(Position rangeOrigin) {
+        return getRangeInfoHelper(rangeOrigin, rangeOrigin, 0, new RangeInfo(rangeOrigin));
     }
 }

@@ -182,13 +182,13 @@ public class BoardTest {
 
     @Test
     public void testGetRangeInfoTrivialRange() {
-        RangeInfo rangeInfo = mExampleEmptyBoard.getRangeInfo(new Position(1, 1), 1);
+        RangeInfo rangeInfo = mExampleEmptyBoard.getRangeInfo(new Position(1, 1));
 
         RangeInfo expected = RangeInfo.fromMatrix(new Position(1),
                 new Integer[][]{
-                        {-1, 1, -1},
+                        { 2, 1,  2},
                         { 1, 0,  1},
-                        {-1, 1, -1}
+                        { 2, 1,  2}
                 },
                 new Integer[][]{
                         { 0, 1, 0},
@@ -203,7 +203,7 @@ public class BoardTest {
 
     @Test
     public void testGetRangeInfoSimpleWall() {
-        RangeInfo rangeInfo = mExampleSimpleWallBoard.getRangeInfo(new Position(1, 2), 5);
+        RangeInfo rangeInfo = mExampleSimpleWallBoard.getRangeInfo(new Position(1, 2));
 
         RangeInfo expected = RangeInfo.fromMatrix(new Position(1, 2),
                 new Integer[][]{
