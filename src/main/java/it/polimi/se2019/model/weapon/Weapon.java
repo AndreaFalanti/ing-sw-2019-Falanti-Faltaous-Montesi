@@ -1,5 +1,7 @@
-package it.polimi.se2019.model;
+package it.polimi.se2019.model.weapon;
 
+import it.polimi.se2019.model.AmmoValue;
+import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.board.Board;
 
 import java.util.ArrayList;

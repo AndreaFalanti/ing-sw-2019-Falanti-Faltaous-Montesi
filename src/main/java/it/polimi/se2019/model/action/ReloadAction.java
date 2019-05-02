@@ -2,7 +2,7 @@ package it.polimi.se2019.model.action;
 
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.Weapon;
+import it.polimi.se2019.model.weapon.Weapon;
 
 public class ReloadAction implements Action {
     private int mWeaponIndex;
