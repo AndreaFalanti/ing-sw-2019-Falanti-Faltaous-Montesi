@@ -2,6 +2,8 @@ package it.polimi.se2019.model.weapon.behaviour;
 
 import it.polimi.se2019.model.Damage;
 
+import java.util.Optional;
+
 public class DamageLiteral implements Expression {
     Damage mContents;
 
@@ -15,7 +17,7 @@ public class DamageLiteral implements Expression {
     }
 
     @Override
-    public Damage asDamage() {
-        return mContents;
+    public Optional<Damage> asDamage() {
+        return Optional.of(mContents);
     }
 }

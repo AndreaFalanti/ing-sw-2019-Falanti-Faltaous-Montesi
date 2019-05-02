@@ -1,6 +1,6 @@
 package it.polimi.se2019.model.weapon.request;
 
-public class SelectionRequest {
+public class SelectionRequest implements Request {
     int mMinToSelect;
     int mMaxToSelect;
 

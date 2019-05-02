@@ -8,9 +8,16 @@ import it.polimi.se2019.model.board.Board;
 import java.util.Stack;
 
 public class Context {
-    Game mGameStatus;
+    // fields
+    Game mGameStatus; // TODO: discuss about necessity of GameStatus class
     PlayerColor mShooterColor;
     Stack<Expression> mProvidedInfo;
+
+    // trivial constructors
+    public Context(Game gameStatus, PlayerColor shooterColor) {
+        mGameStatus = gameStatus;
+        mShooterColor = shooterColor;
+    }
 
     // trivial getters
     Board getBoard() {
@@ -24,7 +31,10 @@ public class Context {
     }
 
     // for manipulating stack info
-    Expression popInfo() {
+    public void pushInfo(Expression info) {
+        mProvidedInfo.push(info);
+    }
+    public Expression popInfo() {
         if (mProvidedInfo.empty())
             return null;
 
