@@ -25,7 +25,7 @@ public final class GameTestCaseBuilder {
     }
 
     public static PowerUpCard generateTeleportCard () {
-        return new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
+        return new PowerUpCard("Teleport", new AmmoValue(0,1,0), new TeleportBehaviour());
     }
 
     //TODO: implement other cards generation methods

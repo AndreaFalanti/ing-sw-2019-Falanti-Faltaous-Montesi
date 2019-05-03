@@ -102,6 +102,22 @@ public class Player {
         return mDamageTaken[0] == null;
     }
 
+    public boolean isFullOfWeapons () {
+        for (Weapon weapon : mWeapons) {
+            if (weapon == null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public Weapon takeWeapon (int index) {
+        Weapon weapon = mWeapons[index];
+        mWeapons[index] = null;
+        return weapon;
+    }
+
     /**
      * Get max grab distance of player. If it has at least 3 damage, unlock "adrenaline grab".
      * @return 1 if damage < 3, 2 if >= 3

@@ -11,7 +11,12 @@ public class MoveGrabAction implements Action{
 
     public MoveGrabAction (PlayerColor playerColor, Position destination) {
         mMoveAction = new MoveAction(playerColor, destination);
-        mGrabAction = new GrabAction();
+        mGrabAction = new GrabAmmoAction();
+    }
+
+    public MoveGrabAction (PlayerColor playerColor, Position destination, int weaponIndex, Integer weaponExchangedIndex) {
+        mMoveAction = new MoveAction(playerColor, destination);
+        mGrabAction = new GrabWeaponAction(weaponIndex, weaponExchangedIndex);
     }
 
 

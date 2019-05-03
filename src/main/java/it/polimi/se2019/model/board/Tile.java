@@ -1,11 +1,11 @@
 package it.polimi.se2019.model.board;
 
 import com.google.gson.annotations.JsonAdapter;
-import it.polimi.se2019.model.Player;
+import it.polimi.se2019.model.AmmoCard;
+import it.polimi.se2019.model.Weapon;
 import it.polimi.se2019.model.board.serialization.DoorsDeserializer;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public abstract class Tile {
     private TileColor mColor = TileColor.BLUE;
@@ -47,8 +47,6 @@ public abstract class Tile {
         return mColor == casted.mColor &&
                 mDoors.intValue() == casted.mDoors.intValue();
     }
-
-    public abstract void grabObjects(Player player);
 
     public TileColor getColor() {
         return mColor;

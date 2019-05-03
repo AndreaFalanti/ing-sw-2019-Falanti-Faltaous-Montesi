@@ -1,6 +1,6 @@
 package it.polimi.se2019.model.board;
 
-import it.polimi.se2019.model.Player;
+import it.polimi.se2019.model.AmmoCard;
 import it.polimi.se2019.model.Weapon;
 
 import java.util.Arrays;
@@ -45,9 +45,14 @@ public class SpawnTile extends Tile {
         return Arrays.equals(mWeapons,  casted.mWeapons);
     }
 
-    @Override
-    public void grabObjects(Player player) {
-        // TODO: implement
+    public Weapon getWeapon (int index) {
+        return mWeapons[index];
+    }
+
+    public Weapon grabWeapon(int index) {
+        Weapon grabbedCard = mWeapons[index];
+        mWeapons[index] = null;
+        return grabbedCard;
     }
 
     @Override
