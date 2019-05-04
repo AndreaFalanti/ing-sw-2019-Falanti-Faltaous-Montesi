@@ -18,9 +18,10 @@ public class ClientSocket{
     private Socket socket;
     private String serverURL = "127.0.0.1";
 
+
     public ClientSocket() {
         try {
-            socket = new Socket(serverURL, port);
+            socket = new Socket(serverURL,PORT);
             out = new DataOutputStream(socket.getOutputStream());
             in = new DataInputStream(socket.getInputStream());
         } catch (IOException e) {
