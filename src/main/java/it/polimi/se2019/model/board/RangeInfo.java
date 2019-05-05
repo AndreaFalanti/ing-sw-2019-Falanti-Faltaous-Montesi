@@ -97,7 +97,7 @@ public class RangeInfo {
         RangeInfo casted = (RangeInfo) other;
 
         return mDistances.equals(casted.mDistances) &&
-                mVisiblePositions.equals(mVisiblePositions);
+                mVisiblePositions.equals(casted.mVisiblePositions);
     }
 
     @Override

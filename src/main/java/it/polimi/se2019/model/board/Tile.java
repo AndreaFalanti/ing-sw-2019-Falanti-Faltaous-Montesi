@@ -1,8 +1,6 @@
 package it.polimi.se2019.model.board;
 
 import com.google.gson.annotations.JsonAdapter;
-import it.polimi.se2019.model.AmmoCard;
-import it.polimi.se2019.model.Weapon;
 import it.polimi.se2019.model.board.serialization.DoorsDeserializer;
 
 import java.util.*;

@@ -1,7 +1,6 @@
 package it.polimi.se2019.model.board;
 
 import it.polimi.se2019.model.AmmoCard;
-import it.polimi.se2019.model.Weapon;
 
 import java.util.Objects;
 

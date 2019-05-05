@@ -3,7 +3,6 @@ package it.polimi.se2019.model.board;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.JsonAdapter;
-import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.serialization.CustomFieldNamingStrategy;
 import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
@@ -214,11 +213,6 @@ public class Board {
         return -1;
     }
 
-    // TODO: write doc
-    public boolean hasVisibility (Position observerPos, Position targetPos) {
-        return false;
-    }
-
     /**
      * Checks if {@code pos} is out of {@code this}'s bounds
      * @param pos the checked position
@@ -272,7 +266,6 @@ public class Board {
      */
     public boolean canSee(Position observerPos, Position observedPos) {
         Tile observerTile = getTileAt(observerPos);
-        Tile observedTile = getTileAt(observedPos);
 
         // two positions inside the same room can see each others
         if (canSeeInsideRoom(observerPos, observedPos))

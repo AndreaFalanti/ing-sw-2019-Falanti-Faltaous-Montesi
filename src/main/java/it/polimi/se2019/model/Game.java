@@ -121,10 +121,6 @@ public class Game {
     }
     //endregion
 
-    public List<Player> getVisiblePlayers(Player player) {
-        return null;
-    }
-
     /**
      * Start next turn, incrementing turn number, changing active player and setting number of actions.
      * If it's game over, distribute kill points to players and finish the game.
