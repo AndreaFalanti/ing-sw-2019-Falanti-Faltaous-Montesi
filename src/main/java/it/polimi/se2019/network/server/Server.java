@@ -1,37 +1,63 @@
 package it.polimi.se2019.network.server;
 
-import it.polimi.se2019.network.server.GameThread;
-import it.polimi.se2019.network.server.SocketPlayerConnection;
-
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
-public abstract class Server implements Runnable {
+public class Server implements Runnable{
+    private List<GameThread> games;
+    private List<PlayerConnection> waitingPlayer = new ArrayList<>();
+    private List<PlayerConnection> playersOnline = new ArrayList<>();
 
-    public static final int PORT = 4567;
-    private ArrayList<GameThread> games;
-    private ArrayList<SocketPlayerConnection> waitingPlayer = new ArrayList<>();
-    // TODO: name this variable
-     private ArrayList<SocketPlayerConnection> playersOnLine = new ArrayList<>();
+    private Socket socket;
+    private ServerSocket serverSocket = null;
+    private DataInputStream in;
+    private DataOutputStream out;
+    public static final int SOCKET_PORT = 4567;
 
-    public void waitingRoom(SocketPlayerConnection player){
-            //TODO implementation
+    public static final int RMI_PORT = 8000;
+
+    public Server() throws IOException {
+        serverSocket = new ServerSocket(SOCKET_PORT);
+    }
+
+    public void waitingRoom(PlayerConnection player){
+    }
+    public void registerConnection(PlayerConnection player){
+        waitingPlayer.add(player);
+    }
+
+    public void deregisterConnection(PlayerConnection player){
+        waitingPlayer.remove(player);
     }
 
     @Override
     public void run(){
-
-    }
-
-    public void registerConnection(SocketPlayerConnection player){
-        waitingPlayer.add(player);
-    }
-
-    public void deregisterConnection(SocketPlayerConnection player){
-
-        waitingPlayer.remove(player);
-        //TODO playeronline
+        try {
+            // TODO: pass proper argument
+            // SocketPlayerConnection player = new SocketPlayerConnection();
+            Socket socket = serverSocket.accept();
+            SocketPlayerConnection player = new SocketPlayerConnection(socket,this);
+            registerConnection(player);
+            //    if(waitingPlayer.size()==1)
+            //TODO:          new GameThread(socket)
+        } catch(IOException e){
+            System.out.println("Connection error");
+        }
     }
 
     public static void main(String[] args) {
+        Server server;
+        try {
+            server = new Server();
+            server.run();
+        } catch (IOException e) {
+            System.err.println("Impossible to initialize network");
+        }
     }
+
 }

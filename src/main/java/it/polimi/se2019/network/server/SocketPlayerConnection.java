@@ -7,7 +7,6 @@ import java.net.Socket;
 
 
 public class SocketPlayerConnection extends PlayerConnection implements Runnable{
-
     private DataOutputStream out;
     private DataInputStream in;
     private Socket socket;
