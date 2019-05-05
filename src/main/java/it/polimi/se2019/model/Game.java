@@ -5,6 +5,7 @@ import it.polimi.se2019.util.Jsons;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -119,10 +120,6 @@ public class Game {
         return mFirstPlayerDoneFinalFrenzy;
     }
     //endregion
-
-    public List<Player> getVisiblePlayers(Player player) {
-        return null;
-    }
 
     /**
      * Start next turn, incrementing turn number, changing active player and setting number of actions.
@@ -324,5 +321,40 @@ public class Game {
         if (killsScored >= 2) {
             getActivePlayer().addScore(1);
         }
+
+        //player with no damage or respawned player will always have board flipped
+        if (mFinalFrenzy) {
+            for (Player player : mPlayers) {
+                if (player.hasNoDamage()) {
+                    player.flipBoard();
+                }
+            }
+        }
+    }
+
+    /**
+     * Get current player leaderboard, based on score.
+     * @return player list ordered by decreasing score
+     */
+    public List<Player> getLeaderboard () {
+        return mPlayers.stream()
+                .sorted(Collections.reverseOrder(Comparator.comparingInt(Player::getScore)))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get game winner.
+     * @return Player that won the game
+     */
+    public Player getWinner () {
+        Player winner = mPlayers.get(0);
+
+        for (Player player : mPlayers) {
+            if (player.getScore() > winner.getScore()) {
+                winner = player;
+            }
+        }
+
+        return winner;
     }
 }

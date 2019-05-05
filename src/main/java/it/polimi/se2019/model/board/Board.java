@@ -3,16 +3,12 @@ package it.polimi.se2019.model.board;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.JsonAdapter;
-import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.serialization.CustomFieldNamingStrategy;
 import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -217,11 +213,6 @@ public class Board {
         return -1;
     }
 
-    // TODO: write doc
-    public boolean hasVisibility (Position observerPos, Position targetPos) {
-        return false;
-    }
-
     /**
      * Checks if {@code pos} is out of {@code this}'s bounds
      * @param pos the checked position
@@ -275,7 +266,6 @@ public class Board {
      */
     public boolean canSee(Position observerPos, Position observedPos) {
         Tile observerTile = getTileAt(observerPos);
-        Tile observedTile = getTileAt(observedPos);
 
         // two positions inside the same room can see each others
         if (canSeeInsideRoom(observerPos, observedPos))
@@ -293,9 +283,14 @@ public class Board {
 
     }
 
-    // TODO: WIP
-    public List<Position> allSeenBy(Position observerPos) {
-        return null;
+    // TODO: add doc
+    public Set<Position> getAllSeenBy(Position observerPos) {
+        return getRangeInfo(observerPos).getVisiblePositions();
+    }
+
+    // TODO: add doc
+    public Set<Position> getReachablePositions(Position observerPos, int minDist, int maxDist) {
+        return getRangeInfo(observerPos).getVisitedPositions(minDist, maxDist);
     }
 
     /**
@@ -352,36 +347,30 @@ public class Board {
     /**
      * Helper function for {@code getRangeInfoHelper}
      */
-    private RangeInfo getRangeInfoHelper(Position currPos, int range, int currDist, RangeInfo result) {
-        OptionalInt pastDist = result.getDistAt(currPos);
-
+    private RangeInfo getRangeInfoHelper(Position originalPos, Position currPos, int currDist, RangeInfo result) {
         // if already visited and not worse (less or equally distant), stop
-        if (pastDist.isPresent() && pastDist.getAsInt() <= currDist)
+        if (result.isVisited(currPos) && result.getDistAt(currPos) <= currDist)
             return result;
 
-        // if over the specified range, stop
-        if (currDist > range)
-            return result;
-
-        // otherwise position is interesting; associate it with distance and add it to results
+        // otherwise position is interesting; associate it with collected info and add it to results
         result.addDistAt(currPos, currDist);
+        if (canSee(originalPos, currPos)) result.toggleVisibleAt(currPos); // TODO: might be faster without using canSee
 
         // recurse among adjacent tiles that can be reached
         getAdjacentPositions(currPos).stream()
                 .filter(adjPos -> areConnected(currPos, adjPos))
-                .forEach(newPos -> getRangeInfoHelper(newPos, range, currDist + 1, result));
+                .forEach(newPos -> getRangeInfoHelper(originalPos, newPos, currDist + 1, result));
 
         return result;
     }
 
     /**
-     * Returns info about the requested range from the specified position
+     * Returns info about the board around the specified position
      * (see RangeInfo for more info)
      * @param rangeOrigin position of origin of range
-     * @param range the specified range
-     * @return the specified position
+     * @return info about range surrounding {@code rangeOrigin}
      */
-    public RangeInfo getRangeInfo(Position rangeOrigin, int range) {
-        return getRangeInfoHelper(rangeOrigin, range, 0, new RangeInfo(rangeOrigin));
+    public RangeInfo getRangeInfo(Position rangeOrigin) {
+        return getRangeInfoHelper(rangeOrigin, rangeOrigin, 0, new RangeInfo(rangeOrigin));
     }
 }

@@ -1,13 +1,11 @@
 package it.polimi.se2019.model.board;
 
 import it.polimi.se2019.model.AmmoCard;
-import it.polimi.se2019.model.Player;
 
 import java.util.Objects;
 
 
 public class NormalTile extends Tile {
-
     // normal tiles contain an ammo card
     private AmmoCard mAmmoCard;
 
@@ -34,12 +32,16 @@ public class NormalTile extends Tile {
         super(color, doors);
     }
 
+    public AmmoCard getAmmoCard() {
+        return mAmmoCard;
+    }
+
     /**
      *
      * @param value ammo card to set
      */
     public void setAmmoCard(AmmoCard value) {
-        // TODO: implement
+        mAmmoCard = value;
     }
 
     /**
@@ -92,9 +94,10 @@ public class NormalTile extends Tile {
     }
 
     // TODO: add doc
-    @Override
-    public void grabObjects(Player player) {
-        // TODO: implement
+    public AmmoCard grabAmmo() {
+        AmmoCard grabbedItem = mAmmoCard;
+        mAmmoCard = null;
+        return grabbedItem;
     }
 
     /**

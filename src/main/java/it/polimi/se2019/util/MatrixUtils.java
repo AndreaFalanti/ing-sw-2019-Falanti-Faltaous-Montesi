@@ -1,8 +1,9 @@
 package it.polimi.se2019.util;
 
+import it.polimi.se2019.model.Position;
+
 import java.util.Arrays;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.function.BiFunction;
 
 public class MatrixUtils {
     /**
@@ -47,16 +48,59 @@ public class MatrixUtils {
         return isValidRectangularMatrix(boxed);
     }
 
+    // TODO: add doc
+    public static <T> void fillRectangularMatrix(T[][] toFill, int cols, int rows, T init) {
+        if (!isValidRectangularMatrix(toFill))
+            throw new IllegalArgumentException("toFill should be a valid rectangular matrix!");
+
+        for (int y = 0; y < cols; y++) {
+            for (int x = 0; x < rows; x++) {
+                toFill[y][x] = init;
+            }
+        }
+    }
+
     /**
      *
      */
-    public static <T> String toPrettyString(T[][] toPrettify, Function<T, String> parseMatrixElementToString) {
-        return StringUtils.removeLastChar(Arrays.stream(toPrettify)
-                .map(row -> Arrays.stream(row)
-                        .map(parseMatrixElementToString)
-                        .collect(Collectors.joining()))
-                .map(StringUtils::removeLastChar)
-                .map(strRow -> strRow + "\n")
-                .collect(Collectors.joining()));
+    // TODO: take into account multiple digit numbers
+    public static <T> String toPrettyString(T[][] toPrettify, BiFunction<T, Position, String> parseMatrixElementToString) {
+        StringBuilder result = new StringBuilder();
+
+        for (int y = 0; y < toPrettify.length; y++) {
+            for (int x = 0; x < toPrettify.length; x++) {
+                result.append(parseMatrixElementToString.apply(toPrettify[y][x], new Position(y, x)));
+            }
+            // replace last trailing space with newline
+            result.setCharAt(result.length() - 1, '\n');
+        }
+
+        return result.toString();
     }
+
+    // TODO: write doc
+    public static <T> boolean haveSameSize(T[][] lhs, T[][] rhs) {
+        if (!isValidRectangularMatrix(lhs) || !isValidRectangularMatrix(rhs))
+            throw new IllegalArgumentException("lhs and rhs should both be valid rectangulare matrices!");
+
+        return lhs.length == rhs.length && lhs[0].length == rhs[0].length;
+    }
+
+    // TODO: write doc
+    public static <T> Position findPosOf(T[][] matrix, T toFind) {
+        if (!isValidRectangularMatrix(matrix))
+            throw new IllegalArgumentException("need a rectangular matrix");
+
+        Position res = new Position(0, 0);
+        for (int y = 0; y < matrix.length; ++y) {
+            for (int x = 0; x < matrix[0].length; ++x) {
+                if (matrix[y][x].equals(toFind))
+                    res = new Position(x, y);
+            }
+        }
+
+        return res;
+    }
+
+
 }

@@ -4,6 +4,7 @@ import it.polimi.se2019.model.board.Board;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -205,6 +206,9 @@ public class GameTest {
         }
     }
 
+    /**
+     * Test that score is distributed correctly when a player is killed
+     */
     @Test
     public void testDistributePlayerKillScore() {
         ArrayList<Player> players = new ArrayList<>();
@@ -226,5 +230,27 @@ public class GameTest {
         assertEquals(7, game.getPlayerFromColor(PlayerColor.BLUE).getScore());
         assertEquals(8, game.getPlayerFromColor(PlayerColor.YELLOW).getScore());
         assertEquals(0, game.getPlayerFromColor(PlayerColor.GREY).getScore());
+    }
+
+    /**
+     * Test that leaderboard returned is correct
+     */
+    @Test
+    public void getLeaderboard() {
+        ArrayList<Player> players = new ArrayList<>();
+        fillPlayerList(players);
+
+        List<Player> expectedLeaderboard = new ArrayList<>();
+        expectedLeaderboard.add(players.get(1));
+        expectedLeaderboard.add(players.get(2));
+        expectedLeaderboard.add(players.get(0));
+
+        Game game = new Game(new Board(), players, 3);
+        game.getPlayerFromColor(PlayerColor.BLUE).addScore(8);
+        game.getPlayerFromColor(PlayerColor.YELLOW).addScore(12);
+        game.getPlayerFromColor(PlayerColor.GREY).addScore(10);
+
+        assertEquals(expectedLeaderboard, game.getLeaderboard());
+        assertEquals(players.get(1), game.getWinner());
     }
 }
