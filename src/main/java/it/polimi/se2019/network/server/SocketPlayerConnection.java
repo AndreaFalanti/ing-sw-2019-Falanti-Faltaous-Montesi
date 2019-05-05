@@ -1,14 +1,12 @@
-package it.polimi.se2019.server;
+package it.polimi.se2019.network.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
-import it.polimi.se2019.server.Server;
 
 
-public class PlayerOnServer implements Runnable{
+public class SocketPlayerConnection extends PlayerConnection implements Runnable{
 
     private DataOutputStream out;
     private DataInputStream in;
@@ -16,7 +14,7 @@ public class PlayerOnServer implements Runnable{
     private Server server;
     private boolean active = true;
 
-    public PlayerOnServer(Socket socket, Server server){
+    public SocketPlayerConnection(Socket socket, Server server){
         this.socket = socket;
         this.server = server;
     }
@@ -42,13 +40,8 @@ public class PlayerOnServer implements Runnable{
             System.err.print("Error during closing");
         }
         active = false;
-      //TODO pay attention uou cannot onli deregister  server.deregisterConnection(this);
+      //TODO pay attention uou cannot onli deregister  network.deregisterConnection(this);
     }
-
-    public boolean isActive(){
-        return active;
-    }
-
 
     public DataInputStream getIn() {
         return in;

@@ -1,10 +1,8 @@
-package it.polimi.se2019.server;
+package it.polimi.se2019.network.server;
 
 import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.view.View;
-
-import java.net.Socket;
 
 public class GameThread implements Runnable{
     private Game model;

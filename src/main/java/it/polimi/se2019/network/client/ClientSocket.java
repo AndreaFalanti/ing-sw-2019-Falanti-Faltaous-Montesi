@@ -1,9 +1,8 @@
-package it.polimi.se2019.server;
+package it.polimi.se2019.network.client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 
@@ -11,7 +10,6 @@ import java.net.Socket;
 public class ClientSocket{
 
     public static final int PORT = 4567;
-    private String ip;
     private int port;
     private DataInputStream in;
     private DataOutputStream out;

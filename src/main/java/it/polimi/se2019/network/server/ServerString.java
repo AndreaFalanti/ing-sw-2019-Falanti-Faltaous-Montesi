@@ -1,4 +1,4 @@
-package it.polimi.se2019.server;
+package it.polimi.se2019.network.server;
 
 public class ServerString {
     private String serverURL;
