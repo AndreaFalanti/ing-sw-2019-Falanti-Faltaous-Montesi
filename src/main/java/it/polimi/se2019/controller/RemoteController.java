@@ -5,9 +5,11 @@ import it.polimi.se2019.view.requests.LeaderboardRequest;
 import it.polimi.se2019.view.requests.ReloadRequest;
 import it.polimi.se2019.view.requests.ValidMoveRequest;
 
-public interface RemoteController extends RequestHandler{
-    void handle (GrabRequest request);
-    void handle (ReloadRequest request);
-    void handle (LeaderboardRequest request);
-    void handle (ValidMoveRequest request);
+import java.rmi.Remote;
+
+public interface RemoteController extends RequestHandler, Remote {
+    void handle (GrabRequest request) throws RuntimeException;
+    void handle (ReloadRequest request) throws RuntimeException;
+    void handle (LeaderboardRequest request) throws RuntimeException;
+    void handle (ValidMoveRequest request) throws RuntimeException;
 }
