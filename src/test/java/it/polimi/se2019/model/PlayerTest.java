@@ -1,5 +1,6 @@
 package it.polimi.se2019.model;
 
+import it.polimi.se2019.model.weapon.Weapon;
 import org.junit.Test;
 
 //import javax.swing.text.Position;
