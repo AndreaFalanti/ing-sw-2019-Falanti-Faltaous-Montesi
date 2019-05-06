@@ -6,28 +6,55 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.weapon.request.Request;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
-public interface Expression {
-    Expression eval(Context context);
+public abstract class Expression {
+    final List<Expression> mSubexpressions = new ArrayList<>();
 
-    default int asInt() {
+    // TODO: add doc
+    protected Expression(Expression... subExpressions) {
+        mSubexpressions.addAll(Arrays.asList(subExpressions));
+    }
+
+    // TODO: add doc
+    public final Expression eval(ShootContext shootContext) {
+        // first evaluate all subexpressions
+        boolean infoIsMissing = false;
+        for (Expression subexpr : mSubexpressions) {
+            subexpr = subexpr.eval(shootContext);
+            if (subexpr instanceof MissingInfo)
+                infoIsMissing = true;
+        }
+
+        // if info is missing, return the expression partially evaluated
+        if (infoIsMissing)
+            return this;
+        // else use info acquired from complete subexpressions to finish evaluation of
+        // this expression
+        else
+            return continueEval(shootContext);
+    }
+
+    // TODO: add doc
+    public abstract Expression continueEval(ShootContext shootContext);
+
+    // TODO: add doc and refine error messages
+    int asInt() {
         throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }
-    default Optional<Set<PlayerColor>> asTargets() {
-        return Optional.empty();
+    Set<PlayerColor> asTargets() {
+        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }
-    default Optional<Set<Position>> asRange() {
-        return Optional.empty();
+    Set<Position> asRange() {
+        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }
-    default Optional<Damage> asDamage() {
-        return Optional.empty();
+    Damage asDamage() {
+        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }
-    default Optional<Action> asAction() {
-        return Optional.empty();
+    Action asAction() {
+        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }
-    default Optional<Request> asRequest() {
-        return Optional.empty();
+    Request asRequest() {
+        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }
 }

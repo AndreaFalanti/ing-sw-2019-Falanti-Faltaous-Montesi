@@ -7,7 +7,7 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.DamageAction;
 import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.weapon.behaviour.Context;
+import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.model.weapon.behaviour.TargetsLiteral;
 import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
@@ -39,10 +39,10 @@ public class WeaponTest {
         PlayerColor shooterColor = PlayerColor.BLUE;
         PlayerColor defenderColor = PlayerColor.GREEN;
 
-        Context context = new Context(mSimpleGame, shooterColor);
-        context.pushInfo(new TargetsLiteral(Collections.singleton(defenderColor)));
+        ShootContext shootContext = new ShootContext(mSimpleGame, shooterColor);
+        shootContext.pushInfo(new TargetsLiteral(Collections.singleton(defenderColor)));
 
-        Action actual = whisper.generateShootAction(context);
+        Action actual = whisper.generateShootAction(shootContext);
 
         Action expected = new DamageAction(
                 shooterColor,

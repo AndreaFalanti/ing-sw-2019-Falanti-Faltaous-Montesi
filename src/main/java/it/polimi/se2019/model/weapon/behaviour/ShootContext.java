@@ -7,14 +7,14 @@ import it.polimi.se2019.model.board.Board;
 
 import java.util.Stack;
 
-public class Context {
+public class ShootContext {
     // fields
     Game mGameStatus; // TODO: discuss about necessity of GameStatus class
     PlayerColor mShooterColor;
     Stack<Expression> mProvidedInfo;
 
     // trivial constructors
-    public Context(Game gameStatus, PlayerColor shooterColor) {
+    public ShootContext(Game gameStatus, PlayerColor shooterColor) {
         mGameStatus = gameStatus;
         mShooterColor = shooterColor;
     }

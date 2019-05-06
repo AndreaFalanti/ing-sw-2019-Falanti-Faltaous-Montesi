@@ -12,7 +12,7 @@ public class DamageLiteral implements Expression {
     }
 
     @Override
-    public Expression eval(Context context) {
+    public Expression eval(ShootContext shootContext) {
         return this;
     }
 

@@ -19,16 +19,16 @@ public class Distant implements Expression {
 
     /**
      *
-     * @param context used for board and shooter position
+     * @param shootContext used for board and shooter position
      * @return RangeLiteral describing a "circular halo" that encircles the shooter position.
      *         Said halo contains all positions that are a contained between a range of distances
      *         from the shooter (the range is described by a minimum and a maximum distance, which are set
      *         when {@code this}  is instantiated (see the constructor for more info)
      */
     @Override
-    public Expression eval(Context context) {
-        Board board = context.getBoard();
-        Position shooterPos = context.getShooterPosition();
+    public Expression eval(ShootContext shootContext) {
+        Board board = shootContext.getBoard();
+        Position shooterPos = shootContext.getShooterPosition();
 
         return new RangeLiteral(board.getReachablePositions(shooterPos, mMinDistance, mMaxDistance));
     }

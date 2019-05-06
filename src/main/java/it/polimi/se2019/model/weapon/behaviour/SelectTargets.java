@@ -16,13 +16,13 @@ public class SelectTargets implements Expression {
     }
 
     @Override
-    public Expression eval(Context context) {
-        mMinNumToSelect = mMinNumToSelect.eval(context);
-        mMaxNumToSelect = mMaxNumToSelect.eval(context);
-        mTargetsToSelectFrom = mTargetsToSelectFrom.eval(context);
+    public Expression eval(ShootContext shootContext) {
+        mMinNumToSelect = mMinNumToSelect.eval(shootContext);
+        mMaxNumToSelect = mMaxNumToSelect.eval(shootContext);
+        mTargetsToSelectFrom = mTargetsToSelectFrom.eval(shootContext);
 
         // check if needed info is available
-        Expression selectedTarget = context.popInfo();
+        Expression selectedTarget = shootContext.popInfo();
 
         // if info is there, just return the selected target
         // TODO: check if expression type is indeed a TargetsLiteral
