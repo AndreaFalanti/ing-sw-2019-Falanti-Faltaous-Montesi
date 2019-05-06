@@ -5,24 +5,28 @@ import it.polimi.se2019.model.action.DamageAction;
 
 import java.util.Set;
 
-public class InflictDamage implements Expression {
+public class InflictDamage extends Expression {
     // subexpressions
-    Expression mGetTargetExpr;
+    Expression mTargets;
     Expression mDamageToInflict;
 
-
     // trivial constructor
-    public InflictDamage(Expression damageToInflict, Expression getTargetExpr) {
+    public InflictDamage(Expression damageToInflict, Expression targets) {
+        super(damageToInflict, targets);
+
         mDamageToInflict = damageToInflict;
-        mGetTargetExpr   = getTargetExpr;
+        mTargets = targets;
     }
 
     // TODO: add doc
     @Override
-    public Expression eval(ShootContext shootContext) {
-        Set<PlayerColor> targetColors = mGetTargetExpr.eval(shootContext).asTargets();
-        PlayerColor inflicterColor    = shootContext.getShooterColor();
+    protected final Expression continueEval(ShootContext shootContext) {
+        PlayerColor inflicterColor = shootContext.getShooterColor();
 
-        return new DamageActionLiteral(new DamageAction(inflicterColor, targetColors, mDamageToInflict.asDamage()));
+        return new ActionLiteral(new DamageAction(
+                inflicterColor,
+                mTargets.asTargets(),
+                mDamageToInflict.asDamage()
+        ));
     }
 }

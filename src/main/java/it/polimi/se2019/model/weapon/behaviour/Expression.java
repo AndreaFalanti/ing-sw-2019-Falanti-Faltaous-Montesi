@@ -36,7 +36,7 @@ public abstract class Expression {
     }
 
     // TODO: add doc
-    public abstract Expression continueEval(ShootContext shootContext);
+    protected abstract Expression continueEval(ShootContext shootContext);
 
     // TODO: add doc and refine error messages
     int asInt() {

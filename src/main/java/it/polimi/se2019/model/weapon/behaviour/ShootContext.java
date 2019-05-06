@@ -5,6 +5,7 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 
+import java.util.Optional;
 import java.util.Stack;
 
 public class ShootContext {
@@ -34,10 +35,10 @@ public class ShootContext {
     public void pushInfo(Expression info) {
         mProvidedInfo.push(info);
     }
-    public Expression popInfo() {
+    public Optional<Expression> popInfo() {
         if (mProvidedInfo.empty())
-            return null;
+            return Optional.empty();
 
-        return mProvidedInfo.pop();
+        return Optional.of(mProvidedInfo.pop());
     }
 }

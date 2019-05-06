@@ -1,8 +1,13 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-public class CanSee implements Expression {
+public class CanSee extends Expression {
+    public CanSee() {
+        super();
+    }
+
+    // TODO: add doc
     @Override
-    public Expression eval(ShootContext shootContext) {
+    public Expression continueEval(ShootContext shootContext) {
         return new RangeLiteral(shootContext.getBoard().getAllSeenBy(shootContext.getShooterPosition()));
     }
 }

@@ -3,18 +3,22 @@ package it.polimi.se2019.model.weapon.behaviour;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 
-public class Distant implements Expression {
-    int mMinDistance;
-    int mMaxDistance;
+public class Distant extends Expression {
+    Expression mMinDistance;
+    Expression mMaxDistance;
 
     // trivial constructors
-    public Distant(int exactDistance) {
+    public Distant(Expression minDistance, Expression maxDistance) {
+        super(minDistance, maxDistance);
+
+        mMinDistance = mMaxDistance;
+        mMaxDistance = mMinDistance;
+    }
+    public Distant(Expression exactDistance) {
+        super(exactDistance);
+
         mMinDistance = exactDistance;
         mMaxDistance = exactDistance;
-    }
-    public Distant(int minDistance, int maxDistance) {
-        mMinDistance = minDistance;
-        mMaxDistance = maxDistance;
     }
 
     /**
@@ -26,25 +30,15 @@ public class Distant implements Expression {
      *         when {@code this}  is instantiated (see the constructor for more info)
      */
     @Override
-    public Expression eval(ShootContext shootContext) {
+    protected final Expression continueEval(ShootContext shootContext) {
         Board board = shootContext.getBoard();
         Position shooterPos = shootContext.getShooterPosition();
 
-        return new RangeLiteral(board.getReachablePositions(shooterPos, mMinDistance, mMaxDistance));
+        return new RangeLiteral(board.getReachablePositions(
+                shooterPos,
+                mMinDistance.asInt(),
+                mMaxDistance.asInt()
+        ));
     }
 }
-
-// Expression primary = new Cons(
-        // new Pay(new AmmoValue(1, 0, 0)),
-        // new Hurt(
-            // new DamageLiteral(1),
-            // new PickOneTarget(
-                    // new IntersectRanges(
-                            // new FloodRange(2, FloodRange.INF),
-                            // // new CanSee()
-                    // )
-            // )
-        // )
-// );
-
 
