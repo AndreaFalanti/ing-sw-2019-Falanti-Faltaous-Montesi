@@ -1,19 +1,18 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.Position;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class RangeLiteral implements Expression {
-    final Set<Position> mPositionsInRange = new HashSet<>();
-
-    public RangeLiteral(Set<Position> mPositionsInRange) {
-        mPositionsInRange.addAll(mPositionsInRange);
+public class RangeLiteral extends Literal<Set<Position>> {
+    public RangeLiteral(Set<Position> contents) {
+        super(contents);
     }
 
     @Override
-    public Expression eval(ShootContext shootContext) {
-        return this;
+    Set<Position> asRange() {
+        return getPrimitive();
     }
 }

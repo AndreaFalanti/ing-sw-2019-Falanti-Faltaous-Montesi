@@ -4,20 +4,13 @@ import it.polimi.se2019.model.Damage;
 
 import java.util.Optional;
 
-public class DamageLiteral implements Expression {
-    Damage mContents;
-
+public class DamageLiteral extends Literal<Damage> {
     public DamageLiteral(Damage contents) {
-        mContents = contents;
+        super(contents);
     }
 
     @Override
-    public Expression eval(ShootContext shootContext) {
-        return this;
-    }
-
-    @Override
-    public Optional<Damage> asDamage() {
-        return Optional.of(mContents);
+    Damage asDamage() {
+        return getPrimitive();
     }
 }

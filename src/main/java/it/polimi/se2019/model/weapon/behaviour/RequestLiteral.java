@@ -1,16 +1,14 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-import it.polimi.se2019.model.weapon.request.SelectionRequest;
+import it.polimi.se2019.model.weapon.request.Request;
 
-public class RequestLiteral implements Expression {
-    SelectionRequest mContents;
-
-    public RequestLiteral(SelectionRequest contents) {
-        mContents = contents;
+public class RequestLiteral extends Literal<Request> {
+    public RequestLiteral(Request contents) {
+        super(contents);
     }
 
     @Override
-    public Expression eval(ShootContext shootContext) {
-        return this;
+    Request asRequest() {
+        return getPrimitive();
     }
 }
