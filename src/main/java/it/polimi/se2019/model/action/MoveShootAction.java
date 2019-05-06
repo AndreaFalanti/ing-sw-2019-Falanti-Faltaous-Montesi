@@ -30,6 +30,10 @@ public class MoveShootAction implements Action {
 
     @Override
     public boolean isValid(Game game) {
+        if (game.getRemainingActions() == 0) {
+            return false;
+        }
+
         Player player = game.getPlayerFromColor(mMoveAction.getTarget());
         if (game.isFinalFrenzy()) {
             return (game.hasFirstPlayerDoneFinalFrenzy()) ?

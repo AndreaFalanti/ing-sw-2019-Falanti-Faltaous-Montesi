@@ -201,6 +201,11 @@ public class Board {
 
     // TODO: write doc
     public int getTileDistance (Position pos1, Position pos2) {
+        // Respawn case maybe? (also used in tests)
+        if (pos1 == null) {
+            return 0;
+        }
+
         Tile tile1 = getTileAt(pos1);
         Tile tile2 = getTileAt(pos2);
 
@@ -210,7 +215,7 @@ public class Board {
         }
 
         //TODO: incomplete, finish it when you have time
-        return -1;
+        return 10;
     }
 
     /**

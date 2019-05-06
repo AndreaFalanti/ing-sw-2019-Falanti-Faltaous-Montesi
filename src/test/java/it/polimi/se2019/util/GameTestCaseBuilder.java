@@ -30,11 +30,17 @@ public final class GameTestCaseBuilder {
 
     //TODO: implement other cards generation methods
 
-    public static Game generateGameWithAllPowerUpsToPlayers() {
+    public static Game generateBaseGame () {
         Board board = Board.fromJson(Jsons.get("boards/game/board1"));
         List<Player> players = generatePlayerList();
 
-        for (Player player : players) {
+        return new Game(board, players, 5);
+    }
+
+    public static Game generateGameWithAllPowerUpsToPlayers () {
+        Game game = generateBaseGame();
+
+        for (Player player : game.getPlayers()) {
             try {
                 player.addPowerUp(generateTeleportCard());
             }
@@ -43,6 +49,18 @@ public final class GameTestCaseBuilder {
             }
         }
 
-        return new Game(board, players, 3);
+        return game;
+    }
+
+    public static Game generateFinalFrenzyGame () {
+        Board board = Board.fromJson(Jsons.get("boards/game/board1"));
+        List<Player> players = generatePlayerList();
+        Game game = new Game(board, players, 1);
+
+        game.startNextTurn();
+        game.handleDamageInteraction(game.getActivePlayer().getColor(), PlayerColor.GREY, new Damage(12,0));
+        game.onTurnEnd();
+
+        return game;
     }
 }

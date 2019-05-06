@@ -357,4 +357,8 @@ public class Game {
 
         return winner;
     }
+
+    public void decreaseActionCounter () {
+        mRemainingActions--;
+    }
 }

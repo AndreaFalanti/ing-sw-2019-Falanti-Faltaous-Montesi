@@ -21,6 +21,9 @@ public class MoveAction implements Action {
     }
 
     public MoveAction(PlayerColor playerColor, Position destination, boolean isNormalMove) {
+        if (destination == null) {
+            throw new IllegalArgumentException("Can't move to null position!");
+        }
         mTarget = playerColor;
         mDestination = destination;
         mNormalAction = isNormalMove;
@@ -45,12 +48,14 @@ public class MoveAction implements Action {
 
     @Override
     public boolean isValid(Game game) {
-        // player can't move himself if out of actions
-        if (mNormalAction && game.getRemainingActions() == 0) {
-            return false;
-        }
-        else {
-            Position playerPos = game.getPlayerFromColor(mTarget).getPos();
+        Position playerPos = game.getPlayerFromColor(mTarget).getPos();
+
+        if (mNormalAction) {
+            // player can't move himself if out of actions
+            if (game.getRemainingActions() == 0) {
+                return false;
+            }
+
             if (!game.isFinalFrenzy()) {
                 return game.getBoard().getTileDistance(playerPos, mDestination) <= 3;
             }
@@ -61,6 +66,10 @@ public class MoveAction implements Action {
             else {
                 return false;
             }
+        }
+        else {
+            // maximum distance for "indirect" moves are 3 spaces
+            return game.getBoard().getTileDistance(playerPos, mDestination) <= 3;
         }
     }
 }

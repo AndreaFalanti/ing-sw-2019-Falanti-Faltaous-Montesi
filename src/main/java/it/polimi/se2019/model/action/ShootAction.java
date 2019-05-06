@@ -11,6 +11,11 @@ public class ShootAction implements Action {
     public void perform(Game game) {}
 
     @Override
-    public boolean isValid(Game game) { return true; }
+    public boolean isValid(Game game) {
+        if (game.getRemainingActions() == 0) {
+            return false;
+        }
+        return true;
+    }
 
 }

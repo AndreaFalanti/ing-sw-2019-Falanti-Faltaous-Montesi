@@ -29,6 +29,9 @@ public class MoveReloadShootAction implements Action {
 
     @Override
     public boolean isValid(Game game) {
+        if (game.getRemainingActions() == 0) {
+            return false;
+        }
         return game.isFinalFrenzy() && mMoveShootAction.isValid(game) && mReloadAction.isValid(game);
     }
 }

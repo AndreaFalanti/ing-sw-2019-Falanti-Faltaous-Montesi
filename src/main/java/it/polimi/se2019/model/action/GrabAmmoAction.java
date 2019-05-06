@@ -26,6 +26,10 @@ public class GrabAmmoAction implements GrabAction {
 
     @Override
     public boolean isValid(Game game) {
+        if (game.getRemainingActions() == 0) {
+            return false;
+        }
+
         Tile tile = game.getBoard().getTileAt(game.getActivePlayer().getPos());
         if (tile.getTileType().equals("normal")) {
             NormalTile normalTile = (NormalTile) tile;
