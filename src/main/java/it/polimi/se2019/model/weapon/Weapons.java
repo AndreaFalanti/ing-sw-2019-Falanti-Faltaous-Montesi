@@ -48,5 +48,6 @@ public class Weapons {
         } else if (id == WeaponID.WHISPER) {
             return makeWhisper();
         }
+        throw new IllegalArgumentException(id + " not existent or not implemented yet");
     }
 }

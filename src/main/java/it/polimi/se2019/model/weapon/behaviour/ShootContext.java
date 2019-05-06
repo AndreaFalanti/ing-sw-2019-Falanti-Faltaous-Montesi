@@ -23,7 +23,7 @@ public class ShootContext {
     // trivial constructors
     public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor) {
         // safety check to assure that shooter is present among provided players
-        if (!mPlayers.stream().filter(pl -> pl.getColor() == shooterColor).findFirst().isPresent())
+        if (!players.stream().filter(pl -> pl.getColor() == shooterColor).findFirst().isPresent())
             throw new IllegalArgumentException(MISSING_PLAYER_MSG);
 
         // initialize fields

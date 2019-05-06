@@ -1,5 +1,6 @@
 package it.polimi.se2019.model.weapon;
 
+import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.model.weapon.behaviour.Expression;
@@ -15,17 +16,33 @@ public class Weapon {
         mBehaviour = behaviour;
     }
 
-    // TODO: add doc
-    public Request generateShootRequest(ShootContext shootContext) {
-        return mBehaviour.eval(shootContext).asRequest().orElseThrow(() -> new IllegalArgumentException(
-                "Trying to generate shoot request with a complete shootContext!"
-        ));
+    // trivial getters
+    // TODO: implement loading
+    public boolean isLoaded() {
+        return true;
     }
 
     // TODO: add doc
-    public Action generateShootAction(ShootContext shootContext) {
-        return mBehaviour.eval(shootContext).asAction().orElseThrow(() -> new IllegalArgumentException(
-                "Trying to generate shoot action with incomplete shootContext!"
-        ));
+    // TODO: implement
+    public Weapon deepCopy() {
+        throw new UnsupportedOperationException();
+    }
+
+    // TODO: add doc
+    // TODO: implement
+    public Action shoot(ShootContext shootContext) {
+        return null;
+    }
+
+    // TODO: add doc
+    // TODO: implement
+    public AmmoValue getReloadCost() {
+        return null;
+    }
+
+    // TODO: add doc
+    // TODO: implement
+    public void setLoaded(boolean loaded) {
+        ;
     }
 }

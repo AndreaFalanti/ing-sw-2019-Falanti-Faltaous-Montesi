@@ -32,24 +32,4 @@ public class WeaponTest {
                 0 // TODO: ask what this is
         );
     }
-
-    @Test
-    public void testGenerateShootActionWhisper() {
-        Weapon whisper = Weapons.makeWhisper();
-        PlayerColor shooterColor = PlayerColor.BLUE;
-        PlayerColor defenderColor = PlayerColor.GREEN;
-
-        ShootContext shootContext = new ShootContext(mSimpleGame, shooterColor);
-        shootContext.pushInfo(new TargetsLiteral(Collections.singleton(defenderColor)));
-
-        Action actual = whisper.generateShootAction(shootContext);
-
-        Action expected = new DamageAction(
-                shooterColor,
-                Collections.singleton(defenderColor),
-                new Damage(3, 1)
-        );
-
-        assertEquals(expected, actual);
-    }
 }
