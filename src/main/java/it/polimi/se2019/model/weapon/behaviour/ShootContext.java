@@ -1,34 +1,55 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
 import it.polimi.se2019.model.Game;
+import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.Stack;
 
 public class ShootContext {
+    // statics
+    private static final String MISSING_PLAYER_MSG = "Shooter is not present among provided list of players!";
+
     // fields
-    Game mGameStatus; // TODO: discuss about necessity of GameStatus class
+    Board mBoard;
+    Set<Player> mPlayers;
     PlayerColor mShooterColor;
     Stack<Expression> mProvidedInfo;
 
     // trivial constructors
-    public ShootContext(Game gameStatus, PlayerColor shooterColor) {
-        mGameStatus = gameStatus;
+    public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor) {
+        // safety check to assure that shooter is present among provided players
+        if (!mPlayers.stream().filter(pl -> pl.getColor() == shooterColor).findFirst().isPresent())
+            throw new IllegalArgumentException(MISSING_PLAYER_MSG);
+
+        // initialize fields
+        mBoard = board;
+        mPlayers = players;
         mShooterColor = shooterColor;
     }
 
     // trivial getters
     Board getBoard() {
-        return mGameStatus.getBoard();
+        return mBoard;
     }
     PlayerColor getShooterColor() {
         return mShooterColor;
     }
+    Player getShooter() {
+        Optional<Player> shooter = mPlayers.stream().filter(pl -> pl.getColor() == getShooterColor()).findFirst();
+
+        return mPlayers.stream().
+                filter(pl -> pl.getColor() == getShooterColor())
+                .findFirst()
+                .orElseThrow(() ->
+                    new IllegalStateException(MISSING_PLAYER_MSG));
+    }
     Position getShooterPosition() {
-        return mGameStatus.getPlayerFromColor(mShooterColor).getPos();
+        return getShooter().getPos();
     }
 
     // for manipulating stack info
