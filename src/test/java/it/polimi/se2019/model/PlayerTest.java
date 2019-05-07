@@ -74,7 +74,7 @@ public class PlayerTest {
         player1.sufferedMarks(testAttackingPlayer,3);
         player1.sufferedDamage(testAttackingPlayer, 12 + player1.getMarks().get(testAttackingPlayer));
         assertArrayEquals(player1.getDamageTaken(),testDamage);
-        assertTrue(player1.getMarks().get(testAttackingPlayer) == 0);
+        assertEquals(0,player1.getMarks().get(testAttackingPlayer).intValue());
     }
 
     @Test
@@ -85,9 +85,9 @@ public class PlayerTest {
         int testMark2 = 3;
 
         player1.sufferedMarks(testAttackingPlayer,testMark1);
-        assertTrue(testMark1 == player1.getMarks().get(testAttackingPlayer));
+        assertEquals(testMark1,player1.getMarks().get(testAttackingPlayer).intValue());
         player1.sufferedMarks(testAttackingPlayer,testMark2);
-        assertTrue(testMark2 == player1.getMarks().get(testAttackingPlayer));
+        assertEquals(testMark2,player1.getMarks().get(testAttackingPlayer).intValue());
     }
 
     @Test
@@ -169,6 +169,16 @@ public class PlayerTest {
     }
 
     @Test
+    public void testMove(){
+        Player player1 = new Player("testPlayer", PlayerColor.BLUE);
+        Position testPos = new Position(2,1);
+
+        player1.move(testPos);
+        assertEquals(testPos,player1.getPos());
+    }
+
+
+    @Test
     public void testRespawnPlayer(){
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
         PlayerColor[] testDamage = player1.getDamageTaken();
@@ -185,4 +195,17 @@ public class PlayerTest {
         assertFalse(player1.isDead());
     }
 
+    @Test
+    public void testOnDamageTaken(){
+        Player player1 = new Player("testPlayer", PlayerColor.BLUE);
+        Damage testDamage = new Damage(12,2);
+        PlayerColor[] testDamage1 = player1.getDamageTaken();
+        PlayerColor testAttackingPlayer = PlayerColor.YELLOW;
+
+        fill(testDamage1,testAttackingPlayer);
+        player1.onDamageTaken(testDamage,PlayerColor.YELLOW);
+        assertArrayEquals(testDamage1,player1.getDamageTaken());
+        assertEquals(testDamage.getMarksNum(), player1.getMarks().get(testAttackingPlayer).intValue());
+        assertTrue(player1.isDead());
+    }
 }
