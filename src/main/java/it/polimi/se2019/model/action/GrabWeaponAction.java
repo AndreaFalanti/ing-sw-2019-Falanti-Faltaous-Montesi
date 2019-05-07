@@ -3,9 +3,9 @@ package it.polimi.se2019.model.action;
 import it.polimi.se2019.model.FullHandException;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
-import it.polimi.se2019.model.Weapon;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.Tile;
+import it.polimi.se2019.model.weapon.Weapon;
 
 public class GrabWeaponAction implements GrabAction {
     private int mWeaponGrabbedIndex;

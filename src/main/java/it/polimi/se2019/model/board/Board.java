@@ -201,21 +201,7 @@ public class Board {
 
     // TODO: write doc
     public int getTileDistance (Position pos1, Position pos2) {
-        // Respawn case maybe? (also used in tests)
-        if (pos1 == null) {
-            return 0;
-        }
-
-        Tile tile1 = getTileAt(pos1);
-        Tile tile2 = getTileAt(pos2);
-
-        //same room, can use manhattan distance
-        if (tile1.getColor() == tile2.getColor()) {
-            return Math.abs(pos1.getX() - pos2.getX()) + Math.abs(pos1.getY() - pos2.getY());
-        }
-
-        //TODO: incomplete, finish it when you have time
-        return 10;
+        return getRangeInfo(pos1).getDistAt(pos2);
     }
 
     /**

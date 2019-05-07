@@ -3,6 +3,7 @@ package it.polimi.se2019.controller;
 
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.Action;
+import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
 

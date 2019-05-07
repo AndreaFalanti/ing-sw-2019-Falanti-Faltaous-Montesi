@@ -17,6 +17,10 @@ public final class GameTestCaseBuilder {
         Player p2 = new Player("b", PlayerColor.YELLOW);
         Player p3 = new Player("c", PlayerColor.GREY);
 
+        p1.move(new Position(0, 0));
+        p2.move(new Position(0, 0));
+        p3.move(new Position(0, 0));
+
         players.add(p1);
         players.add(p2);
         players.add(p3);
@@ -60,6 +64,7 @@ public final class GameTestCaseBuilder {
         game.startNextTurn();
         game.handleDamageInteraction(game.getActivePlayer().getColor(), PlayerColor.GREY, new Damage(12,0));
         game.onTurnEnd();
+        game.getPlayerFromColor(PlayerColor.GREY).respawn(new Position(0, 0));
 
         return game;
     }

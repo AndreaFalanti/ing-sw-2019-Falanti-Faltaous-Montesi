@@ -17,7 +17,7 @@ public class MoveActionTest {
     public void testIsValid() {
         Game game1 = GameTestCaseBuilder.generateBaseGame();
         Game game2 = GameTestCaseBuilder.generateFinalFrenzyGame();
-        game1.getActivePlayer().move(new Position(1,0));
+        //game1.getActivePlayer().move(new Position(1,0));
 
 
         MoveAction action1 = new MoveAction(game1.getActivePlayer().getColor(), new Position(0, 0));
