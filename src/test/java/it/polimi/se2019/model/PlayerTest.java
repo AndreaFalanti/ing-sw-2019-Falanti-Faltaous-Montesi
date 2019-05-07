@@ -62,6 +62,19 @@ public class PlayerTest {
 
     }
 
+
+    @Test
+    public void testCanMoveBeforeShooting(){
+        Player player1 = new Player("testPlayer",PlayerColor.BLUE);
+        PlayerColor testAttackingPlayer = PlayerColor.YELLOW;
+
+        player1.sufferedDamage(testAttackingPlayer,4);
+        assertFalse(player1.canMoveBeforeShooting());
+        player1.sufferedDamage(testAttackingPlayer,2);
+        assertTrue(player1.canMoveBeforeShooting());
+    }
+
+
     @Test
     public void testAddScore() {
         Player player1 = new Player("testPlayer",PlayerColor.BLUE);
