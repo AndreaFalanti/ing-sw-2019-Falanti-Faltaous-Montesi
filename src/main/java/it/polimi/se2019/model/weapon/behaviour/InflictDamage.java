@@ -8,13 +8,13 @@ import java.util.Set;
 public class InflictDamage extends Expression {
     // subexpressions
     Expression mTargets;
-    Expression mDamageToInflict;
+    Expression mDamage;
 
     // trivial constructor
     public InflictDamage(Expression damageToInflict, Expression targets) {
         super(damageToInflict, targets);
 
-        mDamageToInflict = damageToInflict;
+        mDamage = damageToInflict;
         mTargets = targets;
     }
 
@@ -26,7 +26,7 @@ public class InflictDamage extends Expression {
         return new ActionLiteral(new DamageAction(
                 inflicterColor,
                 mTargets.asTargets(),
-                mDamageToInflict.asDamage()
+                mDamage.asDamage()
         ));
     }
 }

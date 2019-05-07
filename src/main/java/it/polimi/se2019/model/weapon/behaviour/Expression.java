@@ -5,15 +5,37 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.weapon.request.Request;
+import it.polimi.se2019.util.Exclude;
 
 import java.util.*;
 
 public abstract class Expression {
+    @Exclude
     final List<Expression> mSubexpressions = new ArrayList<>();
 
     // TODO: add doc
     protected Expression(Expression... subExpressions) {
         mSubexpressions.addAll(Arrays.asList(subExpressions));
+    }
+
+    // trivial getters
+    public List<Expression> getSubExpressions() {
+        return mSubexpressions;
+    }
+
+    // TODO: add doc
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+
+        return toString().equals(obj.toString());
+    }
+
+    // TODO: add doc
+    @Override
+    public int hashCode() {
+        return Objects.hash(mSubexpressions);
     }
 
     // TODO: add doc

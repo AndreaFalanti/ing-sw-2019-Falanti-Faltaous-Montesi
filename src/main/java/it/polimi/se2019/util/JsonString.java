@@ -1,5 +1,7 @@
 package it.polimi.se2019.util;
 
+import com.google.gson.JsonParser;
+
 import java.util.Objects;
 
 /**
@@ -29,9 +31,10 @@ public class JsonString {
         if (obj == null || getClass() != obj.getClass())
             return false;
 
-        JsonString jsonString = (JsonString) obj;
+        JsonString casted = (JsonString) obj;
 
-        return StringUtils.equalIgnoringWhitespace(mContents, jsonString.mContents);
+        JsonParser parser = new JsonParser();
+        return parser.parse(mContents).equals(parser.parse(casted.mContents));
     }
 
     @Override
