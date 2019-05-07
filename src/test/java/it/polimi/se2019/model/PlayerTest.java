@@ -11,6 +11,58 @@ import static org.junit.Assert.*;
 public class PlayerTest {
 
     @Test
+    public void testIsFullOfWeapon(){
+        Player player1 = new Player("testPlayer", PlayerColor.BLUE);
+        MachineGun weapon1 = new MachineGun("Weapon1");
+        MachineGun weapon2 = new MachineGun("Weapon2");
+        MachineGun weapon3 = new MachineGun("Weapon3");
+        try{
+            player1.addWeapon(weapon1);
+            player1.addWeapon(weapon2);
+        }
+        catch (FullHandException e){
+            fail();
+        }
+        assertFalse(player1.isFullOfWeapons());
+        try {
+            player1.addWeapon(weapon3);
+        }catch (FullHandException e){
+            fail();
+        }
+        assertTrue(player1.isFullOfWeapons());
+    }
+
+    @Test
+    public void testTakeWeapon(){
+        Player player1 = new Player("testPlayer",PlayerColor.BLUE);
+        MachineGun weapon1 = new MachineGun("Weapon1");
+        MachineGun weapon2 = new MachineGun("Weapon2");
+        MachineGun weapon3 = new MachineGun("Weapon3");
+        try{
+            player1.addWeapon(weapon1);
+            player1.addWeapon(weapon2);
+            player1.addWeapon(weapon3);
+        }
+        catch (FullHandException e){
+            fail();
+        }
+        assertEquals(weapon2,player1.takeWeapon(1));
+        assertNull(player1.getWeapon(1));
+    }
+
+    @Test
+    public void getMaxGrabDistance(){
+        Player player1 = new Player("testPlayer",PlayerColor.BLUE);
+        PlayerColor testAttackingPlayer = PlayerColor.YELLOW;
+
+        player1.sufferedDamage(testAttackingPlayer,1);
+        assertEquals(1,player1.getMaxGrabDistance());
+        player1.sufferedDamage(testAttackingPlayer,2);
+        assertEquals(2,player1.getMaxGrabDistance());
+
+    }
+
+    @Test
     public void testAddScore() {
         Player player1 = new Player("testPlayer",PlayerColor.BLUE);
         int currentScore = player1.getScore();
