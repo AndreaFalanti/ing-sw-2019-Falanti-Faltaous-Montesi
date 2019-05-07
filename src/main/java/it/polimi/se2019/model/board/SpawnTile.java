@@ -6,11 +6,14 @@ import java.util.Arrays;
 
 
 public class SpawnTile extends Tile {
-    private Weapon[] mWeapons;
+    private Weapon[] mWeapons = new Weapon[MAX_WEAPONS];
+    public static int MAX_WEAPONS = 3;
 
 
     public void addWeapon(Weapon value) {
-        // TODO: implement
+        for (int i = 0; i < mWeapons.length && mWeapons[i] == null; i++) {
+            mWeapons[i] = value;
+        }
     }
 
     public SpawnTile deepCopy() {

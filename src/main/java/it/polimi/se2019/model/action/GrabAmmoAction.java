@@ -31,7 +31,7 @@ public class GrabAmmoAction implements GrabAction {
         }
 
         Tile tile = game.getBoard().getTileAt(game.getActivePlayer().getPos());
-        if (tile.getTileType().equals("normal")) {
+        if (tile != null && tile.getTileType().equals("normal")) {
             NormalTile normalTile = (NormalTile) tile;
             return normalTile.getAmmoCard() != null;
         }

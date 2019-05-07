@@ -46,7 +46,7 @@ public class GrabWeaponAction implements GrabAction {
         SpawnTile spawnTile = (SpawnTile) game.getBoard().getTileAt(game.getActivePlayer().getPos());
         try {
             game.getActivePlayer().addWeapon(spawnTile.grabWeapon(mWeaponGrabbedIndex));
-            spawnTile.addWeapon(game.getWeapons().drawCard());
+            spawnTile.addWeapon(game.getWeaponDeck().drawCard());
         }
         catch (FullHandException e) {
             Player player = game.getActivePlayer();

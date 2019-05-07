@@ -1,6 +1,9 @@
 package it.polimi.se2019.model;
 
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.board.NormalTile;
+import it.polimi.se2019.model.board.SpawnTile;
+import it.polimi.se2019.model.board.Tile;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.Jsons;
 
@@ -14,7 +17,7 @@ public class Game {
     private Board mBoard;
     private List<Player> mPlayers;
     private Deck<PowerUpCard> mPowerUpCardDeck;
-    private Deck<Weapon> mWeapons;
+    private Deck<Weapon> mWeaponDeck;
     private Deck<AmmoCard> mAmmoCardDeck;
     private int mTurnNumber;
     private int mSkullNum;
@@ -58,6 +61,9 @@ public class Game {
         mPowerUpCardDeck = new Deck<>(powerUpCards);
 
         //TODO: add weapons deck when it's ready
+
+        refillAmmoTiles();
+        //fillSpawnsWithWeapons();
     }
 
     //region GETTERS
@@ -69,8 +75,8 @@ public class Game {
         return mAmmoCardDeck;
     }
 
-    public Deck<Weapon> getWeapons() {
-        return mWeapons;
+    public Deck<Weapon> getWeaponDeck() {
+        return mWeaponDeck;
     }
 
     public List<Player> getPlayers() {
@@ -331,6 +337,8 @@ public class Game {
                 }
             }
         }
+
+        refillAmmoTiles();
     }
 
     /**
@@ -361,5 +369,31 @@ public class Game {
 
     public void decreaseActionCounter () {
         mRemainingActions--;
+    }
+
+    private void refillAmmoTiles () {
+        for (Tile tile : mBoard.getTiles()){
+            if (tile != null && tile.getTileType().equals("normal")) {
+                NormalTile normalTile = (NormalTile) tile;
+                if (normalTile.getAmmoCard() == null) {
+                    normalTile.setAmmoCard(getAmmoCardDeck().drawCard());
+                }
+            }
+        }
+    }
+
+    /**
+     * Called only on game start, fill spawn tiles with weapons
+     */
+    private void fillSpawnsWithWeapons () {
+        for (Tile tile : mBoard.getTiles()){
+            if (tile != null && tile.getTileType().equals("spawn")) {
+                SpawnTile spawnTile = (SpawnTile) tile;
+                // all weapons are null at start, fill them with weapon references
+                for (int i = 0; i < SpawnTile.MAX_WEAPONS; i++) {
+                    spawnTile.addWeapon(mWeaponDeck.drawCard());
+                }
+            }
+        }
     }
 }

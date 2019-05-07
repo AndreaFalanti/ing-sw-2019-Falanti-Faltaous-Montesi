@@ -93,7 +93,10 @@ public class NormalTile extends Tile {
                      // return mAmmoCard.equals(casted.mAmmoCard);
     }
 
-    // TODO: add doc
+    /**
+     * Grab ammoCard, setting it to null in tile
+     * @return AmmoCard grabbed
+     */
     public AmmoCard grabAmmo() {
         AmmoCard grabbedItem = mAmmoCard;
         mAmmoCard = null;
