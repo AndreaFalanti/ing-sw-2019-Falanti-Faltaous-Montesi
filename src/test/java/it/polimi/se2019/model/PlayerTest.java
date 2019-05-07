@@ -11,6 +11,15 @@ import static org.junit.Assert.*;
 public class PlayerTest {
 
     @Test
+    public void testPlayer(){
+        Player player1 = new Player("testPlayer", PlayerColor.BLUE);
+        AmmoValue testAmmo = new AmmoValue(1,1,1);
+
+        assertEquals("testPlayer",player1.getName());
+        assertEquals(testAmmo,player1.getAmmo());
+    }
+
+    @Test
     public void testIsFullOfWeapon(){
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
         MachineGun weapon1 = new MachineGun("Weapon1");

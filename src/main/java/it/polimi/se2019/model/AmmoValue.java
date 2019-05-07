@@ -1,6 +1,8 @@
 package it.polimi.se2019.model;
 
 
+import java.util.Objects;
+
 public class AmmoValue {
     private int mRed;
     private int mYellow;
@@ -114,5 +116,20 @@ public class AmmoValue {
                 ", mYellow=" + mYellow +
                 ", mBlue=" + mBlue +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AmmoValue ammoValue = (AmmoValue) o;
+        return mRed == ammoValue.mRed &&
+                mYellow == ammoValue.mYellow &&
+                mBlue == ammoValue.mBlue;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mRed, mYellow, mBlue);
     }
 }
