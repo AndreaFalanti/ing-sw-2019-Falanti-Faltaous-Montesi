@@ -104,16 +104,25 @@ public class Player {
         return mDamageTaken[0] == null;
     }
 
+
+    /**
+     * return if player has reached the maximum number of weapon in his hand
+     * @return true if has three
+     */
     public boolean isFullOfWeapons () {
         for (Weapon weapon : mWeapons) {
             if (weapon == null) {
                 return false;
             }
         }
-
         return true;
     }
 
+    /**
+     * takes a weapon (is used in Action class to exchange weapon when the hand of player is full)
+     * @param index is the index of the weapon to add in your hand
+     * @return
+     */
     public Weapon takeWeapon (int index) {
         Weapon weapon = mWeapons[index];
         mWeapons[index] = null;
@@ -136,10 +145,19 @@ public class Player {
         return mDamageTaken[5] != null;
     }
 
+    /**
+     * Update score of a player
+     * @param value is the value to add to the current score
+     */
     public void addScore(int value) {
         mScore += value;
     }
 
+    /**
+     * Update the damage taken of a player
+     * @param attackingPlayer is player that attacks
+     * @param damage value of damage to add to the current damage
+     */
     public void sufferedDamage(PlayerColor attackingPlayer,int damage) {
         int i = 0;
         int j = 0;
@@ -157,6 +175,11 @@ public class Player {
         mMarks.put(attackingPlayer,0);
     }
 
+    /**
+     * Update the marks on a player
+     * @param attackingPlayer is player that attacks
+     * @param marks value of marks to add to the current marks
+     */
     public void sufferedMarks(PlayerColor attackingPlayer,int marks) {
         if(marks + getMarks().get(attackingPlayer) >= MAX_MARKS) {
             mMarks.put(attackingPlayer, MAX_MARKS);
@@ -166,10 +189,18 @@ public class Player {
         }
     }
 
+    /**
+     * Increase the numbers of deaths of player
+     */
     public void incrementDeaths() {
         mDeathsNum += 1;
     }
 
+    /**
+     * Add a weapon to player hand and throws exception in case player hand is full
+     * @param value is the weapon to add
+     * @throws FullHandException
+     */
     public void addWeapon(Weapon value) throws FullHandException {
         int i=0;
 
@@ -183,6 +214,9 @@ public class Player {
         }
     }
 
+    /**
+     * set player in death status
+     */
     public void setDeadStatus(){
         if(mDamageTaken[10] != null) {
             mDead = true;
@@ -192,6 +226,12 @@ public class Player {
         }
     }
 
+    /**
+     * add powerup card in player hand and throw exception when player reaches the maximum number of powerups card
+     * @param value powerup card to add
+     * @param isRespawn boolean value to know if a player could have four powerups insteadof three
+     * @throws FullHandException
+     */
     public void addPowerUp(PowerUpCard value, boolean isRespawn) throws FullHandException {
         int lengthToCheck = isRespawn ? mPowerUpCards.length : (mPowerUpCards.length - 1);
         for (int i = 0; i < lengthToCheck; i++) {
@@ -207,6 +247,10 @@ public class Player {
         addPowerUp(value, false);
     }
 
+    /**
+     * discard a card from the hand of player
+     * @param card card to discard
+     */
     public void discard(PowerUpCard card) {
         for (int i = 0; i < mPowerUpCards.length; i++) {
             if (mPowerUpCards[i] == card) {
@@ -220,10 +264,18 @@ public class Player {
         mPowerUpCards[powerUpIndex] = null;
     }
 
+    /**
+     * set player on a position
+     * @param value the position where to put player
+     */
     public void move(Position value) {
         mPos = value;
     }
 
+    /**
+     * respawn the player
+     * @param value the position where to put player
+     */
     public void respawn(Position value) {
         for (int i = 0; i < mDamageTaken.length; i++) {
             mDamageTaken[i] = null;
@@ -233,6 +285,11 @@ public class Player {
         move(value);
     }
 
+    /**
+     * combine sufferedDamage,sufferedMarks,setDeadStatus methods
+     * @param damage damage to add to the current damage of the player
+     * @param shooterColor the attacking player
+     */
     public void onDamageTaken (Damage damage, PlayerColor shooterColor) {
         sufferedDamage(shooterColor, damage.getDamage());
         sufferedMarks(shooterColor, damage.getMarksNum());
