@@ -38,7 +38,10 @@ public final class GameTestCaseBuilder {
         Board board = Board.fromJson(Jsons.get("boards/game/board1"));
         List<Player> players = generatePlayerList();
 
-        return new Game(board, players, 5);
+        Game game = new Game(board, players, 5);
+        game.startNextTurn();
+
+        return game;
     }
 
     public static Game generateGameWithAllPowerUpsToPlayers () {
@@ -56,15 +59,33 @@ public final class GameTestCaseBuilder {
         return game;
     }
 
-    public static Game generateFinalFrenzyGame () {
+    public static Game generateFinalFrenzyGameBeforeFirstPlayer () {
         Board board = Board.fromJson(Jsons.get("boards/game/board1"));
         List<Player> players = generatePlayerList();
         Game game = new Game(board, players, 1);
 
         game.startNextTurn();
+        game.onTurnEnd();
+
+        game.startNextTurn();
         game.handleDamageInteraction(game.getActivePlayer().getColor(), PlayerColor.GREY, new Damage(12,0));
         game.onTurnEnd();
         game.getPlayerFromColor(PlayerColor.GREY).respawn(new Position(0, 0));
+
+        game.startNextTurn();
+
+        return game;
+    }
+
+    public static Game generateFinalFrenzyGameAfterFirstPlayer () {
+        Game game = generateFinalFrenzyGameBeforeFirstPlayer();
+
+        game.onTurnEnd();
+
+        game.startNextTurn();
+        game.onTurnEnd();
+
+        game.startNextTurn();
 
         return game;
     }

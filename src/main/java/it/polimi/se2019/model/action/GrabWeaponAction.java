@@ -17,6 +17,7 @@ public class GrabWeaponAction implements GrabAction {
         }
 
         mWeaponGrabbedIndex = index;
+        mWeaponToExchangeIndex = null;
     }
 
     public GrabWeaponAction (int index, Integer weaponToExchangeIndex) {
@@ -45,6 +46,7 @@ public class GrabWeaponAction implements GrabAction {
         SpawnTile spawnTile = (SpawnTile) game.getBoard().getTileAt(game.getActivePlayer().getPos());
         try {
             game.getActivePlayer().addWeapon(spawnTile.grabWeapon(mWeaponGrabbedIndex));
+            spawnTile.addWeapon(game.getWeapons().drawCard());
         }
         catch (FullHandException e) {
             Player player = game.getActivePlayer();
@@ -56,6 +58,7 @@ public class GrabWeaponAction implements GrabAction {
             }
             // now it shouldn't throw exception because it gave a weapon to spawn tile
             catch (FullHandException e1) {
+                // CRASH THE APP!!!
                 e1.printStackTrace();
             }
         }

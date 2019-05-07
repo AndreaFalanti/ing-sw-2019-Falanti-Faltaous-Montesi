@@ -20,6 +20,12 @@ public class MoveAction implements Action {
         mNormalAction = false;
     }
 
+    /**
+     *
+     * @param playerColor Player color of the target
+     * @param destination Target destination
+     * @param isNormalMove Specify if is active player moving as action (use false for card effects)
+     */
     public MoveAction(PlayerColor playerColor, Position destination, boolean isNormalMove) {
         if (destination == null) {
             throw new IllegalArgumentException("Can't move to null position!");
@@ -50,15 +56,26 @@ public class MoveAction implements Action {
     public boolean isValid(Game game) {
         Position playerPos = game.getPlayerFromColor(mTarget).getPos();
 
+        // can't move player to its precedent position
+        if (playerPos.equals(mDestination)) {
+            return false;
+        }
+
         if (mNormalAction) {
             // player can't move himself if out of actions
             if (game.getRemainingActions() == 0) {
                 return false;
             }
 
+            // normal action is only set for active players to move themselves
+            if (game.getActivePlayer().getColor() != mTarget) {
+                return false;
+            }
+
             if (!game.isFinalFrenzy()) {
                 return game.getBoard().getTileDistance(playerPos, mDestination) <= 3;
             }
+            // you can move 4 tiles if you are before first player in final frenzy status.
             else if (!game.hasFirstPlayerDoneFinalFrenzy()) {
                 return game.getBoard().getTileDistance(playerPos, mDestination) <= 4;
             }

@@ -35,14 +35,14 @@
       "doors": [
         "north"
       ],
-      "color": "PURPLE"
+      "color": "RED"
     },
     {
       "type": "normal",
       "doors": [
         "south"
       ],
-      "color": "PURPLE"
+      "color": "RED"
     },
     {
       "type": "normal",
