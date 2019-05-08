@@ -16,7 +16,7 @@ public class Damage {
      * @param marks Number of marks applied
      * @throws IllegalArgumentException Thrown if dmg or marks are negative
      */
-    public Damage (int dmg, int marks) throws IllegalArgumentException {
+    public Damage (int dmg, int marks) {
         if (dmg < 0 || marks < 0) {
             throw new IllegalArgumentException ("At least one value is negative");
         }

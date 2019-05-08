@@ -1,24 +1,17 @@
 package it.polimi.se2019.model;
 
-import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.model.weapon.behaviour.Expression;
 
-import java.util.*;
-
-
+/**
+ * @deprecated Not used anymore in new weapon hierarchy
+ */
+@Deprecated
 public class MachineGun extends Weapon {
-    private String name;
-
-    public MachineGun(String nameW){
-        this.name = nameW;
+    public MachineGun(String name) {
+        super(null);
     }
-    public void shoot(Player shooter) { }
-
-    public ArrayList<Player> getTargets(Player shooter, Board board) {
-        return null;
-    }
-
-    @Override
-    public Weapon deepCopy() {
-        return null;
+    public MachineGun(Expression behaviour) {
+        super(behaviour);
     }
 }

@@ -1,8 +1,5 @@
 package it.polimi.se2019.view;
 
-import java.util.*;
-
-
 public class GraphicView extends View {
 
 

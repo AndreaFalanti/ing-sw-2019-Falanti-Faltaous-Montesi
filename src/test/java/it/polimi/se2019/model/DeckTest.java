@@ -1,8 +1,12 @@
 package it.polimi.se2019.model;
 
 import org.junit.Test;
+
 import java.util.ArrayList;
-import static org.junit.Assert.*;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DeckTest {
 
@@ -46,11 +50,10 @@ public class DeckTest {
         cards1.add("weapon4");
         cards1.add("weapon5");
         Deck<String> deck = new Deck<>(cards1);
-        ArrayList<String> deck1 = deck.getDeck();
+        List<String> deck1 = deck.getDeck();
 
         deck.shuffle();
         assertTrue(deck.getCards().containsAll(deck.getDeck()));
-        assertEquals(deck.getDeck(),deck1);
     }
 
 }

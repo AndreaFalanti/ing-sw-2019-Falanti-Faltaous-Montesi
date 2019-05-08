@@ -1,7 +1,9 @@
 package it.polimi.se2019.model;
 
-import java.util.*;
+import it.polimi.se2019.model.weapon.Weapon;
 
+import java.util.EnumMap;
+import java.util.Map;
 
 public class Player {
     private AmmoValue mAmmo;
@@ -10,12 +12,13 @@ public class Player {
     private PlayerColor mColor;
     private int mDeathsNum = 0;
     private PlayerColor[] mDamageTaken = new PlayerColor[12];
-    private EnumMap<PlayerColor, Integer> mMarks = new EnumMap<>(PlayerColor.class);
+    private Map<PlayerColor, Integer> mMarks = new EnumMap<>(PlayerColor.class);
     private int mScore=0;
     private Position mPos;
     private String mName;
-    private boolean mIsDead = false;
-    public static final int MAX_MARKS = 3;
+    private boolean mDead = false;
+    private boolean mBoardFlipped = false;
+    private static final int MAX_MARKS = 3;
 
     private void initializeMarksMap () {
         mMarks.put(PlayerColor.YELLOW,0);
@@ -28,17 +31,134 @@ public class Player {
     public Player (String name, PlayerColor color) {
             mName = name;
             mColor = color;
+            mAmmo = new AmmoValue(1, 1, 1);
             initializeMarksMap();
     }
 
-    public void addScore(int value) {
-        mScore += value;
-    }
-
+    //region GETTERS
     public AmmoValue getAmmo() {
         return mAmmo;
     }
 
+    public PlayerColor[] getDamageTaken() {
+        return mDamageTaken;
+    }
+
+    public Map<PlayerColor, Integer> getMarks() {
+        return mMarks;
+    }
+
+    public PlayerColor getColor() {
+        return mColor;
+    }
+
+    public int getDeathsNum() {
+        return mDeathsNum;
+    }
+
+    public Weapon[] getWeapons() {
+        return mWeapons;
+    }
+
+    public boolean isDead() {
+        return mDead;
+    }
+
+    public PowerUpCard[] getPowerUps() {
+        return mPowerUpCards;
+    }
+
+    public int getScore() {
+        return mScore;
+    }
+
+    public Position getPos() {
+        return mPos;
+    }
+
+    public String getName() {
+        return  mName;
+    }
+
+    public boolean isBoardFlipped() {
+        return mBoardFlipped;
+    }
+
+    public Weapon getWeapon(int index) {
+        return mWeapons[index];
+    }
+
+    public PowerUpCard getPowerUpCard(int index) {
+        return mPowerUpCards[index];
+    }
+    //endregion
+
+    public void flipBoard () {
+        mBoardFlipped = true;
+    }
+
+    public boolean isOverkilled () {
+        return mDamageTaken[11] != null;
+    }
+
+    public boolean hasNoDamage () {
+        return mDamageTaken[0] == null;
+    }
+
+
+    /**
+     * return if player has reached the maximum number of weapon in his hand
+     * @return true if has three
+     */
+    public boolean isFullOfWeapons () {
+        for (Weapon weapon : mWeapons) {
+            if (weapon == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * takes a weapon (is used in Action class to exchange weapon when the hand of player is full)
+     * @param index is the index of the weapon to add in your hand
+     * @return
+     */
+    public Weapon takeWeapon (int index) {
+        Weapon weapon = mWeapons[index];
+        mWeapons[index] = null;
+        return weapon;
+    }
+
+    /**
+     * Get max grab distance of player. If it has at least 3 damage, unlock "adrenaline grab".
+     * @return 1 if damage < 3, 2 if >= 3
+     */
+    public int getMaxGrabDistance () {
+        return (mDamageTaken[2] != null) ? 2 : 1;
+    }
+
+    /**
+     * Return if player can perform "adrenaline move and shoot".
+     * @return true if has at least 6 damage, false otherwise
+     */
+    public boolean canMoveBeforeShooting () {
+        return mDamageTaken[5] != null;
+    }
+
+    /**
+     * Update score of a player
+     * @param value is the value to add to the current score
+     */
+    public void addScore(int value) {
+        mScore += value;
+    }
+
+    /**
+     * Update the damage taken of a player
+     * @param attackingPlayer is player that attacks
+     * @param damage value of damage to add to the current damage
+     */
     public void sufferedDamage(PlayerColor attackingPlayer,int damage) {
         int i = 0;
         int j = 0;
@@ -56,39 +176,32 @@ public class Player {
         mMarks.put(attackingPlayer,0);
     }
 
-    public PlayerColor[] getDamageTaken() {
-        return mDamageTaken;
-    }
-
+    /**
+     * Update the marks on a player
+     * @param attackingPlayer is player that attacks
+     * @param marks value of marks to add to the current marks
+     */
     public void sufferedMarks(PlayerColor attackingPlayer,int marks) {
-        if(marks + getMarks().get(attackingPlayer) >= 3) {
-            mMarks.put(attackingPlayer,3);
+        if(marks + getMarks().get(attackingPlayer) >= MAX_MARKS) {
+            mMarks.put(attackingPlayer, MAX_MARKS);
         }
         else{
             mMarks.put(attackingPlayer,marks);
         }
     }
 
-    public EnumMap<PlayerColor, Integer> getMarks() {
-        return mMarks;
-    }
-
-    public PlayerColor getColor() {
-        return mColor;
-    }
-
-    public int getDeathsNum() {
-        return mDeathsNum;
-    }
-
+    /**
+     * Increase the numbers of deaths of player
+     */
     public void incrementDeaths() {
         mDeathsNum += 1;
     }
 
-    public Weapon[] getWeapons() {
-        return mWeapons;
-    }
-
+    /**
+     * Add a weapon to player hand and throws exception in case player hand is full
+     * @param value is the weapon to add
+     * @throws FullHandException
+     */
     public void addWeapon(Weapon value) throws FullHandException {
         int i=0;
 
@@ -102,23 +215,24 @@ public class Player {
         }
     }
 
-    public boolean getIsDead() {
-        return mIsDead;
-    }
-
-    public void isDead(){
-        if(mDamageTaken[11] != null) {
-            mIsDead = true;
+    /**
+     * set player in death status
+     */
+    public void setDeadStatus(){
+        if(mDamageTaken[10] != null) {
+            mDead = true;
         }
         else {
-            mIsDead = false;
+            mDead = false;
         }
     }
 
-    public PowerUpCard[] getPowerUps() {
-        return mPowerUpCards;
-    }
-
+    /**
+     * add powerup card in player hand and throw exception when player reaches the maximum number of powerups card
+     * @param value powerup card to add
+     * @param isRespawn boolean value to know if a player could have four powerups insteadof three
+     * @throws FullHandException
+     */
     public void addPowerUp(PowerUpCard value, boolean isRespawn) throws FullHandException {
         int lengthToCheck = isRespawn ? mPowerUpCards.length : (mPowerUpCards.length - 1);
         for (int i = 0; i < lengthToCheck; i++) {
@@ -134,29 +248,64 @@ public class Player {
         addPowerUp(value, false);
     }
 
+    /**
+     * discard a card from the hand of player
+     * @param card card to discard
+     */
     public void discard(PowerUpCard card) {
         for (int i = 0; i < mPowerUpCards.length; i++) {
             if (mPowerUpCards[i] == card) {
                 mPowerUpCards[i] = null;
-                return;
+                return ;
             }
         }
     }
 
-    public int getScore() {
-        return mScore;
+    public void discard (int powerUpIndex) {
+        mPowerUpCards[powerUpIndex] = null;
     }
 
-    public Position getPos() {
-        return mPos;
-    }
-
+    /**
+     * set player on a position
+     * @param value the position where to put player
+     */
     public void move(Position value) {
         mPos = value;
     }
 
-    public String getName () {
-        return  mName;
+    /**
+     * respawn the player
+     * @param value the position where to put player
+     */
+    public void respawn(Position value) {
+        for (int i = 0; i < mDamageTaken.length; i++) {
+            mDamageTaken[i] = null;
+        }
+        incrementDeaths();
+        setDeadStatus();
+        move(value);
     }
 
+    /**
+     * combine sufferedDamage,sufferedMarks,setDeadStatus methods
+     * @param damage damage to add to the current damage of the player
+     * @param shooterColor the attacking player
+     */
+    public void onDamageTaken (Damage damage, PlayerColor shooterColor) {
+        sufferedDamage(shooterColor, damage.getDamage());
+        sufferedMarks(shooterColor, damage.getMarksNum());
+        setDeadStatus();
+    }
+
+    public void reloadWeapon (int weaponIndex) {
+        Weapon weapon = getWeapon(weaponIndex);
+
+        //TODO: useless exception in AmmoValue subtract? (verified in controller)
+        try {
+            getAmmo().subtract(weapon.getReloadCost());
+            weapon.setLoaded(true);
+        } catch (NotEnoughAmmoException e) {
+            e.printStackTrace();
+        }
+    }
 }

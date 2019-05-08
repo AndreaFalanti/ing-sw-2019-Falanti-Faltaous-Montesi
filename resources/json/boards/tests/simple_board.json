@@ -1,0 +1,51 @@
+{
+  "width" : 3,
+  "height" : 3,
+  "tiles" : [
+    {
+      "type" : "normal",
+      "doors" : [],
+      "color" : "BLUE"
+    },
+    {
+      "type" : "normal",
+      "doors" : [],
+      "color" : "BLUE"
+    },
+    {
+      "type" : "normal",
+      "doors" : [],
+      "color" : "BLUE"
+    },
+    {
+      "type" : "normal",
+      "doors" : [],
+      "color" : "BLUE"
+    },
+    {
+      "type" : "normal",
+      "doors" : [],
+      "color" : "BLUE"
+    },
+    {
+      "type" : "normal",
+      "doors" : [],
+      "color" : "BLUE"
+    },
+    {
+      "type" : "normal",
+      "doors" : [],
+      "color" : "BLUE"
+    },
+    {
+      "type" : "normal",
+      "doors" : [],
+      "color" : "BLUE"
+    },
+    {
+      "type" : "normal",
+      "doors" : [],
+      "color" : "BLUE"
+    }
+  ]
+}
