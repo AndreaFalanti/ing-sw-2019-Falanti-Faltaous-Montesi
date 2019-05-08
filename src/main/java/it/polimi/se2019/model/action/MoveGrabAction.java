@@ -41,11 +41,14 @@ public class MoveGrabAction implements Action{
         }
 
         Player player = game.getPlayerFromColor(mMoveAction.getTarget());
+
+        // check max possible moves in final frenzy status
         if (game.isFinalFrenzy()) {
             return (game.hasFirstPlayerDoneFinalFrenzy()) ?
                     game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) <= 3 :
                     game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) <= 2;
         }
+        // check max moves in "normal" game status, it changes if player has tot damage
         else {
             return game.getBoard()
                     .getTileDistance(player.getPos(), mMoveAction.getDestination()) <= player.getMaxGrabDistance();

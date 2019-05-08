@@ -51,7 +51,7 @@ public class ReloadAction implements Action {
             return false;
         }
 
-        // check that user is trying to discard a valid card
+        // check that user is trying to discard a valid card (not null)
         for (int i = 0; i < mDiscardPowerUp.length && mDiscardPowerUp[i]; i++) {
             isDiscarding = true;
             if (game.getActivePlayer().getPowerUpCard(i) == null) {
@@ -59,15 +59,22 @@ public class ReloadAction implements Action {
             }
         }
 
+        // check that if player can pay the cost directly, it's not discarding power up cards
         if (playerAmmo.isBiggerOrEqual(weaponToReload.getReloadCost())) {
             return !isDiscarding && !weaponToReload.isLoaded();
         }
         else {
             AmmoValue ammoWithPowerUps = getAmmoTotalWithPowerUpDiscard(game.getActivePlayer());
-            return ammoWithPowerUps.isBiggerOrEqual(game.getActivePlayer().getWeapon(mWeaponIndex).getReloadCost());
+            return ammoWithPowerUps.isBiggerOrEqual(game.getActivePlayer().getWeapon(mWeaponIndex).getReloadCost())
+                    && !weaponToReload.isLoaded();
         }
     }
 
+    /**
+     * Get total ammo considering also power up card discarded
+     * @param player Player that is performing the reload
+     * @return Total ammo with power up bonus ones
+     */
     private AmmoValue getAmmoTotalWithPowerUpDiscard (Player player) {
         AmmoValue ammo = player.getAmmo().deepCopy();
         for (int i = 0; i < mDiscardPowerUp.length  && mDiscardPowerUp[i]; i++) {

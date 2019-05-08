@@ -14,6 +14,7 @@ public class GrabAmmoAction implements GrabAction {
         AmmoCard ammoCard = tile.grabAmmo();
         game.getActivePlayer().getAmmo().add(ammoCard.getAmmoGain());
 
+        // check if grabbed ammo card allow drawing a power up card
         if (ammoCard.getDrawPowerUp()) {
             PowerUpCard powerUpCard = game.getPowerUpDeck().drawCard();
             try {
@@ -26,15 +27,19 @@ public class GrabAmmoAction implements GrabAction {
 
     @Override
     public boolean isValid(Game game) {
+        // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
             return false;
         }
 
+        // see if tile has still an ammo card or it was already picked
         Tile tile = game.getBoard().getTileAt(game.getActivePlayer().getPos());
         if (tile != null && tile.getTileType().equals("normal")) {
             NormalTile normalTile = (NormalTile) tile;
             return normalTile.getAmmoCard() != null;
         }
+
+        // tile isn't an AmmoTile
         return false;
     }
 }

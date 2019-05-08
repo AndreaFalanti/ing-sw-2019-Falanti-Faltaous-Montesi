@@ -30,6 +30,7 @@ public class MoveShootAction implements Action {
 
     @Override
     public boolean isValid(Game game) {
+        // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
             return false;
         }

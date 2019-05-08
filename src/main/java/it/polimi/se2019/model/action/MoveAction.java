@@ -24,7 +24,7 @@ public class MoveAction implements Action {
     }
 
     /**
-     *
+     * Complete constructor
      * @param playerColor Player color of the target
      * @param destination Target destination
      * @param isNormalMove Specify if is active player moving as action (use false for card effects)
@@ -71,6 +71,7 @@ public class MoveAction implements Action {
                 return false;
             }
 
+            // max moves in "normal" state is 3
             if (!game.isFinalFrenzy()) {
                 return game.getBoard().getTileDistance(playerPos, mDestination) <= 3;
             }

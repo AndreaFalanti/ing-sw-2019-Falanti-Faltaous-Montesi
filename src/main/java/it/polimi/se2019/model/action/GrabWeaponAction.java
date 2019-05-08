@@ -45,14 +45,16 @@ public class GrabWeaponAction implements GrabAction {
     public void perform(Game game) {
         SpawnTile spawnTile = (SpawnTile) game.getBoard().getTileAt(game.getActivePlayer().getPos());
         Weapon grabbedWeapon = spawnTile.grabWeapon(mWeaponGrabbedIndex);
+
+        // if can't add weapon because hand is full, perform an exchange (catch block)
         try {
             game.getActivePlayer().addWeapon(grabbedWeapon);
             spawnTile.addWeapon(game.getWeaponDeck().drawCard());
         }
         catch (FullHandException e) {
             Player player = game.getActivePlayer();
-
             spawnTile.addWeapon(player.takeWeapon(mWeaponToExchangeIndex));
+
             try {
                 player.addWeapon(grabbedWeapon);
             }
@@ -66,6 +68,7 @@ public class GrabWeaponAction implements GrabAction {
 
     @Override
     public boolean isValid(Game game) {
+        // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
             return false;
         }
@@ -87,6 +90,8 @@ public class GrabWeaponAction implements GrabAction {
                         && player.isFullOfWeapons();
             }
         }
+
+        // tile isn't a SpawnTile
         return false;
     }
 }
