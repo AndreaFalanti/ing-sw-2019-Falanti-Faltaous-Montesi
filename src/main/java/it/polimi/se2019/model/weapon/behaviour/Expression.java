@@ -1,21 +1,30 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
+import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.weapon.request.Request;
+import it.polimi.se2019.model.weapon.serialization.CustomExpressionDeserializer;
 import it.polimi.se2019.util.Exclude;
+import it.polimi.se2019.util.FieldUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+@JsonAdapter(CustomExpressionDeserializer.class)
 public abstract class Expression {
     @Exclude
-    final List<Expression> mSubexpressions = new ArrayList<>();
+    List<Expression> mSubexpressions = new ArrayList<>();
 
     // TODO: add doc
-    protected Expression(Expression... subExpressions) {
-        mSubexpressions.addAll(Arrays.asList(subExpressions));
+    protected Expression() {
+        updateSubExpressions();
+    }
+    // TODO: add doc
+    public static Expression fromJson(String jsonString) {
+        return ExpressionFactory.fromJson(jsonString);
     }
 
     // trivial getters
@@ -24,12 +33,19 @@ public abstract class Expression {
     }
 
     // TODO: add doc
+    public String toJson() {
+        return ExpressionFactory.toJson(this);
+    }
+
+    // TODO: add doc
     @Override
     public boolean equals(Object obj) {
         if (obj == null)
             return false;
 
-        return toString().equals(obj.toString());
+        Expression casted = (Expression) obj;
+
+        return toJson().equals(casted.toJson());
     }
 
     // TODO: add doc
@@ -78,5 +94,28 @@ public abstract class Expression {
     }
     Request asRequest() {
         throw new UnsupportedOperationException("This expression cannot be converted to an int!");
+    }
+
+    // TODO: add doc
+    public void updateSubExpressions() {
+        mSubexpressions = Arrays.stream(FieldUtils.getFieldsWithAnnotation(getClass(), SubExpression.class))
+                .map(field -> {
+                    if (!field.getClass().isAssignableFrom(Expression.class)) {
+                        throw new IllegalStateException("Field " + field.getName() + " of class " + getClass().getName() +
+                                "is annotated with a SubExpression annotation without being an Expression!");
+                    }
+
+                    return field;
+                })
+                .map(field -> {
+                    try {
+                        return field.get(this);
+                    } catch (IllegalAccessException e) {
+                        throw new IllegalStateException("Cannot get field " + field.getName() + " of class " +
+                                getClass().getName() + " annotated with subexpression annotation");
+                    }
+                })
+                .map(obj -> (Expression) obj)
+                .collect(Collectors.toList());
     }
 }

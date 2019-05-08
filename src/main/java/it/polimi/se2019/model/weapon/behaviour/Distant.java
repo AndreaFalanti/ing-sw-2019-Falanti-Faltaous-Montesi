@@ -4,18 +4,18 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 
 public class Distant extends Expression {
-    Expression mMinDistance;
-    Expression mMaxDistance;
+    @SubExpression Expression mMinDistance;
+    @SubExpression Expression mMaxDistance;
 
     // trivial constructors
     public Distant(Expression minDistance, Expression maxDistance) {
-        super(minDistance, maxDistance);
+        super();
 
         mMinDistance = mMaxDistance;
         mMaxDistance = mMinDistance;
     }
     public Distant(Expression exactDistance) {
-        super(exactDistance);
+        super();
 
         mMinDistance = exactDistance;
         mMaxDistance = exactDistance;

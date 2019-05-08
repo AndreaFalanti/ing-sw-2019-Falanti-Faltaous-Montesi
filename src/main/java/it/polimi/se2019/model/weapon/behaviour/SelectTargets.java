@@ -4,13 +4,13 @@ import it.polimi.se2019.model.weapon.request.TargetSelectionRequest;
 
 
 public class SelectTargets extends Expression {
-    Expression mTargetsToSelectFrom;
-    Expression mMinNumToSelect;
-    Expression mMaxNumToSelect;
+    @SubExpression Expression mTargetsToSelectFrom;
+    @SubExpression Expression mMinNumToSelect;
+    @SubExpression Expression mMaxNumToSelect;
 
     public SelectTargets(Expression minNumToSelect, Expression maxNumToSelect,
                          Expression targetsToSelectFrom) {
-        super(targetsToSelectFrom, minNumToSelect, maxNumToSelect);
+        super();
 
         mMinNumToSelect = minNumToSelect;
         mMaxNumToSelect = maxNumToSelect;

@@ -7,12 +7,12 @@ import java.util.Set;
 
 public class InflictDamage extends Expression {
     // subexpressions
-    Expression mTargets;
-    Expression mDamage;
+    @SubExpression Expression mTargets;
+    @SubExpression Expression mDamage;
 
     // trivial constructor
     public InflictDamage(Expression damageToInflict, Expression targets) {
-        super(damageToInflict, targets);
+        super();
 
         mDamage = damageToInflict;
         mTargets = targets;
