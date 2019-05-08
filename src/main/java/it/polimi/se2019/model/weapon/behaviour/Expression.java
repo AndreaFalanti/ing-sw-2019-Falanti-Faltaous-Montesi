@@ -5,6 +5,7 @@ import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
+import it.polimi.se2019.model.weapon.Selection;
 import it.polimi.se2019.model.weapon.request.Request;
 import it.polimi.se2019.model.weapon.serialization.CustomExpressionDeserializer;
 import it.polimi.se2019.util.Exclude;
@@ -81,10 +82,10 @@ public abstract class Expression {
     int asInt() {
         throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }
-    Set<PlayerColor> asTargets() {
+    Selection<PlayerColor> asTargetSelection() {
         throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }
-    Set<Position> asRange() {
+    Selection<Position> asRange() {
         throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }
     Damage asDamage() {

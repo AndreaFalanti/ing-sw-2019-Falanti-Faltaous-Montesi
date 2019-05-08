@@ -23,7 +23,7 @@ public class SelectTargets extends Expression {
         return new RequestLiteral(new TargetSelectionRequest(
                 mMinNumToSelect.asInt(),
                 mMaxNumToSelect.asInt(),
-                mTargetsToSelectFrom.asTargets()
+                mTargetsToSelectFrom.asTargetSelection()
         ));
     }
 }

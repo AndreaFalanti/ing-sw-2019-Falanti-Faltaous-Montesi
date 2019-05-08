@@ -5,6 +5,7 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.action.DamageAction;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.weapon.Selection;
 import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class InflictDamageTest {
         // inflict 1 damage to Mario
         InflictDamage tested = new InflictDamage(
                 new DamageLiteral(new Damage(1, 0)),
-                new TargetsLiteral(Collections.singleton(PlayerColor.GREEN))
+                new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN))
         );
 
         // do it
@@ -44,7 +45,7 @@ public class InflictDamageTest {
         // check it
         Expression expected = new ActionLiteral(new DamageAction(
                 PlayerColor.BLUE,
-                Collections.singleton(PlayerColor.GREEN),
+                Selection.fromSingle(PlayerColor.GREEN),
                 new Damage(1, 0)
         ));
         assertEquals(expected, actual);

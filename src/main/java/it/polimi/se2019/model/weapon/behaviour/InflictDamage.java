@@ -25,7 +25,7 @@ public class InflictDamage extends Expression {
 
         return new ActionLiteral(new DamageAction(
                 inflicterColor,
-                mTargets.asTargets(),
+                mTargets.asTargetSelection(),
                 mDamage.asDamage()
         ));
     }
