@@ -21,24 +21,8 @@ public class ExpressionFactory {
 
     // TODO: add doc
     // TODO: WIP refine implementation
-    private static Expression fromJsonIgnoringSubExpressions(String toDeserialize) {
-        return GSON.fromJson(toDeserialize, Expression.class);
-    }
-
-    // TODO: add doc
-    // TODO: WIP refine implementation
     public static Expression fromJson(String toDeserialize) {
-        // base case
-        // if (toSerialize.getSubExpressions().isEmpty())
-            // TODO: WIP: return fromJsonIgnoringSubExpressions();
-
-        // recurse among subexpressions while registering them
-        // toSerialize.getSubExpressions().stream()
-                // .map(subexpr -> {
-                    // return fromJson(subexpr);
-                // });
-
-        return null;
+        return GSON.fromJson(toDeserialize, Expression.class);
     }
 
     // TODO: add doc
