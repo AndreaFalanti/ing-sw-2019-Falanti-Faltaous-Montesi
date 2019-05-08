@@ -1,6 +1,7 @@
 package it.polimi.se2019.model.weapon;
 
-import org.w3c.dom.ranges.Range;
+import com.google.gson.annotations.JsonAdapter;
+import it.polimi.se2019.model.weapon.serialization.CustomSelectionAdapter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +10,7 @@ import java.util.stream.Stream;
 /**
  * Utility class representing a selection of something
  */
+@JsonAdapter(CustomSelectionAdapter.class)
 public class Selection<T> {
     private final Set<T> mContents = new HashSet();
 
@@ -22,6 +24,14 @@ public class Selection<T> {
         result.mContents.addAll(contents);
         
         return result;
+    }
+
+    /**
+     * returns a set containing all elements considered inside this selection
+     * @return selection as a set
+     */
+    public Set<T> toSet() {
+        return mContents;
     }
 
     /**
