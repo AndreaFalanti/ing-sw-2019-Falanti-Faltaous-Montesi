@@ -14,7 +14,8 @@ public class ExpressionFactory {
             .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Expression.class, "expr")
                     .registerSubtype(InflictDamage.class, "InflictDamage")
                     .registerSubtype(TargetsLiteral.class, "TargetsLiteral")
-                    .registerSubtype(DamageLiteral.class, "DamageLiteral"))
+                    .registerSubtype(DamageLiteral.class, "DamageLiteral")
+                    .registerSubtype(ActionLiteral.class, "ActionLiteral"))
             .setFieldNamingStrategy(new CustomFieldNamingStrategy())
             .addSerializationExclusionStrategy(new AnnotationExclusionStrategy())
             .create();
