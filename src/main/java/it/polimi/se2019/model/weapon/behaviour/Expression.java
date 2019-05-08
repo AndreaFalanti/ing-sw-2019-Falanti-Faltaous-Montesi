@@ -37,14 +37,15 @@ public abstract class Expression {
         return ExpressionFactory.toJson(this);
     }
 
-    // TODO: add doc
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null)
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
+        if (o == null || getClass() != o.getClass())
             return false;
-
-        Expression casted = (Expression) obj;
-
+        
+        Expression casted = (Expression) o;
         return toJson().equals(casted.toJson());
     }
 

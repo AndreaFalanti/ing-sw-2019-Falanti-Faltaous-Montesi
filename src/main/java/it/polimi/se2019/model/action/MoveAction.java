@@ -7,7 +7,7 @@ import it.polimi.se2019.model.Position;
 public class MoveAction implements Action {
     private PlayerColor mTarget;
     private Position mDestination;
-    private boolean mNormalAction;
+    private boolean mNormalMove;
 
     /**
      * Simplified constructor for weapon additional effects
@@ -20,7 +20,7 @@ public class MoveAction implements Action {
         }
         mTarget = playerColor;
         mDestination = destination;
-        mNormalAction = false;
+        mNormalMove = false;
     }
 
     /**
@@ -31,7 +31,7 @@ public class MoveAction implements Action {
      */
     public MoveAction(PlayerColor playerColor, Position destination, boolean isNormalMove) {
         this(playerColor, destination);
-        mNormalAction = isNormalMove;
+        mNormalMove = isNormalMove;
     }
 
     public PlayerColor getTarget() {
@@ -42,8 +42,8 @@ public class MoveAction implements Action {
         return mDestination;
     }
 
-    public boolean isNormalAction() {
-        return mNormalAction;
+    public boolean isNormalMove() {
+        return mNormalMove;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class MoveAction implements Action {
             return false;
         }
 
-        if (mNormalAction) {
+        if (mNormalMove) {
             // player can't move himself if out of actions
             if (game.getRemainingActions() == 0) {
                 return false;

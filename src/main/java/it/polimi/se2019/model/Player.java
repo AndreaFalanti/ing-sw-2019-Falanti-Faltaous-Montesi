@@ -3,6 +3,7 @@ package it.polimi.se2019.model;
 import it.polimi.se2019.model.weapon.Weapon;
 
 import java.util.EnumMap;
+import java.util.Map;
 
 public class Player {
     private AmmoValue mAmmo;
@@ -11,7 +12,7 @@ public class Player {
     private PlayerColor mColor;
     private int mDeathsNum = 0;
     private PlayerColor[] mDamageTaken = new PlayerColor[12];
-    private EnumMap<PlayerColor, Integer> mMarks = new EnumMap<>(PlayerColor.class);
+    private Map<PlayerColor, Integer> mMarks = new EnumMap<>(PlayerColor.class);
     private int mScore=0;
     private Position mPos;
     private String mName;
@@ -43,7 +44,7 @@ public class Player {
         return mDamageTaken;
     }
 
-    public EnumMap<PlayerColor, Integer> getMarks() {
+    public Map<PlayerColor, Integer> getMarks() {
         return mMarks;
     }
 
