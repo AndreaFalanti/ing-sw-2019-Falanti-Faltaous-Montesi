@@ -11,8 +11,11 @@ public class SpawnTile extends Tile {
 
 
     public void addWeapon(Weapon value) {
-        for (int i = 0; i < mWeapons.length && mWeapons[i] == null; i++) {
-            mWeapons[i] = value;
+        for (int i = 0; i < mWeapons.length; i++) {
+            if (mWeapons[i] == null) {
+                mWeapons[i] = value;
+                return;
+            }
         }
     }
 

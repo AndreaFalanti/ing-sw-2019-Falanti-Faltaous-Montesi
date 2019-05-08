@@ -54,7 +54,6 @@ public class DeckTest {
 
         deck.shuffle();
         assertTrue(deck.getCards().containsAll(deck.getDeck()));
-        assertEquals(deck.getDeck(),deck1);
     }
 
 }

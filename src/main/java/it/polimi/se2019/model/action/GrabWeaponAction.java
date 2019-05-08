@@ -44,17 +44,17 @@ public class GrabWeaponAction implements GrabAction {
     @Override
     public void perform(Game game) {
         SpawnTile spawnTile = (SpawnTile) game.getBoard().getTileAt(game.getActivePlayer().getPos());
+        Weapon grabbedWeapon = spawnTile.grabWeapon(mWeaponGrabbedIndex);
         try {
-            game.getActivePlayer().addWeapon(spawnTile.grabWeapon(mWeaponGrabbedIndex));
+            game.getActivePlayer().addWeapon(grabbedWeapon);
             spawnTile.addWeapon(game.getWeaponDeck().drawCard());
         }
         catch (FullHandException e) {
             Player player = game.getActivePlayer();
-            Weapon weapon = spawnTile.grabWeapon(mWeaponGrabbedIndex);
 
             spawnTile.addWeapon(player.takeWeapon(mWeaponToExchangeIndex));
             try {
-                player.addWeapon(weapon);
+                player.addWeapon(grabbedWeapon);
             }
             // now it shouldn't throw exception because it gave a weapon to spawn tile
             catch (FullHandException e1) {

@@ -60,10 +60,11 @@ public class Game {
         List<PowerUpCard> powerUpCards = PowerUpCard.returnDeckFromJson(Jsons.get("PowerUpCardDeck"));
         mPowerUpCardDeck = new Deck<>(powerUpCards);
 
-        //TODO: add weapons deck when it's ready
+        List<Weapon> weaponCards = Weapon.returnDeckFromJson(Jsons.get("WeaponDeck"));
+        mWeaponDeck = new Deck<>(weaponCards, false);
 
         refillAmmoTiles();
-        //fillSpawnsWithWeapons();
+        fillSpawnsWithWeapons();
     }
 
     //region GETTERS

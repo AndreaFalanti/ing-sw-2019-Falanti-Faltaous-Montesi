@@ -13,13 +13,17 @@ import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class WeaponTest {
     Game mSimpleGame;
+    private static final int EXPECTED_WEAPONS = 21;
 
     @Before
     public void instantiate() {
@@ -27,9 +31,24 @@ public class WeaponTest {
                 Board.fromJson(Jsons.get("boards/tests/simple_board")),
                 Arrays.asList(
                         new Player("Mario", PlayerColor.BLUE),
-                        new Player("Giorgio", PlayerColor.GREEN)
+                        new Player("Giorgio", PlayerColor.GREEN),
+                        new Player("Johnny", PlayerColor.GREY)
                 ),
-                0 // TODO: ask what this is
+                3 // TODO: ask what this is
         );
+    }
+
+    @Test
+    public void testReturnDeckFromJson() {
+        List<Weapon> deck = Weapon.returnDeckFromJson(Jsons.get("WeaponDeck"));
+
+        assertEquals(EXPECTED_WEAPONS, deck.size());
+        for (Weapon weapon : deck) {
+            assertNotNull(weapon.getName());
+            assertNotNull(weapon.getReloadCost());
+            assertNotNull(weapon.getGrabCost());
+
+            System.out.println(weapon);
+        }
     }
 }
