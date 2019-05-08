@@ -6,6 +6,7 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 
+import java.util.Deque;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
@@ -18,7 +19,7 @@ public class ShootContext {
     Board mBoard;
     Set<Player> mPlayers;
     PlayerColor mShooterColor;
-    Stack<Expression> mProvidedInfo;
+    Deque<Expression> mProvidedInfo;
 
     // trivial constructors
     public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor) {
@@ -40,8 +41,6 @@ public class ShootContext {
         return mShooterColor;
     }
     Player getShooter() {
-        Optional<Player> shooter = mPlayers.stream().filter(pl -> pl.getColor() == getShooterColor()).findFirst();
-
         return mPlayers.stream().
                 filter(pl -> pl.getColor() == getShooterColor())
                 .findFirst()
@@ -57,7 +56,7 @@ public class ShootContext {
         mProvidedInfo.push(info);
     }
     public Optional<Expression> popInfo() {
-        if (mProvidedInfo.empty())
+        if (mProvidedInfo.isEmpty())
             return Optional.empty();
 
         return Optional.of(mProvidedInfo.pop());

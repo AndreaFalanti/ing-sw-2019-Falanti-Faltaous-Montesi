@@ -11,8 +11,8 @@ public class Distant extends Expression {
     public Distant(Expression minDistance, Expression maxDistance) {
         super();
 
-        mMinDistance = mMaxDistance;
-        mMaxDistance = mMinDistance;
+        mMinDistance = maxDistance;
+        mMaxDistance = minDistance;
     }
     public Distant(Expression exactDistance) {
         super();
