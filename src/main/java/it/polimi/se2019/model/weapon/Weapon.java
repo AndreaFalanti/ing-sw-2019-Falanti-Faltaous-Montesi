@@ -21,6 +21,9 @@ public class Weapon {
     // behaviour of weapon used to shoot
     Expression mBehaviour;
 
+    // used in tests
+    public Weapon () {}
+
     // trivial constructor
     public Weapon(Expression behaviour) {
         mBehaviour = behaviour;

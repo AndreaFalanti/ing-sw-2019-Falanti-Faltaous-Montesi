@@ -1,5 +1,6 @@
 package it.polimi.se2019.model.action;
 
+import it.polimi.se2019.model.FullHandException;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.SpawnTile;
@@ -59,5 +60,18 @@ public class GrabWeaponActionTest {
         // go to blue spawn position
         game.getActivePlayer().move(new Position(2, 0));
         assertTrue(action1.isValid(game));
+
+        assertFalse(action2.isValid(game));
+
+        // add weapons to player for making exchange possible
+        try {
+            game.getActivePlayer().addWeapon(new Weapon());
+            game.getActivePlayer().addWeapon(new Weapon());
+            game.getActivePlayer().addWeapon(new Weapon());
+        } catch (FullHandException e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(action2.isValid(game));
     }
 }

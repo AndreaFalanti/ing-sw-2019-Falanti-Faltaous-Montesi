@@ -15,6 +15,9 @@ public class MoveAction implements Action {
      * @param destination Target destination
      */
     public MoveAction(PlayerColor playerColor, Position destination) {
+        if (destination == null) {
+            throw new IllegalArgumentException("Can't move to null position!");
+        }
         mTarget = playerColor;
         mDestination = destination;
         mNormalAction = false;
@@ -27,11 +30,7 @@ public class MoveAction implements Action {
      * @param isNormalMove Specify if is active player moving as action (use false for card effects)
      */
     public MoveAction(PlayerColor playerColor, Position destination, boolean isNormalMove) {
-        if (destination == null) {
-            throw new IllegalArgumentException("Can't move to null position!");
-        }
-        mTarget = playerColor;
-        mDestination = destination;
+        this(playerColor, destination);
         mNormalAction = isNormalMove;
     }
 
