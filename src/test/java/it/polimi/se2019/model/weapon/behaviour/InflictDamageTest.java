@@ -32,21 +32,21 @@ public class InflictDamageTest {
 
     @Test
     public void testEval() {
-//        // inflict 1 damage to Mario
-//        InflictDamage tested = new InflictDamage(
-//                new DamageLiteral(new Damage(1, 0)),
-//                new TargetsLiteral(Collections.singleton(PlayerColor.GREEN))
-//        );
-//
-//        // do it
-//        Expression actual = tested.eval(mGiorgioShootsMario);
-//
-//        // check it
-//        Expression expected = new ActionLiteral(new DamageAction(
-//                PlayerColor.BLUE,
-//                Collections.singleton(PlayerColor.GREEN),
-//                new Damage(1, 0)
-//        ));
-//        assertEquals(expected, actual);
+        // inflict 1 damage to Mario
+        InflictDamage tested = new InflictDamage(
+                new DamageLiteral(new Damage(1, 0)),
+                new TargetsLiteral(Collections.singleton(PlayerColor.GREEN))
+        );
+
+        // do it
+        Expression actual = tested.eval(mGiorgioShootsMario);
+
+        // check it
+        Expression expected = new ActionLiteral(new DamageAction(
+                PlayerColor.BLUE,
+                Collections.singleton(PlayerColor.GREEN),
+                new Damage(1, 0)
+        ));
+        assertEquals(expected, actual);
     }
 }
