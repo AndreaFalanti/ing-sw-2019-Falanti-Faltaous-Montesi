@@ -88,6 +88,9 @@ public abstract class Expression {
     Selection<Position> asRange() {
         throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }
+    Selection<?> asSelection() {
+        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
+    }
     Damage asDamage() {
         throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }

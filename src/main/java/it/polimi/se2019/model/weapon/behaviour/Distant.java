@@ -21,6 +21,7 @@ public class Distant extends Expression {
         mMaxDistance = exactDistance;
     }
 
+    // TODO: rephrase doc more succinctly...
     /**
      *
      * @param shootContext used for board and shooter position

@@ -3,8 +3,12 @@ package it.polimi.se2019.model.weapon;
 import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.weapon.serialization.CustomSelectionAdapter;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -12,7 +16,7 @@ import java.util.stream.Stream;
  */
 @JsonAdapter(CustomSelectionAdapter.class)
 public class Selection<T> {
-    private final Set<T> mContents = new HashSet();
+    Predicate<T> mCharacteristicFunction;
 
     /**
      * constructs a selection from a set representing its contents
@@ -21,17 +25,21 @@ public class Selection<T> {
      */
     public static<T> Selection<T> fromSet(Set<T> contents) {
         Selection<T> result = new Selection();
-        result.mContents.addAll(contents);
-        
+        result.mCharacteristicFunction = (element) -> contents.contains(element);
+
         return result;
     }
 
+    // TODO: refine doc
     /**
      * returns a set containing all elements considered inside this selection
+     * @domain all elements that exist, without this, the function would have to check infinite elements
      * @return selection as a set
      */
-    public Set<T> toSet() {
-        return mContents;
+    public Set<T> toSet(Set<T> domain) {
+        return domain.stream()
+                .filter(mCharacteristicFunction)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -40,14 +48,22 @@ public class Selection<T> {
      * @return constructed selection
      */
     public static<T> Selection<T> fromSingle(T element) {
-        Selection<T> result = new Selection();
-        result.mContents.add(element);
-
-        return result;
+        return fromSet(Collections.singleton(element));
     }
 
-    public Stream<T> stream() {
-        return mContents.stream();
+    // TODO: add doc
+    public Stream<T> stream(Set<T> domain) {
+        return domain.stream()
+                .filter(mCharacteristicFunction);
+    }
+
+    // TODO: add doc
+    // TODO: reimplement using cloning
+    public Selection<T> negate() {
+        Selection<T> result = new Selection();
+        result.mCharacteristicFunction = mCharacteristicFunction.negate();
+
+        return result;
     }
 
     /**
@@ -56,6 +72,6 @@ public class Selection<T> {
      * @return true if {@code element} is contained inside this selection
      */
     public boolean contains(T element) {
-        return mContents.contains(element);
+        return mCharacteristicFunction.test(element);
     }
 }
