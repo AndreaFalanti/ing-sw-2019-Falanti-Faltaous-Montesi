@@ -11,6 +11,10 @@ import it.polimi.se2019.util.Observer;
 public class Controller implements Observable, Observer {
 
     private Game mGame;
+    private PerformPlayerAction mPerform;//change name
+  //  private requestPlayerAction mRequest;//change name
+  //  private getLeaderBoard mLeaderBoard;//change name
+  //  private getValidPosition mValidPostion;//change name
 
     public Controller() {
     }
@@ -23,16 +27,12 @@ public class Controller implements Observable, Observer {
 
     }
 
-    public Position getValidPosition(PlayerColor color){
+    public Position[] getValidPosition(PlayerColor color){
         return null;
-    }
+    }//return all valid positions according to action
 
-    public void finalizeGrabAction(Position pos){
 
-    }
-
-    public void finalizeReload(Weapon weapon, Player player){
+    public void getLeaderBoard(){
 
     }
-    
 }

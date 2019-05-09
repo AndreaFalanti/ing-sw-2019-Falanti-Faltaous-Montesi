@@ -6,16 +6,12 @@ import it.polimi.se2019.view.ResponseHandler;
 import java.util.*;
 
 
-public class ValidMoveResponse implements Response {
+public class MessageActionResponse implements Response {
 
-    private List<Position> validPos;
+    private String message;
 
-    public ValidMoveResponse(List<Position> validPos) {
-        this.validPos = validPos;
-    }
-
-    public List<Position> getValidPos() {
-        return validPos;
+    public MessageActionResponse(String message) {
+        this.message = message;
     }
 
     @Override
