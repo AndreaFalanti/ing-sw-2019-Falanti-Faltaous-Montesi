@@ -29,11 +29,25 @@ public final class GameTestCaseBuilder {
     }
 
     public static PowerUpCard generateTeleportCard () {
-        return new PowerUpCard("Teleport", new AmmoValue(0,1,0), new TeleportBehaviour());
+        return new PowerUpCard("Teleport", new AmmoValue(1,0,0), new TeleportBehaviour());
     }
 
-    //TODO: implement other cards generation methods
+    public static PowerUpCard generateNewtonCard () {
+        return new PowerUpCard("Newton", new AmmoValue(0,1,0), new NewtonBehaviour());
+    }
 
+    public static PowerUpCard generateTagbackGrenadeCard () {
+        return new PowerUpCard("TagbackGrenade", new AmmoValue(0,0,1), new TagbackGrenadeBehaviour());
+    }
+
+    public static PowerUpCard generateTargetingScopeCard () {
+        return new PowerUpCard("TargetingScope", new AmmoValue(0,1,0), new TargetingScopeBehaviour());
+    }
+
+    /**
+     * Generate game in normal status with player with no cards in hand (typical game start). [Turn: 1]
+     * @return A base game
+     */
     public static Game generateBaseGame () {
         Board board = Board.fromJson(Jsons.get("boards/game/board1"));
         List<Player> players = generatePlayerList();
@@ -44,12 +58,18 @@ public final class GameTestCaseBuilder {
         return game;
     }
 
+    /**
+     * Generate game in normal status with players that have various powerUps in hand. [Turn: 1]
+     * @return A game with powerUps to players
+     */
     public static Game generateGameWithAllPowerUpsToPlayers () {
         Game game = generateBaseGame();
 
         for (Player player : game.getPlayers()) {
             try {
                 player.addPowerUp(generateTeleportCard());
+                player.addPowerUp(generateNewtonCard());
+                player.addPowerUp(generateTagbackGrenadeCard());
             }
             catch (FullHandException e) {
                 e.printStackTrace();
@@ -59,6 +79,10 @@ public final class GameTestCaseBuilder {
         return game;
     }
 
+    /**
+     * Generate game in final frenzy status, active player plays before first player in turn order. [Turn: 3]
+     * @return A game in final frenzy mode
+     */
     public static Game generateFinalFrenzyGameBeforeFirstPlayer () {
         Board board = Board.fromJson(Jsons.get("boards/game/board1"));
         List<Player> players = generatePlayerList();
@@ -77,6 +101,10 @@ public final class GameTestCaseBuilder {
         return game;
     }
 
+    /**
+     * Generate game in final frenzy status, active player plays after first player in turn order. [Turn: 5]
+     * @return A game in final frenzy mode
+     */
     public static Game generateFinalFrenzyGameAfterFirstPlayer () {
         Game game = generateFinalFrenzyGameBeforeFirstPlayer();
 

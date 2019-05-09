@@ -41,11 +41,14 @@ public class GrabWeaponAction implements GrabAction {
         return mWeaponToExchangeIndex;
     }
 
+    //TODO: in perform and isValid add check of weapon grab cost and relative ammo payment
+
     @Override
     public void perform(Game game) {
         SpawnTile spawnTile = (SpawnTile) game.getBoard().getTileAt(game.getActivePlayer().getPos());
         Weapon grabbedWeapon = spawnTile.grabWeapon(mWeaponGrabbedIndex);
 
+        // TODO: could be refactored, it should'nt use exceptions to decide action behaviour
         // if can't add weapon because hand is full, perform an exchange (catch block)
         try {
             game.getActivePlayer().addWeapon(grabbedWeapon);

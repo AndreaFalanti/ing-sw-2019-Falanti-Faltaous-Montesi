@@ -2,11 +2,9 @@ package it.polimi.se2019.model.weapon;
 
 import com.google.gson.Gson;
 import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.model.Deck;
 import it.polimi.se2019.model.action.Action;
-import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.model.weapon.behaviour.Expression;
-import it.polimi.se2019.model.weapon.request.Request;
+import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +15,7 @@ public class Weapon {
     private String mName;
     private AmmoValue mReloadCost;
     private AmmoValue mGrabCost;
+    private boolean mLoaded;
 
     // behaviour of weapon used to shoot
     Expression mBehaviour;
@@ -24,29 +23,23 @@ public class Weapon {
     // used in tests
     public Weapon () {}
 
+    public Weapon (String name, AmmoValue reloadCost, AmmoValue grabCost) {
+        if (reloadCost == null || grabCost == null) {
+            throw new IllegalArgumentException("Can't use null ammoValues");
+        }
+
+        mName = name;
+        mReloadCost = reloadCost;
+        mGrabCost = grabCost;
+        mLoaded = false;
+    }
+
     // trivial constructor
     public Weapon(Expression behaviour) {
         mBehaviour = behaviour;
     }
 
-    // trivial getters
-    // TODO: implement loading
-    public boolean isLoaded() {
-        return true;
-    }
-
-    // TODO: add doc
-    // TODO: implement
-    public Weapon deepCopy() {
-        throw new UnsupportedOperationException();
-    }
-
-    // TODO: add doc
-    // TODO: implement
-    public Action shoot(ShootContext shootContext) {
-        return null;
-    }
-
+    //region GETTERS
     public String getName() {
         return mName;
     }
@@ -59,10 +52,27 @@ public class Weapon {
         return mGrabCost;
     }
 
+    public boolean isLoaded() {
+        return mLoaded;
+    }
+    //endregion
+
     // TODO: add doc
     // TODO: implement
     public void setLoaded(boolean loaded) {
         ;
+    }
+
+    // TODO: add doc
+    // TODO: implement
+    public Weapon deepCopy() {
+        throw new UnsupportedOperationException();
+    }
+
+    // TODO: add doc
+    // TODO: implement
+    public Action shoot(ShootContext shootContext) {
+        return null;
     }
 
     public static List<Weapon> returnDeckFromJson(String json) {
