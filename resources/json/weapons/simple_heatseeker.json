@@ -1,0 +1,14 @@
+{
+  "expr" : "PayThenDo",
+  "cost" : [2, 1, 0],
+  "do" : {
+    "expr" : "InflictDamage",
+    "damage" : [1, 0],
+    "targets" : {
+      "expr" : "NegateSelection",
+      "negated" : {
+        "expr" : "CanSee"
+      }
+    }
+  }
+}

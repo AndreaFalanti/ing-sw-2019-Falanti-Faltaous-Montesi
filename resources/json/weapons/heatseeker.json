@@ -1,0 +1,28 @@
+{
+  "expr" : "Cons",
+  "subs" : [
+    {
+      "expr" : "ActionLiteral",
+      "contents" : {
+        "action" : "pay",
+        "amount" : [2, 1, 0]
+      }
+    },
+    {
+      "expr" : "InflictDamage",
+      "damage" : {
+        "expr" : "DamageLiteral",
+        "contents" : {
+          "damage" : 3,
+          "numMarks" : 0
+        }
+      },
+      "targets" : {
+        "expr" : "NegateSelection",
+        "negated" : {
+          "expr" : "CanSee"
+        }
+      }
+    }
+  ]
+}
