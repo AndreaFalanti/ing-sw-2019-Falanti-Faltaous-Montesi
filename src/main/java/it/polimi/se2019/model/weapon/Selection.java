@@ -4,6 +4,7 @@ import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.weapon.serialization.CustomSelectionAdapter;
 
+import javax.swing.text.html.Option;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Predicate;
@@ -15,7 +16,13 @@ import java.util.stream.Stream;
  */
 @JsonAdapter(CustomSelectionAdapter.class)
 public class Selection<T> {
+    Optional<Stream<T>> mDomain = Optional.empty();
     Predicate<T> mCharacteristicFunction;
+
+    // trivial setters
+    public void setDomain(Stream<T> domain) {
+        mDomain = Optional.ofNullable(domain);
+    }
 
     /**
      * constructs a selection from a set representing its contents
@@ -29,14 +36,31 @@ public class Selection<T> {
         return result;
     }
 
+    /**
+     * constructs a selection from a set representing its contents
+     * @return constructed selection
+     */
+    public static<T> Selection<T> of(T... contents) {
+        Selection<T> result = new Selection();
+        result.mCharacteristicFunction = (element) -> Arrays.stream(contents)
+                .filter(arrayEle -> arrayEle.equals(element))
+                .findFirst()
+                .isPresent();
+
+        return result;
+    }
+
     // TODO: refine doc
     /**
      * returns a set containing all elements considered inside this selection
      * @domain all elements that exist, without this, the function would have to check infinite elements
      * @return selection as a set
      */
-    public Set<T> toSet(Set<T> domain) {
-        return domain.stream()
+    public Set<T> asSet() {
+        if (!mDomain.isPresent())
+            throw new UnsupportedOperationException("Cannot transform unbounded Selection to Set!");
+
+        return mDomain.get()
                 .filter(mCharacteristicFunction)
                 .collect(Collectors.toSet());
     }
@@ -44,7 +68,7 @@ public class Selection<T> {
     /**
      * constructs a selection from a set representing its contents
      * @param  element only element contained in the selection
-     * @return constructed selection
+     * @return constructed selectionS
      */
     public static<T> Selection<T> fromSingle(T element) {
         return fromSet(Collections.singleton(element));
@@ -52,6 +76,9 @@ public class Selection<T> {
 
     // TODO: add doc
     public Stream<T> stream(Set<T> domain) {
+        if (!mDomain.isPresent())
+            throw new UnsupportedOperationException("Cannot transform unbounded Selection to Stream!");
+
         return domain.stream()
                 .filter(mCharacteristicFunction);
     }

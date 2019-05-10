@@ -45,7 +45,7 @@ public class InflictDamageTest {
         // check it
         Expression expected = new ActionLiteral(new DamageAction(
                 PlayerColor.BLUE,
-                Selection.fromSingle(PlayerColor.GREEN),
+                Collections.singleton(PlayerColor.GREEN),
                 new Damage(1, 0)
         ));
         assertEquals(expected, actual);

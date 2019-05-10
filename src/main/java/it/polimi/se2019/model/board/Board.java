@@ -11,6 +11,7 @@ import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Board {
 
@@ -363,5 +364,14 @@ public class Board {
      */
     public RangeInfo getRangeInfo(Position rangeOrigin) {
         return getRangeInfoHelper(rangeOrigin, rangeOrigin, 0, new RangeInfo(rangeOrigin));
+    }
+
+    /**
+     * Returns a stream generating all positions of the board
+     * @return aforementioned stream
+     */
+    public Stream<Position> posStream() {
+        return IntStream.range(0, getWidth() * getHeight())
+                .mapToObj(i -> new Position(i / getWidth(), i % getWidth()));
     }
 }

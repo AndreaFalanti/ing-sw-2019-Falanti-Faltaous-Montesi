@@ -10,11 +10,11 @@ import java.util.Set;
 public class DamageAction implements Action {
     // fields
     PlayerColor mAttackerColor;
-    Selection<PlayerColor> mDefenderColors;
+    Set<PlayerColor> mDefenderColors;
     Damage mDamageToInflict;
 
     // trivial constructor
-    public DamageAction(PlayerColor attackerColor, Selection<PlayerColor> defenderColors, Damage damageToInflict) {
+    public DamageAction(PlayerColor attackerColor, Set<PlayerColor> defenderColors, Damage damageToInflict) {
         mAttackerColor = attackerColor;
         mDefenderColors = defenderColors;
         mDamageToInflict = damageToInflict;

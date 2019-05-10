@@ -5,8 +5,8 @@ import org.junit.Test;
 public class WeaponsTest {
     @Test
     public void testHeatseeker() {
-        Weapon heatSeeker = ("heatseeker");
+        // Weapon heatSeeker = ("heatseeker");
 
-        heatSeeker.shoot()
+        // heatSeeker.shoot()
     }
 }

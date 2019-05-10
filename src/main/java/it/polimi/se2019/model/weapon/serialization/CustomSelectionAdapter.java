@@ -16,6 +16,6 @@ public class CustomSelectionAdapter<T> implements JsonDeserializer<Selection<T>>
 
     @Override
     public JsonElement serialize(Selection<T> toSerialize, Type type, JsonSerializationContext context) {
-        return context.serialize(toSerialize.toSet(), Set.class);
+        return context.serialize(toSerialize.asSet(), Set.class);
     }
 }

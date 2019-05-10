@@ -6,6 +6,10 @@ import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -35,8 +39,7 @@ public class BoardTest {
     public void instantiateExampleBoards() {
         // unit board (using setters)
         mExampleUnitBoard = new Board(1, 1);
-        mExampleUnitBoard.setTileAt(new Position(0, 0),
-                                new NormalTile(TileColor.BLUE, 0));
+        mExampleUnitBoard.setTileAt(new Position(0, 0), new NormalTile(TileColor.BLUE, 0));
 
         // empty board
         mExampleEmptyBoard = new Board(3, 3);
@@ -221,5 +224,32 @@ public class BoardTest {
         );
 
         assertEquals(expected, rangeInfo);
+    }
+
+    @Test
+    public void testPosStream() {
+        // generate
+        Stream<Position> actual = mExampleSimpleWallBoard.posStream();
+
+        // check
+        Stream<Position> expected = Stream.of(
+                new Position(0, 0),
+                new Position(0, 1),
+                new Position(0, 2),
+                new Position(0, 3),
+                new Position(1, 0),
+                new Position(1, 1),
+                new Position(1, 2),
+                new Position(1, 3),
+                new Position(2, 0),
+                new Position(2, 1),
+                new Position(2, 2),
+                new Position(2, 3),
+                new Position(3, 0),
+                new Position(3, 1),
+                new Position(3, 2),
+                new Position(3, 3)
+        );
+        assertEquals(expected, actual);
     }
 }
