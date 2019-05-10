@@ -8,6 +8,8 @@ import it.polimi.se2019.model.PowerUpCard;
 public class TeleportAction implements Action {
     private Position mDestination;
     private int mTeleportIndex;
+    private ResponseCode mCode;
+    private String message;
 
     public TeleportAction (Position destination, int index) {
         if (index < 0 || index >= 3) {
@@ -34,4 +36,6 @@ public class TeleportAction implements Action {
         PowerUpCard powerUpCard = game.getActivePlayer().getPowerUpCard(mTeleportIndex);
         return powerUpCard != null && powerUpCard.getName().equals("Teleport");
     }
+
+    public ResponseCode getCode(){return mCode;}
 }

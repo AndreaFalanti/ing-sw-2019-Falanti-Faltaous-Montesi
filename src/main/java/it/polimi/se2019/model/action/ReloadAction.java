@@ -8,6 +8,8 @@ import it.polimi.se2019.model.weapon.Weapon;
 public class ReloadAction implements Action {
     private int mWeaponIndex;
     private boolean[] mDiscardPowerUp = {false, false, false};
+    private ResponseCode mCode;
+    private String message;
 
     public ReloadAction (int weaponIndex) {
         if (weaponIndex < 0 || weaponIndex >= 3) {
@@ -98,4 +100,6 @@ public class ReloadAction implements Action {
 
         return ammo;
     }
+
+    public ResponseCode getCode(){return mCode;}
 }

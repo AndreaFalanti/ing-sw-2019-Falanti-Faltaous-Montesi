@@ -7,4 +7,6 @@ public interface Action {
     void perform(Game game);
 
     boolean isValid(Game game);
+
+    ResponseCode getCode();
 }

@@ -8,6 +8,8 @@ import it.polimi.se2019.model.Position;
 public class MoveGrabAction implements Action{
     private MoveAction mMoveAction;
     private GrabAction mGrabAction;
+    private ResponseCode mCode;
+    private String message;
 
     public MoveGrabAction (PlayerColor playerColor, Position destination) {
         mMoveAction = new MoveAction(playerColor, destination);
@@ -43,6 +45,8 @@ public class MoveGrabAction implements Action{
     public boolean isValid(Game game) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
+            System.out.println("Max number of action reached");
+            this.mCode = ResponseCode.NO_ACTION_LEFT;
             return false;
         }
 
@@ -69,4 +73,6 @@ public class MoveGrabAction implements Action{
                     .getTileDistance(player.getPos(), mMoveAction.getDestination()) <= player.getMaxGrabDistance();
         }
     }
+
+    public ResponseCode getCode(){return mCode;}
 }

@@ -8,6 +8,8 @@ public class MoveAction implements Action {
     private PlayerColor mTarget;
     private Position mDestination;
     private boolean mNormalMove;
+    private ResponseCode mCode;
+    private String message;
 
     /**
      * Simplified constructor for weapon additional effects
@@ -63,6 +65,8 @@ public class MoveAction implements Action {
         if (mNormalMove) {
             // player can't move himself if out of actions
             if (game.getRemainingActions() == 0) {
+                System.out.println("Max number of action reached");
+                this.mCode = ResponseCode.NO_ACTION_LEFT;
                 return false;
             }
 
@@ -89,4 +93,6 @@ public class MoveAction implements Action {
             return game.getBoard().getTileDistance(playerPos, mDestination) <= 3;
         }
     }
+
+    public ResponseCode getCode(){return mCode;}
 }

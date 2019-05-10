@@ -12,6 +12,8 @@ public class DamageAction implements Action {
     PlayerColor mAttackerColor;
     Set<PlayerColor> mDefenderColors;
     Damage mDamageToInflict;
+    private ResponseCode mCode;
+    private String message;
 
     // trivial constructor
     public DamageAction(PlayerColor attackerColor, Set<PlayerColor> defenderColors, Damage damageToInflict) {
@@ -39,4 +41,6 @@ public class DamageAction implements Action {
                 // isValidPlayerColor(mDefenderColor);
         return true;
     }
+
+    public ResponseCode getCode(){return mCode;}
 }

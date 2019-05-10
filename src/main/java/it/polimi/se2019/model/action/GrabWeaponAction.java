@@ -11,6 +11,7 @@ import it.polimi.se2019.model.weapon.Weapon;
 public class GrabWeaponAction implements GrabAction {
     private int mWeaponGrabbedIndex;
     private Integer mWeaponToExchangeIndex;
+    private ResponseCode mCode;
 
     public GrabWeaponAction (int index) {
         if (!isValidIndex(index)) {
@@ -79,6 +80,8 @@ public class GrabWeaponAction implements GrabAction {
     public boolean isValidAtPos(Game game, Position pos) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
+            System.out.println("Max number of action reached");
+            this.mCode = ResponseCode.NO_ACTION_LEFT;
             return false;
         }
 
@@ -103,4 +106,6 @@ public class GrabWeaponAction implements GrabAction {
         // tile isn't a SpawnTile
         return false;
     }
+
+    public ResponseCode getCode(){return mCode;}
 }
