@@ -108,11 +108,24 @@ public class Player {
 
     /**
      * return if player has reached the maximum number of weapon in his hand
-     * @return true if has three
+     * @return true if has three weapons, false otherwise
      */
     public boolean isFullOfWeapons () {
         for (Weapon weapon : mWeapons) {
             if (weapon == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * return if player has reached the maximum number of power up cards in his hand
+     * @return true if has three power ups, false otherwise
+     */
+    public boolean isFullOfPowerUps () {
+        for (PowerUpCard powerUpCard : mPowerUpCards) {
+            if (powerUpCard == null) {
                 return false;
             }
         }
@@ -230,7 +243,7 @@ public class Player {
     /**
      * add powerup card in player hand and throw exception when player reaches the maximum number of powerups card
      * @param value powerup card to add
-     * @param isRespawn boolean value to know if a player could have four powerups insteadof three
+     * @param isRespawn boolean value to know if a player could have four powerups instead of three
      * @throws FullHandException
      */
     public void addPowerUp(PowerUpCard value, boolean isRespawn) throws FullHandException {

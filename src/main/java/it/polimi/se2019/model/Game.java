@@ -318,6 +318,7 @@ public class Game {
                 registerKill(getActivePlayer().getColor());
                 if (player.isOverkilled()) {
                     registerOverkill(getActivePlayer().getColor());
+                    // TODO: add mark to active player
                 }
                 distributePlayerKillScore(player.getColor());
                 // Remove temporarily player from board
