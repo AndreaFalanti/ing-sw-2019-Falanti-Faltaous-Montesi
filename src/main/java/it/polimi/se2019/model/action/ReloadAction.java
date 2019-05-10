@@ -53,27 +53,33 @@ public class ReloadAction implements Action {
         Weapon weaponToReload = game.getActivePlayer().getWeapon(mWeaponIndex);
         boolean isDiscarding = false;
 
+        // can't reload an already loaded weapon or a null weapon
+        if (weaponToReload == null || weaponToReload.isLoaded()) {
+            return false;
+        }
+
         // reload action can be performed only on turn end if not composed in a final frenzy action
         if (!game.isFinalFrenzy() && game.getRemainingActions() != 0) {
             return false;
         }
 
         // check that user is trying to discard a valid card (not null)
-        for (int i = 0; i < mDiscardPowerUp.length && mDiscardPowerUp[i]; i++) {
-            isDiscarding = true;
-            if (game.getActivePlayer().getPowerUpCard(i) == null) {
-                return false;
+        for (int i = 0; i < mDiscardPowerUp.length; i++) {
+            if (mDiscardPowerUp[i]) {
+                isDiscarding = true;
+                if (game.getActivePlayer().getPowerUpCard(i) == null) {
+                    return false;
+                }
             }
         }
 
         // check that if player can pay the cost directly, it's not discarding power up cards
         if (playerAmmo.isBiggerOrEqual(weaponToReload.getReloadCost())) {
-            return !isDiscarding && !weaponToReload.isLoaded();
+            return !isDiscarding;
         }
         else {
             AmmoValue ammoWithPowerUps = getAmmoTotalWithPowerUpDiscard(game.getActivePlayer());
-            return ammoWithPowerUps.isBiggerOrEqual(game.getActivePlayer().getWeapon(mWeaponIndex).getReloadCost())
-                    && !weaponToReload.isLoaded();
+            return ammoWithPowerUps.isBiggerOrEqual(weaponToReload.getReloadCost());
         }
     }
 
@@ -84,8 +90,10 @@ public class ReloadAction implements Action {
      */
     private AmmoValue getAmmoTotalWithPowerUpDiscard (Player player) {
         AmmoValue ammo = player.getAmmo().deepCopy();
-        for (int i = 0; i < mDiscardPowerUp.length  && mDiscardPowerUp[i]; i++) {
-            ammo.add(player.getPowerUpCard(i).getAmmoValue());
+        for (int i = 0; i < mDiscardPowerUp.length; i++) {
+            if (mDiscardPowerUp[i]) {
+                ammo.add(player.getPowerUpCard(i).getAmmoValue());
+            }
         }
 
         return ammo;

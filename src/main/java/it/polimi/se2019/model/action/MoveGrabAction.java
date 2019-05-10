@@ -14,6 +14,11 @@ public class MoveGrabAction implements Action{
         mGrabAction = new GrabAmmoAction();
     }
 
+    public MoveGrabAction (PlayerColor playerColor, Position destination, int weaponIndex) {
+        mMoveAction = new MoveAction(playerColor, destination);
+        mGrabAction = new GrabWeaponAction(weaponIndex);
+    }
+
     public MoveGrabAction (PlayerColor playerColor, Position destination, int weaponIndex, Integer weaponExchangedIndex) {
         mMoveAction = new MoveAction(playerColor, destination);
         mGrabAction = new GrabWeaponAction(weaponIndex, weaponExchangedIndex);
@@ -36,11 +41,21 @@ public class MoveGrabAction implements Action{
 
     @Override
     public boolean isValid(Game game) {
+        // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
             return false;
         }
 
+        // this action can be performed only by active player
+        if (mMoveAction.getTarget() != game.getActivePlayer().getColor()) {
+            return false;
+        }
+
         Player player = game.getPlayerFromColor(mMoveAction.getTarget());
+
+        if (!mGrabAction.isValidAtPos(game, mMoveAction.getDestination())) {
+            return false;
+        }
 
         // check max possible moves in final frenzy status
         if (game.isFinalFrenzy()) {

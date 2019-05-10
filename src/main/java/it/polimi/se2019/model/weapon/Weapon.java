@@ -59,8 +59,8 @@ public class Weapon {
 
     // TODO: add doc
     // TODO: implement
-    public void setLoaded(boolean loaded) {
-        ;
+    public void setLoaded(boolean value) {
+        mLoaded = value;
     }
 
     // TODO: add doc

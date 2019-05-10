@@ -3,6 +3,7 @@ package it.polimi.se2019.model.action;
 import it.polimi.se2019.model.FullHandException;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.Tile;
 import it.polimi.se2019.model.weapon.Weapon;
@@ -71,12 +72,17 @@ public class GrabWeaponAction implements GrabAction {
 
     @Override
     public boolean isValid(Game game) {
+        return isValidAtPos(game, game.getActivePlayer().getPos());
+    }
+
+    @Override
+    public boolean isValidAtPos(Game game, Position pos) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
             return false;
         }
 
-        Tile tile = game.getBoard().getTileAt(game.getActivePlayer().getPos());
+        Tile tile = game.getBoard().getTileAt(pos);
         if (tile.getTileType().equals("spawn")) {
             SpawnTile spawnTile = (SpawnTile) tile;
 

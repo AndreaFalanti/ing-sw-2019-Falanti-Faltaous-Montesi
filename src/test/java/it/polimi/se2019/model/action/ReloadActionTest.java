@@ -21,7 +21,7 @@ public class ReloadActionTest {
         ReloadAction action2 = new ReloadAction(1, discardedCards);
 
         AmmoValue expectedAmmo1 = new AmmoValue(0,0,1);
-        AmmoValue expectedAmmo2 = new AmmoValue(0,0,0);
+        AmmoValue expectedAmmo2 = new AmmoValue(0,1,0);
 
         try {
             game1.getActivePlayer()
