@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -229,10 +230,10 @@ public class BoardTest {
     @Test
     public void testPosStream() {
         // generate
-        Stream<Position> actual = mExampleSimpleWallBoard.posStream();
+        Set<Position> actual = mExampleSimpleWallBoard.posStream().collect(Collectors.toSet());
 
         // check
-        Stream<Position> expected = Stream.of(
+        Set<Position> expected = Stream.of(
                 new Position(0, 0),
                 new Position(0, 1),
                 new Position(0, 2),
@@ -249,7 +250,7 @@ public class BoardTest {
                 new Position(3, 1),
                 new Position(3, 2),
                 new Position(3, 3)
-        );
+        ).collect(Collectors.toSet());
         assertEquals(expected, actual);
     }
 }
