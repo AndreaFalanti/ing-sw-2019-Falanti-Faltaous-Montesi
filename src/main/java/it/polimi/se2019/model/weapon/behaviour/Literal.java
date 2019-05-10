@@ -15,9 +15,9 @@ public class Literal<PrimitiveType> extends Expression {
         return mContents;
     }
 
-    // a literal always evaluates to itself
+    // a literal usually evaluates to itself
     @Override
-    protected final Expression continueEval(ShootContext shootContext) {
+    protected Expression continueEval(ShootContext shootContext) {
         return this;
     }
 }

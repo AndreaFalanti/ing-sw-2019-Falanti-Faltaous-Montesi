@@ -37,6 +37,9 @@ public class ShootContext {
     Board getBoard() {
         return mBoard;
     }
+    Set<Player> getPlayers() {
+        return mPlayers;
+    }
     PlayerColor getShooterColor() {
         return mShooterColor;
     }

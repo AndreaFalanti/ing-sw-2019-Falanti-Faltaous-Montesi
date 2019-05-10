@@ -34,10 +34,17 @@ public class ReloadAction implements Action {
 
     @Override
     public void perform(Game game) {
-        game.getActivePlayer().reloadWeapon(mWeaponIndex);
-        for (int i = 0; i < mDiscardPowerUp.length && mDiscardPowerUp[i]; i++) {
-            game.getActivePlayer().discard(i);
+        Player player = game.getActivePlayer();
+
+        // discard powerUps set in boolean array and add ammo to player
+        for (int i = 0; i < mDiscardPowerUp.length; i++) {
+            if (mDiscardPowerUp[i]) {
+                player.getAmmo().add(player.getPowerUpCard(i).getAmmoValue());
+                player.discard(i);
+            }
         }
+
+        player.reloadWeapon(mWeaponIndex);
     }
 
     @Override

@@ -1,12 +1,21 @@
 {
-  "expr" : "PayThenDo",
-  "cost" : [2, 1, 0],
-  "do" : {
+  "name" : "heatseeker",
+  "reload_cost" : {
+    "red" : 2,
+    "yellow" : 1,
+    "blue" : 1
+  },
+  "grab_cost" : {
+    "red" : 2,
+    "yellow" : 1,
+    "blue" : 1
+  },
+  "primary_effect" : {
     "expr" : "InflictDamage",
     "damage" : [1, 0],
     "targets" : {
       "expr" : "NegateSelection",
-      "negated" : {
+      "do" : {
         "expr" : "CanSee"
       }
     }
