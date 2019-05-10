@@ -38,6 +38,7 @@ public abstract class Expression {
         return ExpressionFactory.toJson(this);
     }
 
+    // TODO: add doc
     @Override
     public boolean equals(Object o) {
         if (this == o)

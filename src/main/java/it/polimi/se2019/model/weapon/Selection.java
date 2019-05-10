@@ -1,12 +1,11 @@
 package it.polimi.se2019.model.weapon;
 
 import com.google.gson.annotations.JsonAdapter;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.weapon.serialization.CustomSelectionAdapter;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.lang.reflect.Type;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
