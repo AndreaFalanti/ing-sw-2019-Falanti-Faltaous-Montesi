@@ -16,12 +16,13 @@ public class GrabAmmoAction implements GrabAction {
         player.getAmmo().add(ammoCard.getAmmoGain());
 
         // check if grabbed ammo card allows drawing a power up card
-        if (ammoCard.getDrawPowerUp() && !player.isFullOfPowerUps()) {
-            PowerUpCard powerUpCard = game.getPowerUpDeck().drawCard();
-            try {
+        if (ammoCard.getDrawPowerUp()) {
+            if (!player.isFullOfPowerUps()) {
+                PowerUpCard powerUpCard = game.getPowerUpDeck().drawCard();
                 player.addPowerUp(powerUpCard);
                 this.mCode = ResponseCode.OK;
-            } catch (FullHandException e) {
+            }
+            else {
                 System.out.println("Hand is full, can't draw power up card");
                 this.mCode = ResponseCode.MAX_POWERUPS;
             }

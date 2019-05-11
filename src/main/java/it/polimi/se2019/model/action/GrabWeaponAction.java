@@ -1,6 +1,5 @@
 package it.polimi.se2019.model.action;
 
-import it.polimi.se2019.model.FullHandException;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.Position;
@@ -77,23 +76,14 @@ public class GrabWeaponAction implements GrabAction {
         Weapon grabbedWeapon = spawnTile.grabWeapon(mWeaponGrabbedIndex);
         Player player = game.getActivePlayer();
 
-        // TODO: could be refactored, it should'nt use exceptions to decide action behaviour
         // if can't add weapon because hand is full, perform an exchange (catch block)
-        try {
+        if (mWeaponToExchangeIndex == null) {
             player.addWeapon(grabbedWeapon);
             spawnTile.addWeapon(game.getWeaponDeck().drawCard());
         }
-        catch (FullHandException e) {
+        else {
             spawnTile.addWeapon(player.takeWeapon(mWeaponToExchangeIndex));
-
-            try {
-                player.addWeapon(grabbedWeapon);
-            }
-            // now it shouldn't throw exception because it gave a weapon to spawn tile
-            catch (FullHandException e1) {
-                // CRASH THE APP!!!
-                e1.printStackTrace();
-            }
+            player.addWeapon(grabbedWeapon);
         }
 
         AmmoPayment.payCost(player, grabbedWeapon.getGrabCost(), mDiscardedCards);
