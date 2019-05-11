@@ -3,7 +3,6 @@ package it.polimi.se2019.model.action;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.weapon.Selection;
 
 import java.util.Set;
 
@@ -40,6 +39,11 @@ public class DamageAction implements Action {
         // return isValidPlayerColor(mAttackerColor) &&
                 // isValidPlayerColor(mDefenderColor);
         return true;
+    }
+
+    @Override
+    public boolean consumeAction() {
+        return false;
     }
 
     public ResponseCode getCode(){return mCode;}
