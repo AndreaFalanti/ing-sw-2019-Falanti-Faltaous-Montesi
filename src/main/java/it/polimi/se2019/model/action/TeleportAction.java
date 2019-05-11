@@ -37,5 +37,10 @@ public class TeleportAction implements Action {
         return powerUpCard != null && powerUpCard.getName().equals("Teleport");
     }
 
+    @Override
+    public boolean consumeAction() {
+        return false;
+    }
+
     public ResponseCode getCode(){return mCode;}
 }

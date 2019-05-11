@@ -51,5 +51,10 @@ public class MoveShootAction implements Action {
         }
     }
 
+    @Override
+    public boolean consumeAction() {
+        return true;
+    }
+
     public ResponseCode getCode(){return mCode;}
 }

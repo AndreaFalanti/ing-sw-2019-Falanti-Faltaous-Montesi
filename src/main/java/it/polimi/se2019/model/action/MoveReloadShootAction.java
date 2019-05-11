@@ -40,5 +40,10 @@ public class MoveReloadShootAction implements Action {
         return game.isFinalFrenzy() && mMoveShootAction.isValid(game) && mReloadAction.isValid(game);
     }
 
+    @Override
+    public boolean consumeAction() {
+        return true;
+    }
+
     public ResponseCode getCode(){return mCode;}
 }

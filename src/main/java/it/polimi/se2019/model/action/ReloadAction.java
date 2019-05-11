@@ -65,5 +65,10 @@ public class ReloadAction implements Action {
         return AmmoPayment.isValid(player, weaponToReload.getReloadCost(), mDiscardPowerUp);
     }
 
+    @Override
+    public boolean consumeAction() {
+        return false;
+    }
+
     public ResponseCode getCode(){return mCode;}
 }

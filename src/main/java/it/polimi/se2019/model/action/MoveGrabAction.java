@@ -5,7 +5,7 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 
-public class MoveGrabAction implements Action{
+public class MoveGrabAction implements Action {
     private MoveAction mMoveAction;
     private GrabAction mGrabAction;
     private ResponseCode mCode;
@@ -73,6 +73,11 @@ public class MoveGrabAction implements Action{
             return game.getBoard()
                     .getTileDistance(player.getPos(), mMoveAction.getDestination()) <= player.getMaxGrabDistance();
         }
+    }
+
+    @Override
+    public boolean consumeAction() {
+        return true;
     }
 
     public ResponseCode getCode(){return mCode;}

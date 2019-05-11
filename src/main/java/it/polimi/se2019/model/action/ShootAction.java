@@ -22,6 +22,11 @@ public class ShootAction implements Action {
         return true;
     }
 
+    @Override
+    public boolean consumeAction() {
+        return true;
+    }
+
     public ResponseCode getCode(){return mCode;}
 
 }

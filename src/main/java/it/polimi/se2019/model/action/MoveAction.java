@@ -112,5 +112,10 @@ public class MoveAction implements Action {
         }
     }
 
+    @Override
+    public boolean consumeAction() {
+        return mNormalMove;
+    }
+
     public ResponseCode getCode(){return mCode;}
 }

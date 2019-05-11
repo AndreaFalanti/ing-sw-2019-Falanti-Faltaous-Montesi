@@ -8,5 +8,7 @@ public interface Action {
 
     boolean isValid(Game game);
 
+    boolean consumeAction();
+
     ResponseCode getCode();
 }
