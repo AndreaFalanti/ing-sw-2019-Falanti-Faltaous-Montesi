@@ -215,7 +215,7 @@ public class Player {
      * @param value is the weapon to add
      * @throws FullHandException
      */
-    public void addWeapon(Weapon value) throws FullHandException {
+    public void addWeapon(Weapon value) {
         int i=0;
 
         while(i <= mWeapons.length - 1 && mWeapons[i] != null )
@@ -246,7 +246,7 @@ public class Player {
      * @param isRespawn boolean value to know if a player could have four powerups instead of three
      * @throws FullHandException
      */
-    public void addPowerUp(PowerUpCard value, boolean isRespawn) throws FullHandException {
+    public void addPowerUp(PowerUpCard value, boolean isRespawn) {
         int lengthToCheck = isRespawn ? mPowerUpCards.length : (mPowerUpCards.length - 1);
         for (int i = 0; i < lengthToCheck; i++) {
             if (mPowerUpCards[i] == null) {
@@ -254,6 +254,7 @@ public class Player {
                 return;
             }
         }
+
         throw new FullHandException ("PowerUp hand is full, can't draw another card");
     }
 
@@ -313,12 +314,7 @@ public class Player {
     public void reloadWeapon (int weaponIndex) {
         Weapon weapon = getWeapon(weaponIndex);
 
-        //TODO: useless exception in AmmoValue subtract? (verified in controller)
-        try {
-            getAmmo().subtract(weapon.getReloadCost());
-            weapon.setLoaded(true);
-        } catch (NotEnoughAmmoException e) {
-            e.printStackTrace();
-        }
+        getAmmo().subtract(weapon.getReloadCost());
+        weapon.setLoaded(true);
     }
 }

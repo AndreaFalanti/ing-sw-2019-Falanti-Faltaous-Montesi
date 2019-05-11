@@ -61,8 +61,9 @@ public class AmmoValue {
     /**
      * Add operation between AmmoValue
      * @param value AmmoValue to add
+     * @return This AmmoValue after addition
      */
-    public void add(AmmoValue value) {
+    public AmmoValue add(AmmoValue value) {
         mRed += value.mRed;
         mYellow += value.mYellow;
         mBlue += value.mBlue;
@@ -70,14 +71,17 @@ public class AmmoValue {
         mRed = clampValue(mRed);
         mYellow = clampValue(mYellow);
         mBlue = clampValue(mBlue);
+
+        return this;
     }
 
     /**
      * Subtract operation between AmmoValue
      * @param value AmmoValue to subtract
      * @throws NotEnoughAmmoException Thrown if any type of ammo of result is negative
+     * @return This AmmoValue after subtract
      */
-    public void subtract(AmmoValue value) throws NotEnoughAmmoException {
+    public AmmoValue subtract(AmmoValue value) {
         mRed -= value.mRed;
         mYellow -= value.mYellow;
         mBlue -= value.mBlue;
@@ -85,6 +89,8 @@ public class AmmoValue {
         if (mRed < 0 || mYellow < 0 || mBlue < 0) {
             throw new NotEnoughAmmoException("Not enough ammo to pay cost");
         }
+
+        return this;
     }
 
     /**

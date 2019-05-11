@@ -1,17 +1,13 @@
 package it.polimi.se2019.model.action;
 
-import it.polimi.se2019.model.AmmoCard;
-import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.GameTestCaseBuilder;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class MoveGrabActionTest {
 
@@ -27,19 +23,27 @@ public class MoveGrabActionTest {
         MoveGrabAction action3 = new MoveGrabAction(game2.getActivePlayer().getColor(), new Position(1, 2));
 
         NormalTile tile1 = (NormalTile) game1.getBoard().getTileAt(action1.getMoveAction().getDestination());
-        SpawnTile tile2 = (SpawnTile) game1.getBoard().getTileAt(action2.getMoveAction().getDestination());
-        NormalTile tile3 = (NormalTile) game2.getBoard().getTileAt(action3.getMoveAction().getDestination());
+        tile1.setAmmoCard(new AmmoCard(new AmmoValue(0,0,2), true));
 
-        AmmoCard ammoCard1 = tile1.getAmmoCard();
-        AmmoCard ammoCard2 = tile3.getAmmoCard();
+        SpawnTile tile2 = (SpawnTile) game1.getBoard().getTileAt(action2.getMoveAction().getDestination());
+
+        NormalTile tile3 = (NormalTile) game2.getBoard().getTileAt(action3.getMoveAction().getDestination());
+        tile3.setAmmoCard(new AmmoCard(new AmmoValue(1,0,2), false));
+
         Weapon weapon = tile2.getWeapon(0);
 
         action1.perform(game1);
+        // check that player gained ammo and a powerUp card
+        assertEquals(new AmmoValue(1,1,3), game1.getActivePlayer().getAmmo());
+        assertNotNull(game1.getActivePlayer().getPowerUpCard(0));
+
         action2.perform(game1);
-        action3.perform(game2);
+        assertEquals(new AmmoValue(1,1,3).subtract(weapon.getGrabCost()), game1.getActivePlayer().getAmmo());
 
-
         action3.perform(game2);
+        // check that player gain ammo but not powerUp card
+        assertEquals(new AmmoValue(2,1,3), game2.getActivePlayer().getAmmo());
+        assertNull(game2.getActivePlayer().getPowerUpCard(0));
     }
 
     @Test

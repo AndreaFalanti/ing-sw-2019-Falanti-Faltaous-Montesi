@@ -1,10 +1,11 @@
 package it.polimi.se2019.model.action;
 
 import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.model.NotEnoughAmmoException;
 import it.polimi.se2019.model.Player;
 
 public final class AmmoPayment {
+    private AmmoPayment() {
+    }
 
     // TODO: maybe Exception is unneeded?
     public static void payCost (Player player, AmmoValue cost, boolean[] discardedCards) {
@@ -13,13 +14,7 @@ public final class AmmoPayment {
         }
 
         addAmmoAndDiscard(player, discardedCards);
-
-        try {
-            player.getAmmo().subtract(cost);
-        }
-        catch (NotEnoughAmmoException e) {
-            e.printStackTrace();
-        }
+        player.getAmmo().subtract(cost);
     }
 
     public static boolean isValid (Player player, AmmoValue cost, boolean[] discardedCards) {

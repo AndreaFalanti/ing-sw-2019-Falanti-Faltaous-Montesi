@@ -1,6 +1,9 @@
 package it.polimi.se2019.model.action;
 
-import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.AmmoValue;
+import it.polimi.se2019.model.Game;
+import it.polimi.se2019.model.Player;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.GameTestCaseBuilder;
@@ -36,26 +39,40 @@ public class GrabWeaponActionTest {
                 expectedResult[2].getGrabCost()
         };
 
-        // TODO: fix test adding cost checks
+        // every time a grab is performed, refill player ammo to avoid invalid costs
         player.getAmmo().add(fullAmmo);
         action1.perform(game);
-        //assertEquals(fullAmmo.subtract());
+        assertEquals(fullAmmo.deepCopy().subtract(expectedCosts[0]), player.getAmmo());
+
+        player.getAmmo().add(fullAmmo);
         action2.perform(game);
+        assertEquals(fullAmmo.deepCopy().subtract(expectedCosts[1]), player.getAmmo());
+
+        player.getAmmo().add(fullAmmo);
         action3.perform(game);
+        assertEquals(fullAmmo.deepCopy().subtract(expectedCosts[2]), player.getAmmo());
 
         assertArrayEquals(expectedResult, game.getActivePlayer().getWeapons());
+        // Spawn should be refilled after every grab (Weapon deck in this case has still 12 cards in theory)
+        for (Weapon weapon : spawnTile.getWeapons()) {
+            assertNotNull(weapon);
+        }
 
         // go to red spawn position
-        game.getActivePlayer().move(new Position(0, 1));
+        player.move(new Position(0, 1));
         SpawnTile spawnTile2 = (SpawnTile) game.getBoard().getTileAt(game.getActivePlayer().getPos());
         Weapon[] expectedResult2 = {
                 expectedResult[0],
                 expectedResult[1],
                 spawnTile2.getWeapon(1) };
+        Weapon exchangedWeapon = player.getWeapon(action4.getWeaponToExchangeIndex());
 
+        player.getAmmo().add(fullAmmo);
         action4.perform(game);
+        assertEquals(fullAmmo.deepCopy().subtract(expectedResult2[2].getGrabCost()), player.getAmmo());
 
         assertArrayEquals(expectedResult2, game.getActivePlayer().getWeapons());
+        assertEquals(exchangedWeapon, spawnTile2.getWeapon(action4.getWeaponGrabbedIndex()));
     }
 
     @Test
@@ -74,13 +91,10 @@ public class GrabWeaponActionTest {
         assertFalse(action2.isValid(game));
 
         // add weapons to player for making exchange possible
-        try {
-            game.getActivePlayer().addWeapon(new Weapon());
-            game.getActivePlayer().addWeapon(new Weapon());
-            game.getActivePlayer().addWeapon(new Weapon());
-        } catch (FullHandException e) {
-            e.printStackTrace();
-        }
+        game.getActivePlayer().addWeapon(new Weapon());
+        game.getActivePlayer().addWeapon(new Weapon());
+        game.getActivePlayer().addWeapon(new Weapon());
+
 
         assertTrue(action2.isValid(game));
     }
