@@ -93,6 +93,12 @@ public class Player {
     }
     //endregion
 
+    //region SETTERS
+    public void setAmmo(AmmoValue ammo) {
+        mAmmo = ammo;
+    }
+    //endregion
+
     public void flipBoard () {
         mBoardFlipped = true;
     }
