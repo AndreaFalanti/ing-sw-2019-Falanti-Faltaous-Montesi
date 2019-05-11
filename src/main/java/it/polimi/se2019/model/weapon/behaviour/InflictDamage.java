@@ -7,8 +7,8 @@ import java.util.Set;
 
 public class InflictDamage extends Expression {
     // subexpressions
-    @SubExpression Expression mTargets;
-    @SubExpression Expression mDamage;
+    private @SubExpression Expression mTargets;
+    private @SubExpression Expression mDamage;
 
     // trivial constructor
     public InflictDamage(Expression damageToInflict, Expression targets) {

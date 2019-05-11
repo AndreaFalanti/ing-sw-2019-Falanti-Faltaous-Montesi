@@ -31,6 +31,7 @@ public class Selection<T> {
      */
     public static<T> Selection<T> fromSet(Set<T> contents) {
         Selection<T> result = new Selection();
+        result.mDomain = Optional.of(contents.stream());
         result.mCharacteristicFunction = (element) -> contents.contains(element);
 
         return result;
@@ -42,6 +43,7 @@ public class Selection<T> {
      */
     public static<T> Selection<T> of(T... contents) {
         Selection<T> result = new Selection();
+        result.mDomain = Optional.of(Arrays.stream(contents));
         result.mCharacteristicFunction = (element) -> Arrays.stream(contents)
                 .filter(arrayEle -> arrayEle.equals(element))
                 .findFirst()

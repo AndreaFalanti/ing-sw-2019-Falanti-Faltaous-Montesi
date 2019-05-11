@@ -13,7 +13,7 @@ public class CustomExpressionDeserializer implements JsonDeserializer<Expression
     public Expression deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
         Expression result = context.deserialize(jsonElement, Expression.class);
 
-        result.updateSubExpressions();
+        result.updateAllSubExpressions();
 
         return result;
     }

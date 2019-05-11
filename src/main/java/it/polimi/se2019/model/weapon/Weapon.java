@@ -1,24 +1,27 @@
 package it.polimi.se2019.model.weapon;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.weapon.behaviour.Expression;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
+import it.polimi.se2019.util.Exclude;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 public class Weapon {
     private String mName;
     private AmmoValue mReloadCost;
     private AmmoValue mGrabCost;
-    private boolean mLoaded;
+    @Exclude private boolean mLoaded;
 
-    // behaviour of weapon used to shoot
-    Expression mBehaviour;
+    // various effects
+    @SerializedName("primary") private PayedEffect mPrimaryEffect;
+    @SerializedName("secondary") private PayedEffect mSecondaryEffect;
+    @SerializedName("additional") private List<PayedEffect> mAdditionalEffects;
 
     // used in tests
     public Weapon () {}
@@ -34,12 +37,7 @@ public class Weapon {
         mLoaded = false;
     }
 
-    // trivial constructor
-    public Weapon(Expression behaviour) {
-        mBehaviour = behaviour;
-    }
-
-    //region GETTERS
+    // trivial getters
     public String getName() {
         return mName;
     }
@@ -55,7 +53,12 @@ public class Weapon {
     public boolean isLoaded() {
         return mLoaded;
     }
-    //endregion
+
+    // trivial setters
+    public void setPrimaryEffect(Expression behaviour)  {
+        // primary effect is always free
+        mPrimaryEffect = new PayedEffect(new AmmoValue(), behaviour);
+    }
 
     // TODO: add doc
     // TODO: implement
