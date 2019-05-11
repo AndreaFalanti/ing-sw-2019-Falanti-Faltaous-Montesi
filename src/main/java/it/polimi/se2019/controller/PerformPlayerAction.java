@@ -1,10 +1,8 @@
 package it.polimi.se2019.controller;
 
 import it.polimi.se2019.controller.responses.MessageActionResponse;
-import it.polimi.se2019.model.FullHandException;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.action.Action;
-import it.polimi.se2019.model.action.DamageAction;
 import it.polimi.se2019.util.Observable;
 
 public class PerformPlayerAction {
@@ -20,9 +18,13 @@ public class PerformPlayerAction {
         if(action.isValid(mGame)){
             try{
                 action.perform(mGame);
+
             }catch(Exception ex){
-        //        this.message = action.getOutcome();
+                action.getCode();
             }
+        }
+        else{
+             action.getCode();
         }
     }
 }

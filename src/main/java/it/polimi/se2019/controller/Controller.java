@@ -1,11 +1,13 @@
 package it.polimi.se2019.controller;
 
 
-import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.Game;
+import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
-import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
+import it.polimi.se2019.view.View;
 
 
 public class Controller implements Observable, Observer {
@@ -15,6 +17,7 @@ public class Controller implements Observable, Observer {
   //  private requestPlayerAction mRequest;//change name
   //  private getLeaderBoard mLeaderBoard;//change name
   //  private getValidPosition mValidPostion;//change name
+    private View remoteView;
 
     public Controller() {
     }

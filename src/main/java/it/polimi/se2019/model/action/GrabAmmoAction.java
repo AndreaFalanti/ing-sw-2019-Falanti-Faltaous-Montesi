@@ -20,6 +20,7 @@ public class GrabAmmoAction implements GrabAction {
             PowerUpCard powerUpCard = game.getPowerUpDeck().drawCard();
             try {
                 player.addPowerUp(powerUpCard);
+                this.mCode = ResponseCode.OK;
             } catch (FullHandException e) {
                 System.out.println("Hand is full, can't draw power up card");
                 this.mCode = ResponseCode.MAX_POWERUPS;

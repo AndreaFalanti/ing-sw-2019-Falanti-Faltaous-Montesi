@@ -52,6 +52,7 @@ public class MoveGrabAction implements Action{
 
         // this action can be performed only by active player
         if (mMoveAction.getTarget() != game.getActivePlayer().getColor()) {
+            this.mCode = ResponseCode.PERFORMABLE_BY_ACTIVE_PLAYER;
             return false;
         }
 

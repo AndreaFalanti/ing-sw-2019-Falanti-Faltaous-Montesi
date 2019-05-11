@@ -72,24 +72,42 @@ public class MoveAction implements Action {
 
             // normal action is only set for active players to move themselves
             if (game.getActivePlayer().getColor() != mTarget) {
+                System.out.println("You can only move yourself");
+                this.mCode = ResponseCode.PERFORMABLE_BY_ACTIVE_PLAYER;
                 return false;
             }
 
             // max moves in "normal" state is 3
             if (!game.isFinalFrenzy()) {
-                return game.getBoard().getTileDistance(playerPos, mDestination) <= 3;
+                if(game.getBoard().getTileDistance(playerPos, mDestination) <= 3) {
+                    this.mCode = ResponseCode.OK;
+                    return true;
+                }
+                else {
+                    this.mCode = ResponseCode.TILE_NOT_REACHABLE;
+                    return false;
+                }
             }
             // you can move 4 tiles if you are before first player in final frenzy status.
             else if (!game.hasFirstPlayerDoneFinalFrenzy()) {
-                return game.getBoard().getTileDistance(playerPos, mDestination) <= 4;
+                    if(game.getBoard().getTileDistance(playerPos, mDestination) <= 4){
+                        this.mCode = ResponseCode.OK;
+                        return true;
+                    }
+                    else {
+                        this.mCode = ResponseCode.TILE_NOT_REACHABLE;
+                        return false;
+                    }
             }
             // you can't only move if is final frenzy and you are after first player.
             else {
+                this.mCode = ResponseCode.CANT_MOVE;
                 return false;
             }
         }
         else {
             // maximum distance for "indirect" moves are 3 spaces
+            //TODO --> this.mCode
             return game.getBoard().getTileDistance(playerPos, mDestination) <= 3;
         }
     }
