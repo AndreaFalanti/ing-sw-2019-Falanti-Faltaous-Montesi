@@ -8,10 +8,5 @@ import it.polimi.se2019.model.weapon.behaviour.Expression;
  */
 @Deprecated
 public class MachineGun extends Weapon {
-    public MachineGun(String name) {
-        super(null);
-    }
-    public MachineGun(Expression behaviour) {
-        super(behaviour);
-    }
+    public MachineGun(String name) {}
 }

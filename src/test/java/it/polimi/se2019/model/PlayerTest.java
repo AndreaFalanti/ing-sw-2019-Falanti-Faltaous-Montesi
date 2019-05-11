@@ -22,6 +22,7 @@ public class PlayerTest {
     @Test
     public void testIsFullOfWeapon(){
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
+
         MachineGun weapon1 = new MachineGun("Weapon1");
         MachineGun weapon2 = new MachineGun("Weapon2");
         MachineGun weapon3 = new MachineGun("Weapon3");
