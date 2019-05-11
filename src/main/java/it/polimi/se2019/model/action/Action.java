@@ -2,10 +2,9 @@ package it.polimi.se2019.model.action;
 
 
 import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.NotEnoughAmmoException;
 
 public interface Action {
-    void perform(Game game) throws NotEnoughAmmoException;
+    void perform(Game game);
 
     boolean isValid(Game game);
 

@@ -11,6 +11,8 @@ import it.polimi.se2019.model.weapon.Weapon;
 public class GrabWeaponAction implements GrabAction {
     private int mWeaponGrabbedIndex;
     private Integer mWeaponToExchangeIndex;
+    private boolean[] mDiscardedCards = {false, false, false};
+
     private ResponseCode mCode;
 
     public GrabWeaponAction (int index) {
@@ -22,6 +24,16 @@ public class GrabWeaponAction implements GrabAction {
         mWeaponToExchangeIndex = null;
     }
 
+    public GrabWeaponAction (int index, boolean[] discardedCards) {
+        this (index);
+
+        if (discardedCards.length != 3) {
+            throw new IllegalArgumentException("Illegal boolean array");
+        }
+
+        mDiscardedCards = discardedCards;
+    }
+
     public GrabWeaponAction (int index, Integer weaponToExchangeIndex) {
         this(index);
 
@@ -29,6 +41,16 @@ public class GrabWeaponAction implements GrabAction {
             throw new IllegalArgumentException("Invalid weapon to exchange index in weapon grab");
         }
         mWeaponToExchangeIndex = weaponToExchangeIndex;
+    }
+
+    public GrabWeaponAction (int index, Integer weaponToExchangeIndex, boolean[] discardedCards) {
+        this (index, weaponToExchangeIndex);
+
+        if (discardedCards.length != 3) {
+            throw new IllegalArgumentException("Illegal boolean array");
+        }
+
+        mDiscardedCards = discardedCards;
     }
 
     private boolean isValidIndex (int index) {
@@ -43,21 +65,25 @@ public class GrabWeaponAction implements GrabAction {
         return mWeaponToExchangeIndex;
     }
 
+    public boolean[] getDiscardedCards() {
+        return mDiscardedCards;
+    }
+
     //TODO: in perform and isValid add check of weapon grab cost and relative ammo payment
 
     @Override
     public void perform(Game game) {
         SpawnTile spawnTile = (SpawnTile) game.getBoard().getTileAt(game.getActivePlayer().getPos());
         Weapon grabbedWeapon = spawnTile.grabWeapon(mWeaponGrabbedIndex);
+        Player player = game.getActivePlayer();
 
         // TODO: could be refactored, it should'nt use exceptions to decide action behaviour
         // if can't add weapon because hand is full, perform an exchange (catch block)
         try {
-            game.getActivePlayer().addWeapon(grabbedWeapon);
+            player.addWeapon(grabbedWeapon);
             spawnTile.addWeapon(game.getWeaponDeck().drawCard());
         }
         catch (FullHandException e) {
-            Player player = game.getActivePlayer();
             spawnTile.addWeapon(player.takeWeapon(mWeaponToExchangeIndex));
 
             try {
@@ -69,6 +95,8 @@ public class GrabWeaponAction implements GrabAction {
                 e1.printStackTrace();
             }
         }
+
+        AmmoPayment.payCost(player, grabbedWeapon.getGrabCost(), mDiscardedCards);
     }
 
     @Override
@@ -88,18 +116,24 @@ public class GrabWeaponAction implements GrabAction {
         Tile tile = game.getBoard().getTileAt(pos);
         if (tile.getTileType().equals("spawn")) {
             SpawnTile spawnTile = (SpawnTile) tile;
+            Weapon weapon = spawnTile.getWeapon(mWeaponGrabbedIndex);
+            Player player = game.getActivePlayer();
+
+            if (weapon == null) {
+                return false;
+            }
+
+            if (!AmmoPayment.isValid(player, weapon.getGrabCost(), mDiscardedCards)) {
+                return false;
+            }
 
             // player is grabbing a weapon but it has space in hand
             if (mWeaponToExchangeIndex == null) {
-                return spawnTile.getWeapon(mWeaponGrabbedIndex) != null
-                        && !game.getActivePlayer().isFullOfWeapons();
+                return !player.isFullOfWeapons();
             }
             // player is trying to exchange one of his weapon with spawn's one
             else {
-                Player player = game.getActivePlayer();
-                return spawnTile.getWeapon(mWeaponGrabbedIndex) != null
-                        && player.getWeapon(mWeaponToExchangeIndex) != null
-                        && player.isFullOfWeapons();
+                return player.getWeapon(mWeaponToExchangeIndex) != null && player.isFullOfWeapons();
             }
         }
 

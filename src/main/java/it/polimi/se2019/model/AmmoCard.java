@@ -18,6 +18,10 @@ public class AmmoCard {
      * @param drawPowerUp Set if player can draw a PowerUpCard on grab
      */
     public AmmoCard(AmmoValue ammo, boolean drawPowerUp) {
+        if (ammo == null) {
+            throw new IllegalArgumentException("AmmoValue can't be null");
+        }
+
         mAmmoGain = ammo;
         mDrawPowerUp = drawPowerUp;
     }

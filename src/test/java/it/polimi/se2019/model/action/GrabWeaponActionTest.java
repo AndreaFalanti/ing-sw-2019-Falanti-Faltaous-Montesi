@@ -1,8 +1,6 @@
 package it.polimi.se2019.model.action;
 
-import it.polimi.se2019.model.FullHandException;
-import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.GameTestCaseBuilder;
@@ -21,15 +19,27 @@ public class GrabWeaponActionTest {
 
         GrabWeaponAction action4 = new GrabWeaponAction(1, 2);
 
+        Player player = game.getActivePlayer();
+        AmmoValue fullAmmo = new AmmoValue(3,3,3);
+
         // go to blue spawn position
-        game.getActivePlayer().move(new Position(2, 0));
+        player.move(new Position(2, 0));
         SpawnTile spawnTile = (SpawnTile) game.getBoard().getTileAt(game.getActivePlayer().getPos());
         Weapon[] expectedResult = {
                 spawnTile.getWeapon(1),
                 spawnTile.getWeapon(2),
-                spawnTile.getWeapon(0) };
+                spawnTile.getWeapon(0)
+        };
+        AmmoValue[] expectedCosts = {
+                expectedResult[0].getGrabCost(),
+                expectedResult[1].getGrabCost(),
+                expectedResult[2].getGrabCost()
+        };
 
+        // TODO: fix test adding cost checks
+        player.getAmmo().add(fullAmmo);
         action1.perform(game);
+        //assertEquals(fullAmmo.subtract());
         action2.perform(game);
         action3.perform(game);
 

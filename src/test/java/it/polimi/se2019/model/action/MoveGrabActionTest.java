@@ -1,8 +1,12 @@
 package it.polimi.se2019.model.action;
 
+import it.polimi.se2019.model.AmmoCard;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.board.NormalTile;
+import it.polimi.se2019.model.board.SpawnTile;
+import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.GameTestCaseBuilder;
 import org.junit.Test;
 
@@ -21,6 +25,21 @@ public class MoveGrabActionTest {
                 new MoveGrabAction(game1.getActivePlayer().getColor(), new Position(2, 0), 0);
 
         MoveGrabAction action3 = new MoveGrabAction(game2.getActivePlayer().getColor(), new Position(1, 2));
+
+        NormalTile tile1 = (NormalTile) game1.getBoard().getTileAt(action1.getMoveAction().getDestination());
+        SpawnTile tile2 = (SpawnTile) game1.getBoard().getTileAt(action2.getMoveAction().getDestination());
+        NormalTile tile3 = (NormalTile) game2.getBoard().getTileAt(action3.getMoveAction().getDestination());
+
+        AmmoCard ammoCard1 = tile1.getAmmoCard();
+        AmmoCard ammoCard2 = tile3.getAmmoCard();
+        Weapon weapon = tile2.getWeapon(0);
+
+        action1.perform(game1);
+        action2.perform(game1);
+        action3.perform(game2);
+
+
+        action3.perform(game2);
     }
 
     @Test
