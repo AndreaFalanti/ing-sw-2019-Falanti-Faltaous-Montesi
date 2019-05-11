@@ -1,14 +1,14 @@
 {
   "name" : "heatseeker",
-  "reload_cost" : {
+  "reloadCost" : {
     "red" : 2,
     "yellow" : 1,
-    "blue" : 1
+    "blue" : 0
   },
-  "grab_cost" : {
-    "red" : 2,
+  "grabCost" : {
+    "red" : 1,
     "yellow" : 1,
-    "blue" : 1
+    "blue" : 0
   },
   "primary" : {
     "expr" : "InflictDamage",

@@ -1,11 +1,13 @@
 package it.polimi.se2019.model.weapon;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.weapon.behaviour.Expression;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
+import it.polimi.se2019.model.weapon.serialization.CustomPrimaryEffectAdapter;
 import it.polimi.se2019.util.Exclude;
 
 import java.util.ArrayList;
@@ -19,7 +21,9 @@ public class Weapon {
     @Exclude private boolean mLoaded;
 
     // various effects
-    @SerializedName("primary") private PayedEffect mPrimaryEffect;
+    @SerializedName("primary")
+    @JsonAdapter(CustomPrimaryEffectAdapter.class)
+    private PayedEffect mPrimaryEffect;
     @SerializedName("secondary") private PayedEffect mSecondaryEffect;
     @SerializedName("additional") private List<PayedEffect> mAdditionalEffects;
 

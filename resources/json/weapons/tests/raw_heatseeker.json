@@ -1,32 +1,40 @@
 {
-  "expr": "DoConsecutively",
-  "do": [
-    {
-      "expr": "ActionLiteral",
-      "contents": {
-        "action": "pay",
-        "amount" : {
-          "red": 2,
-          "yellow": 1,
-          "blue": 0
-        }
+  "name" : "heatseeker",
+  "reloadCost" : {
+    "red" : 2,
+    "yellow" : 1,
+    "blue" : 0
+  },
+  "grabCost" : {
+    "red" : 1,
+    "yellow" : 1,
+    "blue" : 0
+  },
+  "primary" : {
+    "expr" : "InflictDamage",
+    "damage" : {
+      "expr" : "DamageLiteral",
+      "contents" : {
+        "damage" : 3,
+        "marksNum" : 0
       }
     },
-    {
-      "expr": "InflictDamage",
-      "damage": {
-        "expr": "DamageLiteral",
-        "contents": {
-          "damage": 3,
-          "numMarks": 0
-        }
+    "targets" : {
+      "expr" : "SelectTargets",
+      "min" : {
+        "expr" : "IntLiteral",
+        "contents" : 1
       },
-      "targets": {
-        "expr": "NegateSelection",
-        "negated": {
-          "expr": "CanSee"
+      "max" : {
+        "expr" : "IntLiteral",
+        "contents" : 1
+      },
+      "from" : {
+        "expr" : "NegateSelection",
+        "do" : {
+          "expr" : "CanSee"
         }
       }
     }
-  ]
+  }
 }

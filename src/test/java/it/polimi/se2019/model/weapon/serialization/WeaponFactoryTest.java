@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 public class WeaponFactoryTest {
     public Weapon mHeatseeker;
 
+    // TODO: add doc
     @Before
     public void instantiate() {
         // TODO: consider using builder instead of setters
@@ -34,12 +35,12 @@ public class WeaponFactoryTest {
         );
     }
 
-    // TODO NEXT: implement
+    // TODO: add doc
     @Test
     public void testToJsonHeatseeker() {
         String actual = WeaponFactory.toJson(mHeatseeker);
 
-        String expected = Jsons.get("weapons/heatseeker");
+        String expected = Jsons.get("weapons/tests/raw_heatseeker");
 
         assertEquals(
                 new JsonString(expected),
@@ -47,7 +48,7 @@ public class WeaponFactoryTest {
         );
     }
 
-    // TODO NEXT: implement
+    // TODO: add doc
     @Test
     public void testFromJsonSimpleBehaviour() {
         Expression actual = ExpressionFactory.fromJson(Jsons.get("weapons/tests/simple_behaviour"));

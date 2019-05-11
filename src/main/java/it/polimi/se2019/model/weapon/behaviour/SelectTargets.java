@@ -4,26 +4,26 @@ import it.polimi.se2019.model.weapon.request.TargetSelectionRequest;
 
 
 public class SelectTargets extends Expression {
-    @SubExpression Expression mTargetsToSelectFrom;
-    @SubExpression Expression mMinNumToSelect;
-    @SubExpression Expression mMaxNumToSelect;
+    @SubExpression Expression mFrom;
+    @SubExpression Expression mMin;
+    @SubExpression Expression mMax;
 
     public SelectTargets(Expression minNumToSelect, Expression maxNumToSelect,
                          Expression targetsToSelectFrom) {
         super();
 
-        mMinNumToSelect = minNumToSelect;
-        mMaxNumToSelect = maxNumToSelect;
-        mTargetsToSelectFrom = targetsToSelectFrom;
+        mMin = minNumToSelect;
+        mMax = maxNumToSelect;
+        mFrom = targetsToSelectFrom;
     }
 
     // TODO: add doc
     @Override
     public final Expression continueEval(ShootContext shootContext) {
         return new RequestLiteral(new TargetSelectionRequest(
-                mMinNumToSelect.asInt(),
-                mMaxNumToSelect.asInt(),
-                mTargetsToSelectFrom.asTargetSelection()
+                mMin.asInt(),
+                mMax.asInt(),
+                mFrom.asTargetSelection()
         ));
     }
 }

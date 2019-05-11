@@ -10,7 +10,8 @@ public class WeaponFactory {
     private WeaponFactory() {}
 
     // GSON used to deal with serialization/deserialization
-    private static final Gson GSON = new GsonBuilder()
+    public static final Gson GSON = new GsonBuilder()
+            .setPrettyPrinting()
             .setFieldNamingStrategy(new CustomFieldNamingStrategy())
             .addSerializationExclusionStrategy(new AnnotationExclusionStrategy())
             .create();
