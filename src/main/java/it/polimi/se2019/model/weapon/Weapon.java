@@ -8,24 +8,32 @@ import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.weapon.behaviour.Expression;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.model.weapon.serialization.CustomPrimaryEffectAdapter;
+import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Exclude;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Weapon {
     private String mName;
     private AmmoValue mReloadCost;
     private AmmoValue mGrabCost;
-    @Exclude private boolean mLoaded;
+
+    @Exclude
+    private boolean mLoaded;
 
     // various effects
     @SerializedName("primary")
     @JsonAdapter(CustomPrimaryEffectAdapter.class)
     private PayedEffect mPrimaryEffect;
-    @SerializedName("secondary") private PayedEffect mSecondaryEffect;
-    @SerializedName("additional") private List<PayedEffect> mAdditionalEffects;
+
+    @SerializedName("secondary")
+    private PayedEffect mSecondaryEffect;
+
+    @SerializedName("additional")
+    private List<PayedEffect> mAdditionalEffects;
 
     // used in tests
     public Weapon () {}
@@ -90,11 +98,26 @@ public class Weapon {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Weapon casted = (Weapon) o;
+
+        return WeaponFactory.toJsonTree(this).equals(WeaponFactory.toJsonTree(casted));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(WeaponFactory.toJson(this));
+    }
+
+    // TODO: add doc
+    @Override
     public String toString() {
-        return "Weapon{" +
-                "mName='" + mName + '\'' +
-                ", mReloadCost=" + mReloadCost +
-                ", mGrabCost=" + mGrabCost +
-                '}';
+        return WeaponFactory.toJson(this);
     }
 }

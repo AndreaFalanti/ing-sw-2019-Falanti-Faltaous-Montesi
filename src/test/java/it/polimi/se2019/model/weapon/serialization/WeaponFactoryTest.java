@@ -50,11 +50,11 @@ public class WeaponFactoryTest {
 
     // TODO: add doc
     @Test
-    public void testFromJsonSimpleBehaviour() {
-        Expression actual = ExpressionFactory.fromJson(Jsons.get("weapons/tests/simple_behaviour"));
+    public void testFromJsonHeatseeker() {
+        Weapon actual = WeaponFactory.fromJson(Jsons.get("weapons/tests/raw_heatseeker"));
 
-        // Expression expected = mSimpleBehaviour;
+        Weapon expected = mHeatseeker;
 
-        // assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 }

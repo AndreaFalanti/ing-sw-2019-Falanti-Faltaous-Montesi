@@ -1,23 +1,35 @@
 package it.polimi.se2019.model.weapon.serialization;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
+import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.weapon.PayedEffect;
+import it.polimi.se2019.model.weapon.behaviour.Expression;
 
 import java.lang.reflect.Type;
 
-public class CustomPrimaryEffectAdapter implements JsonSerializer<PayedEffect> {
+// TODO: see if context.serialize(") is needed or not...
+public class CustomPrimaryEffectAdapter implements JsonSerializer<PayedEffect>, JsonDeserializer<PayedEffect> {
     @Override
     public JsonElement serialize(PayedEffect payedEffect, Type type, JsonSerializationContext context) {
+        // if null return empty object
+        Expression behaviour = payedEffect.getBehaviour();
+        if (behaviour == null)
+            return new JsonObject();
+
         // TODO: find better way of doing this
-        // TODO: see if context.serialize(") is needed or not...
         JsonElement result = ExpressionFactory.GSON.toJsonTree(payedEffect.getBehaviour());
 
         // URGENT TODO: find a betters way to do this...
         result.getAsJsonObject().add("expr", new JsonPrimitive(payedEffect.getBehaviour().getClass().getSimpleName()));
 
         return result;
+    }
+
+    @Override
+    public PayedEffect deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+        return new PayedEffect(
+                new AmmoValue(0, 0, 0),
+                ExpressionFactory.GSON.fromJson(jsonElement, Expression.class)
+        );
     }
 }

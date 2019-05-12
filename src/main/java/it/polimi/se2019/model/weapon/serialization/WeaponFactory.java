@@ -2,6 +2,7 @@ package it.polimi.se2019.model.weapon.serialization;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
@@ -25,6 +26,11 @@ public class WeaponFactory {
     // TODO: add doc
     public static String toJson(Weapon toSerialize) {
         return GSON.toJson(toSerialize, Weapon.class);
+    }
+
+    // TODO: add doc
+    public static JsonElement toJsonTree(Weapon toSerialize) {
+        return GSON.toJsonTree(toSerialize, Weapon.class);
     }
 }
 
