@@ -3,6 +3,7 @@ package it.polimi.se2019.controller;
 import it.polimi.se2019.controller.responses.MessageActionResponse;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.action.Action;
+import it.polimi.se2019.model.action.ResponseCode;
 import it.polimi.se2019.util.Observable;
 
 public class PerformPlayerAction {
@@ -15,17 +16,22 @@ public class PerformPlayerAction {
     }
 
     public void Execute(){
+        ResponseCode code ;
         if(action.isValid(mGame)){
             try{
                 action.perform(mGame);
-
+                code = action.getCode();
+                if(action.consumeAction())
+                    mGame.decreaseActionCounter();
             }catch(Exception ex){
-                action.getCode();
+                code = action.getCode();
             }
         }
         else{
-             action.getCode();
+             code = action.getCode();
         }
+        new MessageActionResponse(code);
+        //TODO handle
     }
 }
 

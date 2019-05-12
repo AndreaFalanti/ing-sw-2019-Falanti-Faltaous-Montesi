@@ -1,15 +1,15 @@
 package it.polimi.se2019.controller.responses;
 
-import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Player;
 import it.polimi.se2019.view.ResponseHandler;
 
-import java.util.Map;
+import java.util.List;
 
 public class LeaderboardResponse implements Response {
 
-    private Map<PlayerColor, Integer> leaderboard;
+    private List<Player> leaderboard;
 
-    public void LeaderboardResponse(Map<PlayerColor, Integer> leaderboard){
+    public LeaderboardResponse(List<Player> leaderboard){
         this.leaderboard = leaderboard;
     }
 

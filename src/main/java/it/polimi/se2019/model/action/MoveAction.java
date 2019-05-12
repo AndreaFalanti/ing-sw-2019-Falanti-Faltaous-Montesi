@@ -59,6 +59,8 @@ public class MoveAction implements Action {
 
         // can't move player to its precedent position
         if (playerPos.equals(mDestination)) {
+            System.out.println("It's your current position!");
+            this.mCode = ResponseCode.YOU_ARENT_MOVING;
             return false;
         }
 
@@ -84,6 +86,7 @@ public class MoveAction implements Action {
                     return true;
                 }
                 else {
+                    System.out.println("You can't reach this tile");
                     this.mCode = ResponseCode.TILE_NOT_REACHABLE;
                     return false;
                 }
@@ -95,20 +98,29 @@ public class MoveAction implements Action {
                         return true;
                     }
                     else {
+                        System.out.println("You can't reach this tile");
                         this.mCode = ResponseCode.TILE_NOT_REACHABLE;
                         return false;
                     }
             }
             // you can't only move if is final frenzy and you are after first player.
             else {
+                System.out.println("You are after the first player and is final frenzy, so you can't move");
                 this.mCode = ResponseCode.CANT_MOVE;
                 return false;
             }
         }
         else {
             // maximum distance for "indirect" moves are 3 spaces
-            //TODO --> this.mCode
-            return game.getBoard().getTileDistance(playerPos, mDestination) <= 3;
+            if(game.getBoard().getTileDistance(playerPos, mDestination) <= 3) {
+                this.mCode = ResponseCode.OK;
+                return true;
+            }
+            else {
+                System.out.println("You can shift a player up to three tiles");
+                this.mCode = ResponseCode.SHIFTING_MAX_THREE;
+                return false;
+            }
         }
     }
 

@@ -15,9 +15,9 @@ public class Controller implements Observable, Observer {
     private Game mGame;
     private PerformPlayerAction mPerform;//change name
   //  private requestPlayerAction mRequest;//change name
-  //  private getLeaderBoard mLeaderBoard;//change name
   //  private getValidPosition mValidPostion;//change name
-    private View remoteView;
+    private TakeLeaderboard mLeaderboard;
+    private View mRemoteView;
 
     public Controller() {
     }
