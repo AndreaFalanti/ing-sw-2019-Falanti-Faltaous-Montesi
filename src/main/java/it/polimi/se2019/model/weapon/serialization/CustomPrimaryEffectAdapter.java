@@ -26,7 +26,7 @@ public class CustomPrimaryEffectAdapter implements JsonSerializer<PayedEffect>, 
     }
 
     @Override
-    public PayedEffect deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+    public PayedEffect deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) {
         return new PayedEffect(
                 new AmmoValue(0, 0, 0),
                 ExpressionFactory.GSON.fromJson(jsonElement, Expression.class)

@@ -1,5 +1,6 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
+import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.weapon.Selection;
 
@@ -18,7 +19,7 @@ public class TargetsLiteral extends SelectionLiteral<PlayerColor> {
     @Override
     public Expression continueEval(ShootContext context) {
         Stream<PlayerColor> playerColors = context.getPlayers().stream()
-                .map(pl -> pl.getColor());
+                .map(Player::getColor);
         mContents.setDomain(playerColors);
 
         return this;

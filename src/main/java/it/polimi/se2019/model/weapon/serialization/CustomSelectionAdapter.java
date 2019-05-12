@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class CustomSelectionAdapter<T> implements JsonDeserializer<Selection<T>>, JsonSerializer<Selection<T>> {
     @Override
-    public Selection<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+    public Selection<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) {
         Set<T> contentsAsSet = context.deserialize(jsonElement, Set.class);
 
         return Selection.fromSet(contentsAsSet);

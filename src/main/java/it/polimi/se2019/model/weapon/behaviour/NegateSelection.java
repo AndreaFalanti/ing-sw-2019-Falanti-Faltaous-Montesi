@@ -1,6 +1,6 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-public class NegateSelection<T> extends Expression {
+public class NegateSelection extends Expression {
     @SubExpression Expression mDo;
 
     public NegateSelection(Expression selection) {

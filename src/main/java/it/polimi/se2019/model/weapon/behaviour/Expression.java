@@ -40,7 +40,7 @@ public abstract class Expression {
 
     // TODO: add doc
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o)
             return true;
 
@@ -53,7 +53,7 @@ public abstract class Expression {
 
     // TODO: add doc
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(mSubexpressions);
     }
 

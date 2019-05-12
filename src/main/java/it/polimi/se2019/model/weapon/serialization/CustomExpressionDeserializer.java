@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
 
 public class CustomExpressionDeserializer implements JsonDeserializer<Expression> {
     @Override
-    public Expression deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+    public Expression deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) {
         Expression result = context.deserialize(jsonElement, Expression.class);
 
         result.updateAllSubExpressions();

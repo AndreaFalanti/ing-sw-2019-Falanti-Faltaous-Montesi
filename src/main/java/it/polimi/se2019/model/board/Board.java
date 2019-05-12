@@ -133,10 +133,6 @@ public class Board {
                 || mTiles.size() != casted.mTiles.size())
             return false;
 
-        /* TODO: find out why using ArrayList.equals does not work
-           return mHeight == casted.mHeight &&
-                mWidth == casted.mWidth &&
-                mTiles.equals(casted.mTiles);*/
         for (int i = 0; i < mTiles.size(); i++) {
             if (!Objects.equals(mTiles.get(i), casted.mTiles.get(i)))
                 return false;

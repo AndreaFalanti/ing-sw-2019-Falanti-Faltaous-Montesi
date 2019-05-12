@@ -1,11 +1,8 @@
 package it.polimi.se2019.model.weapon;
 
 import com.google.gson.annotations.JsonAdapter;
-import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.weapon.serialization.CustomSelectionAdapter;
 
-import javax.swing.text.html.Option;
-import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -32,7 +29,7 @@ public class Selection<T> {
     public static<T> Selection<T> fromSet(Set<T> contents) {
         Selection<T> result = new Selection();
         result.mDomain = Optional.of(contents.stream());
-        result.mCharacteristicFunction = (element) -> contents.contains(element);
+        result.mCharacteristicFunction = contents::contains;
 
         return result;
     }
@@ -44,10 +41,8 @@ public class Selection<T> {
     public static<T> Selection<T> of(T... contents) {
         Selection<T> result = new Selection();
         result.mDomain = Optional.of(Arrays.stream(contents));
-        result.mCharacteristicFunction = (element) -> Arrays.stream(contents)
-                .filter(arrayEle -> arrayEle.equals(element))
-                .findFirst()
-                .isPresent();
+        result.mCharacteristicFunction = element -> Arrays.stream(contents)
+                .anyMatch(arrayEle -> arrayEle.equals(element));
 
         return result;
     }
