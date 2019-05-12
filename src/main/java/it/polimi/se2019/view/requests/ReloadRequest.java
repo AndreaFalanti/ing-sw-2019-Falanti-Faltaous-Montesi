@@ -14,6 +14,6 @@ public class ReloadRequest implements Request {
 
     @Override
     public void handle(RequestHandler handler) {
-
+        handler.handle(this);
     }
 }

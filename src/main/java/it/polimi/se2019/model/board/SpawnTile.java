@@ -62,6 +62,10 @@ public class SpawnTile extends Tile {
         return mWeapons[index];
     }
 
+    public Weapon[] getWeapons() {
+        return mWeapons;
+    }
+
     /**
      * Grab weapon at selected index from spawn tile
      * @param index Index of weapon to grab

@@ -1,5 +1,6 @@
 package it.polimi.se2019.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,8 +43,12 @@ public class Deck<T> {
     }
 
     public void shuffle() {
-        mDeck = mCards ;
+        mDeck = copyCard();
         Collections.shuffle(mDeck);
+    }
+
+    public List<T> copyCard(){
+        return new ArrayList<>(this.getCards());
     }
 
     public List<T> getCards(){

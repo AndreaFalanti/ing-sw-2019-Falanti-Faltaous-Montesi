@@ -1,14 +1,17 @@
-package it.polimi.se2019.model.weapon.behaviour;
+package it.polimi.se2019.model.weapon.serialization;
 
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.weapon.Selection;
+import it.polimi.se2019.model.weapon.behaviour.DamageLiteral;
+import it.polimi.se2019.model.weapon.behaviour.Expression;
+import it.polimi.se2019.model.weapon.behaviour.InflictDamage;
+import it.polimi.se2019.model.weapon.behaviour.TargetsLiteral;
+import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
 import it.polimi.se2019.util.JsonString;
 import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Collections;
-import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,8 +22,8 @@ public class ExpressionFactoryTest {
     public void instantiate() {
         mSimpleBehaviour = new InflictDamage(
                 new DamageLiteral(new Damage(1, 0)),
-                new TargetsLiteral(new HashSet(Collections.singleton(PlayerColor.GREEN))
-        ));
+                new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN))
+        );
     }
 
     @Test

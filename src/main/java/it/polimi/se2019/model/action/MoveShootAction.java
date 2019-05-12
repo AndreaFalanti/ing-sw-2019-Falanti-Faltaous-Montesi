@@ -8,6 +8,8 @@ import it.polimi.se2019.model.Position;
 public class MoveShootAction implements Action {
     private MoveAction mMoveAction;
     private ShootAction mShootAction;
+    private ResponseCode mCode;
+    private String message;
 
     public MoveShootAction (PlayerColor playerColor, Position destination) {
         mMoveAction = new MoveAction(playerColor, destination);
@@ -32,6 +34,8 @@ public class MoveShootAction implements Action {
     public boolean isValid(Game game) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
+            System.out.println("Max number of action reached");
+            this.mCode = ResponseCode.NO_ACTION_LEFT;
             return false;
         }
 
@@ -46,4 +50,11 @@ public class MoveShootAction implements Action {
                     && game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) == 1;
         }
     }
+
+    @Override
+    public boolean consumeAction() {
+        return true;
+    }
+
+    public ResponseCode getCode(){return mCode;}
 }

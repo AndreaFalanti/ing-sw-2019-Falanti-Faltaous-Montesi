@@ -19,7 +19,5 @@ public class MessageResponse implements Response {
     }
 
     @Override
-    public void handle(ResponseHandler handler) {
-
-    }
+    public void handle(ResponseHandler handler) { handler.handle(this);}
 }

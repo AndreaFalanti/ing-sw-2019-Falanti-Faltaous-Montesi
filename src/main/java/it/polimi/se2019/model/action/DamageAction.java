@@ -2,7 +2,6 @@ package it.polimi.se2019.model.action;
 
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 
 import java.util.Set;
@@ -12,6 +11,8 @@ public class DamageAction implements Action {
     PlayerColor mAttackerColor;
     Set<PlayerColor> mDefenderColors;
     Damage mDamageToInflict;
+    private ResponseCode mCode;
+    private String message;
 
     // trivial constructor
     public DamageAction(PlayerColor attackerColor, Set<PlayerColor> defenderColors, Damage damageToInflict) {
@@ -23,13 +24,12 @@ public class DamageAction implements Action {
     // TODO: add doc
     @Override
     public void perform(Game game) {
-        for (PlayerColor defenderColor : mDefenderColors) {
-            Player defendingPlayer = game.getPlayerFromColor(defenderColor);
-
-            defendingPlayer.sufferedDamage(mAttackerColor, mDamageToInflict.getDamage());
-            defendingPlayer.sufferedMarks (mAttackerColor, mDamageToInflict.getMarksNum());
-        }
-
+        mDefenderColors.stream()
+                .map(defenderColor -> game.getPlayerFromColor(defenderColor))
+                .forEach(defendingPlayer -> {
+                    defendingPlayer.sufferedDamage(mAttackerColor, mDamageToInflict.getDamage());
+                    defendingPlayer.sufferedMarks (mAttackerColor, mDamageToInflict.getMarksNum());
+                });
     }
 
     // TODO: add doc
@@ -40,4 +40,11 @@ public class DamageAction implements Action {
                 // isValidPlayerColor(mDefenderColor);
         return true;
     }
+
+    @Override
+    public boolean consumeAction() {
+        return false;
+    }
+
+    public ResponseCode getCode(){return mCode;}
 }

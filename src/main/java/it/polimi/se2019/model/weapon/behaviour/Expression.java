@@ -5,10 +5,11 @@ import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
+import it.polimi.se2019.model.weapon.Selection;
 import it.polimi.se2019.model.weapon.request.Request;
 import it.polimi.se2019.model.weapon.serialization.CustomExpressionDeserializer;
+import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
 import it.polimi.se2019.util.Exclude;
-import it.polimi.se2019.util.FieldUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,8 +38,9 @@ public abstract class Expression {
         return ExpressionFactory.toJson(this);
     }
 
+    // TODO: add doc
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o)
             return true;
 
@@ -51,7 +53,7 @@ public abstract class Expression {
 
     // TODO: add doc
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(mSubexpressions);
     }
 
@@ -81,10 +83,13 @@ public abstract class Expression {
     int asInt() {
         throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }
-    Set<PlayerColor> asTargets() {
+    Selection<PlayerColor> asTargetSelection() {
         throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }
-    Set<Position> asRange() {
+    Selection<Position> asRange() {
+        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
+    }
+    Selection<?> asSelection() {
         throw new UnsupportedOperationException("This expression cannot be converted to an int!");
     }
     Damage asDamage() {
@@ -98,8 +103,39 @@ public abstract class Expression {
     }
 
     // TODO: add doc
+    public void updateSubExpressionLists() {
+        mSubexpressions.addAll(Arrays.stream(getClass().getFields())
+                .filter(field -> Arrays.stream(field.getDeclaredAnnotations()).anyMatch(
+                        ann -> ann.getClass() == SubExpressionList.class
+                ))
+                .map(field -> {
+                    if (!field.getClass().isAssignableFrom(List.class)) {
+                        throw new IllegalStateException("Field " + field.getName() + " of class " + getClass().getName() +
+                                "is annotated with a SubExpressionList annotation without being an List of Expression!");
+                    }
+
+                    return field;
+                })
+                .map(field -> {
+                    try {
+                        return field.get(this);
+                    } catch (IllegalAccessException e) {
+                        throw new IllegalStateException("Cannot get field " + field.getName() + " of class " +
+                                getClass().getName() + " annotated with subexpression list annotation");
+                    }
+                })
+                .map(obj -> (List<Expression>) obj)
+                .flatMap(List::stream)
+                .collect(Collectors.toList())
+        );
+    }
+
+    // TODO: add doc
     public void updateSubExpressions() {
-        mSubexpressions = Arrays.stream(FieldUtils.getFieldsWithAnnotation(getClass(), SubExpression.class))
+        mSubexpressions.addAll(Arrays.stream(getClass().getFields())
+                .filter(field -> Arrays.stream(field.getDeclaredAnnotations()).anyMatch(
+                        ann -> ann.getClass() == SubExpression.class
+                ))
                 .map(field -> {
                     if (!field.getClass().isAssignableFrom(Expression.class)) {
                         throw new IllegalStateException("Field " + field.getName() + " of class " + getClass().getName() +
@@ -117,6 +153,13 @@ public abstract class Expression {
                     }
                 })
                 .map(obj -> (Expression) obj)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+        );
+    }
+
+    // TODO: add doc
+    public void updateAllSubExpressions() {
+        updateSubExpressions();
+        updateSubExpressionLists();
     }
 }

@@ -1,15 +1,9 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.Player;
-import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
 
-import java.util.Deque;
-import java.util.Optional;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class ShootContext {
     // statics
@@ -21,10 +15,15 @@ public class ShootContext {
     PlayerColor mShooterColor;
     Deque<Expression> mProvidedInfo;
 
+    // temporary info representing changed game state
+    AmmoValue mPayedCost;
+    Set<Player> mAffectedPlayres; // only used for keeping track of opponents shoved around by weapon,
+                                  // ergo, only position is interesting
+
     // trivial constructors
     public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor) {
         // safety check to assure that shooter is present among provided players
-        if (!players.stream().filter(pl -> pl.getColor() == shooterColor).findFirst().isPresent())
+        if (!players.stream().anyMatch(pl -> pl.getColor() == shooterColor))
             throw new IllegalArgumentException(MISSING_PLAYER_MSG);
 
         // initialize fields
@@ -37,12 +36,15 @@ public class ShootContext {
     Board getBoard() {
         return mBoard;
     }
+    Set<Player> getPlayers() {
+        return mPlayers;
+    }
     PlayerColor getShooterColor() {
         return mShooterColor;
     }
     Player getShooter() {
-        return mPlayers.stream().
-                filter(pl -> pl.getColor() == getShooterColor())
+        return mPlayers.stream()
+                .filter(pl -> pl.getColor() == getShooterColor())
                 .findFirst()
                 .orElseThrow(() ->
                     new IllegalStateException(MISSING_PLAYER_MSG));

@@ -7,17 +7,17 @@ import java.util.*;
 
 
 public class ValidMoveResponse implements Response {
+
     private List<Position> validPos;
 
-    public ValidMoveResponse() {
+    public ValidMoveResponse(List<Position> validPos) {
+        this.validPos = validPos;
     }
 
     public List<Position> getValidPos() {
-        return null;
+        return validPos;
     }
 
     @Override
-    public void handle(ResponseHandler handler) {
-
-    }
+    public void handle(ResponseHandler handler) { handler.handle(this);}
 }
