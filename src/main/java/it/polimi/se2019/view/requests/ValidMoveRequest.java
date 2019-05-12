@@ -9,6 +9,6 @@ public class ValidMoveRequest implements Request {
 
     @Override
     public void handle(RequestHandler handler) {
-
+        handler.handle(this);
     }
 }
