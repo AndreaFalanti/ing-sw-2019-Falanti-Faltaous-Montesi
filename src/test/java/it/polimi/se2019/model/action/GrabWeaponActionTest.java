@@ -82,13 +82,13 @@ public class GrabWeaponActionTest {
         GrabWeaponAction action2 = new GrabWeaponAction(2, 1);
 
         // (0, 0) is not a spawn position
-        assertFalse(action1.isValid(game));
+        assertNotNull(action1.getErrorResponse(game));
 
         // go to blue spawn position
         game.getActivePlayer().move(new Position(2, 0));
-        assertTrue(action1.isValid(game));
+        assertNull(action1.getErrorResponse(game));
 
-        assertFalse(action2.isValid(game));
+        assertNotNull(action2.getErrorResponse(game));
 
         // add weapons to player for making exchange possible
         game.getActivePlayer().addWeapon(new Weapon());
@@ -96,6 +96,6 @@ public class GrabWeaponActionTest {
         game.getActivePlayer().addWeapon(new Weapon());
 
 
-        assertTrue(action2.isValid(game));
+        assertNull(action2.getErrorResponse(game));
     }
 }

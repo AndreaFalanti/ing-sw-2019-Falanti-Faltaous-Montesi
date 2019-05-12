@@ -37,10 +37,10 @@ public class GrabAmmoActionTest {
         Game game = GameTestCaseBuilder.generateBaseGame();
         GrabAmmoAction action = new GrabAmmoAction();
 
-        assertTrue(action.isValid(game));
+        assertNull(action.getErrorResponse(game));
 
         // spawn tile
         game.getActivePlayer().move(new Position(0, 2));
-        assertFalse(action.isValid(game));
+        assertNotNull(action.getErrorResponse(game));
     }
 }

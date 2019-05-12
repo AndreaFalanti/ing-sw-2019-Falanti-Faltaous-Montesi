@@ -5,7 +5,7 @@ import it.polimi.se2019.model.action.responses.DiscardRequiredActionResponse;
 import it.polimi.se2019.model.action.responses.MessageActionResponse;
 import it.polimi.se2019.model.action.responses.SelectWeaponRequiredActionResponse;
 
-public interface ActionResponseHandler {
+public interface InvalidActionResponseHandler {
     Response handle (MessageActionResponse actionResponse);
     Response handle (DiscardRequiredActionResponse actionResponse);
     Response handle (SelectWeaponRequiredActionResponse actionResponse);

@@ -18,7 +18,7 @@ public final class AmmoPayment {
 
     public static boolean isValid (Player player, AmmoValue cost, boolean[] discardedCards) {
         if (player == null || cost == null || discardedCards == null) {
-            throw new IllegalArgumentException("null values in method isValid");
+            throw new IllegalArgumentException("null values in method getErrorResponse");
         }
 
         AmmoValue playerAmmo = player.getAmmo();

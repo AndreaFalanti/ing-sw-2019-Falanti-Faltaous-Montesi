@@ -4,12 +4,13 @@ import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.PowerUpCard;
+import it.polimi.se2019.model.action.responses.ActionResponseStrings;
+import it.polimi.se2019.model.action.responses.InvalidActionResponse;
+import it.polimi.se2019.model.action.responses.MessageActionResponse;
 
 public class TeleportAction implements Action {
     private Position mDestination;
     private int mTeleportIndex;
-    private ResponseCode mCode;
-    private String message;
 
     public TeleportAction (Position destination, int index) {
         if (index < 0 || index >= 3) {
@@ -32,15 +33,18 @@ public class TeleportAction implements Action {
     }
 
     @Override
-    public boolean isValid(Game game) {
+    public InvalidActionResponse getErrorResponse(Game game) {
         PowerUpCard powerUpCard = game.getActivePlayer().getPowerUpCard(mTeleportIndex);
-        return powerUpCard != null && powerUpCard.getName().equals("Teleport");
+
+        if (powerUpCard == null) {
+            return new MessageActionResponse("Power up used is null");
+        }
+        return powerUpCard.getName().equals("Teleport") ?
+                null : new MessageActionResponse(ActionResponseStrings.HACKED_MOVE);
     }
 
     @Override
     public boolean consumeAction() {
         return false;
     }
-
-    public ResponseCode getCode(){return mCode;}
 }
