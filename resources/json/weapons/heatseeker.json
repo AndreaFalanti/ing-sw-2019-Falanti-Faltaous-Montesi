@@ -12,12 +12,30 @@
   },
   "primary" : {
     "expr" : "InflictDamage",
-    "damage" : [1, 0],
+    "damage" : {
+      "expr" : "DamageLiteral",
+      "contents" : {
+        "damage" : 3,
+        "marksNum" : 0
+      }
+    },
     "targets" : {
-      "expr" : "NegateSelection",
-      "do" : {
-        "expr" : "CanSee"
+      "expr" : "SelectTargets",
+      "min" : {
+        "expr" : "IntLiteral",
+        "contents" : 1
+      },
+      "max" : {
+        "expr" : "IntLiteral",
+        "contents" : 1
+      },
+      "from" : {
+        "expr" : "NegateSelection",
+        "do" : {
+          "expr" : "CanSee"
+        }
       }
     }
   }
 }
+
