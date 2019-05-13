@@ -71,6 +71,16 @@ public class GameTest {
         catch (IllegalArgumentException e) {
             assertTrue(true);
         }
+
+        // add a player with same username of an already existent one
+        players2.add(new Player("b", PlayerColor.PURPLE));
+        try {
+            Game game = new Game(board, players2, 3);
+            fail();
+        }
+        catch (IllegalArgumentException e) {
+            assertTrue(true);
+        }
     }
 
     /**

@@ -61,24 +61,24 @@ public class MoveGrabAction implements Action {
             return response;
         }
 
-        // check max possible moves in final frenzy status
-        if (game.isFinalFrenzy()) {
-            if (game.hasFirstPlayerDoneFinalFrenzy()) {
-                return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) <= 3 ?
-                        null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE);
-            }
-            else {
-                return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) <= 2 ?
-                        null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE);
-            }
+        int maxGrabDistance;
 
-        }
+        // check max possible moves in different game states
         // check max moves in "normal" game status, it changes if player has tot damage
-        else {
-            return game.getBoard()
-                    .getTileDistance(player.getPos(), mMoveAction.getDestination()) <= player.getMaxGrabDistance() ?
-                    null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE);
+        if (!game.isFinalFrenzy()) {
+            maxGrabDistance = player.getMaxGrabDistance();
         }
+        // max moves in "final frenzy" game status are 3 if player is after (or is) first player
+        else if (game.hasFirstPlayerDoneFinalFrenzy()) {
+            maxGrabDistance = 3;
+        }
+        // max moves in "final frenzy" game status are 2 if player is before first player
+        else {
+            maxGrabDistance = 2;
+        }
+
+        return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) <= maxGrabDistance ?
+                null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE);
     }
 
     @Override

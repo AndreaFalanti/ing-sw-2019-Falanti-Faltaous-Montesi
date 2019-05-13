@@ -39,19 +39,22 @@ public class MoveShootAction implements Action {
         }
 
         Player player = game.getPlayerFromColor(mMoveAction.getTarget());
-        if (game.isFinalFrenzy()) {
-            if (game.hasFirstPlayerDoneFinalFrenzy()) {
-                return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) <= 2 ?
-                        null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE);
+        int maxShootMoves;
+
+        if (!game.isFinalFrenzy()) {
+            if (!player.canMoveBeforeShooting()) {
+                return new MessageActionResponse("You can't move while shooting right now");
             }
-            return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) == 1 ?
-                    null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE);
+            maxShootMoves = 1;
+        }
+        else if (game.hasFirstPlayerDoneFinalFrenzy()) {
+            maxShootMoves = 2;
         }
         else {
-            return player.canMoveBeforeShooting()
-                    && game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) == 1 ?
-                    null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE + " while shooting");
+            maxShootMoves = 1;
         }
+            return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) == maxShootMoves ?
+                    null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE + " while shooting");
     }
 
     @Override

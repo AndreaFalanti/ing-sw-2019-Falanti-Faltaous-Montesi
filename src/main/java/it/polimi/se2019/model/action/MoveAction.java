@@ -74,20 +74,25 @@ public class MoveAction implements Action {
                 return new MessageActionResponse(ActionResponseStrings.HACKED_MOVE);
             }
 
+            int moveMaxDistance;
+
+            // set max moves based on actual game state
             // max moves in "normal" state is 3
             if (!game.isFinalFrenzy()) {
-                return game.getBoard().getTileDistance(playerPos, mDestination) <= 3 ?
-                        null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE);
+                moveMaxDistance = 3;
             }
             // you can move 4 tiles if you are before first player in final frenzy status.
             else if (!game.hasFirstPlayerDoneFinalFrenzy()) {
-                return game.getBoard().getTileDistance(playerPos, mDestination) <= 4 ?
-                    null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE);
+                moveMaxDistance = 4;
             }
             // you can't only move if is final frenzy and you are after first player.
             else {
                 return new MessageActionResponse("You are after the first player and is final frenzy, so you can't move");
             }
+
+            // check that move distance is equals or less of set parameter
+            return game.getBoard().getTileDistance(playerPos, mDestination) <= moveMaxDistance ?
+                    null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE);
         }
         else {
             // maximum distance for "indirect" moves are 3 spaces

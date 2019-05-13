@@ -48,6 +48,11 @@ public class Game {
 
         for (int i = 0; i < players.size() - 1; i++) {
             for (int j = i + 1; j < players.size(); j++) {
+                // players can't have the same username
+                if (players.get(i).getName().equals(players.get(j).getName())) {
+                    throw new IllegalArgumentException("Two or more player have same username");
+                }
+                // players can't have the same player color
                 if (players.get(i).getColor() == players.get(j).getColor()) {
                     throw new IllegalArgumentException("Two or more player have same player color");
                 }
