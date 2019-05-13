@@ -45,6 +45,15 @@ public class Game {
         if (board == null || players == null || killsToFinish <= 0 || players.size() < 3) {
             throw new IllegalArgumentException();
         }
+
+        for (int i = 0; i < players.size() - 1; i++) {
+            for (int j = i + 1; j < players.size(); j++) {
+                if (players.get(i).getColor() == players.get(j).getColor()) {
+                    throw new IllegalArgumentException("Two or more player have same player color");
+                }
+            }
+        }
+
         mBoard = board;
         mPlayers = players;
         mSkullNum = killsToFinish;
@@ -318,7 +327,7 @@ public class Game {
                 registerKill(getActivePlayer().getColor());
                 if (player.isOverkilled()) {
                     registerOverkill(getActivePlayer().getColor());
-                    // TODO: add mark to active player
+                    getActivePlayer().onDamageTaken(new Damage(0, 1), player.getColor());
                 }
                 distributePlayerKillScore(player.getColor());
                 // Remove temporarily player from board
