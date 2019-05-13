@@ -3,7 +3,9 @@ package it.polimi.se2019.model.weapon;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.DamageAction;
+import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.model.weapon.behaviour.TargetsLiteral;
@@ -12,7 +14,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class WeaponsTest {
     private ShootContext mMarioBrosContext;
@@ -38,11 +45,19 @@ public class WeaponsTest {
         mMarioBrosContext.pushInfo(new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN)));
         
         // produce action with complete context
-        WeaponAction actual = heatseeker.shoot(mMarioBrosContext);
+        Optional<Action> maybeActual = heatseeker.shoot(mMarioBrosContext);
+
+        // assert presence (since info is complete)
+        assertTrue(maybeActual.isPresent());
 
         // test
-        WeaponAction expected = new WeaponAction(
-                new DamageAction(PlayerColor.PURPLE, PlayerColor.GREEN, new Damage(1, 0))
+        Action actual = maybeActual.get();
+        Action expected = new WeaponAction(
+                new DamageAction(
+                        PlayerColor.PURPLE,
+                        Collections.singleton(PlayerColor.BLUE),
+                        new Damage(1, 0)
+                )
         );
         assertEquals(expected, actual);
     }

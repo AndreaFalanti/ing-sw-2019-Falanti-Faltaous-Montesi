@@ -1,6 +1,6 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-public class MissingInfo extends Expression {
+public class WaitForInfo extends Expression {
     // TODO: add doc
     @Override
     protected Expression continueEval(ShootContext shootContext) {

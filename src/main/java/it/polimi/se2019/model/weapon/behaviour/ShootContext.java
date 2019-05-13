@@ -1,6 +1,8 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
 import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.action.Action;
+import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
 
 import java.util.*;
@@ -13,7 +15,8 @@ public class ShootContext {
     Board mBoard;
     Set<Player> mPlayers;
     PlayerColor mShooterColor;
-    Deque<Expression> mProvidedInfo;
+    Deque<Expression> mInfo;
+    Deque<Action> mProducedActions;
 
     // temporary info representing changed game state
     AmmoValue mPayedCost;
@@ -53,14 +56,37 @@ public class ShootContext {
         return getShooter().getPos();
     }
 
-    // for manipulating stack info
-    public void pushInfo(Expression info) {
-        mProvidedInfo.push(info);
+    // for manipulating actions stack
+    public void pushAction(Action info) {
+        mProducedActions.push(info);
     }
-    public Optional<Expression> popInfo() {
-        if (mProvidedInfo.isEmpty())
+    public Optional<Action> popAction() {
+        if (mProducedActions.isEmpty())
             return Optional.empty();
 
-        return Optional.of(mProvidedInfo.pop());
+        return Optional.of(mProducedActions.pop());
+    }
+
+    // for manipulating info stack
+    public void pushInfo(Expression info) {
+        mInfo.push(info);
+    }
+    public Optional<Expression> popInfo() {
+        if (mInfo.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(mInfo.pop());
+    }
+
+    // true if context is complete, and thus does not need any additional info for generating shoot
+    public boolean isComplete() {
+        return mInfo.isEmpty();
+    }
+
+    // get the resulting shoot action
+    public Action getResultingAction() {
+        return new WeaponAction(mProducedActions.stream()
+                .toArray(Action[]::new)
+        );
     }
 }

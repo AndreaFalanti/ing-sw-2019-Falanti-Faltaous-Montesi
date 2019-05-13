@@ -20,10 +20,12 @@ public class SelectTargets extends Expression {
     // TODO: add doc
     @Override
     public final Expression continueEval(ShootContext shootContext) {
-        return new RequestLiteral(new TargetSelectionRequest(
+        shootContext.pushInfo(new RequestLiteral(new TargetSelectionRequest(
                 mMin.asInt(),
                 mMax.asInt(),
                 mFrom.asTargetSelection()
-        ));
+        )));
+
+        return new WaitForInfo();
     }
 }

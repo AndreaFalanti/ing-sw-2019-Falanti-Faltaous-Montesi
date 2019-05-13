@@ -23,10 +23,12 @@ public class InflictDamage extends Expression {
     protected final Expression continueEval(ShootContext shootContext) {
         PlayerColor inflicterColor = shootContext.getShooterColor();
 
-        return new ActionLiteral(new DamageAction(
+        shootContext.pushAction(new DamageAction(
                 inflicterColor,
                 mTargets.asTargetSelection().asSet(),
                 mDamage.asDamage()
         ));
+
+        return new Done();
     }
 }

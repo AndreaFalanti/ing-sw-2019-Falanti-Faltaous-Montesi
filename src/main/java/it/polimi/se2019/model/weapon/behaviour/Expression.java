@@ -63,7 +63,7 @@ public abstract class Expression {
         boolean infoIsMissing = false;
         for (Expression subexpr : mSubexpressions) {
             subexpr = subexpr.eval(shootContext);
-            if (subexpr instanceof MissingInfo)
+            if (subexpr instanceof WaitForInfo)
                 infoIsMissing = true;
         }
 

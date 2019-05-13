@@ -11,10 +11,7 @@ import it.polimi.se2019.model.weapon.serialization.CustomPrimaryEffectAdapter;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Exclude;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Weapon {
     private String mName;
@@ -85,9 +82,18 @@ public class Weapon {
     }
 
     // TODO: add doc
-    // TODO: implement
-    public Action shoot(ShootContext shootContext) {
-        return null;
+    public Optional<Action> shoot(ShootContext shootContext) {
+        // TODO: make choice of secondary and additional effects possible
+        Expression result = mPrimaryEffect.getBehaviour().eval(shootContext);
+
+        // TODO: consider doing this instead:
+        // if (result.isAction())
+            // return Optional.of(result.asAction());
+
+        if (shootContext.isComplete())
+            return Optional.of(shootContext.getResultingAction());
+
+        return Optional.empty();
     }
 
     public static List<Weapon> returnDeckFromJson(String json) {
