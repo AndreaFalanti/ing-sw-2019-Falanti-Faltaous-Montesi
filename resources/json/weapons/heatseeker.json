@@ -20,15 +20,7 @@
       }
     },
     "targets" : {
-      "expr" : "SelectTargets",
-      "min" : {
-        "expr" : "IntLiteral",
-        "contents" : 1
-      },
-      "max" : {
-        "expr" : "IntLiteral",
-        "contents" : 1
-      },
+      "expr" : "SelectOneTarget",
       "from" : {
         "expr" : "NegateSelection",
         "do" : {

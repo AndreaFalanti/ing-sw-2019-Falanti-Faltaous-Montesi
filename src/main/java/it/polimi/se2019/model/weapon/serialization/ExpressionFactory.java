@@ -20,7 +20,8 @@ public class ExpressionFactory {
                     .registerSubtype(SelectTargets.class, "SelectTargets")
                     .registerSubtype(CanSee.class, "CanSee")
                     .registerSubtype(IntLiteral.class, "IntLiteral")
-                    .registerSubtype(NegateSelection.class, "NegateSelection"))
+                    .registerSubtype(NegateSelection.class, "NegateSelection")
+                    .registerSubtype(SelectOneTarget.class, "SelectOneTarget"))
             .setFieldNamingStrategy(new CustomFieldNamingStrategy())
             .addSerializationExclusionStrategy(new AnnotationExclusionStrategy())
             .create();
