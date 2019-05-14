@@ -68,31 +68,31 @@ public class MoveActionTest {
 
         //NOTE: all players are in pos(0, 0)
         // distance = 1
-        assertNull(action1[0].getErrorResponse(game1));
-        assertNull(action1[1].getErrorResponse(game2));
-        assertNotNull(action1[2].getErrorResponse(game3));
+        assertFalse(action1[0].getErrorResponse(game1).isPresent());
+        assertFalse(action1[1].getErrorResponse(game2).isPresent());
+        assertTrue(action1[2].getErrorResponse(game3).isPresent());
 
         // distance = 5
-        assertNotNull(action2[0].getErrorResponse(game1));
-        assertNotNull(action2[1].getErrorResponse(game2));
-        assertNotNull(action2[2].getErrorResponse(game3));
+        assertTrue(action2[0].getErrorResponse(game1).isPresent());
+        assertTrue(action2[1].getErrorResponse(game2).isPresent());
+        assertTrue(action2[2].getErrorResponse(game3).isPresent());
 
         // distance = 4
-        assertNotNull(action3[0].getErrorResponse(game1));
-        assertNull(action3[1].getErrorResponse(game2));
-        assertNotNull(action3[2].getErrorResponse(game3));
+        assertTrue(action3[0].getErrorResponse(game1).isPresent());
+        assertFalse(action3[1].getErrorResponse(game2).isPresent());
+        assertTrue(action3[2].getErrorResponse(game3).isPresent());
 
         // same position, distance = 0, always false
-        assertNotNull(action4[0].getErrorResponse(game1));
-        assertNotNull(action4[1].getErrorResponse(game2));
-        assertNotNull(action4[2].getErrorResponse(game3));
+        assertTrue(action4[0].getErrorResponse(game1).isPresent());
+        assertTrue(action4[1].getErrorResponse(game2).isPresent());
+        assertTrue(action4[2].getErrorResponse(game3).isPresent());
 
-        assertNull(action5[0].getErrorResponse(game1));
-        assertNull(action5[1].getErrorResponse(game2));
-        assertNull(action5[2].getErrorResponse(game3));
+        assertFalse(action5[0].getErrorResponse(game1).isPresent());
+        assertFalse(action5[1].getErrorResponse(game2).isPresent());
+        assertFalse(action5[2].getErrorResponse(game3).isPresent());
 
-        assertNotNull(action6[0].getErrorResponse(game1));
-        assertNotNull(action6[1].getErrorResponse(game2));
-        assertNotNull(action6[2].getErrorResponse(game3));
+        assertTrue(action6[0].getErrorResponse(game1).isPresent());
+        assertTrue(action6[1].getErrorResponse(game2).isPresent());
+        assertTrue(action6[2].getErrorResponse(game3).isPresent());
     }
 }

@@ -5,6 +5,7 @@ import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.action.responses.InvalidActionResponse;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class DamageAction implements Action {
@@ -32,8 +33,8 @@ public class DamageAction implements Action {
 
     // TODO: add doc
     @Override
-    public InvalidActionResponse getErrorResponse(Game game) {
-        return null;
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
+        return Optional.empty();
     }
 
     @Override

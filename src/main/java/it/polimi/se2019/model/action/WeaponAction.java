@@ -6,6 +6,7 @@ import it.polimi.se2019.model.action.responses.InvalidActionResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 // TODO: add doc
@@ -27,8 +28,8 @@ public class WeaponAction implements Action {
     }
 
     @Override
-    public InvalidActionResponse getErrorResponse(Game game) {
-        return null;
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
+        return Optional.empty();
     }
 
     @Override

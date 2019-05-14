@@ -74,7 +74,7 @@ public class ReloadActionTest {
         }
 
         // 2 action remaining, can't perform reload
-        assertNotNull(action1.getErrorResponse(game1));
+        assertTrue(action1.getErrorResponse(game1).isPresent());
 
         // set to 0 the remaining actions
         game1.decreaseActionCounter();
@@ -83,29 +83,29 @@ public class ReloadActionTest {
         game2.decreaseActionCounter();
 
         // first weapon can be reloaded
-        assertNull(action1.getErrorResponse(game1));
-        assertNull(action1.getErrorResponse(game2));
+        assertFalse(action1.getErrorResponse(game1).isPresent());
+        assertFalse(action1.getErrorResponse(game2).isPresent());
 
         // first weapon can be reloaded without discarding, also check that if cards are null
         // is not throwing exception in game1
-        assertNotNull(action5.getErrorResponse(game1));
-        assertNotNull(action5.getErrorResponse(game2));
+        assertTrue(action5.getErrorResponse(game1).isPresent());
+        assertTrue(action5.getErrorResponse(game2).isPresent());
 
         // second weapon can't be reloaded without discarding (not enough ammo)
-        assertNotNull(action2.getErrorResponse(game1));
-        assertNotNull(action2.getErrorResponse(game2));
+        assertTrue(action2.getErrorResponse(game1).isPresent());
+        assertTrue(action2.getErrorResponse(game2).isPresent());
 
         // card discarded don't cover the remaining cost
-        assertNotNull(action3.getErrorResponse(game2));
+        assertTrue(action3.getErrorResponse(game2).isPresent());
 
         // card discarded cover the remaining cost
-        assertNull(action4.getErrorResponse(game2));
+        assertFalse(action4.getErrorResponse(game2).isPresent());
 
         // trying to reload a null weapon
-        assertNotNull(action6.getErrorResponse(game1));
+        assertTrue(action6.getErrorResponse(game1).isPresent());
 
         // trying to reload an already loaded weapon
         game1.getActivePlayer().getWeapon(0).setLoaded(true);
-        assertNotNull(action1.getErrorResponse(game1));
+        assertTrue(action1.getErrorResponse(game1).isPresent());
     }
 }

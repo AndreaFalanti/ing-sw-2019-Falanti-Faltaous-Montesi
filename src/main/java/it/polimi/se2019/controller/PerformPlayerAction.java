@@ -9,6 +9,8 @@ import it.polimi.se2019.model.action.responses.InvalidActionResponse;
 import it.polimi.se2019.model.action.responses.SelectWeaponRequiredActionResponse;
 import it.polimi.se2019.util.Observable;
 
+import java.util.Optional;
+
 public class PerformPlayerAction implements InvalidActionResponseHandler {
     private Game mGame;
     private Action mAction;
@@ -19,14 +21,14 @@ public class PerformPlayerAction implements InvalidActionResponseHandler {
     }
 
     public void Execute(){
-        InvalidActionResponse response = mAction.getErrorResponse(mGame);
-        if(response == null) {
+        Optional<InvalidActionResponse> response = mAction.getErrorResponse(mGame);
+        if(!response.isPresent()) {
             mAction.perform(mGame);
             if(mAction.consumeAction())
                 mGame.decreaseActionCounter();
         }
         else {
-             response.handle(this);
+             response.get().handle(this);
         }
     }
 

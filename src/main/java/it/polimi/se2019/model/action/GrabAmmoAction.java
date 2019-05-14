@@ -8,6 +8,8 @@ import it.polimi.se2019.model.action.responses.SelectWeaponRequiredActionRespons
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.Tile;
 
+import java.util.Optional;
+
 public class GrabAmmoAction implements GrabAction {
     @Override
     public void perform(Game game) {
@@ -30,7 +32,7 @@ public class GrabAmmoAction implements GrabAction {
     }
 
     @Override
-    public InvalidActionResponse getErrorResponse(Game game) {
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         return getErrorMessageAtPos(game, game.getActivePlayer().getPos());
     }
 
@@ -40,10 +42,10 @@ public class GrabAmmoAction implements GrabAction {
     }
 
     @Override
-    public InvalidActionResponse getErrorMessageAtPos(Game game, Position pos) {
+    public Optional<InvalidActionResponse> getErrorMessageAtPos(Game game, Position pos) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
-            return new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING);
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
 
         // see if tile has still an ammo card or it was already picked
@@ -51,14 +53,14 @@ public class GrabAmmoAction implements GrabAction {
         if (tile != null && tile.getTileType().equals("normal")) {
             NormalTile normalTile = (NormalTile) tile;
             if(normalTile.getAmmoCard() == null){
-                return new MessageActionResponse("Tile is empty, you can't grab here again");
+                return Optional.of(new MessageActionResponse("Tile is empty, you can't grab here again"));
             }
             else {
-                return null;
+                return Optional.empty();
             }
         }
 
         // tile isn't an AmmoTile
-        return new SelectWeaponRequiredActionResponse("Select a weapon from spawn tile");
+        return Optional.of(new SelectWeaponRequiredActionResponse("Select a weapon from spawn tile"));
     }
 }

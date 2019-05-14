@@ -5,6 +5,8 @@ import it.polimi.se2019.model.action.responses.ActionResponseStrings;
 import it.polimi.se2019.model.action.responses.InvalidActionResponse;
 import it.polimi.se2019.model.action.responses.MessageActionResponse;
 
+import java.util.Optional;
+
 public class ShootAction implements Action {
     public ShootAction () {
     }
@@ -13,12 +15,12 @@ public class ShootAction implements Action {
     public void perform(Game game) {}
 
     @Override
-    public InvalidActionResponse getErrorResponse(Game game) {
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         if (game.getRemainingActions() == 0) {
-            return new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING);
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
 
-        return null;
+        return Optional.empty();
     }
 
     @Override

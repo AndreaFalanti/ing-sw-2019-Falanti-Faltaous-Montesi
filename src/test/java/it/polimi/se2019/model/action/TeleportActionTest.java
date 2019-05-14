@@ -26,8 +26,8 @@ public class TeleportActionTest {
         TeleportAction action2 = new TeleportAction(new Position(2,3), 2);
 
         game.startNextTurn();
-        assertNull(action1.getErrorResponse(game));
-        assertNotNull(action2.getErrorResponse(game));
+        assertFalse(action1.getErrorResponse(game).isPresent());
+        assertTrue(action2.getErrorResponse(game).isPresent());
     }
 
     /**
@@ -39,8 +39,8 @@ public class TeleportActionTest {
         TeleportAction action1 = new TeleportAction(new Position(1,2), 0);
 
         game.startNextTurn();
-        assertNull(action1.getErrorResponse(game));
+        assertFalse(action1.getErrorResponse(game).isPresent());
         action1.perform(game);
-        assertNotNull(action1.getErrorResponse(game));
+        assertTrue(action1.getErrorResponse(game).isPresent());
     }
 }

@@ -8,6 +8,8 @@ import it.polimi.se2019.model.action.responses.ActionResponseStrings;
 import it.polimi.se2019.model.action.responses.InvalidActionResponse;
 import it.polimi.se2019.model.action.responses.MessageActionResponse;
 
+import java.util.Optional;
+
 public class MoveShootAction implements Action {
     private MoveAction mMoveAction;
     private ShootAction mShootAction;
@@ -32,10 +34,10 @@ public class MoveShootAction implements Action {
     }
 
     @Override
-    public InvalidActionResponse getErrorResponse(Game game) {
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
-            return new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING);
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
 
         Player player = game.getPlayerFromColor(mMoveAction.getTarget());
@@ -43,7 +45,7 @@ public class MoveShootAction implements Action {
 
         if (!game.isFinalFrenzy()) {
             if (!player.canMoveBeforeShooting()) {
-                return new MessageActionResponse("You can't move while shooting right now");
+                return Optional.of(new MessageActionResponse("You can't move while shooting right now"));
             }
             maxShootMoves = 1;
         }
@@ -54,7 +56,9 @@ public class MoveShootAction implements Action {
             maxShootMoves = 1;
         }
             return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) == maxShootMoves ?
-                    null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE + " while shooting");
+                    Optional.empty() : Optional.of(
+                            new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE + " while shooting")
+            );
     }
 
     @Override

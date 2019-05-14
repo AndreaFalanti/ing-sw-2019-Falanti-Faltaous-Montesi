@@ -7,6 +7,8 @@ import it.polimi.se2019.model.action.responses.ActionResponseStrings;
 import it.polimi.se2019.model.action.responses.InvalidActionResponse;
 import it.polimi.se2019.model.action.responses.MessageActionResponse;
 
+import java.util.Optional;
+
 public class MoveReloadShootAction implements Action {
     private MoveShootAction mMoveShootAction;
     private ReloadAction mReloadAction;
@@ -31,17 +33,17 @@ public class MoveReloadShootAction implements Action {
     }
 
     @Override
-    public InvalidActionResponse getErrorResponse(Game game) {
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
-            return new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING);
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
         if (!game.isFinalFrenzy()) {
-            return new MessageActionResponse(ActionResponseStrings.HACKED_MOVE);
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
         }
 
-        InvalidActionResponse response = mMoveShootAction.getErrorResponse(game);
-        if (response != null) {
+        Optional<InvalidActionResponse> response = mMoveShootAction.getErrorResponse(game);
+        if (response.isPresent()) {
             return response;
         }
 

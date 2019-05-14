@@ -8,6 +8,8 @@ import it.polimi.se2019.model.action.responses.ActionResponseStrings;
 import it.polimi.se2019.model.action.responses.InvalidActionResponse;
 import it.polimi.se2019.model.action.responses.MessageActionResponse;
 
+import java.util.Optional;
+
 public class MoveGrabAction implements Action {
     private MoveAction mMoveAction;
     private GrabAction mGrabAction;
@@ -43,21 +45,21 @@ public class MoveGrabAction implements Action {
     }
 
     @Override
-    public InvalidActionResponse getErrorResponse(Game game) {
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
-            return new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING);
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
 
         // this action can be performed only by active player
         if (mMoveAction.getTarget() != game.getActivePlayer().getColor()) {
-            return new MessageActionResponse(ActionResponseStrings.HACKED_MOVE);
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
         }
 
         Player player = game.getPlayerFromColor(mMoveAction.getTarget());
 
-        InvalidActionResponse response = mGrabAction.getErrorMessageAtPos(game, mMoveAction.getDestination());
-        if (response != null) {
+        Optional<InvalidActionResponse> response = mGrabAction.getErrorMessageAtPos(game, mMoveAction.getDestination());
+        if (response.isPresent()) {
             return response;
         }
 
@@ -78,7 +80,7 @@ public class MoveGrabAction implements Action {
         }
 
         return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) <= maxGrabDistance ?
-                null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE);
+                Optional.empty() : Optional.of(new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE));
     }
 
     @Override

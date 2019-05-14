@@ -7,6 +7,8 @@ import it.polimi.se2019.model.action.responses.ActionResponseStrings;
 import it.polimi.se2019.model.action.responses.InvalidActionResponse;
 import it.polimi.se2019.model.action.responses.MessageActionResponse;
 
+import java.util.Optional;
+
 public class MoveAction implements Action {
     private PlayerColor mTarget;
     private Position mDestination;
@@ -55,23 +57,23 @@ public class MoveAction implements Action {
     }
 
     @Override
-    public InvalidActionResponse getErrorResponse(Game game) {
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         Position playerPos = game.getPlayerFromColor(mTarget).getPos();
 
         // can't move player to its precedent position
         if (playerPos.equals(mDestination)) {
-            return new MessageActionResponse("Can't move in your current position!");
+            return Optional.of(new MessageActionResponse("Can't move in your current position!"));
         }
 
         if (mNormalMove) {
             // player can't move himself if out of actions
             if (game.getRemainingActions() == 0) {
-                return new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING);
+                return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
             }
 
             // normal action is only set for active players to move themselves
             if (game.getActivePlayer().getColor() != mTarget) {
-                return new MessageActionResponse(ActionResponseStrings.HACKED_MOVE);
+                return Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
             }
 
             int moveMaxDistance;
@@ -87,17 +89,19 @@ public class MoveAction implements Action {
             }
             // you can't only move if is final frenzy and you are after first player.
             else {
-                return new MessageActionResponse("You are after the first player and is final frenzy, so you can't move");
+                return Optional.of(
+                        new MessageActionResponse("You are after the first player and is final frenzy, so you can't move")
+                );
             }
 
             // check that move distance is equals or less of set parameter
             return game.getBoard().getTileDistance(playerPos, mDestination) <= moveMaxDistance ?
-                    null : new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE);
+                    Optional.empty() : Optional.of(new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE));
         }
         else {
             // maximum distance for "indirect" moves are 3 spaces
             return game.getBoard().getTileDistance(playerPos, mDestination) <= 3 ?
-                    null : new MessageActionResponse("You can shift a player up to three tiles");
+                    Optional.empty() : Optional.of(new MessageActionResponse("You can shift a player up to three tiles"));
         }
     }
 

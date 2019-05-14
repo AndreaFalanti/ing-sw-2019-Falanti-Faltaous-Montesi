@@ -8,6 +8,8 @@ import it.polimi.se2019.model.action.responses.ActionResponseStrings;
 import it.polimi.se2019.model.action.responses.InvalidActionResponse;
 import it.polimi.se2019.model.action.responses.MessageActionResponse;
 
+import java.util.Optional;
+
 public class TeleportAction implements Action {
     private Position mDestination;
     private int mTeleportIndex;
@@ -33,14 +35,14 @@ public class TeleportAction implements Action {
     }
 
     @Override
-    public InvalidActionResponse getErrorResponse(Game game) {
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         PowerUpCard powerUpCard = game.getActivePlayer().getPowerUpCard(mTeleportIndex);
 
         if (powerUpCard == null) {
-            return new MessageActionResponse("Power up used is null");
+            return Optional.of(new MessageActionResponse("Power up used is null"));
         }
         return powerUpCard.getName().equals("Teleport") ?
-                null : new MessageActionResponse(ActionResponseStrings.HACKED_MOVE);
+                Optional.empty() : Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
     }
 
     @Override

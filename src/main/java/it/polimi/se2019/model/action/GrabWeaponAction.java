@@ -8,6 +8,8 @@ import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.Tile;
 import it.polimi.se2019.model.weapon.Weapon;
 
+import java.util.Optional;
+
 public class GrabWeaponAction implements GrabAction {
     private int mWeaponGrabbedIndex;
     private Integer mWeaponToExchangeIndex;
@@ -87,7 +89,7 @@ public class GrabWeaponAction implements GrabAction {
     }
 
     @Override
-    public InvalidActionResponse getErrorResponse(Game game) {
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         return getErrorMessageAtPos(game, game.getActivePlayer().getPos());
     }
 
@@ -97,10 +99,10 @@ public class GrabWeaponAction implements GrabAction {
     }
 
     @Override
-    public InvalidActionResponse getErrorMessageAtPos(Game game, Position pos) {
+    public Optional<InvalidActionResponse> getErrorMessageAtPos(Game game, Position pos) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
-            return new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING);
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
 
         Tile tile = game.getBoard().getTileAt(pos);
@@ -110,26 +112,30 @@ public class GrabWeaponAction implements GrabAction {
             Player player = game.getActivePlayer();
 
             if (weapon == null) {
-                return new MessageActionResponse("Selected weapon to grab is null");
+                return Optional.of(new MessageActionResponse("Selected weapon to grab is null"));
             }
 
             if (!AmmoPayment.isValid(player, weapon.getGrabCost(), mDiscardedCards)) {
-                return new DiscardRequiredActionResponse(ActionResponseStrings.DISCARD_MESSAGE);
+                return Optional.of(new DiscardRequiredActionResponse(ActionResponseStrings.DISCARD_MESSAGE));
             }
 
             // player is grabbing a weapon but it has space in hand
             if (mWeaponToExchangeIndex == null) {
                 return !player.isFullOfWeapons() ?
-                        null : new SelectWeaponRequiredActionResponse("Your hand is full, select a weapon to exchange");
+                        Optional.empty() :
+                        Optional.of(
+                                new SelectWeaponRequiredActionResponse("Your hand is full, select a weapon to exchange")
+                        );
             }
             // player is trying to exchange one of his weapon with spawn's one
             else {
                 return player.isFullOfWeapons() ?
-                        null : new MessageActionResponse("Can't exchange weapon if your hand is full");
+                        Optional.empty() :
+                        Optional.of(new MessageActionResponse("Can't exchange weapon if your hand is full"));
             }
         }
 
         // tile isn't a SpawnTile
-        return new MessageActionResponse("Can't grab a weapon from a normal tile");
+        return Optional.of(new MessageActionResponse("Can't grab a weapon from a normal tile"));
     }
 }

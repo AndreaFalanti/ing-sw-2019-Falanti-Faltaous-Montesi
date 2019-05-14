@@ -68,30 +68,30 @@ public class MoveGrabActionTest {
 
 
         // try to grab ammo at distance 1 from player
-        assertNull(action1.getErrorResponse(game1));
+        assertFalse(action1.getErrorResponse(game1).isPresent());
 
         // try to grab ammo from a spawn tile
-        assertNotNull(action2.getErrorResponse(game1));
+        assertTrue(action2.getErrorResponse(game1).isPresent());
 
         // try to grab a weapon from spawn tile at distance 1
-        assertNull(action3.getErrorResponse(game1));
+        assertFalse(action3.getErrorResponse(game1).isPresent());
 
         // try to grab a weapon from normal tile
-        assertNotNull(action4.getErrorResponse(game1));
+        assertTrue(action4.getErrorResponse(game1).isPresent());
 
         // try to grab ammo at distance 2
-        assertNotNull(action5.getErrorResponse(game1));
+        assertTrue(action5.getErrorResponse(game1).isPresent());
 
         // try to grab ammo at distance 2 in final frenzy status (before first player)
-        assertNull(action6.getErrorResponse(game2));
+        assertFalse(action6.getErrorResponse(game2).isPresent());
 
         // try to grab ammo at distance 3 in final frenzy status (before first player)
-        assertNotNull(action7.getErrorResponse(game2));
+        assertTrue(action7.getErrorResponse(game2).isPresent());
 
         // try to grab ammo at distance 3 in final frenzy status (after first player)
-        assertNull(action8.getErrorResponse(game3));
+        assertFalse(action8.getErrorResponse(game3).isPresent());
 
         // try to do action with an invalid color
-        assertNotNull(action9.getErrorResponse(game3));
+        assertTrue(action9.getErrorResponse(game3).isPresent());
     }
 }
