@@ -25,6 +25,7 @@ public class ControllerTest {
 
         Request request1 = requestMaker.makeLeaderboardRequest();
         Request request2 = requestMaker.makeValidMoveRequest();
+
         request1.handle(controller);
         request2.handle(controller);
 

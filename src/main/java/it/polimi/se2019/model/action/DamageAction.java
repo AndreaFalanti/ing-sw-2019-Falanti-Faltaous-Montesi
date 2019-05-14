@@ -33,9 +33,6 @@ public class DamageAction implements Action {
     // TODO: add doc
     @Override
     public InvalidActionResponse getErrorResponse(Game game) {
-        // TODO: see if this is correct according to game rules
-        // return isValidPlayerColor(mAttackerColor) &&
-                // isValidPlayerColor(mDefenderColor);
         return null;
     }
 
