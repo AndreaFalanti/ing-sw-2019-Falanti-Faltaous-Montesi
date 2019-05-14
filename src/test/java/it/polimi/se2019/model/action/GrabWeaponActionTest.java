@@ -95,7 +95,6 @@ public class GrabWeaponActionTest {
         game.getActivePlayer().addWeapon(new Weapon());
         game.getActivePlayer().addWeapon(new Weapon());
 
-
         assertNull(action2.getErrorResponse(game));
     }
 }

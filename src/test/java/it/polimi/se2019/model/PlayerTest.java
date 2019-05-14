@@ -67,9 +67,9 @@ public class PlayerTest {
         Player player1 = new Player("testPlayer",PlayerColor.BLUE);
         PlayerColor testAttackingPlayer = PlayerColor.YELLOW;
 
-        player1.sufferedDamage(testAttackingPlayer,1);
+        player1.onDamageTaken(new Damage(1,0), testAttackingPlayer);
         assertEquals(1,player1.getMaxGrabDistance());
-        player1.sufferedDamage(testAttackingPlayer,2);
+        player1.onDamageTaken(new Damage(2,0), testAttackingPlayer);
         assertEquals(2,player1.getMaxGrabDistance());
 
     }
@@ -80,9 +80,9 @@ public class PlayerTest {
         Player player1 = new Player("testPlayer",PlayerColor.BLUE);
         PlayerColor testAttackingPlayer = PlayerColor.YELLOW;
 
-        player1.sufferedDamage(testAttackingPlayer,4);
+        player1.onDamageTaken(new Damage(4,0), testAttackingPlayer);
         assertFalse(player1.canMoveBeforeShooting());
-        player1.sufferedDamage(testAttackingPlayer,2);
+        player1.onDamageTaken(new Damage(2,0), testAttackingPlayer);
         assertTrue(player1.canMoveBeforeShooting());
     }
 
@@ -144,14 +144,22 @@ public class PlayerTest {
     @Test
     public void testSufferedDamage() {
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
-        PlayerColor[] testDamage = player1.getDamageTaken();
         PlayerColor testAttackingPlayer = PlayerColor.YELLOW;
 
-        fill(testDamage,testAttackingPlayer);
-        player1.sufferedMarks(testAttackingPlayer,3);
-        player1.sufferedDamage(testAttackingPlayer, 12 + player1.getMarks().get(testAttackingPlayer));
-        assertArrayEquals(player1.getDamageTaken(),testDamage);
-        assertEquals(0,player1.getMarks().get(testAttackingPlayer).intValue());
+        PlayerColor[] testDamage = new PlayerColor[12];
+        for (int i = 0; i < 8; i++) {
+            testDamage[i] = testAttackingPlayer;
+        }
+        PlayerColor[] testDamage2 = new PlayerColor[12];
+
+        player1.onDamageTaken(new Damage(0,3), testAttackingPlayer);
+        player1.onDamageTaken(new Damage(0,0), testAttackingPlayer);
+        // Marks should not activate if no damage is dealt
+        assertArrayEquals(testDamage2, player1.getDamageTaken());
+
+        player1.onDamageTaken(new Damage(5,0), testAttackingPlayer);
+        assertArrayEquals(testDamage, player1.getDamageTaken());
+        assertEquals(0, player1.getMarks().get(testAttackingPlayer).intValue());
     }
 
     @Test
@@ -161,21 +169,21 @@ public class PlayerTest {
         int testMark1 = 2;
         int testMark2 = 3;
 
-        player1.sufferedMarks(testAttackingPlayer,testMark1);
-        assertEquals(testMark1,player1.getMarks().get(testAttackingPlayer).intValue());
-        player1.sufferedMarks(testAttackingPlayer,testMark2);
-        assertEquals(testMark2,player1.getMarks().get(testAttackingPlayer).intValue());
+        player1.onDamageTaken(new Damage(0, testMark1), testAttackingPlayer);
+        assertEquals(testMark1, player1.getMarks().get(testAttackingPlayer).intValue());
+        player1.onDamageTaken(new Damage(0, testMark2), testAttackingPlayer);
+        // Max marks possible for each player is 3
+        assertEquals(3, player1.getMarks().get(testAttackingPlayer).intValue());
     }
 
     @Test
     public void testIsDead() {
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
+        PlayerColor testAttackingPlayer = PlayerColor.YELLOW;
 
-        player1.sufferedDamage(PlayerColor.YELLOW, 9);
-        player1.setDeadStatus();
+        player1.onDamageTaken(new Damage(9,0), testAttackingPlayer);
         assertFalse(player1.isDead());
-        player1.sufferedDamage(PlayerColor.YELLOW, 3);
-        player1.setDeadStatus();
+        player1.onDamageTaken(new Damage(3,0), testAttackingPlayer);
         assertTrue(player1.isDead());
     }
 
@@ -264,8 +272,7 @@ public class PlayerTest {
         PlayerColor[] nullVector = new PlayerColor[12];
 
         fill(testDamage,testAttackingPlayer);
-        player1.sufferedDamage(testAttackingPlayer, 12);
-        player1.setDeadStatus();
+        player1.onDamageTaken(new Damage(12,0), testAttackingPlayer);
         player1.respawn(testPosition);
         assertArrayEquals(nullVector,player1.getDamageTaken());
         assertEquals(testPosition,player1.getPos());

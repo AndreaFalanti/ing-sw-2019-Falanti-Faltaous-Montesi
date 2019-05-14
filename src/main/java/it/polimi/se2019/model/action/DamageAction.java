@@ -26,8 +26,7 @@ public class DamageAction implements Action {
         mDefenderColors.stream()
                 .map(defenderColor -> game.getPlayerFromColor(defenderColor))
                 .forEach(defendingPlayer -> {
-                    defendingPlayer.sufferedDamage(mAttackerColor, mDamageToInflict.getDamage());
-                    defendingPlayer.sufferedMarks (mAttackerColor, mDamageToInflict.getMarksNum());
+                    defendingPlayer.onDamageTaken(mDamageToInflict, mAttackerColor);
                 });
     }
 
