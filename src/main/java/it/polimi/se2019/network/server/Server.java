@@ -5,59 +5,64 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Server implements Runnable{
-    private List<GameThread> games;
-    private List<PlayerConnection> waitingPlayer = new ArrayList<>();
-    private List<PlayerConnection> playersOnline = new ArrayList<>();
+public class Server implements RmiServerRemote {
+    private List<GameThread> mGames;
+    private List<PlayerConnection> mWaitingPlayer = new ArrayList<>();
+    private List<PlayerConnection> mPlayersOnline = new ArrayList<>();
 
-    private Socket socket;
-    private ServerSocket serverSocket = null;
-    private DataInputStream in;
-    private DataOutputStream out;
-    public static final int SOCKET_PORT = 4567;
+    private Socket mSocket;
+    private ServerSocket mServerSocket = null;
+    private DataInputStream mIn;
+    private DataOutputStream mOut;
 
-    public static final int RMI_PORT = 8000;
+    public Server(int socketPort, int rmiPort) throws IOException {
+        mServerSocket = new ServerSocket(socketPort);
 
-    public Server() throws IOException {
-        serverSocket = new ServerSocket(SOCKET_PORT);
+        RmiServerRemote rmiServerRemote = this;
+        System.out.println(">>> rmiServer exported");
+
+        Registry registry = LocateRegistry.createRegistry(1099);
+        registry.rebind("rmiServer", rmiServerRemote);
     }
 
     public void waitingRoom(PlayerConnection player){
     }
+
     public void registerConnection(PlayerConnection player){
-        waitingPlayer.add(player);
+        mWaitingPlayer.add(player);
+        mPlayersOnline.add(player);
     }
 
     public void deregisterConnection(PlayerConnection player){
-        waitingPlayer.remove(player);
+        mWaitingPlayer.remove(player);
+        mPlayersOnline.remove(player);
     }
 
     @Override
-    public void run(){
+    public void registerConnection() throws RemoteException {
+
+    }
+
+    @Override
+    public void deregisterConnection() throws RemoteException {
+
+    }
+
+    public void start(){
         try {
-            // TODO: pass proper argument
-            // SocketPlayerConnection player = new SocketPlayerConnection();
-            Socket socket = serverSocket.accept();
-            SocketPlayerConnection player = new SocketPlayerConnection(socket,this);
-            registerConnection(player);
-            //    if(waitingPlayer.size()==1)
-            //TODO:          new GameThread(socket)
+            Socket socket = mServerSocket.accept();
+            PlayerConnection playerConnection = new PlayerConnection(socket);
+            System.out.println("Connection accepted: " + socket.getRemoteSocketAddress());
+            registerConnection(playerConnection);
+            //TODO: add multiple game threads when ready
         } catch(IOException e){
             System.out.println("Connection error");
         }
     }
-
-    public static void main(String[] args) {
-        Server server;
-        try {
-            server = new Server();
-            server.run();
-        } catch (IOException e) {
-            System.err.println("Impossible to initialize network");
-        }
-    }
-
 }

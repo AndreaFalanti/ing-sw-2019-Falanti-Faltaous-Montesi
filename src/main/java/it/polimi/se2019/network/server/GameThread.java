@@ -4,7 +4,7 @@ import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.view.View;
 
-public class GameThread implements Runnable{
+public class GameThread extends Thread {
     private Game model;
     private Controller controller;
     private View[] virtualViews;

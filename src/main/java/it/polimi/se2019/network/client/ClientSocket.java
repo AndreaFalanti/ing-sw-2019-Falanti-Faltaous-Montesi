@@ -6,14 +6,13 @@ import java.net.Socket;
 
 
 
-public class ClientSocket extends Client{
-
-    public static final int PORT = 4567;
+public class ClientSocket extends Client {
     private DataInputStream in;
     private DataOutputStream out;
     private Socket socket;
 
 
-
-
+    public ClientSocket(String serverIp, int serverPort) {
+        super(serverIp, serverPort);
+    }
 }
