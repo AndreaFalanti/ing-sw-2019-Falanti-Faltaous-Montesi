@@ -28,11 +28,16 @@ public class Player {
         mMarks.put(PlayerColor.GREY,0);
     }
 
+    public Player (String name, PlayerColor color, Position pos) {
+        mName = name;
+        mColor = color;
+        mPos = pos;
+        mAmmo = new AmmoValue(1, 1, 1);
+        initializeMarksMap();
+    }
+
     public Player (String name, PlayerColor color) {
-            mName = name;
-            mColor = color;
-            mAmmo = new AmmoValue(1, 1, 1);
-            initializeMarksMap();
+        this(name, color, null);
     }
 
     //region GETTERS
@@ -104,7 +109,6 @@ public class Player {
     public boolean hasNoDamage () {
         return mDamageTaken[0] == null;
     }
-
 
     /**
      * return if player has reached the maximum number of weapon in his hand
