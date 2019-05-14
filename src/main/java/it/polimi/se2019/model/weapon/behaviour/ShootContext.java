@@ -12,11 +12,11 @@ public class ShootContext {
     private static final String MISSING_PLAYER_MSG = "Shooter is not present among provided list of players!";
 
     // fields
-    Board mBoard;
-    Set<Player> mPlayers;
-    PlayerColor mShooterColor;
-    Deque<Expression> mInfo;
-    Deque<Action> mProducedActions;
+    private Board mBoard;
+    private Set<Player> mPlayers;
+    private PlayerColor mShooterColor;
+    private final Deque<Expression> mInfo = new ArrayDeque();
+    private final Deque<Action> mProducedActions = new ArrayDeque();
 
     // temporary info representing changed game state
     AmmoValue mPayedCost;
