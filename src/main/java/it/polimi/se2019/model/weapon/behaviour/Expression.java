@@ -1,27 +1,26 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.weapon.Selection;
 import it.polimi.se2019.model.weapon.request.Request;
-import it.polimi.se2019.model.weapon.serialization.CustomExpressionDeserializer;
 import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
 import it.polimi.se2019.util.Exclude;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@JsonAdapter(CustomExpressionDeserializer.class)
 public abstract class Expression {
     @Exclude
-    List<Expression> mSubexpressions = new ArrayList<>();
+    List<Expression> mSubexpressions;
 
     // TODO: add doc
     protected Expression() {
-        updateSubExpressions();
+        mSubexpressions = new ArrayList();
     }
     // TODO: add doc
     public static Expression fromJson(String jsonString) {
@@ -57,23 +56,101 @@ public abstract class Expression {
         return Objects.hash(mSubexpressions);
     }
 
+    public <AnnotationType, AnnotatedThing>
+    void evalAnnotatedFields(Class<AnnotationType> annotationClass,
+                             Function<AnnotatedThing, AnnotatedThing> evaluator,
+                             Predicate<AnnotatedThing> evalStopper) {
+        // evaluate all tagged subexpressions
+        Arrays.stream(getClass().getDeclaredFields())
+                .filter(field -> Arrays.stream(field.getDeclaredAnnotations())
+                        .anyMatch(annotation -> annotation.annotationType().equals(annotationClass)))
+                .forEachOrdered(field -> {
+                    // evaluate subexpression
+                    field.setAccessible(true);
+                    try {
+                        // get annotated thing
+                        AnnotatedThing annotatedThing = (AnnotatedThing) field.get(this);
+
+                        // stop eval if any info is missing
+                        final boolean shouldStopEval = evalStopper.test(annotatedThing);
+
+                        // evaluate all subexpressions in tagged subexpression list
+                        if (!shouldStopEval) {
+                            field.set(this, evaluator.apply(annotatedThing));
+                        }
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException("LOGIC ERROR: could not access accessible field");
+                    } catch (ClassCastException e) {
+                        throw new IllegalStateException("field " + field.getName() + " of class " +
+                                getClass().getSimpleName() + " is tagged as a SubExpressionList but is not a subtype " +
+                                "of List<Expression>");
+                    }
+                });
+    }
+
+
     // TODO: add doc
     public final Expression eval(ShootContext shootContext) {
-        // first evaluate all subexpressions
-        boolean infoIsMissing = false;
-        for (Expression subexpr : mSubexpressions) {
-            subexpr = subexpr.eval(shootContext);
-            if (subexpr instanceof WaitForInfo)
-                infoIsMissing = true;
-        }
+        // evaluate all tagged subexpression lists
+        Arrays.stream(getClass().getDeclaredFields())
+                .filter(field -> Arrays.stream(field.getDeclaredAnnotations())
+                        .anyMatch(annotation -> annotation.annotationType().equals(SubExpressionList.class)))
+                .forEachOrdered(field -> {
+                    // evaluate subexpression
+                    field.setAccessible(true);
+                    try {
+                        List<Expression> subexprList = (List<Expression>) field.get(this);
 
-        // if info is missing, return the expression partially evaluated
-        if (infoIsMissing)
-            return this;
-        // else use info acquired from complete subexpressions to finish evaluation of
-        // this expression
-        else
-            return continueEval(shootContext);
+                        // stop eval if any info is missing
+                        // TODO: eliminate instanceof
+                        final boolean shouldStopEval = subexprList.stream()
+                                .anyMatch(subexpr -> subexpr instanceof WaitForInfo);
+
+                        // evaluate all subexpressions in tagged subexpression list
+                        if (!shouldStopEval) {
+                            field.set(this, subexprList.stream()
+                                    .map(subexpr -> subexpr.eval(shootContext))
+                                    .collect(Collectors.toList()));
+                        }
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException("LOGIC ERROR: could not access accessible field");
+                    } catch (ClassCastException e) {
+                        throw new IllegalStateException("field " + field.getName() + " of class " +
+                                getClass().getSimpleName() + " is tagged as a SubExpressionList but is not a subtype " +
+                                "of List<Expression>");
+                    }
+
+                    // exit if info is missing
+                    // TODO: remove isAssignableFrom
+                    if (field.getClass().isAssignableFrom(WaitForInfo.class)) {
+                        return;
+                    }
+                });
+
+        // evaluate all tagged subexpression lists
+        Arrays.stream(getClass().getDeclaredFields())
+                .filter(field -> Arrays.stream(field.getDeclaredAnnotations())
+                        .anyMatch(annotation -> annotation.annotationType() == SubExpression.class))
+                .forEachOrdered(field -> {
+                    field.setAccessible(true);
+                    try {
+                        // get subexpressions
+                        Expression subexpr = (Expression) field.get(this);
+
+                        // TODO: eliminate instanceof
+                        if (!(subexpr instanceof WaitForInfo))
+                            field.set(this, ((Expression) field.get(this)).eval(shootContext));
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException("LOGIC ERROR: could not access accessible field");
+                    } catch (ClassCastException e) {
+                        throw new IllegalStateException("field " + field.getName() + " of class " +
+                                getClass().getSimpleName() + " is tagged as a SubExpression but is not a subtype " +
+                                "of Expression");
+                    }
+                });
+
+        // proceed with custom evaluation of current expression
+        return continueEval(shootContext);
     }
 
     // TODO: add doc
@@ -81,85 +158,24 @@ public abstract class Expression {
 
     // TODO: add doc and refine error messages
     int asInt() {
-        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "int");
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "int");
     }
     Selection<PlayerColor> asTargetSelection() {
-        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "TargetSelection");
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "TargetSelection");
     }
     Selection<Position> asRange() {
-        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "Range");
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Range");
     }
     Selection<?> asSelection() {
-        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "Selection<?>");
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Selection<?>");
     }
     Damage asDamage() {
-        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "Damage");
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Damage");
     }
     Action asAction() {
-        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "Action");
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Action");
     }
     Request asRequest() {
-        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "Request");
-    }
-
-    // TODO: add doc
-    public void updateSubExpressionLists() {
-        mSubexpressions.addAll(Arrays.stream(getClass().getFields())
-                .filter(field -> Arrays.stream(field.getDeclaredAnnotations()).anyMatch(
-                        ann -> ann.getClass() == SubExpressionList.class
-                ))
-                .map(field -> {
-                    if (!field.getClass().isAssignableFrom(List.class)) {
-                        throw new IllegalStateException("Field " + field.getName() + " of class " + getClass().getName() +
-                                "is annotated with a SubExpressionList annotation without being an List of Expression!");
-                    }
-
-                    return field;
-                })
-                .map(field -> {
-                    try {
-                        return field.get(this);
-                    } catch (IllegalAccessException e) {
-                        throw new IllegalStateException("Cannot get field " + field.getName() + " of class " +
-                                getClass().getName() + " annotated with subexpression list annotation");
-                    }
-                })
-                .map(obj -> (List<Expression>) obj)
-                .flatMap(List::stream)
-                .collect(Collectors.toList())
-        );
-    }
-
-    // TODO: add doc
-    public void updateSubExpressions() {
-        mSubexpressions.addAll(Arrays.stream(getClass().getFields())
-                .filter(field -> Arrays.stream(field.getDeclaredAnnotations()).anyMatch(
-                        ann -> ann.getClass() == SubExpression.class
-                ))
-                .map(field -> {
-                    if (!field.getClass().isAssignableFrom(Expression.class)) {
-                        throw new IllegalStateException("Field " + field.getName() + " of class " + getClass().getName() +
-                                "is annotated with a SubExpression annotation without being an Expression!");
-                    }
-
-                    return field;
-                })
-                .map(field -> {
-                    try {
-                        return field.get(this);
-                    } catch (IllegalAccessException e) {
-                        throw new IllegalStateException("Cannot get field " + field.getName() + " of class " +
-                                getClass().getName() + " annotated with subexpression annotation");
-                    }
-                })
-                .map(obj -> (Expression) obj)
-                .collect(Collectors.toList())
-        );
-    }
-
-    // TODO: add doc
-    public void updateAllSubExpressions() {
-        updateSubExpressions();
-        updateSubExpressionLists();
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Request");
     }
 }

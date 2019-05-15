@@ -3,6 +3,7 @@ package it.polimi.se2019.model.weapon;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.DamageAction;
 import it.polimi.se2019.model.action.WeaponAction;
@@ -29,8 +30,8 @@ public class WeaponsTest {
         mMarioBrosContext = new ShootContext(
                 Board.fromJson(Jsons.get("boards/game/board1")),
                 new HashSet(Arrays.asList(
-                        new Player("Mario", PlayerColor.PURPLE),
-                        new Player("Luigi", PlayerColor.GREEN)
+                        new Player("Mario", PlayerColor.PURPLE, new Position(0, 0)),
+                        new Player("Luigi", PlayerColor.GREEN, new Position(0, 0))
                 )),
                 PlayerColor.PURPLE
         );
