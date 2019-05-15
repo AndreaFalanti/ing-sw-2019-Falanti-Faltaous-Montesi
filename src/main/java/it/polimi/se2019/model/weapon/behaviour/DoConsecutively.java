@@ -7,6 +7,6 @@ public class DoConsecutively extends Expression {
 
     @Override
     protected Expression continueEval(ShootContext shootContext) {
-        return new Done();
+        return new ActionLiteral(shootContext.getResultingAction());
     }
 }
