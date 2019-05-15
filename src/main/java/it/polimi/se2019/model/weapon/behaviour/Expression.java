@@ -81,25 +81,25 @@ public abstract class Expression {
 
     // TODO: add doc and refine error messages
     int asInt() {
-        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
+        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "int");
     }
     Selection<PlayerColor> asTargetSelection() {
-        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
+        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "TargetSelection");
     }
     Selection<Position> asRange() {
-        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
+        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "Range");
     }
     Selection<?> asSelection() {
-        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
+        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "Selection<?>");
     }
     Damage asDamage() {
-        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
+        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "Damage");
     }
     Action asAction() {
-        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
+        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "Action");
     }
     Request asRequest() {
-        throw new UnsupportedOperationException("This expression cannot be converted to an int!");
+        throw new UnsuppoertedConversionException(getClass().getSimpleName(), "Request");
     }
 
     // TODO: add doc
