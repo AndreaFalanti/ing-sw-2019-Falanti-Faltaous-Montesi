@@ -12,11 +12,6 @@ public class TargetsLiteral extends SelectionLiteral<PlayerColor> {
     }
 
     @Override
-    Selection<PlayerColor> asTargetSelection() {
-        return getPrimitive();
-    }
-
-    @Override
     public Expression continueEval(ShootContext context) {
         Stream<PlayerColor> playerColors = context.getPlayers().stream()
                 .map(Player::getColor);

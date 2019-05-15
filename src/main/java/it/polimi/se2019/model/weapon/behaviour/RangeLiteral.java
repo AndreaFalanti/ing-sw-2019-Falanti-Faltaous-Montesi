@@ -15,11 +15,6 @@ public class RangeLiteral extends SelectionLiteral<Position> {
         super(Selection.fromSet(contentsAsSet));
     }
 
-    @Override
-    Selection<Position> asRange() {
-        return getPrimitive();
-    }
-
     // TODO: add doc
     @Override
     public Expression continueEval(ShootContext context) {
