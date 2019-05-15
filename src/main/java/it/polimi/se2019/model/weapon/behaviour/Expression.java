@@ -8,15 +8,18 @@ import it.polimi.se2019.model.weapon.Selection;
 import it.polimi.se2019.model.weapon.request.Request;
 import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
 import it.polimi.se2019.util.Exclude;
+import it.polimi.se2019.util.FieldUtils;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class Expression {
     @Exclude
-    List<Expression> mSubexpressions;
+    private List<Expression> mSubexpressions;
 
     // TODO: add doc
     protected Expression() {
@@ -88,69 +91,104 @@ public abstract class Expression {
                 });
     }
 
+    // TODO: add doc
+    private boolean evalRegisteredSubexpressionLists(ShootContext shootContext) {
+        // evaluate all tagged subexpression lists
+        boolean shouldStopEval = false;
+        for (Field field : FieldUtils.getFieldsWithAnnotation(getClass(), SubExpressionList.class)) {
+
+            // evaluate subexpression
+            field.setAccessible(true);
+            try {
+                // get subexpression list
+                List<Expression> subexprList = (List<Expression>) field.get(this);
+
+                // get evaluation results of all subexpressions
+                Stream<EvalResult> evalResults = subexprList.stream()
+                        .map(subexpr -> subexpr.evalToEvalResult(shootContext));
+
+                // update class members containing subexpressions
+                field.set(this, evalResults.map(res -> res.evaluatedExpression)
+                        .collect(Collectors.toList()));
+
+                // find out if evaluation should be continued
+                shouldStopEval |= evalResults.
+                        anyMatch(res -> res.shouldStopEval || res.evaluatedExpression instanceof WaitForInfo);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("LOGIC ERROR: could not access accessible field");
+            } catch (ClassCastException e) {
+                throw new IllegalStateException("field " + field.getName() + " of class " +
+                        getClass().getSimpleName() + " is tagged as a SubExpressionList but is not a subtype " +
+                        "of List<Expression>");
+            }
+        }
+
+        return shouldStopEval;
+    }
+
+    // TODO: add doc
+    // TODO NEXT: implement
+    private boolean evalRegisteredSubexpressions(ShootContext shootContext) {
+        boolean shouldStopEval = false;
+
+        // evaluate all tagged subexpression lists
+        for (Field field : FieldUtils.getFieldsWithAnnotation(getClass(), SubExpression.class)) {
+            field.setAccessible(true);
+            try {
+                // get subexpressions
+                Expression subexpr = (Expression) field.get(this);
+
+                // evaluate it
+                EvalResult evalResult = subexpr.evalToEvalResult(shootContext);
+
+                // determine if evaluation should be stopped
+                shouldStopEval |= evalResult.shouldStopEval || evalResult.evaluatedExpression instanceof WaitForInfo;
+
+                // set class member corresponding to evaluated subexpression
+                field.set(this, evalResult.evaluatedExpression);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("LOGIC ERROR: could not access accessible field");
+            } catch (ClassCastException e) {
+                throw new IllegalStateException("field " + field.getName() + " of class " +
+                        getClass().getSimpleName() + " is tagged as a SubExpression but is not a subtype " +
+                        "of Expression");
+            }
+        }
+
+        return shouldStopEval;
+    }
+
+    /**
+     * Simple utility class to contain the result of eval
+     */
+    private static class EvalResult {
+        public EvalResult(boolean shouldStopEval, Expression evaluatedExpression) {
+            this.shouldStopEval = shouldStopEval;
+            this.evaluatedExpression = evaluatedExpression;
+        }
+
+        public boolean shouldStopEval = false;
+        public Expression evaluatedExpression = null;
+    }
+    // TODO: add doc
+    private final EvalResult evalToEvalResult(ShootContext shootContext) {
+        // evaluate all registered subexpressions
+        boolean shouldStopEval = false;
+        shouldStopEval |= evalRegisteredSubexpressions(shootContext);
+        shouldStopEval |= evalRegisteredSubexpressionLists(shootContext);
+
+        // if evaluation should stop, freeze expression tree by stopping evaluation of parent expression
+        // along with all its parents and ancestors
+        if (shouldStopEval)
+            return new EvalResult(true, this);
+        // else continue evaluation of expression tree (for now)
+        else
+            return new EvalResult(false, continueEval(shootContext));
+    }
 
     // TODO: add doc
     public final Expression eval(ShootContext shootContext) {
-        // evaluate all tagged subexpression lists
-        Arrays.stream(getClass().getDeclaredFields())
-                .filter(field -> Arrays.stream(field.getDeclaredAnnotations())
-                        .anyMatch(annotation -> annotation.annotationType().equals(SubExpressionList.class)))
-                .forEachOrdered(field -> {
-                    // evaluate subexpression
-                    field.setAccessible(true);
-                    try {
-                        List<Expression> subexprList = (List<Expression>) field.get(this);
-
-                        // stop eval if any info is missing
-                        // TODO: eliminate instanceof
-                        final boolean shouldStopEval = subexprList.stream()
-                                .anyMatch(subexpr -> subexpr instanceof WaitForInfo);
-
-                        // evaluate all subexpressions in tagged subexpression list
-                        if (!shouldStopEval) {
-                            field.set(this, subexprList.stream()
-                                    .map(subexpr -> subexpr.eval(shootContext))
-                                    .collect(Collectors.toList()));
-                        }
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException("LOGIC ERROR: could not access accessible field");
-                    } catch (ClassCastException e) {
-                        throw new IllegalStateException("field " + field.getName() + " of class " +
-                                getClass().getSimpleName() + " is tagged as a SubExpressionList but is not a subtype " +
-                                "of List<Expression>");
-                    }
-
-                    // exit if info is missing
-                    // TODO: remove isAssignableFrom
-                    if (field.getClass().isAssignableFrom(WaitForInfo.class)) {
-                        return;
-                    }
-                });
-
-        // evaluate all tagged subexpression lists
-        Arrays.stream(getClass().getDeclaredFields())
-                .filter(field -> Arrays.stream(field.getDeclaredAnnotations())
-                        .anyMatch(annotation -> annotation.annotationType() == SubExpression.class))
-                .forEachOrdered(field -> {
-                    field.setAccessible(true);
-                    try {
-                        // get subexpressions
-                        Expression subexpr = (Expression) field.get(this);
-
-                        // TODO: eliminate instanceof
-                        if (!(subexpr instanceof WaitForInfo))
-                            field.set(this, ((Expression) field.get(this)).eval(shootContext));
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException("LOGIC ERROR: could not access accessible field");
-                    } catch (ClassCastException e) {
-                        throw new IllegalStateException("field " + field.getName() + " of class " +
-                                getClass().getSimpleName() + " is tagged as a SubExpression but is not a subtype " +
-                                "of Expression");
-                    }
-                });
-
-        // proceed with custom evaluation of current expression
-        return continueEval(shootContext);
+        return evalToEvalResult(shootContext).evaluatedExpression;
     }
 
     // TODO: add doc
