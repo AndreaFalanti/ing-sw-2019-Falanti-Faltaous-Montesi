@@ -8,8 +8,12 @@ import java.net.Socket;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.RemoteServer;
+import java.rmi.server.ServerNotActiveException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Server implements RmiServerRemote {
     private List<GameThread> mGames;
@@ -17,18 +21,27 @@ public class Server implements RmiServerRemote {
     private List<PlayerConnection> mPlayersOnline = new ArrayList<>();
 
     private Socket mSocket;
-    private ServerSocket mServerSocket = null;
+    private transient ServerSocket mServerSocket = null;
     private DataInputStream mIn;
     private DataOutputStream mOut;
+
+    private transient Timer mTimer;
 
     public Server(int socketPort, int rmiPort) throws IOException {
         mServerSocket = new ServerSocket(socketPort);
 
-        RmiServerRemote rmiServerRemote = this;
+        Registry registry = LocateRegistry.createRegistry(rmiPort);
+        registry.rebind("rmiServer", this);
         System.out.println(">>> rmiServer exported");
 
-        Registry registry = LocateRegistry.createRegistry(1099);
-        registry.rebind("rmiServer", rmiServerRemote);
+        // print every 10 seconds the list of players connected
+        mTimer = new Timer();
+        mTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                printConnectedPlayers();
+            }
+        },10000, 10000);
     }
 
     public void waitingRoom(PlayerConnection player){
@@ -46,12 +59,37 @@ public class Server implements RmiServerRemote {
 
     @Override
     public void registerConnection() throws RemoteException {
-
+        String clientIp;
+        try {
+            clientIp = RemoteServer.getClientHost();
+            PlayerConnection connection = new PlayerConnection(clientIp);
+            registerConnection(connection);
+        }
+        catch (ServerNotActiveException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void deregisterConnection() throws RemoteException {
+        try {
+            String clientIp = RemoteServer.getClientHost();
+            for (PlayerConnection connection : mPlayersOnline) {
+                if (connection.getIp().equals(clientIp)) {
+                    deregisterConnection(connection);
+                }
+            }
+        }
+        catch (ServerNotActiveException e) {
+            System.out.println("Error occurred while deregistering rmi player");
+        }
+    }
 
+    private void printConnectedPlayers () {
+        System.out.println("\nConnected players:");
+        for (PlayerConnection connection : mPlayersOnline) {
+            System.out.println(connection.toString());
+        }
     }
 
     public void start(){

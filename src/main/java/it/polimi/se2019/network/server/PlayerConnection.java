@@ -1,18 +1,22 @@
 package it.polimi.se2019.network.server;
 
 import java.net.Socket;
-import java.net.SocketAddress;
 
 public class PlayerConnection {
     //private View mVirtualView;
-    private SocketAddress ip;
+    private String mIp;
     private boolean mActive;
     // null if rmi, else will be filled in constructor
     private PlayerSocket mPlayerSocket = null;
 
     public PlayerConnection(Socket socket) {
         mPlayerSocket = new PlayerSocket(socket);
-        ip = socket.getRemoteSocketAddress();
+        mIp = socket.getRemoteSocketAddress().toString();
+        mActive = true;
+    }
+
+    public PlayerConnection(String ip) {
+        ip = ip;
         mActive = true;
     }
 
@@ -20,8 +24,8 @@ public class PlayerConnection {
         return mVirtualView;
     }*/
 
-    public SocketAddress getIp() {
-        return ip;
+    public String getIp() {
+        return mIp;
     }
 
     public boolean isActive() {
@@ -30,5 +34,12 @@ public class PlayerConnection {
 
     public PlayerSocket getPlayerSocket() {
         return mPlayerSocket;
+    }
+
+    @Override
+    public String toString() {
+        return "PlayerConnection{" +
+                "mIp='" + mIp + '\'' +
+                '}';
     }
 }

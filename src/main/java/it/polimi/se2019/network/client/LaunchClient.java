@@ -1,27 +1,54 @@
 package it.polimi.se2019.network.client;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.util.Scanner;
 
 public class LaunchClient {
-    public static void main(String[] args) throws IOException {
-        if (args.length == 0) {
-            System.out.println("Provide host:port please");
+    public static void main(String[] args) throws IOException, NotBoundException {
+        if (args.length != 3) {
+            System.out.println("Provide host and ports in cmd");
             return;
         }
 
-        String[] tokens = args[0].split(":");
+        String host = args[0];
+        int socketPort = Integer.parseInt(args[1]);
+        int rmiPort = Integer.parseInt(args[2]);
 
-        if (tokens.length < 2) {
-            throw new IllegalArgumentException("Bad formatting: " + args[0]);
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Choose client connection type: ");
+        System.out.println("Press 1 for socket");
+        System.out.println("Press 2 for rmi");
+        System.out.println(">> ");
+
+        int result;
+        boolean validCmd;
+        do {
+            result = scanner.nextInt();
+            if (result < 1 || result > 2) {
+                System.out.println("Invalid input");
+                System.out.println("\n>> ");
+                validCmd = false;
+            }
+            else {
+                validCmd = true;
+            }
+        } while (!validCmd);
+
+        Client client;
+        switch (result) {
+            case 1:
+                client = new SocketClient(host, socketPort);
+                break;
+            case 2:
+                client = new RmiClient(host, rmiPort);
+                break;
+            default:
+                throw new IllegalStateException("invalid client selected");
         }
 
-        String host = tokens[0];
-        int port = Integer.parseInt(tokens[1]);
+        client.run();
 
-        Scanner fromKeyboard = new Scanner(System.in);
-
-        // TODO: choose client type: socket or rmi
         // TODO: choose type of view
 
         //Client client = new Client(host, port);
