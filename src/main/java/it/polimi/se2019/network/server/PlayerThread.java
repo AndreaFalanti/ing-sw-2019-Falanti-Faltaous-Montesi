@@ -16,7 +16,7 @@ public class PlayerThread extends Thread {
     public PlayerThread(Socket socket, ConnectionRegister register) {
         mSocket = socket;
         try {
-            mOut = new PrintWriter(socket.getOutputStream());
+            mOut = new PrintWriter(socket.getOutputStream(), true);
             mIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         }
         catch (IOException e) {
@@ -35,24 +35,34 @@ public class PlayerThread extends Thread {
         }
     }
 
+    private String receive () {
+        try {
+            return mIn.readLine();
+        } catch (IOException e) {
+            System.out.println("Critical error while reading from socket (or client closed itself)");
+            interrupt();
+            return null;
+        }
+    }
+
+    private void send (String message) {
+        mOut.println(message);
+    }
+
     @Override
     public void run () {
         String username = null;
-        // TODO: read username and check that is valid
-        do {
-            try {
-                username = mIn.readLine();
-            }
-            // interrupt thread if socket is closed
-            catch (IOException e) {
-                interrupt();
-            }
-        } while (!interrupted() && !mRegister.registerPlayer(username));
+        boolean logged = false;
 
-        if (!interrupted()) {
-            PlayerConnection playerConnection = new PlayerConnection(username);
-            mRegister.registerConnection(playerConnection);
-            mOut.print(true);
+        while (!interrupted() && !logged) {
+            username = receive();
+            if (mRegister.isUsernameAvailable(username)) {
+                logged = mRegister.registerPlayer(username);
+                send("ok");
+            }
+            else {
+                send("Username is already used");
+            }
         }
     }
 

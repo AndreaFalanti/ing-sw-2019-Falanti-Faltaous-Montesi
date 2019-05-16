@@ -25,6 +25,7 @@ public class LaunchClient {
         boolean validCmd;
         do {
             result = scanner.nextInt();
+
             if (result < 1 || result > 2) {
                 System.out.println("Invalid input");
                 System.out.println("\n>> ");

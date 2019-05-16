@@ -36,6 +36,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         for (PlayerConnection connection : mPlayersOnline) {
             System.out.println(connection.toString());
         }
+        System.out.println();
     }
 
     @Override

@@ -18,9 +18,8 @@ public class AcceptationServer {
         while (true) {
             try {
                 Socket socket = mServerSocket.accept();
-                PlayerThread playerThread = new PlayerThread(socket, mRegistrationServer);
                 System.out.println("Connection accepted: " + socket.getRemoteSocketAddress());
-                playerThread.start();
+                new PlayerThread(socket, mRegistrationServer).start();
             } catch (IOException e) {
                 System.out.println("Connection error");
             }
