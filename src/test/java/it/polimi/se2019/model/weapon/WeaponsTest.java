@@ -43,7 +43,7 @@ public class WeaponsTest {
         Weapon heatseeker = Weapons.get("heatseeker");
 
         // provide needed information to shoot
-        mMarioBrosContext.pushInfo(new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN)));
+        mMarioBrosContext.pushCollectedInfo(new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN)));
         
         // produce action with complete context
         Optional<Action> maybeActual = heatseeker.shoot(mMarioBrosContext);

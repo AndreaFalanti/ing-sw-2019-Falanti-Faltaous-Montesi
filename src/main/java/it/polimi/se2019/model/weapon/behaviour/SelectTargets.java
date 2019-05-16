@@ -2,6 +2,8 @@ package it.polimi.se2019.model.weapon.behaviour;
 
 import it.polimi.se2019.model.weapon.request.TargetSelectionRequest;
 
+import java.util.Optional;
+
 
 public class SelectTargets extends Expression {
     @SubExpression Expression mFrom;
@@ -20,12 +22,22 @@ public class SelectTargets extends Expression {
     // TODO: add doc
     @Override
     public final Expression continueEval(ShootContext shootContext) {
-        shootContext.pushInfo(new RequestLiteral(new TargetSelectionRequest(
-                mMin.asInt(),
-                mMax.asInt(),
-                mFrom.asTargetSelection()
-        )));
+        // check if needed info is available
+        Optional<Expression> neededInfo = shootContext.popCollectedInfo();
 
-        return new WaitForInfo();
+        // if not available, request it and wait for it
+        if (!neededInfo.isPresent()) {
+            shootContext.pushRequestedInfo(new RequestLiteral(new TargetSelectionRequest(
+                    mMin.asInt(),
+                    mMax.asInt(),
+                    mFrom.asTargetSelection()
+            )));
+
+            return new WaitForInfo();
+        }
+
+        // else just return it
+        // TODO: also should check it
+        return neededInfo.get();
     }
 }

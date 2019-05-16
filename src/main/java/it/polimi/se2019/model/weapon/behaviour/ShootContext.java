@@ -15,13 +15,14 @@ public class ShootContext {
     private Board mBoard;
     private Set<Player> mPlayers;
     private PlayerColor mShooterColor;
-    private final Deque<Expression> mInfo = new ArrayDeque();
+    private final Deque<Expression> mRequestedInfo = new ArrayDeque();
     private final Deque<Action> mProducedActions = new ArrayDeque();
+    private final Deque<Expression> mCollectedInfo = new ArrayDeque();
 
     // temporary info representing changed game state
     AmmoValue mPayedCost;
     Set<Player> mAffectedPlayres; // only used for keeping track of opponents shoved around by weapon,
-                                  // ergo, only position is interesting
+    // ergo, only position is interesting
 
     // trivial constructors
     public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor) {
@@ -50,7 +51,7 @@ public class ShootContext {
                 .filter(pl -> pl.getColor() == getShooterColor())
                 .findFirst()
                 .orElseThrow(() ->
-                    new IllegalStateException(MISSING_PLAYER_MSG));
+                        new IllegalStateException(MISSING_PLAYER_MSG));
     }
     Position getShooterPosition() {
         return getShooter().getPos();
@@ -67,20 +68,31 @@ public class ShootContext {
         return Optional.of(mProducedActions.pop());
     }
 
-    // for manipulating info stack
-    public void pushInfo(Expression info) {
-        mInfo.push(info);
+    // for manipulating collected info stack
+    public void pushCollectedInfo(Expression info) {
+        mCollectedInfo.push(info);
     }
-    public Optional<Expression> popInfo() {
-        if (mInfo.isEmpty())
+    public Optional<Expression> popCollectedInfo() {
+        if (mCollectedInfo.isEmpty())
             return Optional.empty();
 
-        return Optional.of(mInfo.pop());
+        return Optional.of(mCollectedInfo.pop());
+    }
+
+    // for manipulating requested info stack
+    public void pushRequestedInfo(Expression info) {
+        mRequestedInfo.push(info);
+    }
+    public Optional<Expression> popInfo() {
+        if (mRequestedInfo.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(mRequestedInfo.pop());
     }
 
     // true if context is complete, and thus does not need any additional info for generating shoot
     public boolean isComplete() {
-        return mInfo.isEmpty();
+        return mRequestedInfo.isEmpty();
     }
 
     // get the resulting shoot action
@@ -89,4 +101,10 @@ public class ShootContext {
                 .toArray(Action[]::new)
         );
     }
+
+    // request info
+    public Expression requestInfo(Expression info) {
+        return popCollectedInfo().orElseGet(() -> new WaitForInfo());
+    }
 }
+
