@@ -56,8 +56,8 @@ public class WeaponsTest {
         Action expected = new WeaponAction(
                 new DamageAction(
                         PlayerColor.PURPLE,
-                        Collections.singleton(PlayerColor.BLUE),
-                        new Damage(1, 0)
+                        Collections.singleton(PlayerColor.GREEN),
+                        new Damage(3, 0)
                 )
         );
         assertEquals(expected, actual);
