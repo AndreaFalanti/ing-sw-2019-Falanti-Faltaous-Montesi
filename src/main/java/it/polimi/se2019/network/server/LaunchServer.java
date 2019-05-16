@@ -12,7 +12,9 @@ public class LaunchServer {
         int socketPort = Integer.parseInt(args[0]);
         int rmiPort = Integer.parseInt(args[1]);
 
-        Server server = new Server(socketPort, rmiPort);
-        server.start();
+        RegistrationServer registrationServer = new RegistrationServer(rmiPort);
+        AcceptationServer acceptationServer = new AcceptationServer(socketPort, registrationServer);
+
+        acceptationServer.startServer();
     }
 }

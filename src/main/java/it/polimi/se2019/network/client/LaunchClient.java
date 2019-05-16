@@ -19,7 +19,7 @@ public class LaunchClient {
         System.out.println("Choose client connection type: ");
         System.out.println("Press 1 for socket");
         System.out.println("Press 2 for rmi");
-        System.out.println(">> ");
+        System.out.print(">> ");
 
         int result;
         boolean validCmd;
@@ -35,7 +35,9 @@ public class LaunchClient {
             }
         } while (!validCmd);
 
-        Client client;
+        // TODO: choose type of view
+
+        ClientInterface client;
         switch (result) {
             case 1:
                 client = new SocketClient(host, socketPort);
@@ -48,9 +50,5 @@ public class LaunchClient {
         }
 
         client.run();
-
-        // TODO: choose type of view
-
-        //Client client = new Client(host, port);
     }
 }
