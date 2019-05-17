@@ -2,28 +2,32 @@ package it.polimi.se2019.view;
 
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.action.Action;
-import it.polimi.se2019.model.action.MoveAction;
-import it.polimi.se2019.model.action.MoveGrabAction;
-import it.polimi.se2019.model.action.MoveShootAction;
+import it.polimi.se2019.model.action.*;
+import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.view.requests.LeaderboardRequest;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 
 public class CLIView extends View {
 
+    protected static final String[] COMMAND_ACTION        = {"move","grab","shoot","reload","reloadshoot","teleport","tagback","target"};
+    protected static final String[] COMMAND_SIMPLE_REQUEST = {"leaderboard","players","weapons","power","ammo","board","undo","help","quit"} ;
     public static final String COMMAND_PREFIX           = "Write : " ;
     public static final String POSITION_REQUEST_COMMAND = " and the position where you want " ;
-    public static final String PLAYER_TARGET_REQUEST    = " or the name of target player" ;
+    public static final String PLAYER_TARGET_REQUEST    = "  the name of target player" ;
+    public static final String FIVE_DAMAGE              = " (if you have taken at least 5 damage points) ," ;
     public static final String SHOW                     = " to see";
     public static final String USE                      = " to use";
-    public static final String MOVE_ACTION              = COMMAND_PREFIX + "move" +  POSITION_REQUEST_COMMAND  + " to move";
-    public static final String GRAB_ACTION              = COMMAND_PREFIX + "grab ammo" + POSITION_REQUEST_COMMAND + " to grab";
-    public static final String SHOOT_ACTION             = COMMAND_PREFIX + "shoot" + POSITION_REQUEST_COMMAND + PLAYER_TARGET_REQUEST + " to shoot";
+    public static final String MOVE_ACTION              = COMMAND_PREFIX + "move" + POSITION_REQUEST_COMMAND  + " to move";
+    public static final String GRAB_ACTION              = COMMAND_PREFIX + "grab " + POSITION_REQUEST_COMMAND + " to grab";
+    public static final String SHOOT_ACTION             = COMMAND_PREFIX + "shoot" + POSITION_REQUEST_COMMAND + FIVE_DAMAGE + PLAYER_TARGET_REQUEST + " to shoot";
+    public static final String RELOAD_ACTION            = COMMAND_PREFIX + "reload" +  " and choose the index (from zero to two) a weapon to reload ";
+    public static final String RELOADSHOOT_ACTION       = COMMAND_PREFIX + "reloadshoot" + "(in frenzy mode and if you are before first player) to move, reload and shoot ";
     public static final String TELEPORT_ACTION          = COMMAND_PREFIX + "teleport" + POSITION_REQUEST_COMMAND  + USE;
-    public static final String TAGBACKGRANADE_ACTION    = COMMAND_PREFIX + "tagback" + PLAYER_TARGET_REQUEST + USE;
-    public static final String TARGETSCOPE_ACTION       = COMMAND_PREFIX + "target" + PLAYER_TARGET_REQUEST + USE;
+    public static final String TAGBACKGRANADE_ACTION    = COMMAND_PREFIX + "tagback" + " when another player damages you " + USE;
+    public static final String TARGETSCOPE_ACTION       = COMMAND_PREFIX + "target" + "and a player that you are hurting " + USE;
     public static final String LEADERBOARD              = COMMAND_PREFIX + "leaderboard" + SHOW + " the leaderboard";
     public static final String PLAYERS                  = COMMAND_PREFIX + "players" + SHOW + " players";
     public static final String WEAPONS                  = COMMAND_PREFIX + "weapons" + SHOW + " your weapons";
@@ -33,9 +37,6 @@ public class CLIView extends View {
     public static final String UNDO                     = COMMAND_PREFIX + "undo" + " to undo the current action" ;
     public static final String HELP                     = COMMAND_PREFIX + "help" + SHOW +" available commands";
     public static final String QUIT                     = COMMAND_PREFIX + "quit" + " to quit the game";//to delete is only for test
-    private Scanner scanner;
-    private String command;
-
 
     public CLIView() {
 
@@ -46,6 +47,11 @@ public class CLIView extends View {
         System.out.println("\t" + MOVE_ACTION);
         System.out.println("\t" + GRAB_ACTION);
         System.out.println("\t" + SHOOT_ACTION);
+        System.out.println("\t" + RELOAD_ACTION);
+        System.out.println("\t" + RELOADSHOOT_ACTION);
+        System.out.println("\t" + TELEPORT_ACTION);
+        System.out.println("\t" + TAGBACKGRANADE_ACTION);
+        System.out.println("\t" + TARGETSCOPE_ACTION);
         System.out.println("\t" + LEADERBOARD);
         System.out.println("\t" + PLAYERS);
         System.out.println("\t" + WEAPONS);
@@ -57,19 +63,74 @@ public class CLIView extends View {
         System.out.println("\t" + QUIT);
     }
 
-    public void interpretate(){
 
+    public void commandAction (String command,Position pos) {
+        Action action = null;
+        int index;
+
+        PlayerColor ownerColor = owner.getColor();
+        switch(command){
+            case "move"        : action = new MoveAction(ownerColor,pos); break;
+            case "grab"        : action = new MoveGrabAction(ownerColor, pos); break;
+            case "shoot"       : action = new MoveShootAction(ownerColor, pos); break;
+            case "reloadshoot" :
+                index = reloadInteraction(owner.getWeapons());
+                action = new MoveReloadShootAction(ownerColor,pos,index); break;
+            default            :
+                index = reloadInteraction(owner.getWeapons());
+                action = new ReloadAction(index); break;
+        }
+        new ActionMessage(action);
+        notifyController();
+    }
+
+    public int reloadInteraction(Weapon[] weapons){
+        int index= -1;
+
+        System.out.println("Choose the index of a weapon to reload :" );
+        for(Weapon weapon : weapons){
+            System.out.print(weapon);
+            if(!weapon.isLoaded())
+                System.out.println("<-- to load");
+        }
+        Scanner scanner = new Scanner(System.in);
+        try {
+            index = scanner.nextInt();
+            if (index < 0 || index > 2)
+                throw new IllegalArgumentException("Not correct index");
+            return index;
+        }catch(NumberFormatException e){
+            System.err.println("Incorrect entry");
+        }catch(IllegalArgumentException ex){
+            availableCommands();
+        }
+        return index;
+    }
+
+    public void easyCommand(String command){
+
+        switch(command){
+            case "leaderboard": new LeaderboardRequest();  break;
+            case "players"    : System.out.println(mPlayers); break;
+            case "weapons"    : System.out.println(Arrays.toString(owner.getWeapons())); break;
+            case "ammo"       : System.out.println(owner.getAmmo()); break;
+            case "board"      : break;
+            case "undo"       : deleteRequest();  break;
+            case "help"       : availableCommands(); break;
+            default           : System.out.println("quit");break;//to change
+        }
     }
 
     public void parseCommand(String command) {
-        int size,x,y;
-        Action action = null;
-        Position position = new Position(0,0);
-        PlayerColor ownerColor = owner.getColor();
+        int size;
+        int x;
+        int y;
+        Position position = null;
 
         command = command.toLowerCase();
         String[] compCommand = command.split(" ");
         size = compCommand.length;
+
         if(size == 3){
             try {
                 x = Integer.parseInt(compCommand[1]);
@@ -79,54 +140,23 @@ public class CLIView extends View {
                 System.err.println("Something Wrong!");
             }
         }
-        if(compCommand[0].equals("move")){
-            action = new MoveAction(ownerColor,position);
-        } else {
-            if(compCommand[0].equals("grab")){
-                action = new MoveGrabAction(ownerColor,position);
-            } else {
-                if(compCommand[0].equals("shoot")){
-                    action = new MoveShootAction(ownerColor,position);
-                } else {
-                    if(compCommand[0].equals("leaderboard")){
-                        new LeaderboardRequest();
-                    } else {
-                        if(compCommand[0].equals("players")){
-                            System.out.println(mPlayers);
-                        } else {
-                            if(compCommand[0].equals("weapons")){
-                                System.out.println(owner.getWeapons().toString());
-                            } else {
-                                if(compCommand[0].equals("ammo")){
-                                    System.out.println(owner.getAmmo());
-                                } else {
-                                    if(compCommand[0].equals("board")){
-                                        //TODO
-                                    } else {
-                                        if(compCommand[0].equals("undo")){
-                                            //TODO
-                                        } else {
-                                            if(compCommand[0].equals("help")){
-                                                availableCommands();
-                                            } else {
-                                                if (compCommand[0].equals("quit")) {
-                                                    System.out.println("quit");//to change
-                                                } else {
-                                                    System.out.println("Command not found. " + HELP);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        return;
-                    }
-                }
+        for(String string : COMMAND_ACTION)
+            if(string.equals(compCommand[0])) {
+                commandAction(compCommand[0], position);
+                return;
             }
-        }
-        new ActionMessage(action);
-        notifyController();
+        for(String string : COMMAND_SIMPLE_REQUEST)
+            if(string.equals(compCommand[0])) {
+                easyCommand(compCommand[0]);
+                return;
+            }
+
+        System.out.println("Command not available."+ HELP);
+        interact();
+    }
+
+    public void deleteRequest(){
+
     }
 
     public void ownerCLI(){
@@ -156,7 +186,7 @@ public class CLIView extends View {
     @Override
     public void interact(){
         System.out.println("What do you want to do ?");
-        scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         parseCommand(scanner.toString());
     }
 
