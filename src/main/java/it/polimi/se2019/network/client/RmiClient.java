@@ -34,8 +34,10 @@ public class RmiClient extends Client {
         String username;
         Boolean validUsername;
 
+        System.out.println("Insert username: ");
         do {
             try {
+                System.out.print(">> ");
                 username = scanner.nextLine();
                 validUsername = mServerRemote.registerPlayerRemote(username);
             } catch (RemoteException e) {

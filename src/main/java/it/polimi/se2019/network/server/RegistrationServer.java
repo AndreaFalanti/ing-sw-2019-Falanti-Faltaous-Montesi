@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -18,6 +19,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
 
     public RegistrationServer(int rmiPort) throws IOException {
         Registry registry = LocateRegistry.createRegistry(rmiPort);
+        UnicastRemoteObject.exportObject(this, rmiPort);
         registry.rebind("rmiServer", this);
         System.out.println(">>> rmiServer exported");
 

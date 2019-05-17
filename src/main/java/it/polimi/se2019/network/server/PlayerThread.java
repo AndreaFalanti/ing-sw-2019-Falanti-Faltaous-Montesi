@@ -28,6 +28,8 @@ public class PlayerThread extends Thread {
 
     public void close(){
         try {
+            mIn.close();
+            mOut.close();
             mSocket.close();
         }
         catch (IOException e) {
