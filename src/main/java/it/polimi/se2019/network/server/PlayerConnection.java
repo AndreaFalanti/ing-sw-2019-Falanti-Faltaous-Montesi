@@ -6,6 +6,7 @@ public class PlayerConnection implements Serializable {
     //private View mVirtualView;
     private String mUsername;
     private boolean mActive;
+    // TODO: add connection type so that server can send message to clients
 
     public PlayerConnection(String username) {
         mUsername = username;

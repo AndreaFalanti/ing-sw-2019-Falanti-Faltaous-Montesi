@@ -15,8 +15,8 @@ import java.util.logging.Logger;
 public class RegistrationServer implements ConnectionRegister, RegistrationRemote {
     private static final Logger logger = Logger.getLogger(RegistrationServer.class.getName());
     
-    private List<GameThread> mGames;
-    private List<PlayerConnection> mWaitingPlayer = new ArrayList<>();
+    private List<GameThread> mGames = new ArrayList<>();
+    private List<PlayerConnection> mWaitingPlayers = new ArrayList<>();
     private List<PlayerConnection> mPlayersOnline = new ArrayList<>();
 
     private transient Timer mTimer;
@@ -25,7 +25,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         Registry registry = LocateRegistry.createRegistry(rmiPort);
         UnicastRemoteObject.exportObject(this, rmiPort);
         registry.rebind("rmiServer", this);
-        logger.info(">>> rmiServer exported");
+        logger.log(Level.INFO, "RMI initialized on port {0}\nexported modules:\nrmiServer", rmiPort);
 
         // print every 10 seconds the list of players connected
         mTimer = new Timer();
@@ -40,6 +40,11 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
     private void printConnectedPlayers () {
         StringBuilder log = new StringBuilder("Connected players:");
         for (PlayerConnection connection : mPlayersOnline) {
+            log.append("\n" + connection.toString());
+        }
+
+        log.append("\nWaiting players:");
+        for (PlayerConnection connection : mWaitingPlayers) {
             log.append("\n" + connection.toString());
         }
 
@@ -62,16 +67,32 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
     }
 
     @Override
-    public void registerConnection(PlayerConnection connection) {
-        mWaitingPlayer.add(connection);
+    public synchronized void registerConnection(PlayerConnection connection) {
+        mWaitingPlayers.add(connection);
         mPlayersOnline.add(connection);
 
-        logger.info("Player " + connection.getUsername() + " has joined the server");
+        logger.log(Level.INFO, "Player {0} has joined the server", connection.getUsername());
+
+        if (mWaitingPlayers.size() >= 3) {
+            GameThread gameThread = new GameThread(mWaitingPlayers);
+            mGames.add(gameThread);
+            gameThread.start();
+
+            mWaitingPlayers.clear();
+        }
+        else if (!mGames.isEmpty()) {
+            for (GameThread game : mGames) {
+                if (!game.isStarted() && game.getPlayersNum() < 5) {
+                    game.addPlayer(connection);
+                    return;
+                }
+            }
+        }
     }
 
     @Override
     public void deregisterConnection(PlayerConnection connection) {
-        mWaitingPlayer.remove(connection);
+        mWaitingPlayers.remove(connection);
         mPlayersOnline.remove(connection);
     }
 
