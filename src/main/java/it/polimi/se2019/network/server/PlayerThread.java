@@ -5,13 +5,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class PlayerThread extends Thread {
+    private static final Logger logger = Logger.getLogger(PlayerThread.class.getName());
+
     private Socket mSocket;
     private PrintWriter mOut;
     private BufferedReader mIn;
-
     private ConnectionRegister mRegister;
+
+    private boolean mInGame = false;
 
     public PlayerThread(Socket socket, ConnectionRegister register) {
         mSocket = socket;
@@ -20,7 +24,7 @@ public class PlayerThread extends Thread {
             mIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         }
         catch (IOException e) {
-            e.printStackTrace();
+            logger.severe(e.getMessage());
         }
 
         mRegister = register;
@@ -33,15 +37,16 @@ public class PlayerThread extends Thread {
             mSocket.close();
         }
         catch (IOException e) {
-            System.err.print("Error during closing");
+           logger.severe("Error during closing");
         }
     }
 
     private String receive () {
         try {
             return mIn.readLine();
-        } catch (IOException e) {
-            System.out.println("Critical error while reading from socket (or client closed itself)");
+        }
+        catch (IOException e) {
+            logger.severe("Critical error while reading from socket (or client closed itself)");
             interrupt();
             return null;
         }
@@ -56,16 +61,23 @@ public class PlayerThread extends Thread {
         String username = null;
         boolean logged = false;
 
-        while (!interrupted() && !logged) {
-            username = receive();
-            if (mRegister.isUsernameAvailable(username)) {
-                logged = mRegister.registerPlayer(username);
-                send("ok");
+        while (!isInterrupted()) {
+            while (!logged && !isInterrupted()) {
+                username = receive();
+                if (mRegister.isUsernameAvailable(username)) {
+                    logged = mRegister.registerPlayer(username);
+                    send("ok");
+                } else {
+                    send("Username is already used");
+                }
             }
-            else {
-                send("Username is already used");
+
+            while (mInGame && !isInterrupted()) {
+                logger.info("I'm in a game");
             }
         }
+
+        logger.info("Closing thread " + getId());
     }
 
     public Socket getSocket() {
@@ -78,5 +90,13 @@ public class PlayerThread extends Thread {
 
     public BufferedReader getIn() {
         return mIn;
+    }
+
+    public boolean isInGame() {
+        return mInGame;
+    }
+
+    public void setInGame(boolean inGame) {
+        mInGame = inGame;
     }
 }

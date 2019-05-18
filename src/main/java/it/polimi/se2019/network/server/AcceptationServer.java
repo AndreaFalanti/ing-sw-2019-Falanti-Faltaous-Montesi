@@ -3,14 +3,19 @@ package it.polimi.se2019.network.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class AcceptationServer {
+    private static final Logger logger = Logger.getLogger(AcceptationServer.class.getName());
+
     private transient ServerSocket mServerSocket;
     private RegistrationServer mRegistrationServer;
 
     public AcceptationServer(int socketPort, RegistrationServer registrationServer) throws IOException {
         mServerSocket = new ServerSocket(socketPort);
         mRegistrationServer = registrationServer;
+
+        logger.info("Created server socket on port: " + socketPort);
     }
 
 
@@ -18,10 +23,10 @@ public class AcceptationServer {
         while (true) {
             try {
                 Socket socket = mServerSocket.accept();
-                System.out.println("Connection accepted: " + socket.getRemoteSocketAddress());
+                logger.info("Connection accepted: " + socket.getRemoteSocketAddress());
                 new PlayerThread(socket, mRegistrationServer).start();
             } catch (IOException e) {
-                System.out.println("Connection error");
+                logger.severe("Connection error");
             }
         }
     }

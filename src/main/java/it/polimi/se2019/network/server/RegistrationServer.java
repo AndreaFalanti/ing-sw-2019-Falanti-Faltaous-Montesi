@@ -9,8 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RegistrationServer implements ConnectionRegister, RegistrationRemote {
+    private static final Logger logger = Logger.getLogger(RegistrationServer.class.getName());
+    
     private List<GameThread> mGames;
     private List<PlayerConnection> mWaitingPlayer = new ArrayList<>();
     private List<PlayerConnection> mPlayersOnline = new ArrayList<>();
@@ -21,7 +25,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         Registry registry = LocateRegistry.createRegistry(rmiPort);
         UnicastRemoteObject.exportObject(this, rmiPort);
         registry.rebind("rmiServer", this);
-        System.out.println(">>> rmiServer exported");
+        logger.info(">>> rmiServer exported");
 
         // print every 10 seconds the list of players connected
         mTimer = new Timer();
@@ -34,11 +38,12 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
     }
 
     private void printConnectedPlayers () {
-        System.out.println("\nConnected players:");
+        StringBuilder log = new StringBuilder("Connected players:");
         for (PlayerConnection connection : mPlayersOnline) {
-            System.out.println(connection.toString());
+            log.append("\n" + connection.toString());
         }
-        System.out.println();
+
+        logger.info(log.toString());
     }
 
     @Override
@@ -48,7 +53,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         }
         for (PlayerConnection playerConnection : mPlayersOnline) {
             if (playerConnection.getUsername().equals(username)) {
-                System.out.println("Username: " + username + " is already used");
+                logger.log(Level.WARNING, "Username: {0} is already used", username);
                 return false;
             }
         }
@@ -61,7 +66,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         mWaitingPlayer.add(connection);
         mPlayersOnline.add(connection);
 
-        System.out.println("Player " + connection.getUsername() + " has joined the server");
+        logger.info("Player " + connection.getUsername() + " has joined the server");
     }
 
     @Override

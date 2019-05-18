@@ -1,11 +1,14 @@
 package it.polimi.se2019.network.server;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class LaunchServer {
+    private static final Logger logger = Logger.getLogger(LaunchServer.class.getName());
+
     public static void main(String[] args) throws IOException {
-        if (args.length == 0) {
-            System.out.println("Provide port in cmd");
+        if (args.length != 2) {
+            logger.warning("Provide ports in cmd");
             return;
         }
 
