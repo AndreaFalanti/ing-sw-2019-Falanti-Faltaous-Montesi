@@ -38,6 +38,7 @@ public class CLIView extends View {
     public static final String HELP                     = COMMAND_PREFIX + "help" + SHOW +" available commands";
     public static final String QUIT                     = COMMAND_PREFIX + "quit" + " to quit the game";//to delete is only for test
 
+
     public CLIView() {
 
     }
@@ -61,27 +62,73 @@ public class CLIView extends View {
         System.out.println("\t" + UNDO);
         System.out.println("\t" + HELP);
         System.out.println("\t" + QUIT);
+
+        interact();
     }
 
 
-    public void commandAction (String command,Position pos) {
+    public void commandAction (String command,Scanner in) {
         Action action = null;
         int index;
 
+
         PlayerColor ownerColor = owner.getColor();
-        switch(command){
-            case "move"        : action = new MoveAction(ownerColor,pos); break;
-            case "grab"        : action = new MoveGrabAction(ownerColor, pos); break;
-            case "shoot"       : action = new MoveShootAction(ownerColor, pos); break;
-            case "reloadshoot" :
+        switch (command) {
+            case "move":
+                action = new MoveAction(ownerColor,parseDestination(in));
+                break;
+            case "grab":
+                action = new MoveGrabAction(ownerColor, parseDestination(in));
+                break;
+            case "shoot":
+                action = new MoveShootAction(ownerColor, parseDestination(in));
+                break;
+            case "reloadshoot":
                 index = reloadInteraction(owner.getWeapons());
-                action = new MoveReloadShootAction(ownerColor,pos,index); break;
-            default            :
+                action = new MoveReloadShootAction(ownerColor, parseDestination(in), index);
+                break;
+            default:
                 index = reloadInteraction(owner.getWeapons());
-                action = new ReloadAction(index); break;
+                action = new ReloadAction(index);
+                break;
         }
         new ActionMessage(action);
         notifyController();
+    }
+
+    public Position parseInformationOnDestination(Position[] pos){
+        Scanner scanner = null;
+
+        System.out.println("Write one of these coordinates" + Arrays.toString(pos));
+        while (scanner == null) {
+            scanner = new Scanner(System.in);
+        }
+        return  parseDestination(scanner);
+    }
+
+    public Position parseDestination(Scanner coord){
+        Integer x = null;
+        Integer y = null;
+
+        while(coord.hasNext() && y == null){
+            if(coord.hasNextInt() && x==null)
+                x = coord.nextInt();
+            else if (coord.hasNextInt())
+                y = coord.nextInt();
+        }
+
+        if(x != null && y != null)
+            return new Position(x,y);
+        else
+            return new Position(-1,-1);
+
+    }
+
+    public int parseWeaponInformation(Weapon[] weapons){
+
+        System.out.println("Type the index of the weapon you want" + Arrays.toString(weapons));
+        //to complete
+        return 0;
     }
 
     public int reloadInteraction(Weapon[] weapons){
@@ -96,13 +143,9 @@ public class CLIView extends View {
         Scanner scanner = new Scanner(System.in);
         try {
             index = scanner.nextInt();
-            if (index < 0 || index > 2)
-                throw new IllegalArgumentException("Not correct index");
             return index;
-        }catch(NumberFormatException e){
+        }catch(NumberFormatException e) {
             System.err.println("Incorrect entry");
-        }catch(IllegalArgumentException ex){
-            availableCommands();
         }
         return index;
     }
@@ -121,28 +164,16 @@ public class CLIView extends View {
         }
     }
 
-    public void parseCommand(String command) {
-        int size;
-        int x;
-        int y;
-        Position position = null;
+    public void parseCommand(Scanner in) {
 
+        String command = in.toString();
         command = command.toLowerCase();
         String[] compCommand = command.split(" ");
-        size = compCommand.length;
 
-        if(size == 3){
-            try {
-                x = Integer.parseInt(compCommand[1]);
-                y = Integer.parseInt(compCommand[2]);
-                position = new Position(x,y);
-            }catch(NumberFormatException e){
-                System.err.println("Something Wrong!");
-            }
-        }
+
         for(String string : COMMAND_ACTION)
             if(string.equals(compCommand[0])) {
-                commandAction(compCommand[0], position);
+                commandAction(compCommand[0],in);
                 return;
             }
         for(String string : COMMAND_SIMPLE_REQUEST)
@@ -185,9 +216,12 @@ public class CLIView extends View {
 
     @Override
     public void interact(){
-        System.out.println("What do you want to do ?");
-        Scanner scanner = new Scanner(System.in);
-        parseCommand(scanner.toString());
+        Scanner scanner = null;
+        while (scanner == null) {
+            System.out.println("What do you want to do ?");
+            scanner = new Scanner(System.in);
+        }
+        parseCommand(scanner);
     }
 
  //   public static void main(String[] args){
