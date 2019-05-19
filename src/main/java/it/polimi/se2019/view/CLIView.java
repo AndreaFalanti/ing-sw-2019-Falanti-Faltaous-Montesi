@@ -62,12 +62,13 @@ public class CLIView extends View {
         System.out.println("\t" + UNDO);
         System.out.println("\t" + HELP);
         System.out.println("\t" + QUIT);
+        System.out.println("What do you want to do ?");
 
         interact();
     }
 
 
-    public void commandAction (String command,Scanner in) {
+    public void commandAction (String command,String otherCommandPart) {
         Action action = null;
         int index;
 
@@ -75,17 +76,17 @@ public class CLIView extends View {
         PlayerColor ownerColor = owner.getColor();
         switch (command) {
             case "move":
-                action = new MoveAction(ownerColor,parseDestination(in));
+                action = new MoveAction(ownerColor,parseDestination(otherCommandPart));
                 break;
             case "grab":
-                action = new MoveGrabAction(ownerColor, parseDestination(in));
+                action = new MoveGrabAction(ownerColor, parseDestination(otherCommandPart));
                 break;
             case "shoot":
-                action = new MoveShootAction(ownerColor, parseDestination(in));
+                action = new MoveShootAction(ownerColor, parseDestination(otherCommandPart));
                 break;
             case "reloadshoot":
                 index = reloadInteraction(owner.getWeapons());
-                action = new MoveReloadShootAction(ownerColor, parseDestination(in), index);
+                action = new MoveReloadShootAction(ownerColor, parseDestination(otherCommandPart), index);
                 break;
             default:
                 index = reloadInteraction(owner.getWeapons());
@@ -100,27 +101,21 @@ public class CLIView extends View {
         Scanner scanner = null;
 
         System.out.println("Write one of these coordinates" + Arrays.toString(pos));
-        while (scanner == null) {
-            scanner = new Scanner(System.in);
-        }
-        return  parseDestination(scanner);
+        String destination = anotherInteraction();
+
+        return  parseDestination(destination);
     }
 
-    public Position parseDestination(Scanner coord){
-        Integer x = null;
-        Integer y = null;
+    public Position parseDestination(String destination){
 
-        while(coord.hasNext() && y == null){
-            if(coord.hasNextInt() && x==null)
-                x = coord.nextInt();
-            else if (coord.hasNextInt())
-                y = coord.nextInt();
+        String coordTogether = destination.replaceAll("\\D","");
+        String[] coord = coordTogether.split("");
+
+        if(coord[0].equals("") || coord.length < 2){
+            return new Position(-1,-1);
         }
 
-        if(x != null && y != null)
-            return new Position(x,y);
-        else
-            return new Position(-1,-1);
+        return new Position(Integer.parseInt(coord[0]),Integer.parseInt(coord[1]));
 
     }
 
@@ -164,16 +159,15 @@ public class CLIView extends View {
         }
     }
 
-    public void parseCommand(Scanner in) {
+    public void parseCommand(String command) {
 
-        String command = in.toString();
         command = command.toLowerCase();
         String[] compCommand = command.split(" ");
 
 
         for(String string : COMMAND_ACTION)
             if(string.equals(compCommand[0])) {
-                commandAction(compCommand[0],in);
+                commandAction(compCommand[0],command);
                 return;
             }
         for(String string : COMMAND_SIMPLE_REQUEST)
@@ -183,8 +177,19 @@ public class CLIView extends View {
             }
 
         System.out.println("Command not available."+ HELP);
-        interact();
     }
+
+
+    public String anotherInteraction(){
+        Scanner scanner = new Scanner(System.in);
+        String command = "" ;
+        while (!command.equals("quit")) {
+            command = scanner.nextLine();
+        }
+        return command;
+    }
+
+
 
     public void deleteRequest(){
 
@@ -216,12 +221,12 @@ public class CLIView extends View {
 
     @Override
     public void interact(){
-        Scanner scanner = null;
-        while (scanner == null) {
-            System.out.println("What do you want to do ?");
-            scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
+        String command = "" ;
+        while (!command.equals("quit")) {
+            command = scanner.nextLine();
+            parseCommand(command);
         }
-        parseCommand(scanner);
     }
 
  //   public static void main(String[] args){
