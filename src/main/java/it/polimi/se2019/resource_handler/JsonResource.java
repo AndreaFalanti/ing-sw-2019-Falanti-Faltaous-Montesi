@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
 
 public class JsonResource extends Resource {
+    private static final Logger logger = Logger.getLogger(JsonResource.class.getName());
     String mContents;
 
     private JsonResource() {
@@ -18,7 +20,7 @@ public class JsonResource extends Resource {
         try {
             result.mContents = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe(e.getMessage());
         }
 
         return result;
