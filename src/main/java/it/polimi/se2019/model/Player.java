@@ -28,11 +28,16 @@ public class Player {
         mMarks.put(PlayerColor.GREY,0);
     }
 
+    public Player (String name, PlayerColor color, Position pos) {
+        mName = name;
+        mColor = color;
+        mPos = pos;
+        mAmmo = new AmmoValue(1, 1, 1);
+        initializeMarksMap();
+    }
+
     public Player (String name, PlayerColor color) {
-            mName = name;
-            mColor = color;
-            mAmmo = new AmmoValue(1, 1, 1);
-            initializeMarksMap();
+        this(name, color, null);
     }
 
     //region GETTERS
@@ -105,7 +110,6 @@ public class Player {
         return mDamageTaken[0] == null;
     }
 
-
     /**
      * return if player has reached the maximum number of weapon in his hand
      * @return true if has three weapons, false otherwise
@@ -172,21 +176,18 @@ public class Player {
      * @param attackingPlayer is player that attacks
      * @param damage value of damage to add to the current damage
      */
-    public void sufferedDamage(PlayerColor attackingPlayer,int damage) {
-        int i = 0;
-        int j = 0;
+    private void sufferedDamage(PlayerColor attackingPlayer,int damage) {
+        if (damage != 0) {
+            damage += getMarks().get(attackingPlayer);
+            mMarks.put(attackingPlayer, 0);
+        }
 
-        damage += getMarks().get(attackingPlayer);
-        while(i <= mDamageTaken.length - 1 && mDamageTaken[i] != null)
-            i++;
-        if(i <= mDamageTaken.length - 1) {
-            while(j <= damage - 1 && i <= mDamageTaken.length - 1) {
+        for (int i = 0; i < mDamageTaken.length && damage > 0; i++) {
+            if (mDamageTaken[i] == null) {
                 mDamageTaken[i] = attackingPlayer;
-                j++;
-                i++;
+                damage--;
             }
         }
-        mMarks.put(attackingPlayer,0);
     }
 
     /**
@@ -194,7 +195,7 @@ public class Player {
      * @param attackingPlayer is player that attacks
      * @param marks value of marks to add to the current marks
      */
-    public void sufferedMarks(PlayerColor attackingPlayer,int marks) {
+    private void sufferedMarks(PlayerColor attackingPlayer,int marks) {
         if(marks + getMarks().get(attackingPlayer) >= MAX_MARKS) {
             mMarks.put(attackingPlayer, MAX_MARKS);
         }
@@ -231,13 +232,8 @@ public class Player {
     /**
      * set player in death status
      */
-    public void setDeadStatus(){
-        if(mDamageTaken[10] != null) {
-            mDead = true;
-        }
-        else {
-            mDead = false;
-        }
+    private void setDeadStatus(){
+        mDead = mDamageTaken[10] != null;
     }
 
     /**
@@ -258,7 +254,7 @@ public class Player {
         throw new FullHandException ("PowerUp hand is full, can't draw another card");
     }
 
-    public void addPowerUp (PowerUpCard value) throws FullHandException{
+    public void addPowerUp (PowerUpCard value) {
         addPowerUp(value, false);
     }
 

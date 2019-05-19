@@ -1,10 +1,34 @@
 package it.polimi.se2019.network.server;
 
-import it.polimi.se2019.view.View;
+import java.io.Serializable;
 
-public abstract class PlayerConnection {
-    private View virtualView;
-    private boolean active;
+public class PlayerConnection implements Serializable {
+    //private View mVirtualView;
+    private String mUsername;
+    private boolean mActive;
+    // TODO: add connection type so that server can send message to clients
 
-    public boolean isActive() {return active;}
+    public PlayerConnection(String username) {
+        mUsername = username;
+        mActive = true;
+    }
+
+    /*public View getVirtualView() {
+        return mVirtualView;
+    }*/
+
+    public String getUsername() {
+        return mUsername;
+    }
+
+    public boolean isActive() {
+        return mActive;
+    }
+
+    @Override
+    public String toString() {
+        return "PlayerConnection{" +
+                "Username='" + mUsername + '\'' +
+                '}';
+    }
 }

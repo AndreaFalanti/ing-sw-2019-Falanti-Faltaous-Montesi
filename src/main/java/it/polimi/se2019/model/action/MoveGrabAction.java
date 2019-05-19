@@ -4,12 +4,15 @@ import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.action.responses.ActionResponseStrings;
+import it.polimi.se2019.model.action.responses.InvalidActionResponse;
+import it.polimi.se2019.model.action.responses.MessageActionResponse;
+
+import java.util.Optional;
 
 public class MoveGrabAction implements Action {
     private MoveAction mMoveAction;
     private GrabAction mGrabAction;
-    private ResponseCode mCode;
-    private String message;
 
     public MoveGrabAction (PlayerColor playerColor, Position destination) {
         mMoveAction = new MoveAction(playerColor, destination);
@@ -42,43 +45,46 @@ public class MoveGrabAction implements Action {
     }
 
     @Override
-    public boolean isValid(Game game) {
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
-            System.out.println("Max number of action reached");
-            this.mCode = ResponseCode.NO_ACTION_LEFT;
-            return false;
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
 
         // this action can be performed only by active player
         if (mMoveAction.getTarget() != game.getActivePlayer().getColor()) {
-            this.mCode = ResponseCode.PERFORMABLE_BY_ACTIVE_PLAYER;
-            return false;
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
         }
 
         Player player = game.getPlayerFromColor(mMoveAction.getTarget());
 
-        if (!mGrabAction.isValidAtPos(game, mMoveAction.getDestination())) {
-            return false;
+        Optional<InvalidActionResponse> response = mGrabAction.getErrorMessageAtPos(game, mMoveAction.getDestination());
+        if (response.isPresent()) {
+            return response;
         }
 
-        // check max possible moves in final frenzy status
-        if (game.isFinalFrenzy()) {
-            return (game.hasFirstPlayerDoneFinalFrenzy()) ?
-                    game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) <= 3 :
-                    game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) <= 2;
-        }
+        int maxGrabDistance;
+
+        // check max possible moves in different game states
         // check max moves in "normal" game status, it changes if player has tot damage
-        else {
-            return game.getBoard()
-                    .getTileDistance(player.getPos(), mMoveAction.getDestination()) <= player.getMaxGrabDistance();
+        if (!game.isFinalFrenzy()) {
+            maxGrabDistance = player.getMaxGrabDistance();
         }
+        // max moves in "final frenzy" game status are 3 if player is after (or is) first player
+        else if (game.hasFirstPlayerDoneFinalFrenzy()) {
+            maxGrabDistance = 3;
+        }
+        // max moves in "final frenzy" game status are 2 if player is before first player
+        else {
+            maxGrabDistance = 2;
+        }
+
+        return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) <= maxGrabDistance ?
+                Optional.empty() : Optional.of(new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE));
     }
 
     @Override
     public boolean consumeAction() {
         return true;
     }
-
-    public ResponseCode getCode(){return mCode;}
 }

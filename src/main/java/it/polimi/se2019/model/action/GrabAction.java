@@ -2,7 +2,10 @@ package it.polimi.se2019.model.action;
 
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.action.responses.InvalidActionResponse;
+
+import java.util.Optional;
 
 public interface GrabAction extends Action {
-    boolean isValidAtPos(Game game, Position pos);
+    Optional<InvalidActionResponse> getErrorMessageAtPos(Game game, Position pos);
 }

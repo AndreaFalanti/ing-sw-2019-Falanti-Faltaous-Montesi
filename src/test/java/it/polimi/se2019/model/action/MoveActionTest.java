@@ -68,31 +68,31 @@ public class MoveActionTest {
 
         //NOTE: all players are in pos(0, 0)
         // distance = 1
-        assertTrue(action1[0].isValid(game1));
-        assertTrue(action1[1].isValid(game2));
-        assertFalse(action1[2].isValid(game3));
+        assertFalse(action1[0].getErrorResponse(game1).isPresent());
+        assertFalse(action1[1].getErrorResponse(game2).isPresent());
+        assertTrue(action1[2].getErrorResponse(game3).isPresent());
 
         // distance = 5
-        assertFalse(action2[0].isValid(game1));
-        assertFalse(action2[1].isValid(game2));
-        assertFalse(action2[2].isValid(game3));
+        assertTrue(action2[0].getErrorResponse(game1).isPresent());
+        assertTrue(action2[1].getErrorResponse(game2).isPresent());
+        assertTrue(action2[2].getErrorResponse(game3).isPresent());
 
         // distance = 4
-        assertFalse(action3[0].isValid(game1));
-        assertTrue(action3[1].isValid(game2));
-        assertFalse(action3[2].isValid(game3));
+        assertTrue(action3[0].getErrorResponse(game1).isPresent());
+        assertFalse(action3[1].getErrorResponse(game2).isPresent());
+        assertTrue(action3[2].getErrorResponse(game3).isPresent());
 
         // same position, distance = 0, always false
-        assertFalse(action4[0].isValid(game1));
-        assertFalse(action4[1].isValid(game2));
-        assertFalse(action4[2].isValid(game3));
+        assertTrue(action4[0].getErrorResponse(game1).isPresent());
+        assertTrue(action4[1].getErrorResponse(game2).isPresent());
+        assertTrue(action4[2].getErrorResponse(game3).isPresent());
 
-        assertTrue(action5[0].isValid(game1));
-        assertTrue(action5[1].isValid(game2));
-        assertTrue(action5[2].isValid(game3));
+        assertFalse(action5[0].getErrorResponse(game1).isPresent());
+        assertFalse(action5[1].getErrorResponse(game2).isPresent());
+        assertFalse(action5[2].getErrorResponse(game3).isPresent());
 
-        assertFalse(action6[0].isValid(game1));
-        assertFalse(action6[1].isValid(game2));
-        assertFalse(action6[2].isValid(game3));
+        assertTrue(action6[0].getErrorResponse(game1).isPresent());
+        assertTrue(action6[1].getErrorResponse(game2).isPresent());
+        assertTrue(action6[2].getErrorResponse(game3).isPresent());
     }
 }

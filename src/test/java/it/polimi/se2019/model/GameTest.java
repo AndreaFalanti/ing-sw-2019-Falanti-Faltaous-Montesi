@@ -61,6 +61,26 @@ public class GameTest {
         catch (IllegalArgumentException e) {
             assertTrue(true);
         }
+
+        // add a player with same color of an already existent one
+        players.add(new Player("d", PlayerColor.BLUE));
+        try {
+            Game game = new Game(board, players, 3);
+            fail();
+        }
+        catch (IllegalArgumentException e) {
+            assertTrue(true);
+        }
+
+        // add a player with same username of an already existent one
+        players2.add(new Player("b", PlayerColor.PURPLE));
+        try {
+            Game game = new Game(board, players2, 3);
+            fail();
+        }
+        catch (IllegalArgumentException e) {
+            assertTrue(true);
+        }
     }
 
     /**
@@ -103,6 +123,8 @@ public class GameTest {
         game.getPlayerFromColor(PlayerColor.YELLOW).respawn(null);
         assertEquals(16, game.getPlayerFromColor(PlayerColor.GREY).getScore());
         assertEquals(18, game.getPlayerFromColor(PlayerColor.YELLOW).getScore());
+        // check that player has a mark of player overkilled after scoring overkill
+        assertEquals(1, game.getPlayerFromColor(PlayerColor.GREY).getMarks().get(PlayerColor.BLUE).intValue());
 
         // Blue player, no kills
         game.startNextTurn();

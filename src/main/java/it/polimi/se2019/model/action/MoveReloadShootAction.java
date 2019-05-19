@@ -3,12 +3,15 @@ package it.polimi.se2019.model.action;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.action.responses.ActionResponseStrings;
+import it.polimi.se2019.model.action.responses.InvalidActionResponse;
+import it.polimi.se2019.model.action.responses.MessageActionResponse;
+
+import java.util.Optional;
 
 public class MoveReloadShootAction implements Action {
     private MoveShootAction mMoveShootAction;
     private ReloadAction mReloadAction;
-    private ResponseCode mCode;
-    private String message;
 
     public MoveReloadShootAction (PlayerColor playerColor, Position destination, int weaponIndex) {
         mMoveShootAction = new MoveShootAction(playerColor, destination);
@@ -30,20 +33,25 @@ public class MoveReloadShootAction implements Action {
     }
 
     @Override
-    public boolean isValid(Game game) {
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
-            System.out.println("Max number of action reached");
-            this.mCode = ResponseCode.NO_ACTION_LEFT;
-            return false;
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
-        return game.isFinalFrenzy() && mMoveShootAction.isValid(game) && mReloadAction.isValid(game);
+        if (!game.isFinalFrenzy()) {
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
+        }
+
+        Optional<InvalidActionResponse> response = mMoveShootAction.getErrorResponse(game);
+        if (response.isPresent()) {
+            return response;
+        }
+
+        return mReloadAction.getErrorResponse(game);
     }
 
     @Override
     public boolean consumeAction() {
         return true;
     }
-
-    public ResponseCode getCode(){return mCode;}
 }

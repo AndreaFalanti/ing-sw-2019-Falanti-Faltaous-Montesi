@@ -6,11 +6,15 @@ import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class View implements Observable, Observer {
 
-    private Player players;
+    protected ArrayList<Player> mPlayers;
     private Board board;
-    private PlayerColor activePlayer;
+    protected PlayerColor activePlayer;
+    protected Player owner;
 
     public abstract void showMessage(String message);
 
@@ -29,6 +33,10 @@ public abstract class View implements Observable, Observer {
     public PlayerColor getActivePlayer() {
 
         return null;
+    }
+
+    public List<Player> getPlayers(){
+        return mPlayers;
     }
 
 }

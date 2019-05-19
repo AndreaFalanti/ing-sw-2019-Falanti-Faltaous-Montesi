@@ -3,16 +3,17 @@ package it.polimi.se2019.model.action;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.action.responses.*;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.Tile;
 import it.polimi.se2019.model.weapon.Weapon;
+
+import java.util.Optional;
 
 public class GrabWeaponAction implements GrabAction {
     private int mWeaponGrabbedIndex;
     private Integer mWeaponToExchangeIndex;
     private boolean[] mDiscardedCards = {false, false, false};
-
-    private ResponseCode mCode;
 
     public GrabWeaponAction (int index) {
         if (!isValidIndex(index)) {
@@ -68,8 +69,6 @@ public class GrabWeaponAction implements GrabAction {
         return mDiscardedCards;
     }
 
-    //TODO: in perform and isValid add check of weapon grab cost and relative ammo payment
-
     @Override
     public void perform(Game game) {
         SpawnTile spawnTile = (SpawnTile) game.getBoard().getTileAt(game.getActivePlayer().getPos());
@@ -90,8 +89,8 @@ public class GrabWeaponAction implements GrabAction {
     }
 
     @Override
-    public boolean isValid(Game game) {
-        return isValidAtPos(game, game.getActivePlayer().getPos());
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
+        return getErrorMessageAtPos(game, game.getActivePlayer().getPos());
     }
 
     @Override
@@ -100,12 +99,10 @@ public class GrabWeaponAction implements GrabAction {
     }
 
     @Override
-    public boolean isValidAtPos(Game game, Position pos) {
+    public Optional<InvalidActionResponse> getErrorMessageAtPos(Game game, Position pos) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
-            System.out.println("Max number of action reached");
-            this.mCode = ResponseCode.NO_ACTION_LEFT;
-            return false;
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
 
         Tile tile = game.getBoard().getTileAt(pos);
@@ -115,26 +112,30 @@ public class GrabWeaponAction implements GrabAction {
             Player player = game.getActivePlayer();
 
             if (weapon == null) {
-                return false;
+                return Optional.of(new MessageActionResponse("Selected weapon to grab is null"));
             }
 
             if (!AmmoPayment.isValid(player, weapon.getGrabCost(), mDiscardedCards)) {
-                return false;
+                return Optional.of(new DiscardRequiredActionResponse(ActionResponseStrings.DISCARD_MESSAGE));
             }
 
             // player is grabbing a weapon but it has space in hand
             if (mWeaponToExchangeIndex == null) {
-                return !player.isFullOfWeapons();
+                return !player.isFullOfWeapons() ?
+                        Optional.empty() :
+                        Optional.of(
+                                new SelectWeaponRequiredActionResponse("Your hand is full, select a weapon to exchange")
+                        );
             }
             // player is trying to exchange one of his weapon with spawn's one
             else {
-                return player.getWeapon(mWeaponToExchangeIndex) != null && player.isFullOfWeapons();
+                return player.isFullOfWeapons() ?
+                        Optional.empty() :
+                        Optional.of(new MessageActionResponse("Can't exchange weapon if your hand is full"));
             }
         }
 
         // tile isn't a SpawnTile
-        return false;
+        return Optional.of(new MessageActionResponse("Can't grab a weapon from a normal tile"));
     }
-
-    public ResponseCode getCode(){return mCode;}
 }

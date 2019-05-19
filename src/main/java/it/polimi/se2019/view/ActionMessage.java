@@ -6,7 +6,7 @@ public class ActionMessage {
 
     private Action action;
 
-    public ActionMessage() {
+    public ActionMessage(Action action) {
 
     }
 

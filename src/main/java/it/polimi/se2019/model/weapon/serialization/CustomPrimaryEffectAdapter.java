@@ -17,7 +17,7 @@ public class CustomPrimaryEffectAdapter implements JsonSerializer<PayedEffect>, 
             return new JsonObject();
 
         // TODO: find better way of doing this
-        JsonElement result = ExpressionFactory.GSON.toJsonTree(payedEffect.getBehaviour());
+        JsonElement result = ExpressionFactory.GSON.toJsonTree(payedEffect.getBehaviour(), Expression.class);
 
         // URGENT TODO: find a betters way to do this...
         result.getAsJsonObject().add("expr", new JsonPrimitive(payedEffect.getBehaviour().getClass().getSimpleName()));
@@ -27,9 +27,11 @@ public class CustomPrimaryEffectAdapter implements JsonSerializer<PayedEffect>, 
 
     @Override
     public PayedEffect deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) {
+        Expression expression = ExpressionFactory.GSON.fromJson(jsonElement, Expression.class);
+
         return new PayedEffect(
                 new AmmoValue(0, 0, 0),
-                ExpressionFactory.GSON.fromJson(jsonElement, Expression.class)
+                expression
         );
     }
 }

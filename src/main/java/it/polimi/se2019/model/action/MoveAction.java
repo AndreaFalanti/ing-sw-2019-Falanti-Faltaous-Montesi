@@ -3,13 +3,16 @@ package it.polimi.se2019.model.action;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.action.responses.ActionResponseStrings;
+import it.polimi.se2019.model.action.responses.InvalidActionResponse;
+import it.polimi.se2019.model.action.responses.MessageActionResponse;
+
+import java.util.Optional;
 
 public class MoveAction implements Action {
     private PlayerColor mTarget;
     private Position mDestination;
     private boolean mNormalMove;
-    private ResponseCode mCode;
-    private String message;
 
     /**
      * Simplified constructor for weapon additional effects
@@ -54,73 +57,51 @@ public class MoveAction implements Action {
     }
 
     @Override
-    public boolean isValid(Game game) {
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         Position playerPos = game.getPlayerFromColor(mTarget).getPos();
 
         // can't move player to its precedent position
         if (playerPos.equals(mDestination)) {
-            System.out.println("It's your current position!");
-            this.mCode = ResponseCode.YOU_ARENT_MOVING;
-            return false;
+            return Optional.of(new MessageActionResponse("Can't move in your current position!"));
         }
 
         if (mNormalMove) {
             // player can't move himself if out of actions
             if (game.getRemainingActions() == 0) {
-                System.out.println("Max number of action reached");
-                this.mCode = ResponseCode.NO_ACTION_LEFT;
-                return false;
+                return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
             }
 
             // normal action is only set for active players to move themselves
             if (game.getActivePlayer().getColor() != mTarget) {
-                System.out.println("You can only move yourself");
-                this.mCode = ResponseCode.PERFORMABLE_BY_ACTIVE_PLAYER;
-                return false;
+                return Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
             }
 
+            int moveMaxDistance;
+
+            // set max moves based on actual game state
             // max moves in "normal" state is 3
             if (!game.isFinalFrenzy()) {
-                if(game.getBoard().getTileDistance(playerPos, mDestination) <= 3) {
-                    this.mCode = ResponseCode.OK;
-                    return true;
-                }
-                else {
-                    System.out.println("You can't reach this tile");
-                    this.mCode = ResponseCode.TILE_NOT_REACHABLE;
-                    return false;
-                }
+                moveMaxDistance = 3;
             }
             // you can move 4 tiles if you are before first player in final frenzy status.
             else if (!game.hasFirstPlayerDoneFinalFrenzy()) {
-                    if(game.getBoard().getTileDistance(playerPos, mDestination) <= 4){
-                        this.mCode = ResponseCode.OK;
-                        return true;
-                    }
-                    else {
-                        System.out.println("You can't reach this tile");
-                        this.mCode = ResponseCode.TILE_NOT_REACHABLE;
-                        return false;
-                    }
+                moveMaxDistance = 4;
             }
             // you can't only move if is final frenzy and you are after first player.
             else {
-                System.out.println("You are after the first player and is final frenzy, so you can't move");
-                this.mCode = ResponseCode.CANT_MOVE;
-                return false;
+                return Optional.of(
+                        new MessageActionResponse("You are after the first player and is final frenzy, so you can't move")
+                );
             }
+
+            // check that move distance is equals or less of set parameter
+            return game.getBoard().getTileDistance(playerPos, mDestination) <= moveMaxDistance ?
+                    Optional.empty() : Optional.of(new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE));
         }
         else {
             // maximum distance for "indirect" moves are 3 spaces
-            if(game.getBoard().getTileDistance(playerPos, mDestination) <= 3) {
-                this.mCode = ResponseCode.OK;
-                return true;
-            }
-            else {
-                System.out.println("You can shift a player up to three tiles");
-                this.mCode = ResponseCode.SHIFTING_MAX_THREE;
-                return false;
-            }
+            return game.getBoard().getTileDistance(playerPos, mDestination) <= 3 ?
+                    Optional.empty() : Optional.of(new MessageActionResponse("You can shift a player up to three tiles"));
         }
     }
 
@@ -128,6 +109,4 @@ public class MoveAction implements Action {
     public boolean consumeAction() {
         return mNormalMove;
     }
-
-    public ResponseCode getCode(){return mCode;}
 }

@@ -74,7 +74,7 @@ public class ReloadActionTest {
         }
 
         // 2 action remaining, can't perform reload
-        assertFalse(action1.isValid(game1));
+        assertTrue(action1.getErrorResponse(game1).isPresent());
 
         // set to 0 the remaining actions
         game1.decreaseActionCounter();
@@ -83,29 +83,29 @@ public class ReloadActionTest {
         game2.decreaseActionCounter();
 
         // first weapon can be reloaded
-        assertTrue(action1.isValid(game1));
-        assertTrue(action1.isValid(game2));
+        assertFalse(action1.getErrorResponse(game1).isPresent());
+        assertFalse(action1.getErrorResponse(game2).isPresent());
 
         // first weapon can be reloaded without discarding, also check that if cards are null
         // is not throwing exception in game1
-        assertFalse(action5.isValid(game1));
-        assertFalse(action5.isValid(game2));
+        assertTrue(action5.getErrorResponse(game1).isPresent());
+        assertTrue(action5.getErrorResponse(game2).isPresent());
 
         // second weapon can't be reloaded without discarding (not enough ammo)
-        assertFalse(action2.isValid(game1));
-        assertFalse(action2.isValid(game2));
+        assertTrue(action2.getErrorResponse(game1).isPresent());
+        assertTrue(action2.getErrorResponse(game2).isPresent());
 
         // card discarded don't cover the remaining cost
-        assertFalse(action3.isValid(game2));
+        assertTrue(action3.getErrorResponse(game2).isPresent());
 
         // card discarded cover the remaining cost
-        assertTrue(action4.isValid(game2));
+        assertFalse(action4.getErrorResponse(game2).isPresent());
 
         // trying to reload a null weapon
-        assertFalse(action6.isValid(game1));
+        assertTrue(action6.getErrorResponse(game1).isPresent());
 
         // trying to reload an already loaded weapon
         game1.getActivePlayer().getWeapon(0).setLoaded(true);
-        assertFalse(action1.isValid(game1));
+        assertTrue(action1.getErrorResponse(game1).isPresent());
     }
 }

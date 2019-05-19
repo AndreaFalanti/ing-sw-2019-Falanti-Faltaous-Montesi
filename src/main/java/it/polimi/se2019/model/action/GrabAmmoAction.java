@@ -1,12 +1,16 @@
 package it.polimi.se2019.model.action;
 
 import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.action.responses.ActionResponseStrings;
+import it.polimi.se2019.model.action.responses.InvalidActionResponse;
+import it.polimi.se2019.model.action.responses.MessageActionResponse;
+import it.polimi.se2019.model.action.responses.SelectWeaponRequiredActionResponse;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.Tile;
 
-public class GrabAmmoAction implements GrabAction {
-    private ResponseCode mCode;
+import java.util.Optional;
 
+public class GrabAmmoAction implements GrabAction {
     @Override
     public void perform(Game game) {
         NormalTile tile = (NormalTile)game.getBoard().getTileAt(game.getActivePlayer().getPos());
@@ -20,18 +24,16 @@ public class GrabAmmoAction implements GrabAction {
             if (!player.isFullOfPowerUps()) {
                 PowerUpCard powerUpCard = game.getPowerUpDeck().drawCard();
                 player.addPowerUp(powerUpCard);
-                this.mCode = ResponseCode.OK;
             }
             else {
                 System.out.println("Hand is full, can't draw power up card");
-                this.mCode = ResponseCode.MAX_POWERUPS;
             }
         }
     }
 
     @Override
-    public boolean isValid(Game game) {
-        return isValidAtPos(game, game.getActivePlayer().getPos());
+    public Optional<InvalidActionResponse> getErrorResponse(Game game) {
+        return getErrorMessageAtPos(game, game.getActivePlayer().getPos());
     }
 
     @Override
@@ -40,12 +42,10 @@ public class GrabAmmoAction implements GrabAction {
     }
 
     @Override
-    public boolean isValidAtPos(Game game, Position pos) {
+    public Optional<InvalidActionResponse> getErrorMessageAtPos(Game game, Position pos) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
-            System.out.println("Max number of action reached");
-            this.mCode = ResponseCode.NO_ACTION_LEFT;
-            return false;
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
 
         // see if tile has still an ammo card or it was already picked
@@ -53,22 +53,14 @@ public class GrabAmmoAction implements GrabAction {
         if (tile != null && tile.getTileType().equals("normal")) {
             NormalTile normalTile = (NormalTile) tile;
             if(normalTile.getAmmoCard() == null){
-                System.out.println("This card it is already picked");
-                this.mCode = ResponseCode.ALREADY_PICKED;
-                return false;
+                return Optional.of(new MessageActionResponse("Tile is empty, you can't grab here again"));
             }
             else {
-                System.out.println("Card is picked");
-                this.mCode = ResponseCode.OK;
-                return true;
+                return Optional.empty();
             }
         }
 
         // tile isn't an AmmoTile
-        this.mCode = ResponseCode.NOT_AMMO_TILE;
-        return false;
+        return Optional.of(new SelectWeaponRequiredActionResponse("Select a weapon from spawn tile"));
     }
-
-
-    public ResponseCode getCode(){return mCode;}
 }

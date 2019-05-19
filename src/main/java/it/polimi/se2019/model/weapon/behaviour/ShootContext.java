@@ -1,6 +1,8 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
 import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.action.Action;
+import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
 
 import java.util.*;
@@ -10,15 +12,17 @@ public class ShootContext {
     private static final String MISSING_PLAYER_MSG = "Shooter is not present among provided list of players!";
 
     // fields
-    Board mBoard;
-    Set<Player> mPlayers;
-    PlayerColor mShooterColor;
-    Deque<Expression> mProvidedInfo;
+    private Board mBoard;
+    private Set<Player> mPlayers;
+    private PlayerColor mShooterColor;
+    private final Deque<Expression> mRequestedInfo = new ArrayDeque();
+    private final Deque<Action> mProducedActions = new ArrayDeque();
+    private final Deque<Expression> mCollectedInfo = new ArrayDeque();
 
     // temporary info representing changed game state
     AmmoValue mPayedCost;
     Set<Player> mAffectedPlayres; // only used for keeping track of opponents shoved around by weapon,
-                                  // ergo, only position is interesting
+    // ergo, only position is interesting
 
     // trivial constructors
     public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor) {
@@ -47,20 +51,60 @@ public class ShootContext {
                 .filter(pl -> pl.getColor() == getShooterColor())
                 .findFirst()
                 .orElseThrow(() ->
-                    new IllegalStateException(MISSING_PLAYER_MSG));
+                        new IllegalStateException(MISSING_PLAYER_MSG));
     }
     Position getShooterPosition() {
         return getShooter().getPos();
     }
 
-    // for manipulating stack info
-    public void pushInfo(Expression info) {
-        mProvidedInfo.push(info);
+    // for manipulating actions stack
+    public void pushAction(Action info) {
+        mProducedActions.push(info);
     }
-    public Optional<Expression> popInfo() {
-        if (mProvidedInfo.isEmpty())
+    public Optional<Action> popAction() {
+        if (mProducedActions.isEmpty())
             return Optional.empty();
 
-        return Optional.of(mProvidedInfo.pop());
+        return Optional.of(mProducedActions.pop());
+    }
+
+    // for manipulating collected info stack
+    public void pushCollectedInfo(Expression info) {
+        mCollectedInfo.push(info);
+    }
+    public Optional<Expression> popCollectedInfo() {
+        if (mCollectedInfo.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(mCollectedInfo.pop());
+    }
+
+    // for manipulating requested info stack
+    public void pushRequestedInfo(Expression info) {
+        mRequestedInfo.push(info);
+    }
+    public Optional<Expression> popInfo() {
+        if (mRequestedInfo.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(mRequestedInfo.pop());
+    }
+
+    // true if context is complete, and thus does not need any additional info for generating shoot
+    public boolean isComplete() {
+        return mRequestedInfo.isEmpty();
+    }
+
+    // get the resulting shoot action
+    public Action getResultingAction() {
+        return new WeaponAction(mProducedActions.stream()
+                .toArray(Action[]::new)
+        );
+    }
+
+    // request info
+    public Expression requestInfo(Expression info) {
+        return popCollectedInfo().orElseGet(() -> new WaitForInfo());
     }
 }
+

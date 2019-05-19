@@ -7,7 +7,6 @@ public final class AmmoPayment {
     private AmmoPayment() {
     }
 
-    // TODO: maybe Exception is unneeded?
     public static void payCost (Player player, AmmoValue cost, boolean[] discardedCards) {
         if (player == null || cost == null || discardedCards == null) {
             throw new IllegalArgumentException("null values in method payCost");
@@ -19,7 +18,7 @@ public final class AmmoPayment {
 
     public static boolean isValid (Player player, AmmoValue cost, boolean[] discardedCards) {
         if (player == null || cost == null || discardedCards == null) {
-            throw new IllegalArgumentException("null values in method isValid");
+            throw new IllegalArgumentException("null values in method getErrorResponse");
         }
 
         AmmoValue playerAmmo = player.getAmmo();
