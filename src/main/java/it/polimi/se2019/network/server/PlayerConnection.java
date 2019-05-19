@@ -1,22 +1,15 @@
 package it.polimi.se2019.network.server;
 
-import java.net.Socket;
+import java.io.Serializable;
 
-public class PlayerConnection {
+public class PlayerConnection implements Serializable {
     //private View mVirtualView;
-    private String mIp;
+    private String mUsername;
     private boolean mActive;
-    // null if rmi, else will be filled in constructor
-    private PlayerSocket mPlayerSocket = null;
+    // TODO: add connection type so that server can send message to clients
 
-    public PlayerConnection(Socket socket) {
-        mPlayerSocket = new PlayerSocket(socket);
-        mIp = socket.getRemoteSocketAddress().toString();
-        mActive = true;
-    }
-
-    public PlayerConnection(String ip) {
-        ip = ip;
+    public PlayerConnection(String username) {
+        mUsername = username;
         mActive = true;
     }
 
@@ -24,22 +17,18 @@ public class PlayerConnection {
         return mVirtualView;
     }*/
 
-    public String getIp() {
-        return mIp;
+    public String getUsername() {
+        return mUsername;
     }
 
     public boolean isActive() {
         return mActive;
     }
 
-    public PlayerSocket getPlayerSocket() {
-        return mPlayerSocket;
-    }
-
     @Override
     public String toString() {
         return "PlayerConnection{" +
-                "mIp='" + mIp + '\'' +
+                "Username='" + mUsername + '\'' +
                 '}';
     }
 }

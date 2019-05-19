@@ -2,6 +2,7 @@ package it.polimi.se2019.network.client;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class LaunchClient {
@@ -19,23 +20,34 @@ public class LaunchClient {
         System.out.println("Choose client connection type: ");
         System.out.println("Press 1 for socket");
         System.out.println("Press 2 for rmi");
-        System.out.println(">> ");
+        System.out.print(">> ");
 
-        int result;
+        int result = -1;
         boolean validCmd;
         do {
-            result = scanner.nextInt();
-            if (result < 1 || result > 2) {
-                System.out.println("Invalid input");
-                System.out.println("\n>> ");
-                validCmd = false;
+            try {
+                result = scanner.nextInt();
+                if (result < 1 || result > 2) {
+                    System.out.println("Invalid input");
+                    System.out.print("\n>> ");
+                    validCmd = false;
+                }
+                else {
+                    validCmd = true;
+                }
             }
-            else {
-                validCmd = true;
+            catch (InputMismatchException e) {
+                System.out.println("Choose a number please");
+                System.out.print("\n>> ");
+                // flush remaining \n in buffer
+                scanner.next();
+                validCmd = false;
             }
         } while (!validCmd);
 
-        Client client;
+        // TODO: choose type of view
+
+        ClientInterface client;
         switch (result) {
             case 1:
                 client = new SocketClient(host, socketPort);
@@ -48,9 +60,5 @@ public class LaunchClient {
         }
 
         client.run();
-
-        // TODO: choose type of view
-
-        //Client client = new Client(host, port);
     }
 }
