@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -104,16 +105,16 @@ public abstract class Expression {
                 List<Expression> subexprList = (List<Expression>) field.get(this);
 
                 // get evaluation results of all subexpressions
-                Stream<EvalResult> evalResults = subexprList.stream()
+                Supplier<Stream<EvalResult>> evalResults = () -> subexprList.stream()
                         .map(subexpr -> subexpr.evalToEvalResult(shootContext));
 
                 // update class members containing subexpressions
-                field.set(this, evalResults.map(res -> res.evaluatedExpression)
+                field.set(this, evalResults.get().map(res -> res.evaluatedExpression)
                         .collect(Collectors.toList()));
 
                 // find out if evaluation should be continued
-                shouldStopEval |= evalResults.
-                        anyMatch(res -> res.shouldStopEval || res.evaluatedExpression instanceof WaitForInfo);
+                shouldStopEval |= evalResults.get()
+                        .anyMatch(res -> res.shouldStopEval || res.evaluatedExpression instanceof WaitForInfo);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("LOGIC ERROR: could not access accessible field");
             } catch (ClassCastException e) {
@@ -162,13 +163,13 @@ public abstract class Expression {
      * Simple utility class to contain the result of eval
      */
     private static class EvalResult {
-        public EvalResult(boolean shouldStopEval, Expression evaluatedExpression) {
+        EvalResult(boolean shouldStopEval, Expression evaluatedExpression) {
             this.shouldStopEval = shouldStopEval;
             this.evaluatedExpression = evaluatedExpression;
         }
 
-        public boolean shouldStopEval = false;
-        public Expression evaluatedExpression = null;
+        boolean shouldStopEval = false;
+        Expression evaluatedExpression = null;
     }
     // TODO: add doc
     private final EvalResult evalToEvalResult(ShootContext shootContext) {
