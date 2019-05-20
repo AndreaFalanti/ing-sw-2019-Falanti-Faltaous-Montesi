@@ -3,10 +3,7 @@ package it.polimi.se2019.resource_handler;
 import it.polimi.se2019.util.JsonString;
 import org.junit.Test;
 
-import java.util.function.BiPredicate;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ResourceHandlerTest {
     @Test
@@ -16,7 +13,7 @@ public class ResourceHandlerTest {
 
         resourceHandler.registerResource(
                 JsonResource::loadFromPath,
-                "resources/json/tests/test.json", "testJsonString");
+                "src/main/resources/json/tests/test.json", "testJsonString");
 
         String expectedJsonString = "" +
                 "{\n" +
