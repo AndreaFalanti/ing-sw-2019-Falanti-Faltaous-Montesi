@@ -64,7 +64,7 @@ public class SocketClient extends Client {
     }
 
     @Override
-    public void receiveMessage() {
-
+    public String receiveMessage() {
+        return null;
     }
 }

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.se2019.view.gui.MainScreen">
+   <children>
+      <ImageView fitHeight="565.0" fitWidth="750.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+         <image>
+            <Image url="@../images/boards/board1.png" />
+         </image>
+      </ImageView>
+      <Pane layoutX="-20.0" layoutY="508.0" prefHeight="188.0" prefWidth="750.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0">
+         <children>
+            <ImageView fitHeight="184.0" fitWidth="764.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/playerBoards/playerBoardYellow.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="184.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/playerBoards/actionTileUpYellow.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <SplitPane dividerPositions="0.5, 0.5, 0.5" layoutX="799.0" layoutY="11.0" orientation="VERTICAL" prefHeight="388.0" prefWidth="102.0">
+        <items>
+            <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
+        </items>
+      </SplitPane>
+      <GridPane hgap="10.0" layoutX="819.0" layoutY="492.0" prefHeight="245.0" prefWidth="338.0" vgap="10.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <ImageView fitHeight="120.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/cards/AD_powerups_IT_022.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="120.0" fitWidth="70.0" layoutX="28.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+               <image>
+                  <Image url="@../images/cards/AD_powerups_IT_022.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="120.0" fitWidth="70.0" layoutX="10.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+               <image>
+                  <Image url="@../images/cards/AD_powerups_IT_022.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="120.0" fitWidth="67.0" layoutX="240.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
+               <image>
+                  <Image url="@../images/cards/AD_weapons_IT_0213.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="120.0" fitWidth="70.0" layoutX="10.0" layoutY="142.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <image>
+                  <Image url="@../images/cards/AD_weapons_IT_0218.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="120.0" fitWidth="70.0" layoutX="125.0" layoutY="142.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <image>
+                  <Image url="@../images/cards/AD_weapons_IT_027.png" />
+               </image>
+            </ImageView>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
