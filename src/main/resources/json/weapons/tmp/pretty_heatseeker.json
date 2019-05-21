@@ -1,0 +1,24 @@
+{
+  "name" : "heatseeker",
+  "reloadCost" : {
+    "red" : 2,
+    "yellow" : 1,
+    "blue" : 0
+  },
+  "grabCost" : {
+    "red" : 1,
+    "yellow" : 1,
+    "blue" : 0
+  },
+  "primary" : {
+    "expr" : "InflictDamage",
+    "damage" : [1, 0],
+    "targets" : {
+      "expr" : "NegateSelection",
+      "do" : {
+        "expr" : "CanSee"
+      }
+    }
+  }
+}
+

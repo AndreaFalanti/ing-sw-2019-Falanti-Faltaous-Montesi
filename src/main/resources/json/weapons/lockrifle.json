@@ -1,0 +1,46 @@
+{
+  "name" : "heatseeker",
+  "reloadCost" : {
+    "red" : 0,
+    "yellow" : 0,
+    "blue" : 2
+  },
+  "grabCost" : {
+    "red" : 0,
+    "yellow" : 0,
+    "blue" : 1
+  },
+  "primary" : {
+    "expr" : "InflictDamage",
+    "damage" : {
+      "expr" : "DamageLiteral",
+      "contents" : {
+        "damage" : 3,
+        "marksNum" : 0
+      }
+    },
+    "to" : {
+      "expr" : "SelectOneTarget",
+      "from" : {
+        "expr" : "CanSee"
+      }
+    }
+  },
+  "secondary" : {
+    "expr" : "InflictDamage",
+    "damage" : {
+      "expr" : "DamageLiteral",
+      "contents" : {
+        "damage" : 0,
+        "marksNum" : 1,
+      }
+    },
+    "to" : {
+      "expr" : "AnotherOne",
+      "from" : {
+        "expr" : "CanSee"
+      }
+    }
+  }
+}
+
