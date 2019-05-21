@@ -6,7 +6,7 @@ import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.view.requests.LeaderboardRequest;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -43,6 +43,7 @@ public class CLIView extends View {
 
     }
 
+
     public void availableCommands(){
         System.out.println("These are the possible commands:");
         System.out.println("\t" + MOVE_ACTION);
@@ -67,7 +68,7 @@ public class CLIView extends View {
         interact();
     }
 
-
+    @Override
     public void commandAction (String command,String otherCommandPart) {
         Action action = null;
         int index;
@@ -82,11 +83,11 @@ public class CLIView extends View {
                 action = new MoveGrabAction(ownerColor, parseDestination(otherCommandPart));
                 break;
             case "shoot":
-                action = new MoveShootAction(ownerColor, parseDestination(otherCommandPart));
+                action = new MoveShootAction(ownerColor, parseDestination(otherCommandPart));// to complete
                 break;
             case "reloadshoot":
                 index = reloadInteraction(owner.getWeapons());
-                action = new MoveReloadShootAction(ownerColor, parseDestination(otherCommandPart), index);
+                action = new MoveReloadShootAction(ownerColor, parseDestination(otherCommandPart), index);//<----tochange
                 break;
             default:
                 index = reloadInteraction(owner.getWeapons());
@@ -97,16 +98,22 @@ public class CLIView extends View {
         notifyController();
     }
 
-    public Position parseInformationOnDestination(Position[] pos){
+    @Override
+    public Position parseInformationOnDestination(List<Position> pos){
         Scanner scanner = null;
 
-        System.out.println("Write one of these coordinates" + Arrays.toString(pos));
-        String destination = anotherInteraction();
+        System.out.println("Write one of these coordinates");
+        for(Position position: pos)
+            System.out.println(position.getX()+" "+position.getY());
+        String destination = requestAdditionalInfo();
 
         return  parseDestination(destination);
     }
 
+
     public Position parseDestination(String destination){
+        Position pos = null;
+        boolean isValid = false ;
 
         String coordTogether = destination.replaceAll("\\D","");
         String[] coord = coordTogether.split("");
@@ -115,17 +122,57 @@ public class CLIView extends View {
             return new Position(-1,-1);
         }
 
-        return new Position(Integer.parseInt(coord[0]),Integer.parseInt(coord[1]));
+        do {
+            try {
+                pos = new Position(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
+                isValid = true;
+            } catch (NumberFormatException e) {
+                System.err.println("Uncorrect insertion. Please insert coord: ");
+            }
+        } while(!isValid);
 
+        return pos;
     }
 
+    @Override
     public int parseWeaponInformation(Weapon[] weapons){
+        int index;
+        boolean isValid = true;
 
-        System.out.println("Type the index of the weapon you want" + Arrays.toString(weapons));
-        //to complete
-        return 0;
+        System.out.print("Type the index of the weapon you want ");
+        for(Weapon weapon : weapons)
+            System.out.print(weapon.getName());
+
+        do{
+            try{
+                Integer.parseInt(requestAdditionalInfo());
+                isValid = false;
+            }catch(NumberFormatException e){
+                System.err.println("non va");
+            }
+        }while(isValid);
+
+        return  Integer.parseInt(requestAdditionalInfo());//throws exception if is not a number
     }
 
+    @Override
+    public Integer weaponPlayerController(){
+        System.out.print("Type the index of the weapon you want exchange");
+        weaponPlayer();
+        try {
+            return Integer.parseInt(requestAdditionalInfo());//throws exception if is not a number
+        }catch(NumberFormatException e){
+            return Integer.parseInt(requestAdditionalInfo());//throws exception if is not a number
+        }
+    }
+
+    @Override
+    public void weaponPlayer(){
+        for(Weapon weapon : owner.getWeapons())
+            System.out.print(weapon.getName());
+    }
+
+    @Override
     public int reloadInteraction(Weapon[] weapons){
         int index= -1;
 
@@ -145,12 +192,13 @@ public class CLIView extends View {
         return index;
     }
 
+    @Override
     public void easyCommand(String command){
 
         switch(command){
             case "leaderboard": new LeaderboardRequest();  break;
-            case "players"    : System.out.println(mPlayers); break;
-            case "weapons"    : System.out.println(Arrays.toString(owner.getWeapons())); break;
+            case "players"    : System.out.println(mPlayers); break;// to complete
+            case "weapons"    : weaponPlayer(); break;
             case "ammo"       : System.out.println(owner.getAmmo()); break;
             case "board"      : break;
             case "undo"       : deleteRequest();  break;
@@ -159,6 +207,7 @@ public class CLIView extends View {
         }
     }
 
+    @Override
     public void parseCommand(String command) {
 
         command = command.toLowerCase();
@@ -179,8 +228,8 @@ public class CLIView extends View {
         System.out.println("Command not available."+ HELP);
     }
 
-
-    public String anotherInteraction(){
+    @Override
+    public String requestAdditionalInfo(){
         Scanner scanner = new Scanner(System.in);
         String command = "" ;
         while (!command.equals("quit")) {
@@ -221,12 +270,9 @@ public class CLIView extends View {
 
     @Override
     public void interact(){
-        Scanner scanner = new Scanner(System.in);
-        String command = "" ;
-        while (!command.equals("quit")) {
-            command = scanner.nextLine();
-            parseCommand(command);
-        }
+        String command = requestAdditionalInfo();
+        parseCommand(command);
+
     }
 
  //   public static void main(String[] args){
