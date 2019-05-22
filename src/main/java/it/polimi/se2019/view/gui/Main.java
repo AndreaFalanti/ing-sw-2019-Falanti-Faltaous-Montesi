@@ -11,9 +11,13 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/mainScreen.fxml"));
-        primaryStage.setTitle("Main screen");
-        primaryStage.setScene(new Scene(root));
-        primaryStage.setFullScreen(true);
+        primaryStage.setTitle("Adrenalina");
+        primaryStage.setResizable(false);
+        primaryStage.setAlwaysOnTop(true);
+        Scene scene = new Scene(root);
+        //scene.getStylesheets().add(getClass().getResource("/css/button.css").toExternalForm());
+        primaryStage.setScene(scene);
+        //primaryStage.setFullScreen(true);
         primaryStage.show();
     }
 
