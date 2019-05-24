@@ -103,6 +103,40 @@
                   <Image url="@../images/cards/AD_powerups_IT_02.png" />
                </image>
             </ImageView>
+            <HBox layoutX="50.0" layoutY="27.0" prefHeight="39.0" prefWidth="240.0">
+               <children>
+                  <ImageView fitHeight="41.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/skull.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="41.0" fitWidth="32.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/skull.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="41.0" fitWidth="32.0" layoutX="40.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/skull.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="41.0" fitWidth="32.0" layoutX="70.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/skull.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="41.0" fitWidth="32.0" layoutX="100.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/skull.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="41.0" fitWidth="32.0" layoutX="130.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/skull.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
          </children>
       </AnchorPane>
       <AnchorPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0">
@@ -186,6 +220,30 @@
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
+            </HBox>
+            <HBox layoutX="147.0" layoutY="75.0" prefHeight="55.0" prefWidth="231.0" AnchorPane.bottomAnchor="0.0">
+               <children>
+                  <ImageView fitHeight="52.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/skull.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="52.0" fitWidth="46.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/skull.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="52.0" fitWidth="46.0" layoutX="48.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/skull.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="52.0" fitWidth="46.0" layoutX="86.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/skull.png" />
+                     </image>
+                  </ImageView>
+               </children>
             </HBox>
          </children>
       </AnchorPane>
