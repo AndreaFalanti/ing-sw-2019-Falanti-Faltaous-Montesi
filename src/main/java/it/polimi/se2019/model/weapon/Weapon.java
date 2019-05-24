@@ -7,10 +7,12 @@ import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.weapon.behaviour.Expression;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
+import it.polimi.se2019.model.weapon.behaviour.ShootResult;
 import it.polimi.se2019.model.weapon.serialization.CustomPrimaryEffectAdapter;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Exclude;
 
+import javax.net.ssl.SNIHostName;
 import java.util.*;
 
 public class Weapon {
@@ -82,18 +84,14 @@ public class Weapon {
     }
 
     // TODO: add doc
-    public Optional<Action> shoot(ShootContext shootContext) {
-        // TODO: make choice of secondary and additional effects possible
+    // TODO: implement this better
+    public ShootResult shoot(ShootContext shootContext) {
         Expression result = mPrimaryEffect.getBehaviour().eval(shootContext);
 
-        // TODO: consider doing this instead:
-        // if (result.isAction())
-            // return Optional.of(result.asAction());
-
         if (shootContext.isComplete())
-            return Optional.of(shootContext.getResultingAction());
-
-        return Optional.empty();
+            return ShootResult.asAction(shootContext.getResultingAction());
+        else
+            return ShootResult.asResponse(null);
     }
 
     public static List<Weapon> returnDeckFromJson(String json) {
