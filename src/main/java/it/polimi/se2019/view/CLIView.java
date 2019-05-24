@@ -6,7 +6,7 @@ import it.polimi.se2019.model.PowerUpCard;
 import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.weapon.Weapon;
-import it.polimi.se2019.view.requests.LeaderboardRequest;
+import it.polimi.se2019.view.request.LeaderboardRequest;
 
 import java.util.List;
 import java.util.Scanner;

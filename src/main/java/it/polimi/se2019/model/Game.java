@@ -323,7 +323,7 @@ public class Game extends Observable<Update> {
     }
 
     /**
-     * Called on turn end, handle all mechanics and rules that activate at turn's end.
+     * Called on turn end, handleMe all mechanics and rules that activate at turn's end.
      */
     public void onTurnEnd () {
         // counter that indicates how many kills the active player has done

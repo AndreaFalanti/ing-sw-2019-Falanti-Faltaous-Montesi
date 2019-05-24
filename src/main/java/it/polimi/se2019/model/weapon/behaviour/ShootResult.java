@@ -1,6 +1,6 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-import it.polimi.se2019.controller.responses.Response;
+import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.model.action.Action;
 
 import java.util.Optional;
