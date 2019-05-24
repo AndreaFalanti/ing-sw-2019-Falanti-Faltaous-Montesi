@@ -1,5 +1,5 @@
 package it.polimi.se2019.util;
 
-public interface Observer {
-
+public interface Observer<Message> {
+    void update(Message message);
 }

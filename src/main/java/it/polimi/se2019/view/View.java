@@ -4,6 +4,7 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
@@ -11,7 +12,7 @@ import it.polimi.se2019.util.Observer;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class View implements Observable, Observer {
+public abstract class View extends Observable<RequestMessage> implements Observer<Update> {
 
     protected ArrayList<Player> mPlayers;
     private Board board;

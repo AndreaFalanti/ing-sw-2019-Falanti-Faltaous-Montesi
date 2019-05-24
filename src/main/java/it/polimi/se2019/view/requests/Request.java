@@ -5,6 +5,6 @@ import it.polimi.se2019.controller.responses.Response;
 
 import java.io.Serializable;
 
-public interface Request extends Serializable {
-    Response handle (RequestHandler handler);
+public interface Request {
+    Response handleMe(RequestHandler handler);
 }

@@ -4,6 +4,7 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.PowerUpCard;
 import it.polimi.se2019.model.action.*;
+import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.view.requests.LeaderboardRequest;
 
@@ -295,6 +296,11 @@ public class CLIView extends View {
     public void interact(){
         String command = requestAdditionalInfo();
         parseCommand(command);
+
+    }
+
+    @Override
+    public void update(Update update) {
 
     }
 

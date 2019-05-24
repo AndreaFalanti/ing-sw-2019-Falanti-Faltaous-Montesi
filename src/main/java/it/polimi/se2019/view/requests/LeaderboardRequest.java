@@ -8,7 +8,7 @@ public class LeaderboardRequest implements Request {
     }
 
     @Override
-    public Response handle(RequestHandler handler) {
+    public Response handleMe(RequestHandler handler) {
         return handler.handle(this);
     }
 }

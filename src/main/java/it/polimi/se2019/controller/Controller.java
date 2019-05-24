@@ -9,13 +9,10 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.View;
-import it.polimi.se2019.view.requests.GrabRequest;
-import it.polimi.se2019.view.requests.LeaderboardRequest;
-import it.polimi.se2019.view.requests.ReloadRequest;
-import it.polimi.se2019.view.requests.ValidMoveRequest;
+import it.polimi.se2019.view.requests.*;
 
 
-public class Controller implements Observer, RequestHandler {
+public class Controller implements Observer<Request>, RequestHandler {
 
     private Game mGame;
     private PerformPlayerAction mPerform;//change name
@@ -69,5 +66,10 @@ public class Controller implements Observer, RequestHandler {
     @Override
     public Response handle(MessageActionResponse request) {
         return null;
+    }
+
+    @Override
+    public void update(Request request) {
+        request.handleMe(this);
     }
 }

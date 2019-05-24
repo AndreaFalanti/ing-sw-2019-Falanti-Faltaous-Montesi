@@ -1,6 +1,7 @@
 package it.polimi.se2019.view;
 
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.weapon.Weapon;
 
 import java.util.List;
@@ -73,6 +74,11 @@ public class RmiVirtualView extends View {
 
     @Override
     public void interact() {
+
+    }
+
+    @Override
+    public void update(Update update) {
 
     }
 }
