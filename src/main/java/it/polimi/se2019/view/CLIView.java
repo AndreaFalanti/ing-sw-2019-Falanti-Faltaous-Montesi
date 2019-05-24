@@ -2,6 +2,7 @@ package it.polimi.se2019.view;
 
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.PowerUpCard;
 import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.view.requests.LeaderboardRequest;
@@ -87,7 +88,7 @@ public class CLIView extends View {
                 break;
             case "reloadshoot":
                 index = reloadInteraction(owner.getWeapons());
-                action = new MoveReloadShootAction(ownerColor, parseDestination(otherCommandPart), index);//<----tochange
+                action = new MoveReloadShootAction(ownerColor, parseDestination(otherCommandPart),index);//<----tochange
                 break;
             default:
                 index = reloadInteraction(owner.getWeapons());
@@ -136,8 +137,8 @@ public class CLIView extends View {
 
     @Override
     public int parseWeaponInformation(Weapon[] weapons){
-        int index;
-        boolean isValid = true;
+        Integer index = null;
+        boolean isValid = false;
 
         System.out.print("Type the index of the weapon you want ");
         for(Weapon weapon : weapons)
@@ -145,25 +146,34 @@ public class CLIView extends View {
 
         do{
             try{
-                Integer.parseInt(requestAdditionalInfo());
-                isValid = false;
+                index = Integer.parseInt(requestAdditionalInfo());
+                isValid = true;
             }catch(NumberFormatException e){
-                System.err.println("non va");
+                System.err.println("Is not a number. Please type the index of the weapon that you want");
             }
-        }while(isValid);
+        }while(!isValid);
 
-        return  Integer.parseInt(requestAdditionalInfo());//throws exception if is not a number
+        return index;
     }
 
     @Override
     public Integer weaponPlayerController(){
+        Integer index = null;
+        boolean isValid = false;
+
         System.out.print("Type the index of the weapon you want exchange");
         weaponPlayer();
-        try {
-            return Integer.parseInt(requestAdditionalInfo());//throws exception if is not a number
-        }catch(NumberFormatException e){
-            return Integer.parseInt(requestAdditionalInfo());//throws exception if is not a number
-        }
+
+        do{
+            try{
+                index = Integer.parseInt(requestAdditionalInfo());
+                isValid = true;
+            }catch(NumberFormatException e){
+                System.err.println("Is not a number. Please type the index of the weapon that you want exchange");
+            }
+        }while(!isValid);
+
+        return index;
     }
 
     @Override
@@ -175,6 +185,7 @@ public class CLIView extends View {
     @Override
     public int reloadInteraction(Weapon[] weapons){
         int index= -1;
+        boolean isValid = false;
 
         System.out.println("Choose the index of a weapon to reload :" );
         for(Weapon weapon : weapons){
@@ -182,13 +193,17 @@ public class CLIView extends View {
             if(!weapon.isLoaded())
                 System.out.println("<-- to load");
         }
-        Scanner scanner = new Scanner(System.in);
-        try {
-            index = scanner.nextInt();
-            return index;
-        }catch(NumberFormatException e) {
-            System.err.println("Incorrect entry");
+
+        do {
+            try {
+                index = Integer.parseInt(requestAdditionalInfo());
+                isValid = true;
+            }catch(NumberFormatException e) {
+                System.err.println("Incorrect entry.Which weapon do you want to reload?");
+            }
         }
+        while(!isValid);
+
         return index;
     }
 
@@ -199,13 +214,21 @@ public class CLIView extends View {
             case "leaderboard": new LeaderboardRequest();  break;
             case "players"    : System.out.println(mPlayers); break;// to complete
             case "weapons"    : weaponPlayer(); break;
-            case "ammo"       : System.out.println(owner.getAmmo()); break;
+            case "power"      : powerPlayer(); break;
+            case "ammo"       : System.out.println(owner.getAmmo().toString()); break;
             case "board"      : break;
             case "undo"       : deleteRequest();  break;
             case "help"       : availableCommands(); break;
             default           : System.out.println("quit");break;//to change
         }
     }
+
+    public void powerPlayer(){
+        for (PowerUpCard power: owner.getPowerUps())
+            System.out.println(power.getName() + " " + power.getColor() + " " + power.getAmmoValue().toString() );
+    }
+
+
 
     @Override
     public void parseCommand(String command) {
