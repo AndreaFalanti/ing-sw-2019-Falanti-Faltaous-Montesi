@@ -1,6 +1,6 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-import it.polimi.se2019.model.weapon.request.TargetSelectionRequest;
+import it.polimi.se2019.model.weapon.response.TargetSelectionResponse;
 
 import java.util.Optional;
 
@@ -25,9 +25,9 @@ public class SelectTargets extends Expression {
         // check if needed info is available
         Optional<Expression> neededInfo = shootContext.popCollectedInfo();
 
-        // if not available, request it and wait for it
+        // if not available, response it and wait for it
         if (!neededInfo.isPresent()) {
-            shootContext.pushRequestedInfo(new RequestLiteral(new TargetSelectionRequest(
+            shootContext.pushRequestedInfo(new RequestLiteral(new TargetSelectionResponse(
                     mMin.asInt(),
                     mMax.asInt(),
                     mFrom.asTargetSelection()

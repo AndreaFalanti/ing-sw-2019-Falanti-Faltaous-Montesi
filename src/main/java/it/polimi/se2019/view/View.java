@@ -26,9 +26,9 @@ public abstract class View implements Observable, Observer {
 
     public abstract void updatePlayers();
 
-    public abstract void commandAction (String command,String otherCommandPart);//to distinguish and make request for an action
+    public abstract void commandAction (String command,String otherCommandPart);//to distinguish and make response for an action
 
-    public abstract Position parseInformationOnDestination(List<Position> pos);//used from controller to request more info on destination
+    public abstract Position parseInformationOnDestination(List<Position> pos);//used from controller to response more info on destination
 
     public abstract int parseWeaponInformation(Weapon[] weapons);// the weapon index that you want to grab
 
@@ -42,7 +42,7 @@ public abstract class View implements Observable, Observer {
 
     public abstract void parseCommand(String command);//to distinguish the type of command
 
-    public abstract String requestAdditionalInfo();//used to request more information about action
+    public abstract String requestAdditionalInfo();//used to response more information about action
 
 
 

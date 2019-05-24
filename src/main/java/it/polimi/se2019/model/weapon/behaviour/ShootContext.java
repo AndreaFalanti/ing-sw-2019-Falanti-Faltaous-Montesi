@@ -102,7 +102,7 @@ public class ShootContext {
         );
     }
 
-    // request info
+    // response info
     public Expression requestInfo(Expression info) {
         return popCollectedInfo().orElseGet(() -> new WaitForInfo());
     }

@@ -1,14 +1,14 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-import it.polimi.se2019.model.weapon.request.Request;
+import it.polimi.se2019.model.weapon.response.WeaponResponse;
 
-public class RequestLiteral extends Literal<Request> {
-    public RequestLiteral(Request contents) {
+public class RequestLiteral extends Literal<WeaponResponse> {
+    public RequestLiteral(WeaponResponse contents) {
         super(contents);
     }
 
     @Override
-    Request asRequest() {
+    WeaponResponse asRequest() {
         return getPrimitive();
     }
 }
