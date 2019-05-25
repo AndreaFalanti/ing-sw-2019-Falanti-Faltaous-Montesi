@@ -13,11 +13,9 @@ import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -59,7 +57,7 @@ public class WeaponsTest {
         assertTrue(result.isComplete());
 
         // test that action is correct
-        Action actual = result.asAction();
+        Action actual = result.fromAction();
         Action expected = new WeaponAction(
                 new DamageAction(
                         PlayerColor.PURPLE,

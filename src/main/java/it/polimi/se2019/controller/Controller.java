@@ -69,10 +69,10 @@ public class Controller implements Observer<Request>, RequestHandler {
         ShootResult result = mCurrentShootContext.eval();
 
         if (result.isComplete()) {
-            result.asAction().perform(mGame);
+            result.fromAction().perform(mGame);
         }
         else {
-            Request request = mView.handle(result.asResponse());
+            Request request = mView.handle(result.fromResponse());
             request.handleMe(this);
         }
     }

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.weapon.behaviour.Expression;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.model.weapon.behaviour.ShootResult;
@@ -12,7 +11,6 @@ import it.polimi.se2019.model.weapon.serialization.CustomPrimaryEffectAdapter;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Exclude;
 
-import javax.net.ssl.SNIHostName;
 import java.util.*;
 
 public class Weapon {
@@ -89,9 +87,9 @@ public class Weapon {
         Expression result = mPrimaryEffect.getBehaviour().eval(shootContext);
 
         if (shootContext.isComplete())
-            return ShootResult.asAction(shootContext.getResultingAction());
+            return ShootResult.fromAction(shootContext.getResultingAction());
         else
-            return ShootResult.asResponse(null);
+            return ShootResult.fromResponse(null);
     }
 
     public static List<Weapon> returnDeckFromJson(String json) {

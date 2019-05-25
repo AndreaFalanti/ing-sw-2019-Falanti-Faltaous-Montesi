@@ -20,11 +20,11 @@ public class ShootResult {
         mActionValue = Optional.empty();
     }
 
-    public static ShootResult asAction(Action action) {
+    public static ShootResult fromAction(Action action) {
         return new ShootResult(action);
     }
 
-    public static ShootResult asResponse(Response response) {
+    public static ShootResult fromResponse(Response response) {
         return new ShootResult(response);
     }
 
@@ -35,14 +35,14 @@ public class ShootResult {
         return mActionValue.isPresent();
     }
 
-    public Action asAction() {
+    public Action fromAction() {
         if (!isComplete())
             throw new UnsupportedOperationException("Cannot interpret incomplete shoot result as an action!");
 
         return mActionValue.get();
     }
 
-    public Response asResponse() {
+    public Response fromResponse() {
          if (isComplete())
             throw new UnsupportedOperationException("Cannot interpret complete shoot result as a response!");
 
