@@ -4,7 +4,10 @@ import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.weapon.Weapon;
 
+import javax.swing.text.html.Option;
+import java.awt.image.ShortLookupTable;
 import java.util.*;
 
 public class ShootContext {
@@ -15,9 +18,7 @@ public class ShootContext {
     private Board mBoard;
     private Set<Player> mPlayers;
     private PlayerColor mShooterColor;
-    private final Deque<Expression> mRequestedInfo = new ArrayDeque();
-    private final Deque<Action> mProducedActions = new ArrayDeque();
-    private final Deque<Expression> mCollectedInfo = new ArrayDeque();
+    private Optional<Expression> mCurrentExpression;
 
     // temporary info representing changed game state
     AmmoValue mPayedCost;
@@ -25,7 +26,7 @@ public class ShootContext {
     // ergo, only position is interesting
 
     // trivial constructors
-    public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor) {
+    public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor, Expression weaponBehaviour) {
         // safety check to assure that shooter is present among provided players
         if (!players.stream().anyMatch(pl -> pl.getColor() == shooterColor))
             throw new IllegalArgumentException(MISSING_PLAYER_MSG);
@@ -34,6 +35,22 @@ public class ShootContext {
         mBoard = board;
         mPlayers = players;
         mShooterColor = shooterColor;
+        mCurrentExpression = Optional.ofNullable(weaponBehaviour);
+    }
+    public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor) {
+        this(board, players, shooterColor, null);
+    }
+
+    // internal eval used to eval current expression and keep track of it during shooting
+    public ShootResult eval() {
+        Expression expressionResult = mCurrentExpression.orElseThrow(
+                () -> new UnsupportedOperationException("Trying to call eval on a context with no associated expression!")
+        ).eval(this);
+
+        if (expressionResult.isDone())
+            return ShootResult.fromAction(mCurrentShootAction);
+        else
+            return ShootResult.fromRequest();
     }
 
     // trivial getters
@@ -55,56 +72,6 @@ public class ShootContext {
     }
     Position getShooterPosition() {
         return getShooter().getPos();
-    }
-
-    // for manipulating actions stack
-    public void pushAction(Action info) {
-        mProducedActions.push(info);
-    }
-    public Optional<Action> popAction() {
-        if (mProducedActions.isEmpty())
-            return Optional.empty();
-
-        return Optional.of(mProducedActions.pop());
-    }
-
-    // for manipulating collected info stack
-    public void pushCollectedInfo(Expression info) {
-        mCollectedInfo.push(info);
-    }
-    public Optional<Expression> popCollectedInfo() {
-        if (mCollectedInfo.isEmpty())
-            return Optional.empty();
-
-        return Optional.of(mCollectedInfo.pop());
-    }
-
-    // for manipulating requested info stack
-    public void pushRequestedInfo(Expression info) {
-        mRequestedInfo.push(info);
-    }
-    public Optional<Expression> popInfo() {
-        if (mRequestedInfo.isEmpty())
-            return Optional.empty();
-
-        return Optional.of(mRequestedInfo.pop());
-    }
-
-    // true if context is complete, and thus does not need any additional info for generating shoot
-    public boolean isComplete() {
-        return mRequestedInfo.isEmpty();
-    }
-
-    // get the resulting shoot action
-    public Action getResultingAction() {
-        return new WeaponAction(mProducedActions.stream()
-                .toArray(Action[]::new)
-        );
-    }
-
-    // response info
-    public Expression requestInfo(Expression info) {
-        return popCollectedInfo().orElseGet(() -> new WaitForInfo());
     }
 }
 
