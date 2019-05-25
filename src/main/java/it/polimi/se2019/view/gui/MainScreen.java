@@ -12,7 +12,15 @@ public class MainScreen {
     private Pane playerPane;
 
     public void loadBoard (PlayerColor color) throws IOException {
-        Pane newLoadedPane =  FXMLLoader.load(getClass().getResource("/fxml/playerPane.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/playerPane.fxml"));
+        Pane newLoadedPane =  loader.load();
+
+        PlayerPane playerController = loader.getController();
+        playerController.changeBoardImage(color.getPascalName());
+        //testing various methods, they will be used in observer update methods
+        playerController.addDamageTokens(PlayerColor.PURPLE, 3);
+        playerController.addDeath();
+
         playerPane.getChildren().add(newLoadedPane);
     }
 

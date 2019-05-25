@@ -3,24 +3,20 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane id="playerPane" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0"
-            xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="it.polimi.se2019.view.gui.PlayerPane"
-            prefHeight="176.0" prefWidth="711.0">
+<AnchorPane id="playerPane" prefHeight="176.0" prefWidth="711.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.se2019.view.gui.PlayerPane">
 
     <children>
-        <ImageView fitHeight="176.0" fitWidth="711.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0">
+        <ImageView fx:id="playerBoard" fitHeight="176.0" fitWidth="711.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0">
             <image>
                 <Image url="@../images/playerBoards/playerBoardYellow.png" />
             </image>
         </ImageView>
-        <ImageView fitHeight="176.0" fitWidth="68.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0">
+        <ImageView fx:id="actionTile" fitHeight="176.0" fitWidth="68.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0">
             <image>
                 <Image url="@../images/playerBoards/actionTileUpYellow.png" />
             </image>
         </ImageView>
-        <HBox layoutX="61.0" layoutY="61.0" prefHeight="55.0" prefWidth="480.0">
+        <HBox fx:id="damageTokensBox" layoutX="61.0" layoutY="61.0" prefHeight="55.0" prefWidth="480.0">
             <children>
                 <ImageView fitHeight="55.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -37,18 +33,9 @@
                         <Image url="@../images/damageTokens/damageTokenBlue.png" />
                     </image>
                 </ImageView>
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="90.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="130.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="170.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="210.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="250.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="290.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="330.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="370.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="410.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
             </children>
         </HBox>
-        <HBox layoutX="301.0" layoutY="-3.0" prefHeight="48.0" prefWidth="120.0" scaleX="0.8" scaleY="0.85" scaleZ="0.8" AnchorPane.topAnchor="-3.0">
+        <HBox fx:id="marksBox" layoutX="301.0" layoutY="-3.0" prefHeight="48.0" prefWidth="120.0" scaleX="0.8" scaleY="0.85" scaleZ="0.8" AnchorPane.topAnchor="-3.0">
             <children>
                 <ImageView fitHeight="54.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -90,24 +77,9 @@
                 <Insets />
             </opaqueInsets>
         </HBox>
-        <HBox layoutX="147.0" layoutY="75.0" prefHeight="55.0" prefWidth="231.0" AnchorPane.bottomAnchor="0.0">
+        <HBox fx:id="deathsBox" layoutX="147.0" layoutY="75.0" prefHeight="55.0" prefWidth="231.0" AnchorPane.bottomAnchor="0.0">
             <children>
                 <ImageView fitHeight="52.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/skull.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="52.0" fitWidth="46.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/skull.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="52.0" fitWidth="46.0" layoutX="48.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/skull.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="52.0" fitWidth="46.0" layoutX="86.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../images/skull.png" />
                     </image>
