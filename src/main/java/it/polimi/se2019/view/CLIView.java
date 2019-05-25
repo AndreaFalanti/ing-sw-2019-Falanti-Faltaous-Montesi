@@ -14,6 +14,7 @@ import java.util.Scanner;
 
 public class CLIView extends View {
 
+
     protected static final String[] COMMAND_ACTION        = {"move","grab","shoot","reload","reloadshoot","teleport","tagback","target"};
     protected static final String[] COMMAND_SIMPLE_REQUEST = {"leaderboard","players","weapons","power","ammo","board","undo","help","quit"} ;
     public static final String COMMAND_PREFIX           = "Write : " ;
@@ -41,9 +42,7 @@ public class CLIView extends View {
     public static final String QUIT                     = COMMAND_PREFIX + "quit" + " to quit the game";//to delete is only for test
 
 
-    public CLIView() {
 
-    }
 
 
     public void availableCommands(){
