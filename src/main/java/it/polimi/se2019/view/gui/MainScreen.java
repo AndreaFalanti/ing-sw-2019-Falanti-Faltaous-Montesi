@@ -10,8 +10,10 @@ import java.io.IOException;
 public class MainScreen {
     @FXML
     private Pane playerPane;
+    @FXML
+    private Pane boardPane;
 
-    public void loadBoard (PlayerColor color) throws IOException {
+    public void loadPlayerBoard(PlayerColor color) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/playerPane.fxml"));
         Pane newLoadedPane =  loader.load();
 
@@ -22,6 +24,16 @@ public class MainScreen {
         playerController.addDeath();
 
         playerPane.getChildren().add(newLoadedPane);
+    }
+
+    public void loadBoard () throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/boardPane.fxml"));
+        Pane newLoadedPane =  loader.load();
+
+        BoardPane boardController = loader.getController();
+        boardController.addTargetDeath(5);
+
+        boardPane.getChildren().add(newLoadedPane);
     }
 
 }

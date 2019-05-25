@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 
@@ -40,21 +39,12 @@ public class PlayerPane {
         Image tokenImage = new Image(GuiResourcePaths.DAMAGE_TOKEN + color.getPascalName() + ".png");
 
         for (int i = 0; i < quantity; i++) {
-            addImageToBox(damageTokensBox, DAMAGE_TOKEN_HEIGHT, DAMAGE_TOKEN_WIDTH, tokenImage);
+            GuiUtils.addImageToBox(damageTokensBox, DAMAGE_TOKEN_HEIGHT, DAMAGE_TOKEN_WIDTH, tokenImage);
         }
     }
 
     public void addDeath () {
         Image skullImage = new Image(GuiResourcePaths.SKULL);
-        addImageToBox(deathsBox, SKULL_HEIGHT, SKULL_WIDTH, skullImage);
-    }
-
-    private void addImageToBox (Pane box, int height, int width, Image image) {
-        ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(height);
-        imageView.setFitWidth(width);
-        imageView.setPreserveRatio(true);
-
-        box.getChildren().add(imageView);
+        GuiUtils.addImageToBox(deathsBox, SKULL_HEIGHT, SKULL_WIDTH, skullImage);
     }
 }

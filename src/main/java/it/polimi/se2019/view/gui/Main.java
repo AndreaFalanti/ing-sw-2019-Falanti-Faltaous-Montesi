@@ -22,7 +22,8 @@ public class Main extends Application {
         primaryStage.centerOnScreen();
 
         MainScreen controller = loader.getController();
-        controller.loadBoard(PlayerColor.GREY);
+        controller.loadPlayerBoard(PlayerColor.GREY);
+        controller.loadBoard();
 
         primaryStage.show();
     }
