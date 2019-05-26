@@ -8,12 +8,12 @@ import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.DamageAction;
 import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.weapon.behaviour.ShootContext;
-import it.polimi.se2019.model.weapon.behaviour.TargetsLiteral;
+import it.polimi.se2019.model.weapon.behaviour.*;
 import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,9 +21,16 @@ import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class WeaponsTest {
     private ShootContext mMarioBrosContext;
+
+    // utility function for checking optionals in tests
+    public static <T> T failOptionalCheck(Class<T> toReturn) {
+        assertTrue(false);
+        return null;
+    }
 
     @Before
     public void instantiate() {
@@ -45,14 +52,14 @@ public class WeaponsTest {
         // provide needed information to shoot
         mMarioBrosContext.pushCollectedInfo(new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN)));
         
-        // produce action with complete context
-        Optional<Action> maybeActual = heatseeker.shoot(mMarioBrosContext);
+        // produce result with complete context
+        ShootResult result = heatseeker.shoot(mMarioBrosContext);
 
-        // assert presence (since info is complete)
-        assertTrue(maybeActual.isPresent());
+        // assert that result is an action (since context was complete)
+        assertTrue(result.isComplete());
 
-        // test
-        Action actual = maybeActual.get();
+        // test that action is correct
+        Action actual = result.asAction();
         Action expected = new WeaponAction(
                 new DamageAction(
                         PlayerColor.PURPLE,
@@ -62,4 +69,19 @@ public class WeaponsTest {
         );
         assertEquals(expected, actual);
     }
+
+    /*************************************************************/
+    /* @Test                                                     */
+    /* public void testHeatseekerMarioShootsLuigiMissingInfo() { */
+    /*      // instantiate weapon                                */
+    /*     Weapon heatseeker = Weapons.get("heatseeker");        */
+    /*                                                           */
+    /*     // shoot                                              */
+    /*     Expression expected = new InflictDamage(              */
+    /*             new DamageLiteral(new Damage(3, 0)),          */
+    /*             new WaitForInfo()                             */
+    /*             );                                            */
+    /*     // assertEquals(expected, actual);                    */
+    /* }                                                         */
+    /*************************************************************/
 }

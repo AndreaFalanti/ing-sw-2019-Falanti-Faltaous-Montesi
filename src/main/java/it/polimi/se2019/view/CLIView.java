@@ -2,15 +2,18 @@ package it.polimi.se2019.view;
 
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.PowerUpCard;
 import it.polimi.se2019.model.action.*;
+import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.view.requests.LeaderboardRequest;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 
 public class CLIView extends View {
+
 
     protected static final String[] COMMAND_ACTION        = {"move","grab","shoot","reload","reloadshoot","teleport","tagback","target"};
     protected static final String[] COMMAND_SIMPLE_REQUEST = {"leaderboard","players","weapons","power","ammo","board","undo","help","quit"} ;
@@ -39,9 +42,8 @@ public class CLIView extends View {
     public static final String QUIT                     = COMMAND_PREFIX + "quit" + " to quit the game";//to delete is only for test
 
 
-    public CLIView() {
 
-    }
+
 
     public void availableCommands(){
         System.out.println("These are the possible commands:");
@@ -62,12 +64,13 @@ public class CLIView extends View {
         System.out.println("\t" + UNDO);
         System.out.println("\t" + HELP);
         System.out.println("\t" + QUIT);
+        System.out.println("What do you want to do ?");
 
         interact();
     }
 
-
-    public void commandAction (String command,Scanner in) {
+    @Override
+    public void commandAction (String command,String otherCommandPart) {
         Action action = null;
         int index;
 
@@ -75,17 +78,17 @@ public class CLIView extends View {
         PlayerColor ownerColor = owner.getColor();
         switch (command) {
             case "move":
-                action = new MoveAction(ownerColor,parseDestination(in));
+                action = new MoveAction(ownerColor,parseDestination(otherCommandPart));
                 break;
             case "grab":
-                action = new MoveGrabAction(ownerColor, parseDestination(in));
+                action = new MoveGrabAction(ownerColor, parseDestination(otherCommandPart));
                 break;
             case "shoot":
-                action = new MoveShootAction(ownerColor, parseDestination(in));
+                action = new MoveShootAction(ownerColor, parseDestination(otherCommandPart));// to complete
                 break;
             case "reloadshoot":
                 index = reloadInteraction(owner.getWeapons());
-                action = new MoveReloadShootAction(ownerColor, parseDestination(in), index);
+                action = new MoveReloadShootAction(ownerColor, parseDestination(otherCommandPart),index);//<----tochange
                 break;
             default:
                 index = reloadInteraction(owner.getWeapons());
@@ -96,43 +99,93 @@ public class CLIView extends View {
         notifyController();
     }
 
-    public Position parseInformationOnDestination(Position[] pos){
+    @Override
+    public Position parseInformationOnDestination(List<Position> pos){
         Scanner scanner = null;
 
-        System.out.println("Write one of these coordinates" + Arrays.toString(pos));
-        while (scanner == null) {
-            scanner = new Scanner(System.in);
-        }
-        return  parseDestination(scanner);
+        System.out.println("Write one of these coordinates");
+        for(Position position: pos)
+            System.out.println(position.getX()+" "+position.getY());
+        String destination = requestAdditionalInfo();
+
+        return  parseDestination(destination);
     }
 
-    public Position parseDestination(Scanner coord){
-        Integer x = null;
-        Integer y = null;
 
-        while(coord.hasNext() && y == null){
-            if(coord.hasNextInt() && x==null)
-                x = coord.nextInt();
-            else if (coord.hasNextInt())
-                y = coord.nextInt();
-        }
+    public Position parseDestination(String destination){
+        Position pos = null;
+        boolean isValid = false ;
 
-        if(x != null && y != null)
-            return new Position(x,y);
-        else
+        String coordTogether = destination.replaceAll("\\D","");
+        String[] coord = coordTogether.split("");
+
+        if(coord[0].equals("") || coord.length < 2){
             return new Position(-1,-1);
+        }
 
+        do {
+            try {
+                pos = new Position(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
+                isValid = true;
+            } catch (NumberFormatException e) {
+                System.err.println("Uncorrect insertion. Please insert coord: ");
+            }
+        } while(!isValid);
+
+        return pos;
     }
 
+    @Override
     public int parseWeaponInformation(Weapon[] weapons){
+        Integer index = null;
+        boolean isValid = false;
 
-        System.out.println("Type the index of the weapon you want" + Arrays.toString(weapons));
-        //to complete
-        return 0;
+        System.out.print("Type the index of the weapon you want ");
+        for(Weapon weapon : weapons)
+            System.out.print(weapon.getName());
+
+        do{
+            try{
+                index = Integer.parseInt(requestAdditionalInfo());
+                isValid = true;
+            }catch(NumberFormatException e){
+                System.err.println("Is not a number. Please type the index of the weapon that you want");
+            }
+        }while(!isValid);
+
+        return index;
     }
 
+    @Override
+    public Integer weaponPlayerController(){
+        Integer index = null;
+        boolean isValid = false;
+
+        System.out.print("Type the index of the weapon you want exchange");
+        weaponPlayer();
+
+        do{
+            try{
+                index = Integer.parseInt(requestAdditionalInfo());
+                isValid = true;
+            }catch(NumberFormatException e){
+                System.err.println("Is not a number. Please type the index of the weapon that you want exchange");
+            }
+        }while(!isValid);
+
+        return index;
+    }
+
+    @Override
+    public void weaponPlayer(){
+        for(Weapon weapon : owner.getWeapons())
+            System.out.print(weapon.getName());
+    }
+
+    @Override
     public int reloadInteraction(Weapon[] weapons){
         int index= -1;
+        boolean isValid = false;
 
         System.out.println("Choose the index of a weapon to reload :" );
         for(Weapon weapon : weapons){
@@ -140,23 +193,29 @@ public class CLIView extends View {
             if(!weapon.isLoaded())
                 System.out.println("<-- to load");
         }
-        Scanner scanner = new Scanner(System.in);
-        try {
-            index = scanner.nextInt();
-            return index;
-        }catch(NumberFormatException e) {
-            System.err.println("Incorrect entry");
+
+        do {
+            try {
+                index = Integer.parseInt(requestAdditionalInfo());
+                isValid = true;
+            }catch(NumberFormatException e) {
+                System.err.println("Incorrect entry.Which weapon do you want to reload?");
+            }
         }
+        while(!isValid);
+
         return index;
     }
 
+    @Override
     public void easyCommand(String command){
 
         switch(command){
             case "leaderboard": new LeaderboardRequest();  break;
-            case "players"    : System.out.println(mPlayers); break;
-            case "weapons"    : System.out.println(Arrays.toString(owner.getWeapons())); break;
-            case "ammo"       : System.out.println(owner.getAmmo()); break;
+            case "players"    : System.out.println(mPlayers); break;// to complete
+            case "weapons"    : weaponPlayer(); break;
+            case "power"      : powerPlayer(); break;
+            case "ammo"       : System.out.println(owner.getAmmo().toString()); break;
             case "board"      : break;
             case "undo"       : deleteRequest();  break;
             case "help"       : availableCommands(); break;
@@ -164,16 +223,23 @@ public class CLIView extends View {
         }
     }
 
-    public void parseCommand(Scanner in) {
+    public void powerPlayer(){
+        for (PowerUpCard power: owner.getPowerUps())
+            System.out.println(power.getName() + " " + power.getColor() + " " + power.getAmmoValue().toString() );
+    }
 
-        String command = in.toString();
+
+
+    @Override
+    public void parseCommand(String command) {
+
         command = command.toLowerCase();
         String[] compCommand = command.split(" ");
 
 
         for(String string : COMMAND_ACTION)
             if(string.equals(compCommand[0])) {
-                commandAction(compCommand[0],in);
+                commandAction(compCommand[0],command);
                 return;
             }
         for(String string : COMMAND_SIMPLE_REQUEST)
@@ -183,8 +249,19 @@ public class CLIView extends View {
             }
 
         System.out.println("Command not available."+ HELP);
-        interact();
     }
+
+    @Override
+    public String requestAdditionalInfo(){
+        Scanner scanner = new Scanner(System.in);
+        String command = "" ;
+        while (!command.equals("quit")) {
+            command = scanner.nextLine();
+        }
+        return command;
+    }
+
+
 
     public void deleteRequest(){
 
@@ -216,12 +293,14 @@ public class CLIView extends View {
 
     @Override
     public void interact(){
-        Scanner scanner = null;
-        while (scanner == null) {
-            System.out.println("What do you want to do ?");
-            scanner = new Scanner(System.in);
-        }
-        parseCommand(scanner);
+        String command = requestAdditionalInfo();
+        parseCommand(command);
+
+    }
+
+    @Override
+    public void update(Update update) {
+
     }
 
  //   public static void main(String[] args){

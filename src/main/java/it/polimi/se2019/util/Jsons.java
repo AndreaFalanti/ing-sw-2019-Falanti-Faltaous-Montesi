@@ -16,7 +16,7 @@ import java.util.stream.Stream;
  * Singleton containing all json resources
  */
 public class Jsons {
-    public static final String PATH_TO_RESOURCES_FOLDER = "resources/";
+    public static final String PATH_TO_RESOURCES_FOLDER = "src/main/resources/";
     public static final String PATH_TO_JSON_RESOURCES_FOLDER = PATH_TO_RESOURCES_FOLDER + "json/";
 
     private static boolean resourcesLoaded = false;

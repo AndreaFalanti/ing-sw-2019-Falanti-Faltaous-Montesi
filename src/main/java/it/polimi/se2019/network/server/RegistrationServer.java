@@ -19,7 +19,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
     private List<PlayerConnection> mWaitingPlayers = new ArrayList<>();
     private List<PlayerConnection> mPlayersOnline = new ArrayList<>();
 
-    private transient Timer mTimer;
+    private Timer mTimer;
 
     public RegistrationServer(int rmiPort) throws IOException {
         Registry registry = LocateRegistry.createRegistry(rmiPort);
@@ -73,17 +73,25 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
 
         logger.log(Level.INFO, "Player {0} has joined the server", connection.getUsername());
 
+        // if 3 or more players are connected, initialize game values and start timer for game creation
         if (mWaitingPlayers.size() >= 3) {
             GameThread gameThread = new GameThread(mWaitingPlayers);
             mGames.add(gameThread);
-            gameThread.start();
 
             mWaitingPlayers.clear();
         }
+        // if not, check if there are any game not started with less then five players
+        // and add player directly to it
         else if (!mGames.isEmpty()) {
             for (GameThread game : mGames) {
-                if (!game.isStarted() && game.getPlayersNum() < 5) {
+                if (!game.isStarted() && game.getPlayersNum() < GameThread.MAXIMUM_PLAYER) {
                     game.addPlayer(connection);
+                    mWaitingPlayers.remove(connection);
+
+                    // if game is full, start the game
+                    if (game.getPlayersNum() == GameThread.MAXIMUM_PLAYER) {
+                        game.startGameCreation();
+                    }
                     return;
                 }
             }
@@ -97,9 +105,9 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
     }
 
     @Override
-    public boolean registerPlayer(String username) {
+    public boolean registerPlayer(String username, ConnectionType type) {
         if (isUsernameAvailable(username)) {
-            PlayerConnection connection = new PlayerConnection(username);
+            PlayerConnection connection = new PlayerConnection(username, type);
             registerConnection(connection);
             return true;
         }
@@ -118,7 +126,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
 
     @Override
     public boolean registerPlayerRemote(String username) throws RemoteException {
-        return registerPlayer(username);
+        return registerPlayer(username, ConnectionType.RMI);
     }
 
     @Override

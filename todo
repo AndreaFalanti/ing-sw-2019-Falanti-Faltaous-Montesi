@@ -1,1 +1,2 @@
-* consider using List expression instead of @SubExpressionList
+1. Remove requested info stack from shoot context
+2. Consider using List expression instead of @SubExpressionList

@@ -65,7 +65,7 @@ public class PlayerThread extends Thread {
             while (!logged && !isInterrupted()) {
                 username = receive();
                 if (mRegister.isUsernameAvailable(username)) {
-                    logged = mRegister.registerPlayer(username);
+                    logged = mRegister.registerPlayer(username, ConnectionType.SOCKET);
                     send("ok");
                 } else {
                     send("Username is already used");
