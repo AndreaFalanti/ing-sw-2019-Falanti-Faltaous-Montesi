@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 public class GameThread extends Thread {
     private static final Logger logger = Logger.getLogger(GameThread.class.getName());
-    public static int MAXIMUM_PLAYER = 5;
+    public static final int MAXIMUM_PLAYER = 5;
 
     private Game mGame;
     private Controller mController;

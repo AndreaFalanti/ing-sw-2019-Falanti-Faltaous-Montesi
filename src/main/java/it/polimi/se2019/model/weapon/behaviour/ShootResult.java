@@ -39,13 +39,13 @@ public class ShootResult {
         if (!isComplete())
             throw new UnsupportedOperationException("Cannot interpret incomplete shoot result as an action!");
 
-        return mActionValue.get();
+        return mActionValue.isPresent() ? mActionValue.get() : null;
     }
 
     public Response asResponse() {
          if (isComplete())
             throw new UnsupportedOperationException("Cannot interpret complete shoot result as a response!");
 
-        return mResponseValue.get();
+        return mResponseValue.isPresent() ? mResponseValue.get() : null;
     }
 }
