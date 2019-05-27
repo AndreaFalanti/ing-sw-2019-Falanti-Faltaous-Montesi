@@ -1,6 +1,8 @@
 package it.polimi.se2019.view.gui;
 
 import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.util.Jsons;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
@@ -31,6 +33,8 @@ public class MainScreen {
         Pane newLoadedPane =  loader.load();
 
         BoardPane boardController = loader.getController();
+        Board board = Board.fromJson(Jsons.get("boards/game/board1"));
+        boardController.initialize(board);
         boardController.addTargetDeath(5);
 
         boardPane.getChildren().add(newLoadedPane);

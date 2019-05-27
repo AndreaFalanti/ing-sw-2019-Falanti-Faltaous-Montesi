@@ -39,12 +39,12 @@ public class PlayerPane {
         Image tokenImage = new Image(GuiResourcePaths.DAMAGE_TOKEN + color.getPascalName() + ".png");
 
         for (int i = 0; i < quantity; i++) {
-            GuiUtils.addImageToBox(damageTokensBox, DAMAGE_TOKEN_HEIGHT, DAMAGE_TOKEN_WIDTH, tokenImage);
+            GuiUtils.addImageViewToBox(damageTokensBox, DAMAGE_TOKEN_HEIGHT, DAMAGE_TOKEN_WIDTH, tokenImage);
         }
     }
 
     public void addDeath () {
         Image skullImage = new Image(GuiResourcePaths.SKULL);
-        GuiUtils.addImageToBox(deathsBox, SKULL_HEIGHT, SKULL_WIDTH, skullImage);
+        GuiUtils.addImageViewToBox(deathsBox, SKULL_HEIGHT, SKULL_WIDTH, skullImage);
     }
 }
