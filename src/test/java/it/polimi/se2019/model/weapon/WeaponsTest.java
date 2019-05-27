@@ -48,7 +48,7 @@ public class WeaponsTest {
         Weapon heatseeker = Weapons.get("heatseeker");
 
         // provide needed information to shoot
-        mMarioBrosContext.pushCollectedInfo(new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN)));
+        mMarioBrosContext.provideInfo(new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN)));
         
         // produce result with complete context
         ShootResult result = heatseeker.shoot(mMarioBrosContext);
@@ -57,7 +57,7 @@ public class WeaponsTest {
         assertTrue(result.isComplete());
 
         // test that action is correct
-        Action actual = result.fromAction();
+        Action actual = result.asAction();
         Action expected = new WeaponAction(
                 new DamageAction(
                         PlayerColor.PURPLE,

@@ -8,16 +8,16 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
-import it.polimi.se2019.model.weapon.behaviour.ShootResult;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
-public class Controller implements Observer<Request>, RequestHandler {
+public class Controller implements Observer<RequestMessage>, RequestHandler {
 
     // fields
     private Game mGame;
@@ -26,6 +26,7 @@ public class Controller implements Observer<Request>, RequestHandler {
 //  private getValidPosition mValidPostion;//change name
     private TakeLeaderboard mLeaderboard;
     private View mView;
+    final List<ShootInteraction> mShootInteractions = new ArrayList<>();
 
     // weapon related fields
     private Optional<ShootContext> mCurrentShootContext;
@@ -48,33 +49,6 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     public void getLeaderBoard(){
 
-    }
-
-    /*************************/
-    /* WEAPON HELPER METHODS */
-    /*************************/
-
-    private void initShootContext() {
-        if (mCurrentShootContext.isPresent())
-            throw new IllegalStateException("Trying to initialize shoot context when one is already available!");
-
-        mCurrentShootContext = Optional.of(new ShootContext(
-                mGame.getBoard(),
-                mGame.getPlayers().stream().collect(Collectors.toSet()), // TODO: see if type of mPlayers can be changed
-                mGame.getActivePlayer().getColor()
-        ));
-    }
-
-    private void continueShooting() {
-        ShootResult result = mCurrentShootContext.eval();
-
-        if (result.isComplete()) {
-            result.fromAction().perform(mGame);
-        }
-        else {
-            Request request = mView.handle(result.fromResponse());
-            request.handleMe(this);
-        }
     }
 
     /*******************/
@@ -110,12 +84,21 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public Response handle(ShootRequest request) {
-        initShootContext();
-        continueShooting();
+        mShootInteractions.add(new ShootInteraction(this, mView, mGame, request));
+
+        // TODO: consider if switching to void
+        return null;
     }
 
     @Override
-    public void update(Request request) {
-        request.handleMe(this);
+    public void update(RequestMessage message) {
+        if (message.isAction()) {
+            // TODO: Fala il codice del controller legato ad action andrebbe qui
+            // TODO: forse servirà un mActionHandler per gestirle meglio o forse no...
+            // Action action = message.asAction();
+            // action.perform(mGame);
+        }
+        else if (message.isRequest())
+            message.asRequest().handleMe(this);
     }
 }

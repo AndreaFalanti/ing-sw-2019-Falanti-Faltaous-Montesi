@@ -63,6 +63,11 @@ public class Weapon {
         return mLoaded;
     }
 
+    // TODO: refactor this to return actual behaviour
+    public Expression getBehaviour() {
+        return mPrimaryEffect.getBehaviour();
+    }
+
     // trivial setters
     public void setPrimaryEffect(Expression behaviour)  {
         // primary effect is always free
@@ -87,9 +92,9 @@ public class Weapon {
         Expression result = mPrimaryEffect.getBehaviour().eval(shootContext);
 
         if (shootContext.isComplete())
-            return ShootResult.fromAction(shootContext.getResultingAction());
+            return ShootResult.from(shootContext.getResultingAction());
         else
-            return ShootResult.fromResponse(null);
+            throw new IllegalArgumentException("Cannot shoot with incomplete context!");
     }
 
     public static List<Weapon> returnDeckFromJson(String json) {

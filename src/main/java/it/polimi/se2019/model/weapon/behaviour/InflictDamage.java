@@ -33,6 +33,6 @@ public class InflictDamage extends Expression {
         // add it to actions produced this far
         shootContext.pushAction(resultingAction);
         // return it
-        return new ActionLiteral(resultingAction);
+        return new Done();
     }
 }

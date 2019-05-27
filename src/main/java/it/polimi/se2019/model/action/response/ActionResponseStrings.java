@@ -1,4 +1,4 @@
-package it.polimi.se2019.model.action.responses;
+package it.polimi.se2019.model.action.response;
 
 public final class ActionResponseStrings {
     public static final String NO_ACTIONS_REMAINING = "Max number of action reached";

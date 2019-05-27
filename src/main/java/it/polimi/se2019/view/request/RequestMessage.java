@@ -27,23 +27,27 @@ public class RequestMessage {
         return new RequestMessage(request);
     }
 
-    public boolean isComplete() {
+    public boolean isAction() {
         if (mRequestValue.isPresent() && mActionValue.isPresent())
             throw new IllegalStateException("Shoot request is both complete and not...");
 
         return mActionValue.isPresent();
     }
 
+    public boolean isRequest() {
+        return !isAction();
+    }
+
     public Action asAction() {
-        if (!isComplete())
-            throw new UnsupportedOperationException("Cannot interpret incomplete shoot result as an action!");
+        if (!isAction())
+            throw new UnsupportedOperationException("Cannot interpret request message as an action message!");
 
         return mActionValue.get();
     }
 
     public Request asRequest() {
-        if (isComplete())
-            throw new UnsupportedOperationException("Cannot interpret complete shoot result as a response!");
+        if (!isRequest())
+            throw new UnsupportedOperationException("Cannot interpret action message as a request message!");
 
         return mRequestValue.get();
     }

@@ -19,5 +19,7 @@ public class MessageResponse implements Response {
     }
 
     @Override
-    public void handleMe(ResponseHandler handler) { handler.handle(this);}
+    public void handleMe(ResponseHandler handler) {
+        handler.handle(this);
+    }
 }

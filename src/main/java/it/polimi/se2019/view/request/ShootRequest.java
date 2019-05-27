@@ -1,11 +1,23 @@
 package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
-import it.polimi.se2019.controller.response.Response;
+import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.weapon.behaviour.Expression;
 
 public class ShootRequest implements Request {
+    private Expression mBehavoiur;
+    private PlayerColor mShooterColor;
+
+    public Expression getBehavoiur() {
+        return mBehavoiur;
+    }
+
+    public PlayerColor getShooterColor() {
+        return mShooterColor;
+    }
+
     @Override
-    public Response handleMe(RequestHandler handler) {
-        return handler.handle(this);
+    public void handleMe(RequestHandler handler) {
+        handler.handle(this);
     }
 }

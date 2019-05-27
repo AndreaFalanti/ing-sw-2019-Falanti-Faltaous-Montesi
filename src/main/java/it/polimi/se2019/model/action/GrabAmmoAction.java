@@ -1,10 +1,10 @@
 package it.polimi.se2019.model.action;
 
 import it.polimi.se2019.model.*;
-import it.polimi.se2019.model.action.responses.ActionResponseStrings;
-import it.polimi.se2019.model.action.responses.InvalidActionResponse;
-import it.polimi.se2019.model.action.responses.MessageActionResponse;
-import it.polimi.se2019.model.action.responses.SelectWeaponRequiredActionResponse;
+import it.polimi.se2019.model.action.response.ActionResponseStrings;
+import it.polimi.se2019.model.action.response.InvalidActionResponse;
+import it.polimi.se2019.model.action.response.MessageActionResponse;
+import it.polimi.se2019.model.action.response.SelectWeaponRequiredActionResponse;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.Tile;
 

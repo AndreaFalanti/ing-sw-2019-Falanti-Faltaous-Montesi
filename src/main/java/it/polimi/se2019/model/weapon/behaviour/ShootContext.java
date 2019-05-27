@@ -4,10 +4,7 @@ import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.weapon.Weapon;
 
-import javax.swing.text.html.Option;
-import java.awt.image.ShortLookupTable;
 import java.util.*;
 
 public class ShootContext {
@@ -18,7 +15,9 @@ public class ShootContext {
     private Board mBoard;
     private Set<Player> mPlayers;
     private PlayerColor mShooterColor;
-    private Optional<Expression> mCurrentExpression;
+    final private List<Action> mCachedActions = new ArrayList<>();
+    private Optional<Expression> mRequestedInfo;
+    private Optional<Expression> mProvidedInfo;
 
     // temporary info representing changed game state
     AmmoValue mPayedCost;
@@ -26,7 +25,7 @@ public class ShootContext {
     // ergo, only position is interesting
 
     // trivial constructors
-    public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor, Expression weaponBehaviour) {
+    public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor) {
         // safety check to assure that shooter is present among provided players
         if (!players.stream().anyMatch(pl -> pl.getColor() == shooterColor))
             throw new IllegalArgumentException(MISSING_PLAYER_MSG);
@@ -35,22 +34,7 @@ public class ShootContext {
         mBoard = board;
         mPlayers = players;
         mShooterColor = shooterColor;
-        mCurrentExpression = Optional.ofNullable(weaponBehaviour);
-    }
-    public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor) {
-        this(board, players, shooterColor, null);
-    }
-
-    // internal eval used to eval current expression and keep track of it during shooting
-    public ShootResult eval() {
-        Expression expressionResult = mCurrentExpression.orElseThrow(
-                () -> new UnsupportedOperationException("Trying to call eval on a context with no associated expression!")
-        ).eval(this);
-
-        if (expressionResult.isDone())
-            return ShootResult.fromAction(mCurrentShootAction);
-        else
-            return ShootResult.fromRequest();
+        mProvidedInfo = Optional.empty();
     }
 
     // trivial getters
@@ -72,6 +56,60 @@ public class ShootContext {
     }
     Position getShooterPosition() {
         return getShooter().getPos();
+    }
+
+    // true if no info is required from context
+    public boolean isComplete() {
+        return !mProvidedInfo.isPresent();
+    }
+
+
+    // request and collect info
+    public void requestInfo(Expression infoRequested) {
+         if (mRequestedInfo.isPresent())
+            throw new UnsupportedOperationException("Info already requested!");
+
+        mRequestedInfo = Optional.of(infoRequested);
+    }
+    public Optional<Expression> peekRequestedInfo() {
+        return mRequestedInfo;
+    }
+    public Expression consumeRequestedInfo() {
+        Expression toReturn = mRequestedInfo.orElseThrow(() ->
+                new UnsupportedOperationException("No info requested to consume!")
+        );
+
+        mRequestedInfo = Optional.empty();
+
+        return toReturn;
+    }
+    public void provideInfo(Expression infoProvided) {
+        if (mProvidedInfo.isPresent())
+            throw new UnsupportedOperationException("Info already provided!");
+
+        mProvidedInfo = Optional.of(infoProvided);
+    }
+    public Optional<Expression> peekProvidedInfo() {
+        return mProvidedInfo;
+    }
+    public Expression consumeProvidedInfo() {
+        Expression toReturn = mProvidedInfo.orElseThrow(() ->
+                new UnsupportedOperationException("No info provided to consume!")
+        );
+
+        mProvidedInfo = Optional.empty();
+
+        return toReturn;
+    }
+
+    // build resulting action
+    void pushAction(Action action) {
+        mCachedActions.add(action);
+    }
+    public Action getResultingAction() {
+        List<Action> tmp = new ArrayList<>(mCachedActions);
+        mCachedActions.clear();
+        return new WeaponAction(tmp);
     }
 }
 

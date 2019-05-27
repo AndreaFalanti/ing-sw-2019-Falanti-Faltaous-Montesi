@@ -6,7 +6,7 @@ public class IntLiteral extends Literal<Integer> {
     }
 
     @Override
-    int asInt() {
+    public int asInt() {
         return getPrimitive();
     }
 }

@@ -1,7 +1,6 @@
 package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
-import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.model.Position;
 
 public class GrabRequest implements Request {
@@ -15,7 +14,7 @@ public class GrabRequest implements Request {
     }
 
     @Override
-    public Response handleMe(RequestHandler handler) {
-        return handler.handle(this);
+    public void handleMe(RequestHandler handler) {
+        handler.handle(this);
     }
 }
