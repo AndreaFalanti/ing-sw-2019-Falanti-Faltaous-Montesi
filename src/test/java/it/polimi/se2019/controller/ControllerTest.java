@@ -1,8 +1,8 @@
 package it.polimi.se2019.controller;
 
-import it.polimi.se2019.view.requests.LeaderboardRequest;
-import it.polimi.se2019.view.requests.Request;
-import it.polimi.se2019.view.requests.ValidMoveRequest;
+import it.polimi.se2019.view.request.LeaderboardRequest;
+import it.polimi.se2019.view.request.Request;
+import it.polimi.se2019.view.request.ValidMoveRequest;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

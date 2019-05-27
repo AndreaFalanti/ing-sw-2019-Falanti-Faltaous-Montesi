@@ -13,11 +13,9 @@ import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -50,7 +48,7 @@ public class WeaponsTest {
         Weapon heatseeker = Weapons.get("heatseeker");
 
         // provide needed information to shoot
-        mMarioBrosContext.pushCollectedInfo(new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN)));
+        mMarioBrosContext.provideInfo(new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN)));
         
         // produce result with complete context
         ShootResult result = heatseeker.shoot(mMarioBrosContext);

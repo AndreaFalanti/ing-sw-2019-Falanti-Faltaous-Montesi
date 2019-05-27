@@ -1,4 +1,4 @@
-package it.polimi.se2019.controller.responses;
+package it.polimi.se2019.controller.response;
 
 import it.polimi.se2019.model.action.ResponseCode;
 import it.polimi.se2019.view.ResponseHandler;
@@ -11,5 +11,5 @@ public class MessageActionResponse implements Response {
     public MessageActionResponse(ResponseCode code){ this.mReturnCode = code; }
 
     @Override
-    public void handle(ResponseHandler handler) { handler.handle(this);}
+    public void handleMe(ResponseHandler handler) { handler.handle(this);}
 }

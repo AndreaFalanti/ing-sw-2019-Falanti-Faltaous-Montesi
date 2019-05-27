@@ -15,9 +15,9 @@ public class ShootContext {
     private Board mBoard;
     private Set<Player> mPlayers;
     private PlayerColor mShooterColor;
-    private final Deque<Expression> mRequestedInfo = new ArrayDeque();
-    private final Deque<Action> mProducedActions = new ArrayDeque();
-    private final Deque<Expression> mCollectedInfo = new ArrayDeque();
+    final private List<Action> mCachedActions = new ArrayList<>();
+    private Optional<Expression> mRequestedInfo;
+    private Optional<Expression> mProvidedInfo;
 
     // temporary info representing changed game state
     AmmoValue mPayedCost;
@@ -34,6 +34,7 @@ public class ShootContext {
         mBoard = board;
         mPlayers = players;
         mShooterColor = shooterColor;
+        mProvidedInfo = Optional.empty();
     }
 
     // trivial getters
@@ -57,54 +58,58 @@ public class ShootContext {
         return getShooter().getPos();
     }
 
-    // for manipulating actions stack
-    public void pushAction(Action info) {
-        mProducedActions.push(info);
-    }
-    public Optional<Action> popAction() {
-        if (mProducedActions.isEmpty())
-            return Optional.empty();
-
-        return Optional.of(mProducedActions.pop());
-    }
-
-    // for manipulating collected info stack
-    public void pushCollectedInfo(Expression info) {
-        mCollectedInfo.push(info);
-    }
-    public Optional<Expression> popCollectedInfo() {
-        if (mCollectedInfo.isEmpty())
-            return Optional.empty();
-
-        return Optional.of(mCollectedInfo.pop());
-    }
-
-    // for manipulating requested info stack
-    public void pushRequestedInfo(Expression info) {
-        mRequestedInfo.push(info);
-    }
-    public Optional<Expression> popInfo() {
-        if (mRequestedInfo.isEmpty())
-            return Optional.empty();
-
-        return Optional.of(mRequestedInfo.pop());
-    }
-
-    // true if context is complete, and thus does not need any additional info for generating shoot
+    // true if no info is required from context
     public boolean isComplete() {
-        return mRequestedInfo.isEmpty();
+        return !mProvidedInfo.isPresent();
     }
 
-    // get the resulting shoot action
-    public Action getResultingAction() {
-        return new WeaponAction(mProducedActions.stream()
-                .toArray(Action[]::new)
+
+    // request and collect info
+    public void requestInfo(Expression infoRequested) {
+         if (mRequestedInfo.isPresent())
+            throw new UnsupportedOperationException("Info already requested!");
+
+        mRequestedInfo = Optional.of(infoRequested);
+    }
+    public Optional<Expression> peekRequestedInfo() {
+        return mRequestedInfo;
+    }
+    public Expression consumeRequestedInfo() {
+        Expression toReturn = mRequestedInfo.orElseThrow(() ->
+                new UnsupportedOperationException("No info requested to consume!")
         );
+
+        mRequestedInfo = Optional.empty();
+
+        return toReturn;
+    }
+    public void provideInfo(Expression infoProvided) {
+        if (mProvidedInfo.isPresent())
+            throw new UnsupportedOperationException("Info already provided!");
+
+        mProvidedInfo = Optional.of(infoProvided);
+    }
+    public Optional<Expression> peekProvidedInfo() {
+        return mProvidedInfo;
+    }
+    public Expression consumeProvidedInfo() {
+        Expression toReturn = mProvidedInfo.orElseThrow(() ->
+                new UnsupportedOperationException("No info provided to consume!")
+        );
+
+        mProvidedInfo = Optional.empty();
+
+        return toReturn;
     }
 
-    // response info
-    public Expression requestInfo(Expression info) {
-        return popCollectedInfo().orElseGet(() -> new WaitForInfo());
+    // build resulting action
+    void pushAction(Action action) {
+        mCachedActions.add(action);
+    }
+    public Action getResultingAction() {
+        List<Action> tmp = new ArrayList<>(mCachedActions);
+        mCachedActions.clear();
+        return new WeaponAction(tmp);
     }
 }
 

@@ -1,12 +1,14 @@
 package it.polimi.se2019.view;
 
+import it.polimi.se2019.controller.response.*;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.PowerUpCard;
 import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.weapon.Weapon;
-import it.polimi.se2019.view.requests.LeaderboardRequest;
+import it.polimi.se2019.model.weapon.response.TargetSelectionResponse;
+import it.polimi.se2019.view.request.LeaderboardRequest;
 
 import java.util.List;
 import java.util.Scanner;
@@ -303,7 +305,37 @@ public class CLIView extends View {
 
     }
 
- //   public static void main(String[] args){
+    @Override
+    public void handle(LeaderboardResponse response) {
+
+    }
+
+    @Override
+    public void handle(MessageResponse response) {
+
+    }
+
+    @Override
+    public void handle(PickWeaponResponse response) {
+
+    }
+
+    @Override
+    public void handle(ValidMoveResponse response) {
+
+    }
+
+    @Override
+    public void handle(MessageActionResponse response) {
+
+    }
+
+    @Override
+    public void handle(TargetSelectionResponse response) {
+
+    }
+
+    //   public static void main(String[] args){
   //      System.out.println("Choose your name : ");
    //     while (owner.getColor() == activePlayer)
     //}

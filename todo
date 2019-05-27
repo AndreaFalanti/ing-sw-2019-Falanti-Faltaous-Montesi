@@ -1,2 +1,3 @@
-1. Remove requested info stack from shoot context
-2. Consider using List expression instead of @SubExpressionList
+1. Deal with second stash (it is important)
+2. Remove requested info stack from shoot context
+3. Consider using List expression instead of @SubExpressionList

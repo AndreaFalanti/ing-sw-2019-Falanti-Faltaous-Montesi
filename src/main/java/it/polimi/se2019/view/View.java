@@ -1,6 +1,5 @@
 package it.polimi.se2019.view;
 
-import com.sun.corba.se.impl.protocol.giopmsgheaders.RequestMessage;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
@@ -9,11 +8,12 @@ import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
+import it.polimi.se2019.view.request.RequestMessage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class View extends Observable<RequestMessage> implements Observer<Update> {
+public abstract class View extends Observable<RequestMessage> implements Observer<Update>, ResponseHandler {
 
     protected ArrayList<Player> mPlayers;
     private Board board;

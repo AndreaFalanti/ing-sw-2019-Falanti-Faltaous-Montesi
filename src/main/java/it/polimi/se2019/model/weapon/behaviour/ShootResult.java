@@ -1,8 +1,12 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-import it.polimi.se2019.controller.responses.Response;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.model.action.Action;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class ShootResult {
@@ -20,11 +24,38 @@ public class ShootResult {
         mActionValue = Optional.empty();
     }
 
-    public static ShootResult asAction(Action action) {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ShootResult casted = (ShootResult) o;
+
+        return toJsonTree().equals(casted.toJsonTree());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(toJsonTree());
+    }
+
+    @Override
+    public String toString() {
+        return new GsonBuilder()
+                .setPrettyPrinting()
+                .create()
+                .toJson(toJsonTree());
+    }
+
+    public JsonElement toJsonTree() {
+        return new Gson().toJsonTree(this, ShootResult.class);
+    }
+
+    public static ShootResult from(Action action) {
         return new ShootResult(action);
     }
 
-    public static ShootResult asResponse(Response response) {
+    public static ShootResult from(Response response) {
         return new ShootResult(response);
     }
 

@@ -1,5 +1,6 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
+import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
@@ -9,6 +10,7 @@ import it.polimi.se2019.model.weapon.response.WeaponResponse;
 import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
 import it.polimi.se2019.util.Exclude;
 import it.polimi.se2019.util.FieldUtils;
+import it.polimi.se2019.view.request.Request;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -193,28 +195,55 @@ public abstract class Expression {
     }
 
     // TODO: add doc
+    public final ShootResult evalToShootResult(ShootContext context) {
+        Expression exprResult = eval(context);
+
+        return exprResult.isDone() ?
+                ShootResult.from(context.getResultingAction()) :
+                ShootResult.from(context.consumeRequestedInfo().asResponse());
+    }
+
+    // TODO: add doc
+    public final Expression requestInfoFromPlayer(ShootContext context, Expression infoToRequest) {
+        // if info is available, consume it
+        if (context.peekProvidedInfo().isPresent())
+            return context.consumeProvidedInfo();
+
+        // else, start waiting for it
+        return new WaitForInfo(infoToRequest);
+    }
+
+    // TODO: add doc
+    public boolean isDone() {
+        return false;
+    }
+
+    // TODO: add doc
     protected abstract Expression continueEval(ShootContext shootContext);
 
     // TODO: add doc and refine error messages
-    int asInt() {
+    public int asInt() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "int");
     }
     Selection<PlayerColor> asTargetSelection() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "TargetSelection");
     }
-    Selection<Position> asRange() {
+    public Selection<Position> asRange() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "Range");
     }
-    Selection<?> asSelection() {
+    public Selection<?> asSelection() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "Selection<?>");
     }
-    Damage asDamage() {
+    public Damage asDamage() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "Damage");
     }
-    Action asAction() {
+    public Action asAction() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "Action");
     }
-    WeaponResponse asRequest() {
-        throw new UnsupportedConversionException(getClass().getSimpleName(), "WeaponResponse");
+    public Request asRequest() {
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Request");
+    }
+    public Response asResponse() {
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Response");
     }
 }
