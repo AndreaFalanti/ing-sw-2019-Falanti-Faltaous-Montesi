@@ -19,11 +19,11 @@ public class RequestMessage {
         mActionValue = Optional.empty();
     }
 
-    public static RequestMessage fromAction(Action action) {
+    public static RequestMessage from(Action action) {
         return new RequestMessage(action);
     }
 
-    public static RequestMessage fromRequest(Request request) {
+    public static RequestMessage from(Request request) {
         return new RequestMessage(request);
     }
 

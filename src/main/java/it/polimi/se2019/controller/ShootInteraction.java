@@ -42,7 +42,7 @@ public class ShootInteraction extends Controller {
         mParentController.mShootInteractions.remove(this);
 
         // execute shoot action using controller
-        mParentController.update(RequestMessage.fromAction(shootAction));
+        mParentController.update(RequestMessage.from(shootAction));
     }
 
     private void continueShooting(Expression info) {
