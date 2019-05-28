@@ -6,7 +6,8 @@
         "mYellow": 0,
         "mBlue": 1
       },
-      "mDrawPowerUp": true
+      "mDrawPowerUp": true,
+      "mGuiID": "0425"
     },
     "quantity": 4
   },
@@ -17,7 +18,8 @@
         "mYellow": 1,
         "mBlue": 1
       },
-      "mDrawPowerUp": true
+      "mDrawPowerUp": true,
+      "mGuiID": "0424"
     },
     "quantity": 4
   },
@@ -28,7 +30,8 @@
         "mYellow": 1,
         "mBlue": 0
       },
-      "mDrawPowerUp": true
+      "mDrawPowerUp": true,
+      "mGuiID": "0423"
     },
     "quantity": 4
   },
@@ -39,7 +42,8 @@
         "mYellow": 0,
         "mBlue": 0
       },
-      "mDrawPowerUp": true
+      "mDrawPowerUp": true,
+      "mGuiID": "0421"
     },
     "quantity": 2
   },
@@ -50,7 +54,8 @@
         "mYellow": 0,
         "mBlue": 2
       },
-      "mDrawPowerUp": true
+      "mDrawPowerUp": true,
+      "mGuiID": "0422"
     },
     "quantity": 2
   },
@@ -61,7 +66,8 @@
         "mYellow": 2,
         "mBlue": 0
       },
-      "mDrawPowerUp": true
+      "mDrawPowerUp": true,
+      "mGuiID": "0420"
     },
     "quantity": 2
   },
@@ -72,7 +78,8 @@
         "mYellow": 1,
         "mBlue": 2
       },
-      "mDrawPowerUp": false
+      "mDrawPowerUp": false,
+      "mGuiID": "042"
     },
     "quantity": 3
   },
@@ -83,7 +90,8 @@
         "mYellow": 1,
         "mBlue": 0
       },
-      "mDrawPowerUp": false
+      "mDrawPowerUp": false,
+      "mGuiID": "043"
     },
     "quantity": 3
   },
@@ -94,7 +102,8 @@
         "mYellow": 0,
         "mBlue": 2
       },
-      "mDrawPowerUp": false
+      "mDrawPowerUp": false,
+      "mGuiID": "044"
     },
     "quantity": 3
   },
@@ -105,7 +114,8 @@
         "mYellow": 2,
         "mBlue": 0
       },
-      "mDrawPowerUp": false
+      "mDrawPowerUp": false,
+      "mGuiID": "045"
     },
     "quantity": 3
   },
@@ -116,7 +126,8 @@
         "mYellow": 2,
         "mBlue": 1
       },
-      "mDrawPowerUp": false
+      "mDrawPowerUp": false,
+      "mGuiID": "046"
     },
     "quantity": 3
   },
@@ -127,7 +138,8 @@
         "mYellow": 0,
         "mBlue": 1
       },
-      "mDrawPowerUp": false
+      "mDrawPowerUp": false,
+      "mGuiID": "0411"
     },
     "quantity": 3
   }

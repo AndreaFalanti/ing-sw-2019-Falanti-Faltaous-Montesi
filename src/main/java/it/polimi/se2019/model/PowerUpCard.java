@@ -11,6 +11,7 @@ public class PowerUpCard {
     private String mName;
     private AmmoValue mAmmoValue;
     private PowerUpBehaviour mBehaviour;
+    private String mGuiID;
 
     /**
      *
@@ -55,6 +56,10 @@ public class PowerUpCard {
 
     public PowerUpBehaviour getBehaviour() {
         return mBehaviour;
+    }
+
+    public String getGuiID() {
+        return mGuiID;
     }
 
     /**
@@ -113,6 +118,7 @@ public class PowerUpCard {
                 "mName='" + mName + '\'' +
                 ", mAmmoValue=" + mAmmoValue +
                 ", mBehaviour=" + mBehaviour +
+                ", mGuiID='" + mGuiID + '\'' +
                 '}';
     }
 }

@@ -6,7 +6,8 @@
         "mRed": 1,
         "mYellow": 0,
         "mBlue": 0
-      }
+      },
+      "mGuiID" : "026"
     },
     "quantity": 2
   },
@@ -17,7 +18,8 @@
         "mRed": 0,
         "mYellow": 1,
         "mBlue": 0
-      }
+      },
+      "mGuiID" : "027"
     },
     "quantity": 2
   },
@@ -28,7 +30,8 @@
         "mRed": 0,
         "mYellow": 0,
         "mBlue": 1
-      }
+      },
+      "mGuiID" : "025"
     },
     "quantity": 2
   },
@@ -39,7 +42,8 @@
         "mRed": 1,
         "mYellow": 0,
         "mBlue": 0
-      }
+      },
+      "mGuiID" : "023"
     },
     "quantity": 2
   },
@@ -50,7 +54,8 @@
         "mRed": 0,
         "mYellow": 1,
         "mBlue": 0
-      }
+      },
+      "mGuiID" : "024"
     },
     "quantity": 2
   },
@@ -61,7 +66,8 @@
         "mRed": 0,
         "mYellow": 0,
         "mBlue": 1
-      }
+      },
+      "mGuiID" : "022"
     },
     "quantity": 2
   },
@@ -72,7 +78,8 @@
         "mRed": 1,
         "mYellow": 0,
         "mBlue": 0
-      }
+      },
+      "mGuiID" : "029"
     },
     "quantity": 2
   },
@@ -83,7 +90,8 @@
         "mRed": 0,
         "mYellow": 1,
         "mBlue": 0
-      }
+      },
+      "mGuiID" : "0210"
     },
     "quantity": 2
   },
@@ -94,7 +102,8 @@
         "mRed": 0,
         "mYellow": 0,
         "mBlue": 1
-      }
+      },
+      "mGuiID" : "028"
     },
     "quantity": 2
   },
@@ -105,7 +114,8 @@
         "mRed": 1,
         "mYellow": 0,
         "mBlue": 0
-      }
+      },
+      "mGuiID" : "0212"
     },
     "quantity": 2
   },
@@ -116,7 +126,8 @@
         "mRed": 0,
         "mYellow": 1,
         "mBlue": 0
-      }
+      },
+      "mGuiID" : "0213"
     },
     "quantity": 2
   },
@@ -127,7 +138,8 @@
         "mRed": 0,
         "mYellow": 0,
         "mBlue": 1
-      }
+      },
+      "mGuiID" : "0211"
     },
     "quantity": 2
   }
