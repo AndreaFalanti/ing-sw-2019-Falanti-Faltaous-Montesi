@@ -4,19 +4,11 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.DamageAction;
 
-import java.util.Set;
-
 public class InflictDamage extends Expression {
-    // subexpressions
-    private @SubExpression Expression mTargets;
-    private @SubExpression Expression mDamage;
-
     // trivial constructor
     public InflictDamage(Expression damageToInflict, Expression targets) {
-        super();
-
-        mDamage = damageToInflict;
-        mTargets = targets;
+        putSub("damage", damageToInflict);
+        putSub("to", targets);
     }
 
     // TODO: add doc
@@ -27,8 +19,8 @@ public class InflictDamage extends Expression {
         // calculate resulting action
         Action resultingAction = new DamageAction(
                 inflicterColor,
-                mTargets.asTargetSelection().asSet(),
-                mDamage.asDamage()
+                getSub("to").asTargets(),
+                getSub("damage").asDamage()
         );
         // add it to actions produced this far
         shootContext.pushAction(resultingAction);

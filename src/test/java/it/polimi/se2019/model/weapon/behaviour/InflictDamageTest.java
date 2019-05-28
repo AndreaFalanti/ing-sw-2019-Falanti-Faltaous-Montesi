@@ -7,7 +7,6 @@ import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.DamageAction;
 import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.weapon.Selection;
 import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +37,7 @@ public class InflictDamageTest {
         // inflict 1 damage to Mario
         InflictDamage tested = new InflictDamage(
                 new DamageLiteral(new Damage(1, 0)),
-                new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN))
+                new TargetsLiteral(Collections.singleton(PlayerColor.GREEN))
         );
 
         // check
@@ -63,7 +62,7 @@ public class InflictDamageTest {
          // inflict 1 damage to Mario
         InflictDamage tested = new InflictDamage(
                 new DamageLiteral(new Damage(1, 0)),
-                new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN))
+                new TargetsLiteral(Collections.singleton(PlayerColor.GREEN))
         );
 
         // check it

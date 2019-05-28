@@ -1,9 +1,10 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-import it.polimi.se2019.controller.response.Response;
-
 public class WaitForInfo extends Expression {
-    private @SubExpression Expression mAwaitedInfo; // TODO: use this to check if acquired info is rightly formed
+    private Expression mAwaitedInfo; // TODO: use this to check if acquired info is rightly formed
+
+
+    public WaitForInfo() {}
 
     public WaitForInfo(Expression awaitedInfo) {
         super();

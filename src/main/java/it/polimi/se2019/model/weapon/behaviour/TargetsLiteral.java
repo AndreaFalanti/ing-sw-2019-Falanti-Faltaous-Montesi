@@ -1,22 +1,16 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.weapon.Selection;
 
-import java.util.stream.Stream;
+import java.util.Set;
 
-public class TargetsLiteral extends SelectionLiteral<PlayerColor> {
-    public TargetsLiteral(Selection<PlayerColor> contents) {
+public class TargetsLiteral extends Literal<Set<PlayerColor>> {
+    public TargetsLiteral(Set<PlayerColor> contents) {
         super(contents);
     }
 
     @Override
-    public Expression continueEval(ShootContext context) {
-        Stream<PlayerColor> playerColors = context.getPlayers().stream()
-                .map(Player::getColor);
-        mContents.setDomain(playerColors);
-
-        return this;
+    public Set<PlayerColor> asTargets() {
+        return getPrimitive();
     }
 }

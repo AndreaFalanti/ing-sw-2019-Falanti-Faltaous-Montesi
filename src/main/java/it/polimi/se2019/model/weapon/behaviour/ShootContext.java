@@ -5,6 +5,7 @@ import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 
 public class ShootContext {
@@ -16,8 +17,8 @@ public class ShootContext {
     private Set<Player> mPlayers;
     private PlayerColor mShooterColor;
     final private List<Action> mCachedActions = new ArrayList<>();
-    private Optional<Expression> mRequestedInfo;
-    private Optional<Expression> mProvidedInfo;
+    private Optional<Expression> mRequestedInfo = Optional.empty();
+    private Optional<Expression> mProvidedInfo = Optional.empty();
 
     // temporary info representing changed game state
     AmmoValue mPayedCost;
@@ -34,7 +35,6 @@ public class ShootContext {
         mBoard = board;
         mPlayers = players;
         mShooterColor = shooterColor;
-        mProvidedInfo = Optional.empty();
     }
 
     // trivial getters

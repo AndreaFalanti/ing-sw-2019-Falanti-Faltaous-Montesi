@@ -17,7 +17,7 @@ public class CustomPrimaryEffectAdapter implements JsonSerializer<PayedEffect>, 
             return new JsonObject();
 
         // TODO: find better way of doing this
-        JsonElement result = ExpressionFactory.GSON.toJsonTree(payedEffect.getBehaviour(), Expression.class);
+        JsonElement result = ExpressionFactory.toJsonTree(payedEffect.getBehaviour());
 
         // URGENT TODO: find a betters way to do this...
         result.getAsJsonObject().add("expr", new JsonPrimitive(payedEffect.getBehaviour().getClass().getSimpleName()));

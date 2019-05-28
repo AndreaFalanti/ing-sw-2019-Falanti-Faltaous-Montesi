@@ -3,30 +3,23 @@ package it.polimi.se2019.model.weapon.behaviour;
 import it.polimi.se2019.model.weapon.response.TargetSelectionResponse;
 import it.polimi.se2019.view.request.weapon.ResponseLiteral;
 
-import java.util.Optional;
-
 
 public class SelectTargets extends Expression {
-    @SubExpression Expression mFrom;
-    @SubExpression Expression mMin;
-    @SubExpression Expression mMax;
-
-    public SelectTargets(Expression minNumToSelect, Expression maxNumToSelect,
-                         Expression targetsToSelectFrom) {
+    public SelectTargets(Expression min, Expression max, Expression from) {
         super();
 
-        mMin = minNumToSelect;
-        mMax = maxNumToSelect;
-        mFrom = targetsToSelectFrom;
+        putSub("min", min);
+        putSub("max", max);
+        putSub("from", from);
     }
 
     // TODO: add doc
     @Override
     public final Expression continueEval(ShootContext shootContext) {
         Expression infoToRequest = new ResponseLiteral(new TargetSelectionResponse(
-                mMin.asInt(),
-                mMax.asInt(),
-                mFrom.asTargetSelection()
+                getSub("min").asInt(),
+                getSub("max").asInt(),
+                getSub("from").asTargets()
         ));
 
         return requestInfoFromPlayer(shootContext, infoToRequest);

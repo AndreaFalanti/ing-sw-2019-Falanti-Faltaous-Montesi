@@ -8,7 +8,7 @@ public class ShootRequest implements Request {
     private Expression mBehavoiur;
     private PlayerColor mShooterColor;
 
-    public Expression getBehavoiur() {
+    public Expression getBehaviour() {
         return mBehavoiur;
     }
 

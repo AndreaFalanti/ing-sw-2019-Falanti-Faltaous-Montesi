@@ -3,7 +3,6 @@ package it.polimi.se2019.controller;
 import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.action.Action;
-import it.polimi.se2019.model.weapon.Selection;
 import it.polimi.se2019.model.weapon.behaviour.Expression;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.model.weapon.behaviour.ShootResult;
@@ -24,7 +23,7 @@ public class ShootInteractionController implements AbstractController {
         // initialize fields
         mParentController = parent;
         mView = view;
-        mCurrentExpression = request.getBehavoiur();
+        mCurrentExpression = request.getBehaviour();
         mCurrentShootContext = new ShootContext(
                 game.getBoard(),
                 new HashSet<>(game.getPlayers()),
@@ -62,7 +61,7 @@ public class ShootInteractionController implements AbstractController {
 
     @Override
     public Response handle(TargetsSelectedRequest request) {
-        continueShooting(new TargetsLiteral(Selection.fromSet(request.getSelectedTargets())));
+        continueShooting(new TargetsLiteral(request.getSelectedTargets()));
 
         // TODO: consider if return type should be void
         return null;

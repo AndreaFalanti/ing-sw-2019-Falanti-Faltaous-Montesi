@@ -1,12 +1,10 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
 public class SelectOneTarget extends Expression {
-    private @SubExpression Expression mFrom;
-
     public SelectOneTarget(Expression from) {
         super();
 
-        mFrom = from;
+        putSub("from", from);
     }
 
     @Override
@@ -15,7 +13,7 @@ public class SelectOneTarget extends Expression {
         Expression moreGeneric = new SelectTargets(
                 new IntLiteral(1),
                 new IntLiteral(1),
-                mFrom
+                getSub("from")
         );
 
         return moreGeneric.eval(shootContext);
