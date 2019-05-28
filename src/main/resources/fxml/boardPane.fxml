@@ -109,7 +109,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
         </GridPane>
-        <GridPane disable="true" layoutX="114.0" layoutY="112.0" prefHeight="366.0" prefWidth="488.0">
+        <GridPane fx:id="buttonGrid" layoutX="114.0" layoutY="112.0" prefHeight="366.0" prefWidth="488.0">
             <columnConstraints>
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

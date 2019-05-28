@@ -5,6 +5,7 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -29,6 +30,8 @@ public class BoardPane {
     private HBox deathsBox;
     @FXML
     private GridPane boardGrid;
+    @FXML
+    private GridPane buttonGrid;
 
     private static final int SKULL_HEIGHT = 41;
     private static final int SKULL_WIDTH = 32;
@@ -38,12 +41,13 @@ public class BoardPane {
     private static final String YELLOW_PAWN_COLOR = "#dff800";
     private static final String GREY_PAWN_COLOR = "#979797";
     private static final String PURPLE_PAWN_COLOR = "#ac27ff";
+    private static final int CIRCLE_RADIUS = 9;
 
     private static final int BOARD_COLUMNS = 4;
     private static final int BOARD_ROWS = 3;
 
-    /*private static final int GRID_WIDTH = 122;
-    private static final int GRID_HEIGHT = 122;*/
+    private static final int GRID_WIDTH = 122;
+    private static final int GRID_HEIGHT = 122;
 
     private Board mBoard;
 
@@ -60,13 +64,22 @@ public class BoardPane {
     }
 
     public void addPawnToCoordinate (Position pos, PlayerColor color) {
+        mSquareControllers[pos.getX()][pos.getY()].addPawn(mPawns.get(color));
+    }
 
+    public void switchButtonGrid(boolean value) {
+        buttonGrid.setVisible(value);
     }
 
     public void initialize (Board board) throws IOException {
         mBoard = board;
         createBoardElements();
         createPawns();
+    }
+
+    public void handleClickedPos (int x, int y) {
+        System.out.println("You clicked (" + x + ", " + y + ")");
+        switchButtonGrid(false);
     }
 
     private void createBoardElements () throws IOException {
@@ -92,12 +105,18 @@ public class BoardPane {
                     }
 
                     boardGrid.add(newLoadedPane, x, y);
+
+                    // set button in buttonGrid
+                    addGridButton(x, y);
                 }
                 else {
                     mSquareControllers[x][y] = null;
                 }
             }
         }
+
+        buttonGrid.setVisible(false);
+
         // from script dynamic instantiation (Problems with anchorPane probably)
         /*for (int x = 0; x < BOARD_COLUMNS; x++) {
             for (int y = 0; y < BOARD_ROWS; y++) {
@@ -137,8 +156,20 @@ public class BoardPane {
         }*/
     }
 
+    private void addGridButton (int x, int y) {
+        Button button = new Button("");
+        button.setPrefHeight(GRID_HEIGHT);
+        button.setPrefWidth(GRID_WIDTH);
+        button.setOpacity(0.2);
+        button.setOnMouseClicked(event -> {
+            handleClickedPos(x, y);
+        });
+
+        buttonGrid.add(button, x, y);
+    }
+
     private Circle createCircle (String color) {
-        Circle circle = new Circle(10);
+        Circle circle = new Circle(CIRCLE_RADIUS);
         circle.setFill(Paint.valueOf(color));
         circle.setVisible(false);
 

@@ -15,6 +15,8 @@ public class MainScreen {
     @FXML
     private Pane boardPane;
 
+    private BoardPane mBoardController;
+
     public void loadPlayerBoard(PlayerColor color) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/playerPane.fxml"));
         Pane newLoadedPane =  loader.load();
@@ -32,12 +34,19 @@ public class MainScreen {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/boardPane.fxml"));
         Pane newLoadedPane =  loader.load();
 
-        BoardPane boardController = loader.getController();
+        mBoardController = loader.getController();
         Board board = Board.fromJson(Jsons.get("boards/game/board1"));
-        boardController.initialize(board);
-        boardController.addTargetDeath(5);
+        mBoardController.initialize(board);
+        mBoardController.addTargetDeath(5);
 
         boardPane.getChildren().add(newLoadedPane);
     }
 
+    public void activateButtonGrid () {
+        mBoardController.switchButtonGrid(true);
+    }
+
+    public void deactivateButtonGrid () {
+        mBoardController.switchButtonGrid(false);
+    }
 }
