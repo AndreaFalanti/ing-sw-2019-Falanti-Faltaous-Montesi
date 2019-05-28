@@ -7,11 +7,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class MainScreen {
     @FXML
@@ -24,7 +27,11 @@ public class MainScreen {
     private HBox powerUpBox;
     @FXML
     private Button undoButton;
+    @FXML
+    private VBox chatBox;
 
+    private static final Logger logger = Logger.getLogger(MainScreen.class.getName());
+    
     private static final double LOADED_OPACITY = 1;
     private static final double UNLOADED_OPACITY = 0.4;
 
@@ -93,12 +100,12 @@ public class MainScreen {
     private void setShootingBehaviourOnWeapon (Node weapon, int index) {
         weapon.setOnMouseClicked(event -> {
             if (weapon.getOpacity() == LOADED_OPACITY) {
-                System.out.println("Shooting with weapon of index: " + index);
+                logToChat("Shooting with weapon of index: " + index);
                 setWeaponLoadStatus(index, false);
                 setWeaponBoxStatus(false);
             }
             else {
-                System.out.println("Can't shoot with unloaded weapon");
+                logToChat("Can't shoot with unloaded weapon");
             }
         });
     }
@@ -106,14 +113,20 @@ public class MainScreen {
     private void setReloadBehaviourOnWeapon (Node weapon, int index) {
         weapon.setOnMouseClicked(event -> {
             if (weapon.getOpacity() == UNLOADED_OPACITY) {
-                System.out.println("Reload weapon of index: " + index);
+                logToChat("Reload weapon of index: " + index);
                 setWeaponLoadStatus(index, true);
                 setWeaponBoxStatus(false);
             }
             else {
-                System.out.println("Can't reload an already loaded weapon");
+                logToChat("Can't reload an already loaded weapon");
             }
         });
+    }
+
+    public void logToChat (String message) {
+        logger.info(message);
+        Label label = new Label(message);
+        chatBox.getChildren().add(label);
     }
 
     public void activateButtonGrid () {

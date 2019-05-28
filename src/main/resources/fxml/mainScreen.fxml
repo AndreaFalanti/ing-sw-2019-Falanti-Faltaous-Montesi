@@ -57,5 +57,10 @@
          </children>
       </HBox>
       <Button fx:id="undoButton" layoutX="797.0" layoutY="335.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="UNDO" visible="false" />
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="964.0" layoutY="39.0" prefHeight="284.0" prefWidth="254.0" vbarPolicy="ALWAYS">
+         <content>
+            <VBox fx:id="chatBox" prefHeight="283.0" prefWidth="242.0" />
+         </content>
+      </ScrollPane>
    </children>
 </AnchorPane>
