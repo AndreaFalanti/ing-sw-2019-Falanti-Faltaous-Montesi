@@ -8,15 +8,6 @@
       <Pane fx:id="boardPane" layoutX="5.0" layoutY="5.0" prefHeight="538.0" prefWidth="773.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
 
       </Pane>
-      <SplitPane dividerPositions="0.5, 0.5, 0.5, 0.5" layoutX="795.0" layoutY="39.0" orientation="VERTICAL" prefHeight="284.0" prefWidth="90.0" AnchorPane.topAnchor="39.0">
-        <items>
-            <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGrid" prefHeight="50.0" prefWidth="90.0" text="MOVE" />
-            <Button contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#activateButtonGrid" prefHeight="50.0" prefWidth="90.0" text="GRAB" />
-            <Button contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#setShootOnWeapon" prefHeight="50.0" prefWidth="90.0" text="SHOOT" />
-            <Button contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#setReloadOnWeapon" prefHeight="50.0" prefWidth="90.0" text="RELOAD" />
-            <Button contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#deactivateButtonGrid" prefHeight="50.0" prefWidth="90.0" text="END TURN" />
-        </items>
-      </SplitPane>
       <Pane fx:id="playerPane" layoutX="166.0" layoutY="550.0" prefHeight="176.0" prefWidth="711.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
       <HBox fx:id="weaponBox" alignment="CENTER" layoutX="778.0" layoutY="531.0" prefHeight="194.0" prefWidth="371.0" spacing="20.0" AnchorPane.bottomAnchor="0.0">
          <children>
@@ -56,11 +47,20 @@
             </ImageView>
          </children>
       </HBox>
-      <Button fx:id="undoButton" layoutX="797.0" layoutY="335.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="UNDO" visible="false" />
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="964.0" layoutY="39.0" prefHeight="284.0" prefWidth="254.0" vbarPolicy="ALWAYS">
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="964.0" layoutY="39.0" prefHeight="284.0" prefWidth="254.0" vbarPolicy="ALWAYS" AnchorPane.topAnchor="40.0">
          <content>
             <VBox fx:id="chatBox" prefHeight="283.0" prefWidth="242.0" />
          </content>
       </ScrollPane>
+      <VBox layoutX="797.0" layoutY="40.0" spacing="10.0" AnchorPane.topAnchor="40.0">
+         <children>
+            <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGrid" prefHeight="50.0" prefWidth="90.0" text="MOVE" />
+            <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGrid" prefHeight="50.0" prefWidth="90.0" text="GRAB" />
+            <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#setShootOnWeapon" prefHeight="50.0" prefWidth="90.0" text="SHOOT" />
+            <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#setReloadOnWeapon" prefHeight="50.0" prefWidth="90.0" text="RELOAD" />
+            <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#deactivateButtonGrid" prefHeight="50.0" prefWidth="90.0" text="END TURN" />
+            <Button fx:id="undoButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="UNDO" />
+         </children>
+      </VBox>
    </children>
 </AnchorPane>
