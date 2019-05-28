@@ -12,6 +12,8 @@ public class BoardSquare {
 
     private static final int GRID_ROWS = 3;
     private static final int GRID_COLUMNS = 3;
+    private static final int AMMO_CARD_WIDTH = 46;
+    private static final int AMMO_CARD_HEIGHT = 48;
 
     private ImageView mAmmoCardView = null;
 
@@ -19,6 +21,8 @@ public class BoardSquare {
         Image ammoCardImage = new Image(GuiResourcePaths.AMMO_CARD + id + ".png");
         mAmmoCardView = new ImageView(ammoCardImage);
         mAmmoCardView.setPreserveRatio(true);
+        mAmmoCardView.setFitWidth(AMMO_CARD_WIDTH);
+        mAmmoCardView.setFitHeight(AMMO_CARD_HEIGHT);
 
         squareGrid.add(mAmmoCardView, 0, 2);
     }
@@ -32,11 +36,11 @@ public class BoardSquare {
     }
 
     public void addPawn (Circle circle) {
-        for (int x = 0; x < GRID_COLUMNS; x++) {
-            for (int y = 1; y < GRID_ROWS; y++) {
+        for (int y = 0; y < GRID_ROWS; y++) {
+            for (int x = 1; x < GRID_COLUMNS; x++) {
                 // avoid cell (2,1)
-                if (x == 2) {
-                    y = 2;
+                if (y == 2) {
+                    x = 2;
                 }
 
                 if (GuiUtils.getNodeFromGridPane(squareGrid, x, y) == null) {

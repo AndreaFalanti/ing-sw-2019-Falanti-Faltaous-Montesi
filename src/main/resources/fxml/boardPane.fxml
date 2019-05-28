@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 <AnchorPane prefHeight="538.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.se2019.view.gui.BoardPane">
 
     <children>
@@ -109,39 +108,6 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
-            <children>
-                <AnchorPane fx:id="boardSquare" prefHeight="122.0" prefWidth="122.0">
-                    <children>
-                        <GridPane prefHeight="122.0" prefWidth="122.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <columnConstraints>
-                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                            </rowConstraints>
-                            <children>
-                                <ImageView fitHeight="46.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
-                                    <image>
-                                        <Image url="@../images/ammo/AD_ammo_042.png" />
-                                    </image>
-                                </ImageView>
-                                <Circle fill="#35f8de" radius="10.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" />
-                                <Circle disable="true" fill="#dff800" layoutX="66.0" layoutY="22.0" radius="10.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" />
-                                <Circle fill="#09cd02" layoutX="20.0" layoutY="22.0" radius="10.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                <Circle fill="#ac27ff" layoutX="20.0" layoutY="22.0" radius="10.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                <Circle fill="#979797" layoutX="20.0" layoutY="22.0" radius="10.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                            </children>
-                        </GridPane>
-                    </children>
-               <padding>
-                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-               </padding>
-                </AnchorPane>
-            </children>
         </GridPane>
         <GridPane disable="true" layoutX="114.0" layoutY="112.0" prefHeight="366.0" prefWidth="488.0">
             <columnConstraints>

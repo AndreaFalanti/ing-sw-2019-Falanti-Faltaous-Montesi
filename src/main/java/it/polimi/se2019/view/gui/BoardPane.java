@@ -81,6 +81,15 @@ public class BoardPane {
 
                     /* TODO: delete image and pawns in fxml, add image only in normalTile and
                      try to check if pawns are correctly placed inside squareGrid */
+                    if (mBoard.getTileAt(new Position(x, y)).getTileType().equals("normal")) {
+                        squareController.addAmmoCardImage("042");
+                        squareController.addPawn(new Circle(9));
+                        squareController.addPawn(new Circle(9));
+                        squareController.addPawn(new Circle(9));
+                    }
+                    else {
+                        squareController.addPawn(new Circle(9));
+                    }
 
                     boardGrid.add(newLoadedPane, x, y);
                 }
