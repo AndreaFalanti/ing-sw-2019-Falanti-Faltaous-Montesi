@@ -56,7 +56,7 @@ public class ShootInteractionController implements AbstractController {
             completeShooting(result.asAction());
         }
         else {
-            result.asResponse().handleMe(mView);
+            result.asResponse().handleMe(mView.getResponseHandler());
         }
     }
 

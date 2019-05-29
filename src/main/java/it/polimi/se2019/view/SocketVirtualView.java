@@ -1,15 +1,33 @@
 package it.polimi.se2019.view;
 
+import it.polimi.se2019.controller.AbstractController;
 import it.polimi.se2019.controller.response.*;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.update.Update;
+import it.polimi.se2019.model.update.UpdateHandler;
 import it.polimi.se2019.model.weapon.Weapon;
-import it.polimi.se2019.model.weapon.response.TargetSelectionResponse;
-import it.polimi.se2019.util.Either;
+import it.polimi.se2019.util.AbstractHandler;
 
 import java.util.List;
 
 public class SocketVirtualView extends View {
+    public SocketVirtualView() {
+        super(
+                new ResponseHandler() {
+                    @Override
+                    public void fallbackHandle(Response response) {
+                        // TODO: serialize and send
+                    }
+                },
+                new UpdateHandler() {
+                    @Override
+                    public void fallbackHandle(Update update) {
+                        // TODO: serialize and send
+                    }
+                }
+        );
+    }
+
     @Override
     public void showMessage(String message) {
 
@@ -77,36 +95,6 @@ public class SocketVirtualView extends View {
 
     @Override
     public void interact() {
-
-    }
-
-    @Override
-    public void handle(LeaderboardResponse response) {
-
-    }
-
-    @Override
-    public void handle(MessageResponse response) {
-
-    }
-
-    @Override
-    public void handle(PickWeaponResponse response) {
-
-    }
-
-    @Override
-    public void handle(ValidMoveResponse response) {
-
-    }
-
-    @Override
-    public void handle(MessageActionResponse response) {
-
-    }
-
-    @Override
-    public void handle(TargetSelectionResponse response) {
 
     }
 }

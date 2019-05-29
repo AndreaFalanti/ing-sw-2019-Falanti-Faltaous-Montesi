@@ -1,13 +1,12 @@
-package it.polimi.se2019.view;
+package it.polimi.se2019.view.cli;
 
-import it.polimi.se2019.controller.response.*;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.PowerUpCard;
 import it.polimi.se2019.model.action.*;
-import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.weapon.Weapon;
-import it.polimi.se2019.model.weapon.response.TargetSelectionResponse;
+import it.polimi.se2019.view.ActionMessage;
+import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.LeaderboardRequest;
 
 import java.util.List;
@@ -43,9 +42,9 @@ public class CLIView extends View {
     public static final String HELP                     = COMMAND_PREFIX + "help" + SHOW +" available commands";
     public static final String QUIT                     = COMMAND_PREFIX + "quit" + " to quit the game";//to delete is only for test
 
-
-
-
+    public CLIView() {
+        super(new CLIResponseHandler(), new CLIUpdateHandler());
+    }
 
     public void availableCommands(){
         System.out.println("These are the possible commands:");
@@ -297,36 +296,6 @@ public class CLIView extends View {
     public void interact(){
         String command = requestAdditionalInfo();
         parseCommand(command);
-
-    }
-
-    @Override
-    public void handle(LeaderboardResponse response) {
-
-    }
-
-    @Override
-    public void handle(MessageResponse response) {
-
-    }
-
-    @Override
-    public void handle(PickWeaponResponse response) {
-
-    }
-
-    @Override
-    public void handle(ValidMoveResponse response) {
-
-    }
-
-    @Override
-    public void handle(MessageActionResponse response) {
-
-    }
-
-    @Override
-    public void handle(TargetSelectionResponse response) {
 
     }
 

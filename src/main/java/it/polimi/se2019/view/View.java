@@ -17,14 +17,28 @@ import it.polimi.se2019.view.request.Request;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class View extends Observable<Either<Request, Action>> implements Observer<Either<Response, Update>>, ResponseHandler {
-
+public abstract class View extends Observable<Either<Request, Action>> implements Observer<Either<Response, Update>> {
+    // fields
     protected ArrayList<Player> mPlayers;
     private Board board;
     protected PlayerColor activePlayer;
     protected Player owner;
     protected UpdateHandler mUpdateHandler;
     protected ResponseHandler mResponseHandler;
+
+    // constructor
+    public View(ResponseHandler responseHandler, UpdateHandler updateHandler) {
+        mResponseHandler = responseHandler;
+        mUpdateHandler = updateHandler;
+    }
+
+    // trivial getters
+    public ResponseHandler getResponseHandler() {
+        return mResponseHandler;
+    }
+    public UpdateHandler getUpdateHandler() {
+        return mUpdateHandler;
+    }
 
     public abstract void showMessage(String message);
 
