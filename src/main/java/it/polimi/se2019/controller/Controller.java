@@ -7,17 +7,15 @@ import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
-import it.polimi.se2019.model.weapon.behaviour.ShootContext;
+import it.polimi.se2019.util.Either;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
-public class Controller implements Observer<RequestMessage>, RequestHandler {
+public class Controller implements AbstractController {
 
     // fields
     private Game mGame;
@@ -26,10 +24,7 @@ public class Controller implements Observer<RequestMessage>, RequestHandler {
 //  private getValidPosition mValidPostion;//change name
     private TakeLeaderboard mLeaderboard;
     private View mView;
-    final List<ShootInteraction> mShootInteractions = new ArrayList<>();
-
-    // weapon related fields
-    private Optional<ShootContext> mCurrentShootContext;
+    final Deque<ShootInteractionController> mShootInteractions = new ArrayDeque<>();
 
     public Controller() {
     }
@@ -52,7 +47,7 @@ public class Controller implements Observer<RequestMessage>, RequestHandler {
     }
 
     /*******************/
-    /* HANDLER METHODS */
+    /* other requests  */
     /*******************/
 
     @Override
@@ -84,21 +79,46 @@ public class Controller implements Observer<RequestMessage>, RequestHandler {
 
     @Override
     public Response handle(ShootRequest request) {
-        mShootInteractions.add(new ShootInteraction(this, mView, mGame, request));
+        mShootInteractions.push(new ShootInteractionController(this, mView, mGame, request));
 
         // TODO: consider if switching to void
         return null;
     }
 
+    /*********************************************************/
+    /* requests that should be handled by shoot interactions */
+    /*********************************************************/
+
+    public void handleShootRequest(Request request) {
+        if (mShootInteractions.isEmpty())
+            throw new IllegalStateException(
+                    "Cannot handle request related to shooting with no shooting interaction in progess!"
+            );
+
+        request.handleMe(mShootInteractions.peek());
+    }
+
     @Override
-    public void update(RequestMessage message) {
-        if (message.isAction()) {
-            // TODO: Fala il codice del controller legato ad action andrebbe qui
-            // TODO: forse servirà un mActionHandler per gestirle meglio o forse no...
-            // Action action = message.asAction();
-            // action.perform(mGame);
-        }
-        else if (message.isRequest())
-            message.asRequest().handleMe(this);
+    public Response handle(TargetsSelectedRequest request) {
+        handleShootRequest(request);
+
+        return null;
+    }
+
+    /*****************************************/
+    /* update method from observer interface */
+    /*****************************************/
+
+    @Override
+    public void update(Either<Request, Action> message) {
+        message.apply(
+                request -> request.handleMe(this),
+                action -> {
+                    // TODO: Fala il codice del controller legato ad action andrebbe qui
+                    // TODO: forse servirà un mActionHandler per gestirle meglio o forse no...
+                    // Action action = message.asAction();
+                    // action.perform(mGame);
+                }
+        );
     }
 }

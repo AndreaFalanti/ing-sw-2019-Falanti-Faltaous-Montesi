@@ -5,6 +5,7 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.model.weapon.response.TargetSelectionResponse;
+import it.polimi.se2019.util.Either;
 
 import java.util.List;
 
@@ -77,10 +78,6 @@ public class SocketVirtualView extends View {
     @Override
     public void interact() {
 
-    }
-
-    @Override
-    public void update(Update update) {
     }
 
     @Override

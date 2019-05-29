@@ -301,11 +301,6 @@ public class CLIView extends View {
     }
 
     @Override
-    public void update(Update update) {
-
-    }
-
-    @Override
     public void handle(LeaderboardResponse response) {
 
     }

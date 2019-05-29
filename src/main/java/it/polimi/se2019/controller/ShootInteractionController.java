@@ -8,18 +8,19 @@ import it.polimi.se2019.model.weapon.behaviour.Expression;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.model.weapon.behaviour.ShootResult;
 import it.polimi.se2019.model.weapon.behaviour.TargetsLiteral;
+import it.polimi.se2019.util.Either;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
 import java.util.HashSet;
 
-public class ShootInteraction extends Controller {
+public class ShootInteractionController implements AbstractController {
     private Controller mParentController;
     private Expression mCurrentExpression;
     private ShootContext mCurrentShootContext;
     private View mView;
 
-    public ShootInteraction(Controller parent, View view, Game game, ShootRequest request) {
+    public ShootInteractionController(Controller parent, View view, Game game, ShootRequest request) {
         // initialize fields
         mParentController = parent;
         mView = view;
@@ -42,7 +43,7 @@ public class ShootInteraction extends Controller {
         mParentController.mShootInteractions.remove(this);
 
         // execute shoot action using controller
-        mParentController.update(RequestMessage.from(shootAction));
+        mParentController.update(Either.right(shootAction));
     }
 
     private void continueShooting(Expression info) {
@@ -68,10 +69,12 @@ public class ShootInteraction extends Controller {
     }
 
     @Override
-    public void update(RequestMessage requestMessage) {
-        if (requestMessage.isRequest())
-            requestMessage.asRequest().handleMe(this);
-
-        // ignore actions
+    public void update(Either<Request, Action> message) {
+        message.apply(
+                request -> request.handleMe(this),
+                action -> {
+                    // ignore actions
+                }
+        );
     }
 }
