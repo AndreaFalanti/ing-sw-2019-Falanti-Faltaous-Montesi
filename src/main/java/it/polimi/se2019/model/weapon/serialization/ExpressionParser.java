@@ -1,64 +1,86 @@
 package it.polimi.se2019.model.weapon.serialization;
 
-import com.google.gson.*;
-import it.polimi.se2019.model.weapon.behaviour.Expression;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import it.polimi.se2019.model.AmmoValue;
+import it.polimi.se2019.model.Damage;
+import it.polimi.se2019.model.weapon.behaviour.DamageLiteral;
+import it.polimi.se2019.model.weapon.behaviour.IntLiteral;
 
-import java.lang.reflect.Type;
-import java.util.Map;
+/**
+ * Exists to parse pretty (more readable) definition of expression in json into that can be more
+ * easily serialized by the Gson library
+ */
+public class ExpressionParser {
+    private ExpressionParser() {}
 
-public class ExpressionParser implements JsonDeserializer<Expression>, JsonSerializer<Expression> {
-    private static String EXPRESSION_PACKAGE_NAME = "it.polimi.se2019.model.weapon.behaviour";
-
-    @Override
-    public Expression deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) {
-        // get class from class name
-        String typeString = jsonElement.getAsJsonObject().get("expr").toString();
-        Class<Expression> expressionType = null;
-        try {
-            System.out.println("Instatiating " + typeString + "\n");
-            expressionType = (Class<Expression>) Class.forName(EXPRESSION_PACKAGE_NAME + "." + typeString);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Cannot find class");
-        }
-
-        // instantiate empty expression from class name
-        Expression result = null;
-        try {
-            result = expressionType.newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("Cannot instantiate object from class");
-        }
-
-        // add subexpressions
-        JsonObject jSubDict = jsonElement.getAsJsonObject();
-        for (Map.Entry<String, JsonElement> jEntry : jSubDict.entrySet()) {
-            if (!jEntry.getKey().equals("expr")) {
-                String subName = jEntry.getKey();
-                Expression parsedSubexpr = deserialize(jEntry.getValue(), Expression.class, context);
-
-                result.putSub(jEntry.getKey(), parsedSubexpr);
-            }
-        }
-
-        // return result
-        return result;
+    // identifies if expression is a primitive
+    private static boolean isPrimitive(JsonElement raw) {
+        return raw.isJsonPrimitive();
     }
 
-    @Override
-    public JsonElement serialize(Expression expression, Type type, JsonSerializationContext context) {
-        JsonObject result = new JsonObject();
+    // identifies strings identifying a damage value
+    private static boolean isDamageStringLiteral(JsonPrimitive rawPrimitive) {
+        return rawPrimitive.isString() &&
+                Damage.from(rawPrimitive.getAsString()).isPresent();
+    }
 
-        // determine type
-        result.add("expr", new JsonPrimitive(expression.getClass().getSimpleName()));
+    // identifies strings identifying an cost value
+    private static boolean isCostStringLiteral(JsonPrimitive rawPrimitive) {
+        return rawPrimitive.isString() &&
+                AmmoValue.from(rawPrimitive.getAsString()).isPresent();
+    }
 
-        // add subs
-        for (Map.Entry<String, Expression> entry : expression.getSubexpressions().entrySet()) {
-            JsonElement serializedSub = serialize(entry.getValue(), Expression.class, context);
+    // parses a cost string literal
+    private static JsonElement parseCostStringLiteral(JsonPrimitive rawPrimitive) {
+        throw new UnsupportedOperationException("WIP");
+    }
 
-            result.add(entry.getKey(), serializedSub);
+    // parses a cost string literal
+    private static JsonElement parseDamageStringLiteral(JsonPrimitive rawPrimitive) {
+        return ExpressionFactory.toJsonTree(new DamageLiteral(
+                Damage.from(rawPrimitive.getAsString())
+                        .orElseThrow(() ->new IllegalArgumentException(
+                                rawPrimitive.getAsString() + " could not be parsed"))
+        ));
+    }
+
+    // parses a primitive
+    private static JsonElement parsePrimitive(JsonElement raw) {
+        JsonPrimitive rawPrimitive = raw.getAsJsonPrimitive();
+
+        // parse numbers
+        if (rawPrimitive.isNumber()) {
+            return parseNumber(rawPrimitive);
+        }
+        // parse strings
+        if (rawPrimitive.isString()) {
+            if (isCostStringLiteral(rawPrimitive))
+                return parseCostStringLiteral(rawPrimitive);
+            else if(isDamageStringLiteral(rawPrimitive))
+                return parseDamageStringLiteral(rawPrimitive);
         }
 
-        // result
-        return result;
+        // if this point is reached, then a malformed primitive has been encountered
+        throw new IllegalArgumentException(
+                raw.toString() + " is a malformed primitive and cannot be parsed."
+        );
+    }
+
+    // parse a number into a number literal expression
+    private static JsonElement parseNumber(JsonPrimitive rawPrimitive) {
+        return ExpressionFactory.toJsonTree(
+                new IntLiteral(rawPrimitive.getAsInt())
+        );
+    }
+
+    /**
+     * Do what this class is supposed to do
+     */
+    public static JsonElement parse(JsonElement raw) {
+        if (isPrimitive(raw))
+            return parsePrimitive(raw);
+
+        throw new UnsupportedOperationException("WIP");
     }
 }

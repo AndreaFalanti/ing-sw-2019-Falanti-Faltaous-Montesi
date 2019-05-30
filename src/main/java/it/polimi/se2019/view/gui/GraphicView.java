@@ -1,11 +1,7 @@
 package it.polimi.se2019.view.gui;
 
-import it.polimi.se2019.controller.response.*;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.weapon.Weapon;
-import it.polimi.se2019.model.weapon.response.TargetSelectionResponse;
-import it.polimi.se2019.util.Either;
 import it.polimi.se2019.view.View;
 
 import java.util.List;
