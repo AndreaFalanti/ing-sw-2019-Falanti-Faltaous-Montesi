@@ -42,6 +42,46 @@ public class AmmoValueTest {
     }
 
     /**
+     * Test parsing a string with all color into into an AmmoValue
+     */
+    @Test
+    public void testFromStringAllColors() {
+        AmmoValue expected = new AmmoValue(1, 2, 3);
+
+        AmmoValue actual = AmmoValue.from("1r2y3b")
+                .orElseGet(() -> {
+                    fail();
+                    return null;
+                });
+
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Test parsing a string with some missing colors into into an AmmoValue
+     */
+    @Test
+    public void testFromStringMissingColors() {
+        AmmoValue expected = new AmmoValue(3, 0, 3);
+
+        AmmoValue actual = AmmoValue.from("3r3b")
+                .orElseGet(() -> {
+                    fail();
+                    return null;
+                });
+
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Assert that malformed strings are not parsed as correct ones
+     */
+    @Test
+    public void testFromStringWrongOrdersShouldThrowException() {
+        assertFalse(AmmoValue.from("3b3y1r").isPresent());
+    }
+
+    /**
      * Test add operation and check that values above MAX_AMMO are clamped
      */
     @Test
