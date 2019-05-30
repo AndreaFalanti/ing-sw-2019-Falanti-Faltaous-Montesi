@@ -12,35 +12,13 @@
   },
   "behaviour" : {
     "expr" : "InflictDamage",
-    "subs" : {
-      "damage" : {
-        "expr" : "DamageLiteral",
-        "subs" : {},
-        "contents" : {
-          "damage" : 3,
-          "marksNum" : 0
-        }
-      },
-      "to" : {
-        "expr" : "SelectOneTarget",
-        "subs" : {
-          "from" : {
-            "expr" : "NegateSelection",
-            "subs" : {
-              "selection" : {
-                "expr" : "GetTargets",
-                "subs" : {
-                  "range" : {
-                    "expr" : "CanSee"
-                  }
-                }
-              }
-            }
-          }
-        }
+    "amount" : "3d",
+    "to" : {
+      "expr" : "NegateSelection",
+      "selection" : {
+        "expr" : "CanSee"
       }
     }
   }
 }
-
 

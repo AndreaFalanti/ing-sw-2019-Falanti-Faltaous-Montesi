@@ -39,4 +39,21 @@ public class ExpressionParserTest {
                 new PrettyJsonElement(actual)
         );
     }
+
+    @Test
+    public void parserLockrifleBehaviour() {
+        JsonElement expected = new Gson().fromJson(
+                Jsons.get("weapons/tests/raw_lock_rifle"),
+                JsonElement.class
+        );
+
+        JsonElement actual = ExpressionParser.parse(
+                new Gson().fromJson(Jsons.get("weapons/tests/pretty_lock_rifle"), JsonElement.class)
+        );
+
+        assertEquals(
+                new PrettyJsonElement(expected),
+                new PrettyJsonElement(actual)
+        );
+    }
 }

@@ -18,7 +18,7 @@ public class WaitForInfo extends Expression {
         // if info is available, consume it and substitute this expression with it
         if (shootContext.peekProvidedInfo().isPresent()) {
             // TODO: check if this is correct
-            return shootContext.consumeProvidedInfo();
+            return shootContext.popProvidedInfo();
         }
 
         // if info is not available, just keep waiting

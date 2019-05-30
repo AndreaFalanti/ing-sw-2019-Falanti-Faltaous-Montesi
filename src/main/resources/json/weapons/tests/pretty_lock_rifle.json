@@ -1,0 +1,35 @@
+{
+  "expr": "Do",
+  "do": {
+    "basic_effect": {
+      "expr": "InflictDamage",
+      "priority": 0,
+      "amount": "2d1m",
+      "to": {
+        "expr": "SelectOneTarget",
+        "from": {
+          "expr": "CanSee"
+        }
+      }
+    },
+    "with_second_lock": {
+      "expr": "InflictDamage",
+      "priority": 1,
+      "optional": true,
+      "cost" : "1r",
+      "amount": "2d1m",
+      "to": {
+        "expr": "SelectOneTarget",
+        "from": {
+          "expr": "Intersect",
+          "lhs": {
+            "expr": "Different"
+          },
+          "rhs": {
+            "expr": "CanSee"
+          }
+        }
+      }
+    }
+  }
+}

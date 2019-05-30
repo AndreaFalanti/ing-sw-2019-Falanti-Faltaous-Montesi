@@ -1,0 +1,66 @@
+{
+  "expr": "Do",
+  "subs" : {
+    "do": {
+      "subs": {
+        "basic_effect": {
+          "expr": "InflictDamage",
+          "priority": 0,
+          "subs" : {
+            "amount": {
+              "expr" : "CostLiteral",
+              "subs" : {},
+              "contents" : {
+                "damage" : 1,
+                "marksNum" : 0
+              }
+            },
+            "to": {
+              "expr": "SelectOneTarget",
+              "subs" : {
+                "from": {
+                  "expr": "CanSee",
+                  "subs" : {}
+                }
+              }
+            }
+          }
+        },
+        "with_second_lock": {
+          "expr": "InflictDamage",
+          "priority": 1,
+          "optional": true,
+          "cost": "1r",
+          "subs" : {
+            "amount": {
+              "expr" : "DamageLiteral",
+              "subs" : {},
+              "contents" : {
+                "damage" : 2,
+                "numMarks" : 1
+              }
+            },
+            "to": {
+              "expr": "SelectOneTarget",
+              "subs" : {
+                "from": {
+                  "expr": "Intersect",
+                  "subs" : {
+                    "lhs": {
+                      "expr": "Different",
+                      "subs" : {}
+                    },
+                    "rhs": {
+                      "expr": "CanSee",
+                      "subs" : {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

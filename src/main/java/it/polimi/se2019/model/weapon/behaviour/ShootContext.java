@@ -7,6 +7,7 @@ import it.polimi.se2019.model.board.Board;
 
 import javax.swing.text.html.Option;
 import java.util.*;
+import java.util.concurrent.DelayQueue;
 
 public class ShootContext {
     // statics
@@ -17,8 +18,8 @@ public class ShootContext {
     private Set<Player> mPlayers;
     private PlayerColor mShooterColor;
     final private List<Action> mCachedActions = new ArrayList<>();
-    private Optional<Expression> mRequestedInfo = Optional.empty();
-    private Optional<Expression> mProvidedInfo = Optional.empty();
+    private final Deque<Expression> mRequestedInfo = new ArrayDeque<>();
+    private final Deque<Expression> mProvidedInfo = new ArrayDeque<>();
 
     // temporary info representing changed game state
     AmmoValue mPayedCost;
@@ -60,46 +61,37 @@ public class ShootContext {
 
     // true if no info is required from context
     public boolean isComplete() {
-        return !mProvidedInfo.isPresent();
+        return mRequestedInfo.isEmpty() && mProvidedInfo.isEmpty();
     }
 
 
     // request and collect info
     public void requestInfo(Expression infoRequested) {
-         if (mRequestedInfo.isPresent())
-            throw new UnsupportedOperationException("Info already requested!");
-
-        mRequestedInfo = Optional.of(infoRequested);
+        mRequestedInfo.push(infoRequested);
     }
     public Optional<Expression> peekRequestedInfo() {
-        return mRequestedInfo;
+        return Optional.ofNullable(mRequestedInfo.peek());
     }
-    public Expression consumeRequestedInfo() {
-        Expression toReturn = mRequestedInfo.orElseThrow(() ->
-                new UnsupportedOperationException("No info requested to consume!")
-        );
+    public Expression popRequestedInfo() {
+        if (mRequestedInfo.isEmpty())
+            throw new UnsupportedOperationException("Trying to pop requested info from and empty stack!");
 
-        mRequestedInfo = Optional.empty();
-
-        return toReturn;
+        return mRequestedInfo.pop();
     }
     public void provideInfo(Expression infoProvided) {
-        if (mProvidedInfo.isPresent())
-            throw new UnsupportedOperationException("Info already provided!");
-
-        mProvidedInfo = Optional.of(infoProvided);
+        mProvidedInfo.push(infoProvided);
+    }
+    public void provideInfo(List<Expression> infoProvided) {
+        infoProvided.forEach(mProvidedInfo::push);
     }
     public Optional<Expression> peekProvidedInfo() {
-        return mProvidedInfo;
+        return Optional.ofNullable(mProvidedInfo.peek());
     }
-    public Expression consumeProvidedInfo() {
-        Expression toReturn = mProvidedInfo.orElseThrow(() ->
-                new UnsupportedOperationException("No info provided to consume!")
-        );
+    public Expression popProvidedInfo() {
+        if (mProvidedInfo.isEmpty())
+            throw new UnsupportedOperationException("Trying to pop provided info from and empty stack!");
 
-        mProvidedInfo = Optional.empty();
-
-        return toReturn;
+        return mProvidedInfo.pop();
     }
 
     // build resulting action

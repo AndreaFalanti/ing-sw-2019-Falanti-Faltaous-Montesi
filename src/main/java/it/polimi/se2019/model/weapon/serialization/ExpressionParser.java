@@ -22,7 +22,9 @@ public class ExpressionParser {
             "cost",
             "subs",
             "expr",
-            "contents"
+            "contents",
+            "priority",
+            "optional"
     ));
 
     private ExpressionParser() {}

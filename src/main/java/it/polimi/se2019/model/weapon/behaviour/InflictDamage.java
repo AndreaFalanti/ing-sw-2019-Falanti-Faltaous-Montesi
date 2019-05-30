@@ -7,7 +7,7 @@ import it.polimi.se2019.model.action.DamageAction;
 public class InflictDamage extends Expression {
     // trivial constructor
     public InflictDamage(Expression damageToInflict, Expression targets) {
-        putSub("damage", damageToInflict);
+        putSub("amount", damageToInflict);
         putSub("to", targets);
     }
 
@@ -20,7 +20,7 @@ public class InflictDamage extends Expression {
         Action resultingAction = new DamageAction(
                 inflicterColor,
                 getSub("to").asTargets(),
-                getSub("damage").asDamage()
+                getSub("amount").asDamage()
         );
         // add it to actions produced this far
         shootContext.pushAction(resultingAction);

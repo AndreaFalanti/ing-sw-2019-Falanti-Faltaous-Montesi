@@ -132,14 +132,14 @@ public abstract class Expression {
 
         return exprResult.isDone() ?
                 ShootResult.from(context.getResultingAction()) :
-                ShootResult.from(context.consumeRequestedInfo().asResponse());
+                ShootResult.from(context.popRequestedInfo().asResponse());
     }
 
     // TODO: add doc
     public final Expression requestInfoFromPlayer(ShootContext context, Expression infoToRequest) {
         // if info is available, consume it
         if (context.peekProvidedInfo().isPresent())
-            return context.consumeProvidedInfo();
+            return context.popProvidedInfo();
 
         // else, request it...
         context.requestInfo(infoToRequest);
