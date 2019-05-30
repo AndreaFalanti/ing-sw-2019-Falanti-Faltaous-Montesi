@@ -73,7 +73,7 @@ public class WeaponsTest {
     }
 
     @Test
-    public void testHeatseekerMarioShootsLuigiMissingInfo() {
+    public void testHeatseekerMarioShootsLuigiMissingTarget() {
          // instantiate weapon
         Weapon heatseeker = Weapons.get("heatseeker");
 

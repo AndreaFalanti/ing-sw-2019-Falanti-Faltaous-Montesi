@@ -70,9 +70,9 @@ public abstract class Expression {
 
     // TODO: add doc
     private boolean evalSubexpressions(ShootContext shootContext) {
-        // if no subexpressions just keep evaluating
+        // there must be a subexpression list
         if (mSubexpressions == null)
-            return false;
+            throw new IllegalStateException("FATAL: subexpression map is missing from expression!");
 
         // evaluate subexpressions
         for (Map.Entry<String, Expression> entry : mSubexpressions.entrySet()) {

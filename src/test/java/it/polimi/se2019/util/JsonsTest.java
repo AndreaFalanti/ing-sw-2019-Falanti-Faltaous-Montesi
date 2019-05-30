@@ -20,8 +20,8 @@ public class JsonsTest {
 
         final String expectedString = "{\"value\" : \"hello test!\"}";
 
-        assertEquals(new JsonString(testJsonString),
-                     new JsonString(expectedString));
+        assertEquals(new PrettyJsonElement(testJsonString),
+                     new PrettyJsonElement(expectedString));
     }
 }
 

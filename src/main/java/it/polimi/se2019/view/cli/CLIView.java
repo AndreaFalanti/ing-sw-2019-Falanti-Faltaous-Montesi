@@ -48,7 +48,7 @@ public class CLIView extends View {
     public static final String QUIT                     =  "QUIT" + " to quit the game";//to delete is only for test
 
     public CLIView() {
-super(new CLIResponseHandler(), new CLIUpdateHandler());
+        super(new CLIResponseHandler(), new CLIUpdateHandler());
     }
 
     public void availableCommands(){

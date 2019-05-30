@@ -1,13 +1,14 @@
 package it.polimi.se2019.model.weapon.serialization;
 
+import com.sun.applet2.preloader.event.PreloaderEvent;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.weapon.behaviour.DamageLiteral;
 import it.polimi.se2019.model.weapon.behaviour.Expression;
 import it.polimi.se2019.model.weapon.behaviour.InflictDamage;
 import it.polimi.se2019.model.weapon.behaviour.TargetsLiteral;
-import it.polimi.se2019.util.JsonString;
 import it.polimi.se2019.util.Jsons;
+import it.polimi.se2019.util.PrettyJsonElement;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,8 +34,8 @@ public class ExpressionFactoryTest {
         String expected = Jsons.get("weapons/tests/simple_behaviour");
 
         assertEquals(
-                new JsonString(expected),
-                new JsonString(actual)
+                new PrettyJsonElement(expected),
+                new PrettyJsonElement(actual)
         );
     }
 

@@ -34,12 +34,12 @@ public class ExpressionFactory {
 
     // TODO: add doc
     public static Expression fromJson(JsonElement toDeserialize) {
-        return GSON.fromJson(toDeserialize, Expression.class);
+        return GSON.fromJson(ExpressionParser.parse(toDeserialize), Expression.class);
     }
 
     // TODO: add doc
     public static Expression fromJson(String toDeserialize) {
-        return GSON.fromJson(toDeserialize, Expression.class);
+        return GSON.fromJson(ExpressionParser.parse(new Gson().fromJson(toDeserialize, JsonElement.class)), Expression.class);
     }
 
     // TODO: add doc

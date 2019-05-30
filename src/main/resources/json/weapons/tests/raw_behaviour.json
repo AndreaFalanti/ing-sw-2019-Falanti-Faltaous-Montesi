@@ -1,26 +1,36 @@
 {
   "expr": "InflictDamage",
-  "damage": {
-    "expr": "DamageLiteral",
-    "contents": {
-      "damage": 3,
-      "marksNum": 0
-    }
-  },
-  "targets": {
-    "expr": "SelectTargets",
-    "min": {
-      "expr": "IntLiteral",
-      "contents": 1
+  "subs" : {
+    "damage": {
+      "expr": "DamageLiteral",
+      "subs" : {},
+      "contents": {
+        "damage": 3,
+        "marksNum": 0
+      }
     },
-    "max": {
-      "expr": "IntLiteral",
-      "contents": 1
-    },
-    "from": {
-      "expr": "NegateSelection",
-      "do": {
-        "expr": "CanSee"
+    "targets": {
+      "expr": "SelectTargets",
+      "subs" : {
+        "min": {
+          "expr": "IntLiteral",
+          "subs" : {},
+          "contents": 1
+        },
+        "max": {
+          "expr": "IntLiteral",
+          "subs" : {},
+          "contents": 1
+        },
+        "from": {
+          "expr": "NegateSelection",
+          "subs" : {
+            "do": {
+              "expr": "CanSee",
+              "subs" : {}
+            }
+          }
+        }
       }
     }
   }

@@ -1,17 +1,30 @@
 package it.polimi.se2019.model.weapon.serialization;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.weapon.behaviour.DamageLiteral;
 import it.polimi.se2019.model.weapon.behaviour.IntLiteral;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Exists to parse pretty (more readable) definition of expression in json into that can be more
  * easily serialized by the Gson library
  */
 public class ExpressionParser {
+    public static final Set<String> EXCLUSIVE_KEYWORDS = new HashSet<>(Arrays.asList(
+            "cost",
+            "subs",
+            "expr",
+            "contents"
+    ));
+
     private ExpressionParser() {}
 
     // identifies if expression is a primitive
@@ -40,7 +53,7 @@ public class ExpressionParser {
     private static JsonElement parseDamageStringLiteral(JsonPrimitive rawPrimitive) {
         return ExpressionFactory.toJsonTree(new DamageLiteral(
                 Damage.from(rawPrimitive.getAsString())
-                        .orElseThrow(() ->new IllegalArgumentException(
+                        .orElseThrow(() -> new IllegalArgumentException(
                                 rawPrimitive.getAsString() + " could not be parsed"))
         ));
     }
@@ -74,6 +87,26 @@ public class ExpressionParser {
         );
     }
 
+    // parse a complex expression
+    private static JsonElement parseComplexExpression(JsonElement rawPrimitive) {
+        JsonObject jExpression = rawPrimitive.getAsJsonObject();
+
+        JsonObject result = new JsonObject();
+        result.add("subs", new JsonObject());
+
+        for (Map.Entry<String, JsonElement> entry : jExpression.entrySet()) {
+            String subName = entry.getKey();
+            JsonElement jSub = entry.getValue();
+
+            if (!EXCLUSIVE_KEYWORDS.contains(subName))
+                result.get("subs").getAsJsonObject().add(subName, parse(jSub));
+            else
+                result.add(subName, jSub);
+        }
+
+        return result;
+    }
+
     /**
      * Do what this class is supposed to do
      */
@@ -81,6 +114,7 @@ public class ExpressionParser {
         if (isPrimitive(raw))
             return parsePrimitive(raw);
 
-        throw new UnsupportedOperationException("WIP");
+        // else treat it as a complex expression
+        return parseComplexExpression(raw);
     }
 }
