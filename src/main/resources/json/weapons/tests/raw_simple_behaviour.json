@@ -1,7 +1,7 @@
 {
   "expr" : "InflictDamage",
   "subs" : {
-    "damage" : {
+    "amount" : {
       "expr" : "DamageLiteral",
       "subs" : {},
       "contents" : {
@@ -10,7 +10,7 @@
       }
     },
     "to" : {
-      "expr": "TargetsLiteral",
+      "expr" : "TargetsLiteral",
       "subs" : {},
       "contents" : [
         "GREEN"

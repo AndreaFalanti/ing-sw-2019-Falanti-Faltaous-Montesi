@@ -4,7 +4,7 @@
   "grabCost": "2b",
   "behaviour": {
     "expr": "Do",
-    "do": {
+    "list": {
       "basic_effect": {
         "expr": "InflictDamage",
         "priority": 0,

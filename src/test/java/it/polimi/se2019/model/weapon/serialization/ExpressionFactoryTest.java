@@ -2,10 +2,7 @@ package it.polimi.se2019.model.weapon.serialization;
 
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.weapon.behaviour.DamageLiteral;
-import it.polimi.se2019.model.weapon.behaviour.Expression;
-import it.polimi.se2019.model.weapon.behaviour.InflictDamage;
-import it.polimi.se2019.model.weapon.behaviour.TargetsLiteral;
+import it.polimi.se2019.model.weapon.behaviour.*;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.PrettyJsonElement;
 import org.junit.Before;
@@ -30,20 +27,11 @@ public class ExpressionFactoryTest {
     public void testToJsonSimpleBehaviour() {
         String actual = ExpressionFactory.toJson(mSimpleBehaviour);
 
-        String expected = Jsons.get("weapons/tests/simple_behaviour");
+        String expected = Jsons.get("weapons/tests/raw_simple_behaviour");
 
         assertEquals(
                 new PrettyJsonElement(expected),
                 new PrettyJsonElement(actual)
         );
-    }
-
-    @Test
-    public void testFromJsonSimpleBehaviour() {
-        Expression actual = ExpressionFactory.fromJson(Jsons.get("weapons/tests/simple_behaviour"));
-
-        Expression expected = mSimpleBehaviour;
-
-        assertEquals(expected, actual);
     }
 }

@@ -35,7 +35,7 @@ public class WeaponFactoryTest {
     // TODO: add doc
     @Test
     public void testFromJsonHeatseeker() {
-        Weapon actual = WeaponFactory.fromJson(Jsons.get("weapons/tests/raw_heatseeker"));
+        Weapon actual = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
 
         Weapon expected = mHeatseeker;
 

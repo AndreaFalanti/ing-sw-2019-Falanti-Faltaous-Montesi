@@ -1,5 +1,6 @@
 package it.polimi.se2019.model.weapon.serialization;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -7,6 +8,7 @@ import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.weapon.behaviour.DamageLiteral;
 import it.polimi.se2019.model.weapon.behaviour.IntLiteral;
+import it.polimi.se2019.util.JsonUtils;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,14 +20,18 @@ import java.util.Set;
  * easily serialized by the Gson library
  */
 public class ExpressionParser {
-    protected static final Set<String> EXCLUSIVE_KEYWORDS = new HashSet<>(Arrays.asList(
-            "cost",
+    private static final Set<String> PROHIBITED_KEYWORDS = new HashSet<>(Arrays.asList(
             "subs",
+            "contents"
+    ));
+    private static final Set<String> EXCLUSIVE_KEYWORDS = new HashSet<>(Arrays.asList(
+            "cost",
             "expr",
-            "contents",
+            "name",
             "priority",
             "optional"
     ));
+    private static final String ANONYMOUS_LIST_KEYWORD = "list";
 
     private ExpressionParser() {}
 
@@ -89,6 +95,20 @@ public class ExpressionParser {
         );
     }
 
+    // parses an anonymous list
+    private static JsonObject parseAnonymousList(JsonElement rawList) {
+        JsonObject result = new JsonObject();
+        JsonArray jList = rawList.getAsJsonArray();
+
+        int counter = 0;
+        for (JsonElement jSub : jList) {
+            result.add(Integer.toString(counter), parse(jSub));
+            counter++;
+        }
+
+        return result;
+    }
+
     // parse a complex expression
     private static JsonElement parseComplexExpression(JsonElement rawPrimitive) {
         JsonObject jExpression = rawPrimitive.getAsJsonObject();
@@ -100,8 +120,18 @@ public class ExpressionParser {
             String subName = entry.getKey();
             JsonElement jSub = entry.getValue();
 
-            if (!EXCLUSIVE_KEYWORDS.contains(subName))
+            if (PROHIBITED_KEYWORDS.contains(subName))
+                throw new IllegalArgumentException(
+                        subName + " is a prohibited keyword and cannot be used as a subexpression name"
+                );
+            else if (ANONYMOUS_LIST_KEYWORD.equals(subName)) {
+                JsonObject parsedList = parseAnonymousList(jSub);
+
+                result.add("subs", parsedList);
+            }
+            else if (!EXCLUSIVE_KEYWORDS.contains(subName)) {
                 result.get("subs").getAsJsonObject().add(subName, parse(jSub));
+            }
             else
                 result.add(subName, jSub);
         }

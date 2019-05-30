@@ -14,9 +14,12 @@
     "expr" : "InflictDamage",
     "amount" : "3d",
     "to" : {
-      "expr" : "NegateSelection",
-      "selection" : {
-        "expr" : "CanSee"
+      "expr" : "SelectOneTarget",
+      "from" : {
+        "expr" : "NegateSelection",
+        "selection" : {
+          "expr" : "CanSee"
+        }
       }
     }
   }
