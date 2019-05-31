@@ -1,14 +1,14 @@
 package it.polimi.se2019.model.weapon;
 
 import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.model.weapon.behaviour.Expression;
+import it.polimi.se2019.model.weapon.behaviour.AtomicExpression;
 
 public class PayedEffect {
     private AmmoValue mCost;
-    private Expression mBehaviour;
+    private AtomicExpression mBehaviour;
 
     // trivial constructor
-    public PayedEffect(AmmoValue cost, Expression behaviour) {
+    public PayedEffect(AmmoValue cost, AtomicExpression behaviour) {
         mCost = cost;
         mBehaviour = behaviour;
     }
@@ -18,7 +18,7 @@ public class PayedEffect {
         return mCost;
     }
 
-    public Expression getBehaviour() {
+    public AtomicExpression getBehaviour() {
         return mBehaviour;
     }
 }

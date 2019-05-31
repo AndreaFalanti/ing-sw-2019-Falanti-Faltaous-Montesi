@@ -4,16 +4,16 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.DamageAction;
 
-public class InflictDamage extends Expression {
+public class InflictDamage extends AtomicExpression {
     // trivial constructor
-    public InflictDamage(Expression damageToInflict, Expression targets) {
+    public InflictDamage(AtomicExpression damageToInflict, AtomicExpression targets) {
         putSub("amount", damageToInflict);
         putSub("to", targets);
     }
 
     // TODO: add doc
     @Override
-    protected final Expression continueEval(ShootContext shootContext) {
+    protected final AtomicExpression continueEval(ShootContext shootContext) {
         PlayerColor inflicterColor = shootContext.getShooterColor();
 
         // calculate resulting action

@@ -4,8 +4,8 @@ import it.polimi.se2019.model.weapon.response.TargetSelectionResponse;
 import it.polimi.se2019.view.request.weapon.ResponseLiteral;
 
 
-public class SelectTargets extends Expression {
-    public SelectTargets(Expression min, Expression max, Expression from) {
+public class SelectTargets extends AtomicExpression {
+    public SelectTargets(AtomicExpression min, AtomicExpression max, AtomicExpression from) {
         super();
 
         putSub("min", min);
@@ -15,8 +15,8 @@ public class SelectTargets extends Expression {
 
     // TODO: add doc
     @Override
-    public final Expression continueEval(ShootContext shootContext) {
-        Expression infoToRequest = new ResponseLiteral(new TargetSelectionResponse(
+    public final AtomicExpression continueEval(ShootContext shootContext) {
+        AtomicExpression infoToRequest = new ResponseLiteral(new TargetSelectionResponse(
                 getSub("min").asInt(),
                 getSub("max").asInt(),
                 getSub("from").asTargets()

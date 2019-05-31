@@ -11,8 +11,8 @@ public class ExpressionFactory {
 
     // GSON used to deal with serialization/deserialization
     // TODO: register all subtypes (maybe use generics to automate)
-    public static final RuntimeTypeAdapterFactory<Expression> RUN_TYPE_ADAPTER_FACTORY =
-            RuntimeTypeAdapterFactory.of(Expression.class, "expr")
+    public static final RuntimeTypeAdapterFactory<AtomicExpression> RUN_TYPE_ADAPTER_FACTORY =
+            RuntimeTypeAdapterFactory.of(AtomicExpression.class, "expr")
                     .registerSubtype(InflictDamage.class, "InflictDamage")
                     .registerSubtype(TargetsLiteral.class, "TargetsLiteral")
                     .registerSubtype(DamageLiteral.class, "DamageLiteral")
@@ -34,12 +34,12 @@ public class ExpressionFactory {
 
     // TODO: add doc
     public static Expression fromJson(JsonElement toDeserialize) {
-        return GSON.fromJson(ExpressionParser.parse(toDeserialize), Expression.class);
+        return GSON.fromJson(ExpressionParser.parse(toDeserialize), AtomicExpression.class);
     }
 
     // TODO: add doc
     public static Expression fromJson(String toDeserialize) {
-        return GSON.fromJson(ExpressionParser.parse(new Gson().fromJson(toDeserialize, JsonElement.class)), Expression.class);
+        return GSON.fromJson(ExpressionParser.parse(new Gson().fromJson(toDeserialize, JsonElement.class)), AtomicExpression.class);
     }
 
     // TODO: add doc

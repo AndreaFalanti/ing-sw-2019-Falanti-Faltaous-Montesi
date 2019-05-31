@@ -1,8 +1,8 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-public class Done extends Expression {
+public class Done extends AtomicExpression {
     @Override
-    protected Expression continueEval(ShootContext shootContext) {
+    protected AtomicExpression continueEval(ShootContext shootContext) {
         return this;
     }
 

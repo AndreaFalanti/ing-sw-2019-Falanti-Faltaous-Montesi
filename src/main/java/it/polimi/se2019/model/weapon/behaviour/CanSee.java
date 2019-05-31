@@ -6,14 +6,14 @@ import it.polimi.se2019.model.Position;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CanSee extends Expression {
+public class CanSee extends AtomicExpression {
     public CanSee() {
         super();
     }
 
     // TODO: add doc
     @Override
-    public Expression continueEval(ShootContext shootContext) {
+    public AtomicExpression continueEval(ShootContext shootContext) {
         Set<Position> visibleRange = new GetVisibleRange().eval(shootContext).asRange();
         Set<Player> allPlayers = shootContext.getPlayers();
 

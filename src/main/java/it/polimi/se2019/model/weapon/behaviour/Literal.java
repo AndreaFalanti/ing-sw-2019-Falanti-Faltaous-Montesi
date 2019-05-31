@@ -1,6 +1,6 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-public class Literal<PrimitiveType> extends Expression {
+public class Literal<PrimitiveType> extends AtomicExpression {
     protected PrimitiveType mContents;
 
     // a literal has no subexpressions, but is initialized from the primitive value it wraps
@@ -17,7 +17,7 @@ public class Literal<PrimitiveType> extends Expression {
 
     // a literal usually evaluates to itself
     @Override
-    protected Expression continueEval(ShootContext shootContext) {
+    protected AtomicExpression continueEval(ShootContext shootContext) {
         return this;
     }
 }

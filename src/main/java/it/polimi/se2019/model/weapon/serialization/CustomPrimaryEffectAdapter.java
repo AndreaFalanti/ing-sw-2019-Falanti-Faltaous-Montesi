@@ -3,7 +3,7 @@ package it.polimi.se2019.model.weapon.serialization;
 import com.google.gson.*;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.weapon.PayedEffect;
-import it.polimi.se2019.model.weapon.behaviour.Expression;
+import it.polimi.se2019.model.weapon.behaviour.AtomicExpression;
 
 import java.lang.reflect.Type;
 
@@ -12,7 +12,7 @@ public class CustomPrimaryEffectAdapter implements JsonSerializer<PayedEffect>, 
     @Override
     public JsonElement serialize(PayedEffect payedEffect, Type type, JsonSerializationContext context) {
         // if null return empty object
-        Expression behaviour = payedEffect.getBehaviour();
+        AtomicExpression behaviour = payedEffect.getBehaviour();
         if (behaviour == null)
             return new JsonObject();
 
@@ -27,7 +27,7 @@ public class CustomPrimaryEffectAdapter implements JsonSerializer<PayedEffect>, 
 
     @Override
     public PayedEffect deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) {
-        Expression expression = ExpressionFactory.GSON.fromJson(jsonElement, Expression.class);
+        AtomicExpression expression = ExpressionFactory.GSON.fromJson(jsonElement, AtomicExpression.class);
 
         return new PayedEffect(
                 new AmmoValue(0, 0, 0),

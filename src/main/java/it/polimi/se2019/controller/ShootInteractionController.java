@@ -3,7 +3,7 @@ package it.polimi.se2019.controller;
 import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.action.Action;
-import it.polimi.se2019.model.weapon.behaviour.Expression;
+import it.polimi.se2019.model.weapon.behaviour.AtomicExpression;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.model.weapon.behaviour.ShootResult;
 import it.polimi.se2019.model.weapon.behaviour.TargetsLiteral;
@@ -15,7 +15,7 @@ import java.util.HashSet;
 
 public class ShootInteractionController implements AbstractController {
     private Controller mParentController;
-    private Expression mCurrentExpression;
+    private AtomicExpression mCurrentExpression;
     private ShootContext mCurrentShootContext;
     private View mView;
 
@@ -45,7 +45,7 @@ public class ShootInteractionController implements AbstractController {
         mParentController.update(Either.right(shootAction));
     }
 
-    private void continueShooting(Expression info) {
+    private void continueShooting(AtomicExpression info) {
         mCurrentShootContext.provideInfo(info);
 
         ShootResult result = mCurrentExpression.evalToShootResult(mCurrentShootContext);

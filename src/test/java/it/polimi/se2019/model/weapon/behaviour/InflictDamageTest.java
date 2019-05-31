@@ -41,8 +41,8 @@ public class InflictDamageTest {
         );
 
         // check
-        Expression expected = new Done();
-        Expression actual = tested.eval(mMarioShootsLuigi);
+        AtomicExpression expected = new Done();
+        AtomicExpression actual = tested.eval(mMarioShootsLuigi);
         assertEquals(expected, actual);
 
         // check side effects on context (resulting action is stored there)

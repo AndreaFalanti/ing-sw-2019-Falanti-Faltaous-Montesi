@@ -5,9 +5,7 @@ import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
 
-import javax.swing.text.html.Option;
 import java.util.*;
-import java.util.concurrent.DelayQueue;
 
 public class ShootContext {
     // statics
@@ -18,8 +16,8 @@ public class ShootContext {
     private Set<Player> mPlayers;
     private PlayerColor mShooterColor;
     final private List<Action> mCachedActions = new ArrayList<>();
-    private final Deque<Expression> mRequestedInfo = new ArrayDeque<>();
-    private final Deque<Expression> mProvidedInfo = new ArrayDeque<>();
+    private final Deque<AtomicExpression> mRequestedInfo = new ArrayDeque<>();
+    private final Deque<AtomicExpression> mProvidedInfo = new ArrayDeque<>();
 
     // temporary info representing changed game state
     AmmoValue mPayedCost;
@@ -66,28 +64,28 @@ public class ShootContext {
 
 
     // request and collect info
-    public void requestInfo(Expression infoRequested) {
+    public void requestInfo(AtomicExpression infoRequested) {
         mRequestedInfo.push(infoRequested);
     }
-    public Optional<Expression> peekRequestedInfo() {
+    public Optional<AtomicExpression> peekRequestedInfo() {
         return Optional.ofNullable(mRequestedInfo.peek());
     }
-    public Expression popRequestedInfo() {
+    public AtomicExpression popRequestedInfo() {
         if (mRequestedInfo.isEmpty())
             throw new UnsupportedOperationException("Trying to pop requested info from and empty stack!");
 
         return mRequestedInfo.pop();
     }
-    public void provideInfo(Expression infoProvided) {
+    public void provideInfo(AtomicExpression infoProvided) {
         mProvidedInfo.push(infoProvided);
     }
-    public void provideInfo(List<Expression> infoProvided) {
+    public void provideInfo(List<AtomicExpression> infoProvided) {
         infoProvided.forEach(mProvidedInfo::push);
     }
-    public Optional<Expression> peekProvidedInfo() {
+    public Optional<AtomicExpression> peekProvidedInfo() {
         return Optional.ofNullable(mProvidedInfo.peek());
     }
-    public Expression popProvidedInfo() {
+    public AtomicExpression popProvidedInfo() {
         if (mProvidedInfo.isEmpty())
             throw new UnsupportedOperationException("Trying to pop provided info from and empty stack!");
 

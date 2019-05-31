@@ -2,7 +2,7 @@ package it.polimi.se2019.model.weapon;
 
 import com.google.gson.Gson;
 import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.model.weapon.behaviour.Expression;
+import it.polimi.se2019.model.weapon.behaviour.AtomicExpression;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.model.weapon.behaviour.ShootResult;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
@@ -23,7 +23,7 @@ public class Weapon {
     private boolean mLoaded;
 
     // weapon behaviour
-    private Expression mBehaviour;
+    private AtomicExpression mBehaviour;
 
     // used in tests
     public Weapon() {}
@@ -65,12 +65,12 @@ public class Weapon {
         return mLoaded;
     }
 
-    public Expression getBehaviour() {
+    public AtomicExpression getBehaviour() {
         return mBehaviour;
     }
 
     // trivial setters
-    public void setBehaviour(Expression behaviour) {
+    public void setBehaviour(AtomicExpression behaviour) {
         mBehaviour = behaviour;
     }
 

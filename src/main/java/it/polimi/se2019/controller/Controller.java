@@ -3,9 +3,13 @@ package it.polimi.se2019.controller;
 
 import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.model.Game;
+import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
+import it.polimi.se2019.model.action.MoveAction;
+import it.polimi.se2019.model.weapon.behaviour.Expression;
+import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.util.Either;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
@@ -22,10 +26,29 @@ public class Controller implements AbstractController {
 //  private requestPlayerAction mRequest;//change name
 //  private getValidPosition mValidPostion;//change name
     private TakeLeaderboard mLeaderboard;
-    private View mView;
-    final Deque<ShootInteractionController> mShootInteractions = new ArrayDeque<>();
 
     public Controller() {
+    }
+
+    /**
+     * Move a player using a weapon
+     * @param playerToMove player to move
+     * @param newPosition new position of moved player
+     */
+    public void movePlayerWithWeapon(PlayerColor playerToMove, Position newPosition) {
+        // the move is not normal since no "move action" is consumed by the player
+        new MoveAction(playerToMove, newPosition, false).perform(mGame);
+    }
+
+    public void commenceShootInteraction(PlayerColor shooter, Expression weaponBehaviour) {
+        // initialize context for shooting
+        ShootContext initialContext = new ShootContext(
+                mGame.getBoard(),
+                new HashSet<>(mGame.getPlayers()),
+                shooter
+        );
+
+        weaponBehaviour.eval(initialContext);
     }
 
     public void performPlayerAction(Action action) {
@@ -45,9 +68,14 @@ public class Controller implements AbstractController {
 
     }
 
-    /*******************/
-    /* other requests  */
-    /*******************/
+    /******************************/
+    /* handle requests from view  */
+    /******************************/
+
+    @Override
+    public Response handle(ShootRequest request) {
+        request.getBehaviour().eval();
+    }
 
     @Override
     public Response handle(GrabRequest request) {
@@ -72,24 +100,8 @@ public class Controller implements AbstractController {
     }
 
     @Override
-    public Response handle(ShootRequest request) {
-        mShootInteractions.push(new ShootInteractionController(this, mView, mGame, request));
-
-        // TODO: consider if switching to void
+    public Response handle(MessageActionResponse request) {
         return null;
-    }
-
-    /*********************************************************/
-    /* requests that should be handled by shoot interactions */
-    /*********************************************************/
-
-    public void handleShootRequest(Request request) {
-        if (mShootInteractions.isEmpty())
-            throw new IllegalStateException(
-                    "Cannot handle request related to shooting with no shooting interaction in progess!"
-            );
-
-        request.handleMe(mShootInteractions.peek());
     }
 
     @Override

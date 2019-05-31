@@ -13,7 +13,7 @@ import java.util.Collections;
 import static org.junit.Assert.assertEquals;
 
 public class ExpressionFactoryTest {
-    public Expression mSimpleBehaviour;
+    public AtomicExpression mSimpleBehaviour;
 
     @Before
     public void instantiate() {

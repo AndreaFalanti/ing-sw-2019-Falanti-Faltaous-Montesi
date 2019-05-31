@@ -81,7 +81,7 @@ public class WeaponsTest {
         // shoot
         Response actual = heatseeker.shoot(mAllInOriginContext).asResponse();
 
-        // Expression expected = new InflictDamage(
+        // AtomicExpression expected = new InflictDamage(
                 // new DamageLiteral(new Damage(3, 0)),
                 // new WaitForInfo()
         // );

@@ -5,14 +5,14 @@ import it.polimi.se2019.model.weapon.behaviour.*;
 
 import java.lang.reflect.Type;
 
-public class CustomExpressionAdapter implements JsonSerializer<Expression>, JsonDeserializer<Expression> {
+public class CustomExpressionAdapter implements JsonSerializer<AtomicExpression>, JsonDeserializer<AtomicExpression> {
     @Override
-    public Expression deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) {
+    public AtomicExpression deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) {
         return ExpressionFactory.fromJson(jsonElement);
     }
 
     @Override
-    public JsonElement serialize(Expression expression, Type type, JsonSerializationContext jsonSerializationContext) {
+    public JsonElement serialize(AtomicExpression expression, Type type, JsonSerializationContext jsonSerializationContext) {
         return ExpressionFactory.toJsonTree(expression);
     }
 }

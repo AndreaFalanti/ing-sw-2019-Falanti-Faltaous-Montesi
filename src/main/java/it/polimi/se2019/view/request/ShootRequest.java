@@ -2,13 +2,13 @@ package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.weapon.behaviour.Expression;
+import it.polimi.se2019.model.weapon.behaviour.AtomicExpression;
 
 public class ShootRequest implements Request {
-    private Expression mBehavoiur;
+    private AtomicExpression mBehavoiur;
     private PlayerColor mShooterColor;
 
-    public Expression getBehaviour() {
+    public AtomicExpression getBehaviour() {
         return mBehavoiur;
     }
 

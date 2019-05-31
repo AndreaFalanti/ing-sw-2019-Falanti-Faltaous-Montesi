@@ -3,13 +3,13 @@ package it.polimi.se2019.model.weapon.behaviour;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 
-public class Distant extends Expression {
+public class Distant extends AtomicExpression {
     // trivial constructors
-    public Distant(Expression minDistance, Expression maxDistance) {
+    public Distant(AtomicExpression minDistance, AtomicExpression maxDistance) {
         putSub("minDistance", minDistance);
         putSub("maxDistance", maxDistance);
     }
-    public Distant(Expression exactDistance) {
+    public Distant(AtomicExpression exactDistance) {
         putSub("minDistance", exactDistance);
         putSub("maxDistance", exactDistance);
     }
@@ -24,7 +24,7 @@ public class Distant extends Expression {
      *         when {@code this}  is instantiated (see the constructor for more info)
      */
     @Override
-    protected final Expression continueEval(ShootContext shootContext) {
+    protected final AtomicExpression continueEval(ShootContext shootContext) {
         Board board = shootContext.getBoard();
         Position shooterPos = shootContext.getShooterPosition();
 
