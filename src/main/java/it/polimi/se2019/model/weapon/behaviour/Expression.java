@@ -2,6 +2,7 @@ package it.polimi.se2019.model.weapon.behaviour;
 
 import com.google.gson.annotations.SerializedName;
 import it.polimi.se2019.controller.response.Response;
+import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
@@ -12,8 +13,26 @@ import it.polimi.se2019.view.request.Request;
 import java.util.*;
 
 public abstract class Expression {
+
+    /******************/
+    /* private fields */
+    /******************/
+
+    // subexpressions evaluated before their parent expression and used in its evaluation
     @SerializedName("subs")
     private Map<String, Expression> mSubexpressions = new HashMap<>();
+
+    // cost needed to pay to activate expression
+    private AmmoValue mCost;
+    // TODO: add doc
+    private int mPriority;
+    // TODO: add doc
+    private boolean mOptional;
+
+    // default constructor to fill in default values during deserialization
+    public Expression() {
+        // TODO: try and see if it works
+    }
 
     // TODO: add doc
     public static Expression fromJson(String jsonString) {
@@ -74,6 +93,8 @@ public abstract class Expression {
         if (mSubexpressions == null)
             throw new IllegalStateException("FATAL: subexpression map is missing from expression!");
 
+        // get subexpressions mask
+
         // evaluate subexpressions
         for (Map.Entry<String, Expression> entry : mSubexpressions.entrySet()) {
             String subexprName = entry.getKey();
@@ -98,6 +119,7 @@ public abstract class Expression {
     /**
      * Simple utility class to contain the result of eval
      */
+    // TODO: make eval interface better
     private static class EvalResult {
         EvalResult(boolean shouldStopEval, Expression evaluatedExpression) {
             this.shouldStopEval = shouldStopEval;
@@ -108,7 +130,7 @@ public abstract class Expression {
         Expression evaluatedExpression = null;
     }
     // TODO: add doc
-    private final EvalResult evalToEvalResult(ShootContext shootContext) {
+    private EvalResult evalToEvalResult(ShootContext shootContext) {
         // evaluate all registered subexpressions
         boolean shouldStopEval = evalSubexpressions(shootContext);
 
@@ -122,7 +144,7 @@ public abstract class Expression {
     }
 
     // TODO: add doc
-    public final Expression eval(ShootContext shootContext) {
+    protected Expression eval(ShootContext shootContext) {
         return evalToEvalResult(shootContext).evaluatedExpression;
     }
 
@@ -136,7 +158,7 @@ public abstract class Expression {
     }
 
     // TODO: add doc
-    public final Expression requestInfoFromPlayer(ShootContext context, Expression infoToRequest) {
+    protected final Expression requestInfoFromPlayer(ShootContext context, Expression infoToRequest) {
         // if info is available, consume it
         if (context.peekProvidedInfo().isPresent())
             return context.popProvidedInfo();
