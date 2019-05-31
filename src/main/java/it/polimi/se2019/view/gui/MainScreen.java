@@ -1,5 +1,6 @@
 package it.polimi.se2019.view.gui;
 
+import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Jsons;
@@ -46,6 +47,8 @@ public class MainScreen {
         //testing various methods, they will be used in observer update methods
         playerController.addDamageTokens(PlayerColor.PURPLE, 3);
         playerController.addDeath();
+        playerController.setPlayerName("Aldo");
+        playerController.updateAmmo(new AmmoValue(1, 2, 3));
 
         playerPane.getChildren().add(newLoadedPane);
     }
@@ -62,7 +65,7 @@ public class MainScreen {
         boardPane.getChildren().add(newLoadedPane);
     }
 
-    public void setWeaponBoxStatus (boolean enable) {
+    public void setWeaponBoxEnableStatus(boolean enable) {
         if (enable) {
             weaponBox.setDisable(false);
             weaponBox.setStyle("-fx-background-color: RED");
@@ -83,18 +86,26 @@ public class MainScreen {
         }
     }
 
+    public void enableGridForMove () {
+
+    }
+
     public void setShootOnWeapon () {
-        setWeaponBoxStatus(true);
+        setWeaponBoxEnableStatus(true);
         for (int i = 0; i < weaponBox.getChildren().size(); i++) {
             setShootingBehaviourOnWeapon(weaponBox.getChildren().get(i), i);
         }
+
+        undoButton.setOnMouseClicked(event -> setWeaponBoxEnableStatus(false));
     }
 
     public void setReloadOnWeapon () {
-        setWeaponBoxStatus(true);
+        setWeaponBoxEnableStatus(true);
         for (int i = 0; i < weaponBox.getChildren().size(); i++) {
             setReloadBehaviourOnWeapon(weaponBox.getChildren().get(i), i);
         }
+
+        undoButton.setOnMouseClicked(event -> setWeaponBoxEnableStatus(false));
     }
 
     private void setShootingBehaviourOnWeapon (Node weapon, int index) {
@@ -102,7 +113,7 @@ public class MainScreen {
             if (weapon.getOpacity() == LOADED_OPACITY) {
                 logToChat("Shooting with weapon of index: " + index);
                 setWeaponLoadStatus(index, false);
-                setWeaponBoxStatus(false);
+                setWeaponBoxEnableStatus(false);
             }
             else {
                 logToChat("Can't shoot with unloaded weapon");
@@ -115,7 +126,7 @@ public class MainScreen {
             if (weapon.getOpacity() == UNLOADED_OPACITY) {
                 logToChat("Reload weapon of index: " + index);
                 setWeaponLoadStatus(index, true);
-                setWeaponBoxStatus(false);
+                setWeaponBoxEnableStatus(false);
             }
             else {
                 logToChat("Can't reload an already loaded weapon");

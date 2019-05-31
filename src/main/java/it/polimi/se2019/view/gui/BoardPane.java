@@ -3,6 +3,8 @@ package it.polimi.se2019.view.gui;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.board.Tile;
+import it.polimi.se2019.model.board.TileColor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -53,6 +55,7 @@ public class BoardPane {
 
     private List<ImageView> mKilltrack = new ArrayList<>();
     private EnumMap<PlayerColor, Circle> mPawns = new EnumMap<>(PlayerColor.class);
+    private EnumMap<TileColor, HBox> mSpawnBoxs = new EnumMap<>(TileColor.class);
     //private GridPane[][] mInternalCellGrid = new GridPane[BOARD_COLUMNS][BOARD_ROWS];
     private BoardSquare[][] mSquareControllers = new BoardSquare[BOARD_COLUMNS][BOARD_ROWS];
 
@@ -67,14 +70,37 @@ public class BoardPane {
         mSquareControllers[pos.getX()][pos.getY()].addPawn(mPawns.get(color));
     }
 
+    public void updateWeaponsInSpawn (HBox spawn, String[] weaponIds) {
+        if (weaponIds.length != 3) {
+            throw new IllegalArgumentException("Weapon ids are not 3");
+        }
+
+        for (int i = 0; i < weaponIds.length; i++) {
+            if (weaponIds[i] != null) {
+                Image weaponImage = new Image(GuiResourcePaths.WEAPON_CARD + weaponIds[i] + ".png");
+                ((ImageView)spawn.getChildren().get(i)).setImage(weaponImage);
+            }
+            else {
+                ((ImageView)spawn.getChildren().get(i)).setImage(null);
+            }
+        }
+    }
+
     public void switchButtonGrid(boolean value) {
         buttonGrid.setVisible(value);
     }
 
     public void initialize (Board board) throws IOException {
         mBoard = board;
-        createBoardElements();
         createPawns();
+        createSpawnEnumMap();
+        createBoardElements();
+    }
+
+    private void createSpawnEnumMap () {
+        mSpawnBoxs.put(TileColor.BLUE, blueSpawnWeaponBox);
+        mSpawnBoxs.put(TileColor.RED, redSpawnWeaponBox);
+        mSpawnBoxs.put(TileColor.YELLOW, yellowSpawnWeaponBox);
     }
 
     public void handleClickedPos (int x, int y) {
@@ -94,7 +120,9 @@ public class BoardPane {
 
                     /* TODO: delete image and pawns in fxml, add image only in normalTile and
                      try to check if pawns are correctly placed inside squareGrid */
-                    if (mBoard.getTileAt(new Position(x, y)).getTileType().equals("normal")) {
+                    Tile tile = mBoard.getTileAt(new Position(x, y));
+                    if (tile.getTileType().equals("normal")) {
+                        // TODO: get correct ammoCard id from tile
                         squareController.addAmmoCardImage("042");
                         squareController.addPawn(new Circle(9));
                         squareController.addPawn(new Circle(9));
@@ -102,6 +130,9 @@ public class BoardPane {
                     }
                     else {
                         squareController.addPawn(new Circle(9));
+                        // TODO: get correct weaponCard ids from tile
+                        String[] ids = {"022", "023", "024"};
+                        updateWeaponsInSpawn(mSpawnBoxs.get(tile.getColor()), ids);
                     }
 
                     boardGrid.add(newLoadedPane, x, y);
@@ -171,6 +202,7 @@ public class BoardPane {
     private Circle createCircle (String color) {
         Circle circle = new Circle(CIRCLE_RADIUS);
         circle.setFill(Paint.valueOf(color));
+        circle.setStroke(Paint.valueOf("black"));
         circle.setVisible(false);
 
         return circle;

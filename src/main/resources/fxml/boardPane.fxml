@@ -11,23 +11,23 @@
                 <Image url="@../images/boards/board1.png" />
             </image>
         </ImageView>
-        <HBox fx:id="blueSpawnWeaponBox" layoutX="371.0" prefHeight="107.0" prefWidth="222.0" spacing="12.0" AnchorPane.topAnchor="0.0">
+        <HBox fx:id="blueSpawnWeaponBox" layoutX="371.0" prefHeight="107.0" prefWidth="225.0" spacing="12.0" AnchorPane.topAnchor="0.0">
             <children>
-                <ImageView fitHeight="106.0" fitWidth="78.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="106.0" fitWidth="63.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../images/cards/AD_weapons_IT_0221.png" />
                     </image>
                 </ImageView>
-                <ImageView fitHeight="106.0" fitWidth="78.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/cards/AD_weapons_IT_0221.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="106.0" fitWidth="78.0" layoutX="73.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/cards/AD_weapons_IT_0221.png" />
-                    </image>
-                </ImageView>
+            <ImageView fitHeight="106.0" fitWidth="63.0" layoutX="19.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/cards/AD_weapons_IT_0221.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="106.0" fitWidth="63.0" layoutX="94.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/cards/AD_weapons_IT_0221.png" />
+               </image>
+            </ImageView>
             </children>
             <padding>
                 <Insets left="9.0" right="9.0" />
@@ -35,21 +35,21 @@
         </HBox>
         <HBox fx:id="redSpawnWeaponBox" layoutX="-60.0" layoutY="252.0" prefHeight="107.0" prefWidth="222.0" rotate="-90.0" spacing="12.0">
             <children>
-                <ImageView fitHeight="106.0" fitWidth="78.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="106.0" fitWidth="63.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../images/cards/AD_weapons_IT_0221.png" />
                     </image>
                 </ImageView>
-                <ImageView fitHeight="106.0" fitWidth="78.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/cards/AD_weapons_IT_0221.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="106.0" fitWidth="78.0" layoutX="73.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/cards/AD_weapons_IT_0221.png" />
-                    </image>
-                </ImageView>
+            <ImageView fitHeight="106.0" fitWidth="63.0" layoutX="19.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/cards/AD_weapons_IT_0221.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="106.0" fitWidth="63.0" layoutX="94.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/cards/AD_weapons_IT_0221.png" />
+               </image>
+            </ImageView>
             </children>
             <padding>
                 <Insets left="9.0" right="9.0" />
@@ -57,21 +57,21 @@
         </HBox>
         <HBox fx:id="yellowSpawnWeaponBox" layoutX="542.0" layoutY="366.0" prefHeight="107.0" prefWidth="222.0" rotate="90.0" spacing="12.0">
             <children>
-                <ImageView fitHeight="106.0" fitWidth="78.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="106.0" fitWidth="63.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../images/cards/AD_weapons_IT_0221.png" />
                     </image>
                 </ImageView>
-                <ImageView fitHeight="106.0" fitWidth="78.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/cards/AD_weapons_IT_0221.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="106.0" fitWidth="78.0" layoutX="73.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/cards/AD_weapons_IT_0221.png" />
-                    </image>
-                </ImageView>
+            <ImageView fitHeight="106.0" fitWidth="63.0" layoutX="19.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/cards/AD_weapons_IT_0221.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="106.0" fitWidth="63.0" layoutX="94.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/cards/AD_weapons_IT_0221.png" />
+               </image>
+            </ImageView>
             </children>
             <padding>
                 <Insets left="9.0" right="9.0" />

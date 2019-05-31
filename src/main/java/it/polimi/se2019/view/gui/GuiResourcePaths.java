@@ -7,6 +7,7 @@ public final class GuiResourcePaths {
     public static final String SKULL = "/images/skull.png";
     public static final String AMMO_CARD = "/images/ammo/AD_ammo_";
     public static final String BACKGROUND = "/images/backgrounds/";
+    public static final String WEAPON_CARD = "/images/cards/AD_weapons_IT_";
 
     // private constructor to avoid class instantiation
     private GuiResourcePaths () {}
