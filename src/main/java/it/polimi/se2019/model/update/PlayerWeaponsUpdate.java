@@ -1,23 +1,23 @@
 package it.polimi.se2019.model.update;
 
 import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.weapon.Weapon;
 
-public class PlayerPositionUpdate implements Update {
+public class PlayerWeaponsUpdate implements Update {
     private PlayerColor mPlayerColor;
-    private Position mPlayerPos;
+    private Weapon[] mWeapons;
 
-    public PlayerPositionUpdate(PlayerColor playerColor, Position playerPos) {
+    public PlayerWeaponsUpdate(PlayerColor playerColor, Weapon[] weapons) {
         mPlayerColor = playerColor;
-        mPlayerPos = playerPos;
+        mWeapons = weapons;
     }
 
     public PlayerColor getPlayerColor() {
         return mPlayerColor;
     }
 
-    public Position getPlayerPos() {
-        return mPlayerPos;
+    public Weapon[] getWeapons() {
+        return mWeapons;
     }
 
     @Override
