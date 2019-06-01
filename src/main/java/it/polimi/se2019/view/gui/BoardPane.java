@@ -51,13 +51,25 @@ public class BoardPane {
     private static final int GRID_WIDTH = 122;
     private static final int GRID_HEIGHT = 122;
 
+    private MainScreen mMainController;
+
     private Board mBoard;
+    private Button[][] mInteractiveButtons = new Button[BOARD_COLUMNS][BOARD_ROWS];
 
     private List<ImageView> mKilltrack = new ArrayList<>();
     private EnumMap<PlayerColor, Circle> mPawns = new EnumMap<>(PlayerColor.class);
-    private EnumMap<TileColor, HBox> mSpawnBoxs = new EnumMap<>(TileColor.class);
+    private EnumMap<TileColor, HBox> mSpawnBoxes = new EnumMap<>(TileColor.class);
     //private GridPane[][] mInternalCellGrid = new GridPane[BOARD_COLUMNS][BOARD_ROWS];
     private BoardSquare[][] mSquareControllers = new BoardSquare[BOARD_COLUMNS][BOARD_ROWS];
+
+
+    public MainScreen getMainController() {
+        return mMainController;
+    }
+
+    public void setMainController(MainScreen mainController) {
+        mMainController = mainController;
+    }
 
     public void addTargetDeath (int value) {
         Image skullImage = new Image(GuiResourcePaths.SKULL);
@@ -98,9 +110,9 @@ public class BoardPane {
     }
 
     private void createSpawnEnumMap () {
-        mSpawnBoxs.put(TileColor.BLUE, blueSpawnWeaponBox);
-        mSpawnBoxs.put(TileColor.RED, redSpawnWeaponBox);
-        mSpawnBoxs.put(TileColor.YELLOW, yellowSpawnWeaponBox);
+        mSpawnBoxes.put(TileColor.BLUE, blueSpawnWeaponBox);
+        mSpawnBoxes.put(TileColor.RED, redSpawnWeaponBox);
+        mSpawnBoxes.put(TileColor.YELLOW, yellowSpawnWeaponBox);
     }
 
     public void handleClickedPos (int x, int y) {
@@ -132,7 +144,7 @@ public class BoardPane {
                         squareController.addPawn(new Circle(9));
                         // TODO: get correct weaponCard ids from tile
                         String[] ids = {"022", "023", "024"};
-                        updateWeaponsInSpawn(mSpawnBoxs.get(tile.getColor()), ids);
+                        updateWeaponsInSpawn(mSpawnBoxes.get(tile.getColor()), ids);
                     }
 
                     boardGrid.add(newLoadedPane, x, y);
@@ -196,6 +208,7 @@ public class BoardPane {
             handleClickedPos(x, y);
         });
 
+        mInteractiveButtons[x][y] = button;
         buttonGrid.add(button, x, y);
     }
 

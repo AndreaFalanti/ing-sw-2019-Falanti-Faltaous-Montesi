@@ -9,7 +9,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -25,11 +27,13 @@ public class MainScreen {
     @FXML
     private HBox weaponBox;
     @FXML
-    private HBox powerUpBox;
+    private GridPane powerUpGrid;
     @FXML
     private Button undoButton;
     @FXML
     private VBox chatBox;
+    @FXML
+    private VBox otherPlayerBoardsBox;
 
     private static final Logger logger = Logger.getLogger(MainScreen.class.getName());
     
@@ -37,20 +41,36 @@ public class MainScreen {
     private static final double UNLOADED_OPACITY = 0.4;
 
     private BoardPane mBoardController;
+    private PlayerPane mPlayerController;
+
+    public BoardPane getBoardController() {
+        return mBoardController;
+    }
+
+    public PlayerPane getPlayerController() {
+        return mPlayerController;
+    }
 
     public void loadPlayerBoard(PlayerColor color) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/playerPane.fxml"));
         Pane newLoadedPane =  loader.load();
 
-        PlayerPane playerController = loader.getController();
-        playerController.changeBoardImage(color.getPascalName());
+        mPlayerController = loader.getController();
+        mPlayerController.setMainScreen(this);
+        mPlayerController.changeBoardImage(color.getPascalName());
         //testing various methods, they will be used in observer update methods
-        playerController.addDamageTokens(PlayerColor.PURPLE, 3);
-        playerController.addDeath();
-        playerController.setPlayerName("Aldo");
-        playerController.updateAmmo(new AmmoValue(1, 2, 3));
+        mPlayerController.addDamageTokens(PlayerColor.PURPLE, 3);
+        mPlayerController.addDeath();
+        mPlayerController.setPlayerName("Aldo");
+        mPlayerController.updateAmmo(new AmmoValue(1, 2, 3));
 
         playerPane.getChildren().add(newLoadedPane);
+        // second tab testing
+        /*for (int i = 0; i < 4; i++ ) {
+            loader = new FXMLLoader(getClass().getResource("/fxml/playerPane.fxml"));
+            newLoadedPane =  loader.load();
+            otherPlayerBoardsBox.getChildren().add(newLoadedPane);
+        }*/
     }
 
     public void loadBoard () throws IOException {
@@ -58,6 +78,7 @@ public class MainScreen {
         Pane newLoadedPane =  loader.load();
 
         mBoardController = loader.getController();
+        mBoardController.setMainController(this);
         Board board = Board.fromJson(Jsons.get("boards/game/board1"));
         mBoardController.initialize(board);
         mBoardController.addTargetDeath(5);
@@ -65,14 +86,14 @@ public class MainScreen {
         boardPane.getChildren().add(newLoadedPane);
     }
 
-    public void setWeaponBoxEnableStatus(boolean enable) {
+    public void setBoxEnableStatus(Node box, boolean enable) {
         if (enable) {
-            weaponBox.setDisable(false);
-            weaponBox.setStyle("-fx-background-color: RED");
+            box.setDisable(false);
+            box.setStyle("-fx-background-color: RED");
         }
         else {
-            weaponBox.setDisable(true);
-            weaponBox.setStyle("-fx-background-color: rgba(255, 0, 0, 0.0)");
+            box.setDisable(true);
+            box.setStyle("-fx-background-color: rgba(255, 0, 0, 0.0)");
         }
     }
 
@@ -90,22 +111,43 @@ public class MainScreen {
 
     }
 
+    public void updatePowerUpGrid (String[] ids) {
+        if (ids.length != 3) {
+            throw new IllegalArgumentException("need 3 powerUp ids to update");
+        }
+
+        for (int i = 0; i < ids.length; i++) {
+            ImageView powerUpImageView = (ImageView)powerUpGrid.getChildren().get(i);
+
+            if (ids[i] != null) {
+                Image powerUpImage = new Image(GuiResourcePaths.POWER_UP_CARD + ids[i] + ".png");
+                powerUpImageView.setImage(powerUpImage);
+                setPowerUpBehaviour(powerUpImageView, i);
+                powerUpImageView.setDisable(false);
+            }
+            else {
+                powerUpImageView.setImage(null);
+                powerUpImageView.setDisable(true);
+            }
+        }
+    }
+
     public void setShootOnWeapon () {
-        setWeaponBoxEnableStatus(true);
+        setBoxEnableStatus(weaponBox,true);
         for (int i = 0; i < weaponBox.getChildren().size(); i++) {
             setShootingBehaviourOnWeapon(weaponBox.getChildren().get(i), i);
         }
 
-        undoButton.setOnMouseClicked(event -> setWeaponBoxEnableStatus(false));
+        undoButton.setOnMouseClicked(event -> setBoxEnableStatus(weaponBox,false));
     }
 
     public void setReloadOnWeapon () {
-        setWeaponBoxEnableStatus(true);
+        setBoxEnableStatus(weaponBox,true);
         for (int i = 0; i < weaponBox.getChildren().size(); i++) {
             setReloadBehaviourOnWeapon(weaponBox.getChildren().get(i), i);
         }
 
-        undoButton.setOnMouseClicked(event -> setWeaponBoxEnableStatus(false));
+        undoButton.setOnMouseClicked(event -> setBoxEnableStatus(weaponBox,false));
     }
 
     private void setShootingBehaviourOnWeapon (Node weapon, int index) {
@@ -113,7 +155,7 @@ public class MainScreen {
             if (weapon.getOpacity() == LOADED_OPACITY) {
                 logToChat("Shooting with weapon of index: " + index);
                 setWeaponLoadStatus(index, false);
-                setWeaponBoxEnableStatus(false);
+                setBoxEnableStatus(weaponBox,false);
             }
             else {
                 logToChat("Can't shoot with unloaded weapon");
@@ -126,11 +168,19 @@ public class MainScreen {
             if (weapon.getOpacity() == UNLOADED_OPACITY) {
                 logToChat("Reload weapon of index: " + index);
                 setWeaponLoadStatus(index, true);
-                setWeaponBoxEnableStatus(false);
+                setBoxEnableStatus(weaponBox,false);
             }
             else {
                 logToChat("Can't reload an already loaded weapon");
             }
+        });
+    }
+
+    private void setPowerUpBehaviour (ImageView powerUp, int index) {
+        powerUp.setOnMouseClicked(event -> {
+            logToChat("Using powerUp with index: " + index);
+            powerUp.setImage(null);
+            powerUp.setDisable(true);
         });
     }
 

@@ -30,6 +30,8 @@ public class Main extends Application {
         MainScreen controller = loader.getController();
         controller.loadPlayerBoard(PlayerColor.PURPLE);
         controller.loadBoard();
+        String[] ids = {"022", "023", "024"};
+        controller.updatePowerUpGrid(ids);
 
         primaryStage.show();
     }

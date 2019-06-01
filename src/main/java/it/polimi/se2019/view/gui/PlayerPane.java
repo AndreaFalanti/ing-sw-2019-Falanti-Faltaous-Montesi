@@ -42,6 +42,16 @@ public class PlayerPane {
 
     private static final int AMMO_SQUARE_SIDE = 18;
 
+    private MainScreen mMainScreen;
+
+
+    public MainScreen getMainScreen() {
+        return mMainScreen;
+    }
+
+    public void setMainScreen(MainScreen mainScreen) {
+        mMainScreen = mainScreen;
+    }
 
     public void changeBoardImage (String color) throws IOException {
         Image boardImage = new Image(GuiResourcePaths.PLAYER_BOARD_UP + color + ".png");

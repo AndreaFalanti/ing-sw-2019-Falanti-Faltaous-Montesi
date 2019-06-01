@@ -7,6 +7,7 @@ import it.polimi.se2019.view.View;
 import java.util.List;
 
 public class GraphicView extends View {
+    private MainScreen mMainFrameController;
 
 
     public GraphicView() {
