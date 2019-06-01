@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
@@ -46,7 +48,7 @@ public class CLIView extends View {
     public static final String UNDO                     =  "UNDO" + " to undo the current action" ;
     public static final String HELP                     =  "HELP" + SHOW +" available commands";
     public static final String QUIT                     =  "QUIT" + " to quit the game";//to delete is only for test
-
+    private static final Logger logger = Logger.getLogger(CLIView.class.getName());
     public CLIView() {
         super(new CLIResponseHandler(), new CLIUpdateHandler());
     }
@@ -79,27 +81,34 @@ public class CLIView extends View {
     public void commandAction (String command,String otherCommandPart) {
         Action action = null;
         int index;
+        Position pos;
 
-
-        PlayerColor ownerColor = owner.getColor();
+        PlayerColor ownerColor = PlayerColor.BLUE;
+        pos = parseDestination(otherCommandPart);
+//        PlayerColor ownerColor = owner.getColor();//<-- to add
         switch (command) {
             case "move":
-                action = new MoveAction(ownerColor,parseDestination(otherCommandPart));
 
+                action = new MoveAction(ownerColor,pos);
+                logger.log(Level.INFO,"Action: MOVE  Pos: {0}",pos);
                 break;
             case "grab":
-                action = new MoveGrabAction(ownerColor, parseDestination(otherCommandPart));
+                action = new MoveGrabAction(ownerColor, pos);
+                logger.log(Level.INFO,"Action: GRAB  Pos: {0}",pos);
                 break;
             case "shoot":
-                action = new MoveShootAction(ownerColor, parseDestination(otherCommandPart));// to complete
+                action = new MoveShootAction(ownerColor, pos);// to complete
+                logger.log(Level.INFO,"Action: SHOOT  Pos: {0}",pos);
                 break;
             case "reloadshoot":
                 index = reloadInteraction(owner.getWeapons());
                 action = new MoveReloadShootAction(ownerColor, parseDestination(otherCommandPart),index);
+                logger.log(Level.INFO,"Action: RELOADSHOOT  Pos: {0}",pos);
                 break;
             default:
                 index = reloadInteraction(owner.getWeapons());
                 action = new ReloadAction(index);
+                logger.log(Level.INFO,"Action: RELOAD  index: {0}",index);
                 break;
         }
         new ActionMessage(action);
@@ -126,18 +135,28 @@ public class CLIView extends View {
         String coordTogether = destination.replaceAll("\\D","");
         String[] coord = coordTogether.split("");
 
-        if(coord[0].equals("") || coord.length < 2){
-            return new Position(-1,-1);
-        }
+  //      while(coord[0].equals("") ){
+  //          System.out.println("Insert coord:");
+   //         destination = requestAdditionalInfo();
+   //         coordTogether = destination.replaceAll("\\D","");
+   //         coord = coordTogether.split("");
+   //     }
 
-        do {
+        while(!isValid){
             try {
                 pos = new Position(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
+
                 isValid = true;
-            } catch (NumberFormatException e) {
-                System.err.println("Uncorrect insertion. Please insert coord: ");
+
+            } catch (NumberFormatException|ArrayIndexOutOfBoundsException e) {
+                logger.log(Level.SEVERE,"Uncorrect insertion. Please insert coord: ");
+
+                destination = requestAdditionalInfo();
+                coordTogether = destination.replaceAll("\\D","");
+                coord = coordTogether.split("");
+                e.printStackTrace();
             }
-        } while(!isValid);
+        }
 
         return pos;
     }
