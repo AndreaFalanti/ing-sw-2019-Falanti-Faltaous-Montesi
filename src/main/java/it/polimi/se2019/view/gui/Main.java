@@ -32,6 +32,7 @@ public class Main extends Application {
         controller.loadBoard();
         String[] ids = {"022", "023", "024"};
         controller.updatePowerUpGrid(ids);
+        controller.updateWeaponBox(ids);
 
         primaryStage.show();
     }

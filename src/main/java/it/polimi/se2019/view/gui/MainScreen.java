@@ -17,6 +17,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.EnumMap;
 import java.util.logging.Logger;
 
 public class MainScreen {
@@ -41,28 +42,32 @@ public class MainScreen {
     private static final double UNLOADED_OPACITY = 0.4;
 
     private BoardPane mBoardController;
-    private PlayerPane mPlayerController;
+    private EnumMap<PlayerColor, PlayerPane> mPlayerControllers = new EnumMap<>(PlayerColor.class);
 
     public BoardPane getBoardController() {
         return mBoardController;
     }
 
-    public PlayerPane getPlayerController() {
-        return mPlayerController;
+    public PlayerPane getPlayerControllerFromColor(PlayerColor color) {
+        return mPlayerControllers.get(color);
     }
 
     public void loadPlayerBoard(PlayerColor color) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/playerPane.fxml"));
         Pane newLoadedPane =  loader.load();
 
-        mPlayerController = loader.getController();
-        mPlayerController.setMainScreen(this);
-        mPlayerController.changeBoardImage(color.getPascalName());
+        PlayerPane playerController = loader.getController();
+        mPlayerControllers.put(color, playerController);
+
+        playerController.setMainScreen(this);
+        playerController.setupBoardImage(color);
         //testing various methods, they will be used in observer update methods
-        mPlayerController.addDamageTokens(PlayerColor.PURPLE, 3);
-        mPlayerController.addDeath();
-        mPlayerController.setPlayerName("Aldo");
-        mPlayerController.updateAmmo(new AmmoValue(1, 2, 3));
+        playerController.addDamageTokens(PlayerColor.PURPLE, 3);
+        playerController.addDeath();
+        playerController.setPlayerName("Aldo");
+        playerController.updateAmmo(new AmmoValue(1, 2, 3));
+        playerController.setScore(3);
+        //playerController.flipBoard();
 
         playerPane.getChildren().add(newLoadedPane);
         // second tab testing
@@ -109,6 +114,24 @@ public class MainScreen {
 
     public void enableGridForMove () {
 
+    }
+
+    public void updateWeaponBox (String[] ids) {
+        if (ids.length != 3) {
+            throw new IllegalArgumentException("need 3 powerUp ids to update");
+        }
+
+        for (int i = 0; i < ids.length; i++) {
+            ImageView weaponImageView = (ImageView)weaponBox.getChildren().get(i);
+
+            if (ids[i] != null) {
+                Image weaponImage = new Image(GuiResourcePaths.WEAPON_CARD + ids[i] + ".png");
+                weaponImageView.setImage(weaponImage);
+            }
+            else {
+                weaponImageView.setImage(null);
+            }
+        }
     }
 
     public void updatePowerUpGrid (String[] ids) {

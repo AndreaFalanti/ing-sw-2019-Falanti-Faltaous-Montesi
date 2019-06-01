@@ -28,6 +28,8 @@ public class PlayerPane {
     @FXML
     private Label nameLabel;
     @FXML
+    private Label scoreLabel;
+    @FXML
     private VBox redAmmoBox;
     @FXML
     private VBox yellowAmmoBox;
@@ -43,23 +45,52 @@ public class PlayerPane {
     private static final int AMMO_SQUARE_SIDE = 18;
 
     private MainScreen mMainScreen;
+    private PlayerColor mPlayerBoardColor;
 
 
     public MainScreen getMainScreen() {
         return mMainScreen;
     }
 
+    /**
+     * Set reference to main controller
+     * @param mainScreen Main controller reference
+     */
     public void setMainScreen(MainScreen mainScreen) {
         mMainScreen = mainScreen;
     }
 
-    public void changeBoardImage (String color) throws IOException {
-        Image boardImage = new Image(GuiResourcePaths.PLAYER_BOARD_UP + color + ".png");
-        Image actionImage = new Image(GuiResourcePaths.ACTION_TILE_UP + color + ".png");
+    /**
+     * Change board image based on passed string
+     * @param boardString String representing color and mode
+     */
+    private void changeBoardImage (String boardString) {
+        Image boardImage = new Image(GuiResourcePaths.PLAYER_BOARD + boardString + ".png");
+        Image actionImage = new Image(GuiResourcePaths.ACTION_TILE + boardString + ".png");
         playerBoard.setImage(boardImage);
         actionTile.setImage(actionImage);
     }
 
+    public void setupBoardImage(PlayerColor color) throws IOException {
+        mPlayerBoardColor = color;
+
+        changeBoardImage(color.getPascalName());
+    }
+
+    /**
+     * Flip board in final frenzy mode
+     */
+    public void flipBoard () {
+        changeBoardImage("Flipped" + mPlayerBoardColor.getPascalName());
+        // skulls are set aside when board is flipped
+        deathsBox.setVisible(false);
+    }
+
+    /**
+     * Add damage tokens to this board
+     * @param color Color of player that dealt the damage
+     * @param quantity Number of tokens to add
+     */
     public void addDamageTokens (PlayerColor color, int quantity) {
         Image tokenImage = new Image(GuiResourcePaths.DAMAGE_TOKEN + color.getPascalName() + ".png");
 
@@ -68,21 +99,46 @@ public class PlayerPane {
         }
     }
 
+    /**
+     * Add a skull to board
+     */
     public void addDeath () {
         Image skullImage = new Image(GuiResourcePaths.SKULL);
         GuiUtils.addImageViewToBox(deathsBox, SKULL_HEIGHT, SKULL_WIDTH, skullImage);
     }
 
+    /**
+     * Set player username on board
+     * @param username Player name
+     */
     public void setPlayerName (String username) {
         nameLabel.setText(username);
     }
 
+    /**
+     * Set score value on the board
+     * @param score Actual score
+     */
+    public void setScore (int score) {
+        scoreLabel.setText(score + " pts");
+    }
+
+    /**
+     * Update visible ammo with actual player's ammo
+     * @param actualAmmo Current value of ammo
+     */
     public void updateAmmo (AmmoValue actualAmmo) {
         updateAmmoBox(redAmmoBox, actualAmmo.getRed(), "red");
         updateAmmoBox(yellowAmmoBox, actualAmmo.getYellow(), "yellow");
         updateAmmoBox(blueAmmoBox, actualAmmo.getBlue(), "blue");
     }
 
+    /**
+     * Update a single ammo box color
+     * @param ammoBox Ammo box to update
+     * @param value Number of ammo of that color
+     * @param color Color to set to square ammo
+     */
     private void updateAmmoBox (VBox ammoBox, int value, String color) {
         int displayedAmmo = ammoBox.getChildren().size();
         while (displayedAmmo != value) {
@@ -97,6 +153,11 @@ public class PlayerPane {
         }
     }
 
+    /**
+     * Instantiate an ammo square of given color
+     * @param color Color to use to fill square shape
+     * @return Instantiated ammo square
+     */
     private Rectangle instantiateAmmoSquare (String color) {
         Rectangle square = new Rectangle(AMMO_SQUARE_SIDE, AMMO_SQUARE_SIDE);
         square.setFill(Paint.valueOf(color));

@@ -10,8 +10,9 @@ public class GraphicView extends View {
     private MainScreen mMainFrameController;
 
 
-    public GraphicView() {
-        super(new GraphicResponseHandler(), new GraphicUpdateHandler());
+    public GraphicView(MainScreen mainFrameController) {
+        super(new GraphicResponseHandler(), new GraphicUpdateHandler(mainFrameController));
+        mMainFrameController = mainFrameController;
     }
 
     public void showPanel(int panel) {

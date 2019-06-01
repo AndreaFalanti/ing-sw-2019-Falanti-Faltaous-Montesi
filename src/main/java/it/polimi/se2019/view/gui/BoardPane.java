@@ -116,7 +116,7 @@ public class BoardPane {
     }
 
     public void handleClickedPos (int x, int y) {
-        System.out.println("You clicked (" + x + ", " + y + ")");
+        mMainController.logToChat("You clicked (" + x + ", " + y + ")");
         switchButtonGrid(false);
     }
 
@@ -130,8 +130,6 @@ public class BoardPane {
                     BoardSquare squareController = loader.getController();
                     mSquareControllers[x][y] = squareController;
 
-                    /* TODO: delete image and pawns in fxml, add image only in normalTile and
-                     try to check if pawns are correctly placed inside squareGrid */
                     Tile tile = mBoard.getTileAt(new Position(x, y));
                     if (tile.getTileType().equals("normal")) {
                         // TODO: get correct ammoCard id from tile
