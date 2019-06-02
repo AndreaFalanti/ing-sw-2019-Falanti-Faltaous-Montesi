@@ -18,7 +18,7 @@ import java.util.Set;
  * easily serialized by the Gson library
  */
 public class ExpressionParser {
-    public static final Set<String> EXCLUSIVE_KEYWORDS = new HashSet<>(Arrays.asList(
+    protected static final Set<String> EXCLUSIVE_KEYWORDS = new HashSet<>(Arrays.asList(
             "cost",
             "subs",
             "expr",
