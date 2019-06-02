@@ -24,7 +24,6 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/css/button.css").toExternalForm());
         primaryStage.setScene(scene);
-        //primaryStage.setFullScreen(true);
         primaryStage.centerOnScreen();
 
         MainScreen controller = loader.getController();

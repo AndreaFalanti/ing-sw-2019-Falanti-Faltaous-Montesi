@@ -338,9 +338,9 @@ public class BoardPane {
         button.setPrefHeight(GRID_HEIGHT);
         button.setPrefWidth(GRID_WIDTH);
         button.setOpacity(0.2);
-        button.setOnMouseClicked(event -> {
-            handleClickedPos(x, y);
-        });
+        button.setOnMouseClicked(event ->
+            handleClickedPos(x, y)
+        );
 
         mInteractiveButtons[x][y] = button;
         buttonGrid.add(button, x, y);

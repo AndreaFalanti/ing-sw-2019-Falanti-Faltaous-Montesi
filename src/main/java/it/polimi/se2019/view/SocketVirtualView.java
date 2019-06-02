@@ -1,12 +1,10 @@
 package it.polimi.se2019.view;
 
-import it.polimi.se2019.controller.AbstractController;
-import it.polimi.se2019.controller.response.*;
+import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
 import it.polimi.se2019.model.weapon.Weapon;
-import it.polimi.se2019.util.AbstractHandler;
 
 import java.util.List;
 

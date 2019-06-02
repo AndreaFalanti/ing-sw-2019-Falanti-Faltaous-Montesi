@@ -120,7 +120,7 @@ public class MainScreen {
     }
 
     public void enableGridForMove () {
-
+        // TODO: implement action methods
     }
 
     public void updateWeaponBox (String[] ids) {

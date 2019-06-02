@@ -42,13 +42,13 @@ public class RequestMessage {
         if (!isAction())
             throw new UnsupportedOperationException("Cannot interpret request message as an action message!");
 
-        return mActionValue.get();
+        return mActionValue.isPresent() ? mActionValue.get() : null;
     }
 
     public Request asRequest() {
         if (!isRequest())
             throw new UnsupportedOperationException("Cannot interpret action message as a request message!");
 
-        return mRequestValue.get();
+        return mRequestValue.isPresent() ? mRequestValue.get() : null;
     }
 }

@@ -13,7 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
-import java.io.IOException;
 import java.util.EnumMap;
 
 
@@ -75,7 +74,7 @@ public class PlayerPane {
         actionTile.setImage(actionImage);
     }
 
-    public void setupBoardImage(PlayerColor color) throws IOException {
+    public void setupBoardImage(PlayerColor color) {
         mPlayerBoardColor = color;
 
         changeBoardImage(color.getPascalName());

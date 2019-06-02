@@ -49,7 +49,5 @@ public class BoardSquare {
                 }
             }
         }
-
-        System.out.println("Error in script");
     }
 }

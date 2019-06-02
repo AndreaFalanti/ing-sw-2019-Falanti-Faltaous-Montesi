@@ -1,6 +1,5 @@
 package it.polimi.se2019.model.weapon.serialization;
 
-import com.sun.applet2.preloader.event.PreloaderEvent;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.weapon.behaviour.DamageLiteral;

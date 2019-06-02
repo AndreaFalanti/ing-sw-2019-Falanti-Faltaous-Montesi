@@ -26,9 +26,9 @@ public class DamageAction implements Action {
     public void perform(Game game) {
         mDefenderColors.stream()
                 .map(defenderColor -> game.getPlayerFromColor(defenderColor))
-                .forEach(defendingPlayer -> {
-                    defendingPlayer.onDamageTaken(mDamageToInflict, mAttackerColor);
-                });
+                .forEach(defendingPlayer ->
+                    defendingPlayer.onDamageTaken(mDamageToInflict, mAttackerColor)
+                );
     }
 
     // TODO: add doc
