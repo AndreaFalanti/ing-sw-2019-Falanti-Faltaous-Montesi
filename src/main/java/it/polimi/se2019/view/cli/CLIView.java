@@ -84,7 +84,14 @@ public class CLIView extends View {
         Position pos;
 
         PlayerColor ownerColor = PlayerColor.BLUE;
-        pos = parseDestination(otherCommandPart);
+        if (command.equals("reload")){
+            index = reloadInteraction(owner.getWeapons());
+            action = new ReloadAction(index);
+            logger.log(Level.INFO,"Action: RELOAD  index: {0}",index);
+            new ActionMessage(action);
+            return;
+        }
+            pos= parseDestination(otherCommandPart);
 //        PlayerColor ownerColor = owner.getColor();//<-- to add
         switch (command) {
             case "move":
@@ -102,13 +109,11 @@ public class CLIView extends View {
                 break;
             case "reloadshoot":
                 index = reloadInteraction(owner.getWeapons());
-                action = new MoveReloadShootAction(ownerColor, parseDestination(otherCommandPart),index);
+                action = new MoveReloadShootAction(ownerColor, pos,index);
                 logger.log(Level.INFO,"Action: RELOADSHOOT  Pos: {0}",pos);
                 break;
             default:
-                index = reloadInteraction(owner.getWeapons());
-                action = new ReloadAction(index);
-                logger.log(Level.INFO,"Action: RELOAD  index: {0}",index);
+
                 break;
         }
         new ActionMessage(action);
@@ -154,7 +159,7 @@ public class CLIView extends View {
                 destination = requestAdditionalInfo();
                 coordTogether = destination.replaceAll("\\D","");
                 coord = coordTogether.split("");
-                e.printStackTrace();
+
             }
         }
 
