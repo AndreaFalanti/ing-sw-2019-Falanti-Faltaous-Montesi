@@ -3,7 +3,7 @@ package it.polimi.se2019.model.action;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.action.responses.*;
+import it.polimi.se2019.model.action.response.*;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.Tile;
 import it.polimi.se2019.model.weapon.Weapon;

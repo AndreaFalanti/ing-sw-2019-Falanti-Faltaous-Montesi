@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.action.responses.InvalidActionResponse;
+import it.polimi.se2019.model.action.response.InvalidActionResponse;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 
 import java.util.*;
@@ -68,5 +68,13 @@ public class WeaponAction implements Action {
     @Override
     public boolean consumeAction() {
         return false;
+    }
+
+    // add action to be executed
+    public void add(Action action) {
+        if (action == null)
+            throw new IllegalArgumentException("Cannot add null action to weapon action!");
+
+        mActions.add(action);
     }
 }

@@ -1,6 +1,6 @@
 package it.polimi.se2019.resource_handler;
 
-import it.polimi.se2019.util.JsonString;
+import it.polimi.se2019.util.PrettyJsonElement;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -20,8 +20,8 @@ public class ResourceHandlerTest {
                 "   \"value\" : \"hello test!\"\n" +
                 "}";
 
-        assertEquals(new JsonString(expectedJsonString),
-                     new JsonString((String) resourceHandler.get("testJsonString")));
+        assertEquals(new PrettyJsonElement(expectedJsonString),
+                     new PrettyJsonElement((String) resourceHandler.get("testJsonString")));
     }
 
     @Test(expected = IllegalArgumentException.class)

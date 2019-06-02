@@ -8,7 +8,7 @@ public class DamageLiteral extends Literal<Damage> {
     }
 
     @Override
-    Damage asDamage() {
+    public Damage asDamage() {
         return getPrimitive();
     }
 }

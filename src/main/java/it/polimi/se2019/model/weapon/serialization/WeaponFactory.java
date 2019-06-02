@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.model.weapon.behaviour.Expression;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 
@@ -12,6 +13,8 @@ public class WeaponFactory {
 
     // GSON used to deal with serialization/deserialization
     public static final Gson GSON = new GsonBuilder()
+            // .registerTypeAdapterFactory(ExpressionFactory.RUN_TYPE_ADAPTER_FACTORY)
+            .registerTypeAdapter(Expression.class, new CustomExpressionAdapter())
             .setPrettyPrinting()
             .setFieldNamingStrategy(new CustomFieldNamingStrategy())
             .addSerializationExclusionStrategy(new AnnotationExclusionStrategy())
@@ -33,4 +36,3 @@ public class WeaponFactory {
         return GSON.toJsonTree(toSerialize, Weapon.class);
     }
 }
-

@@ -79,6 +79,7 @@ public class PowerUpCardTest {
             assertNotNull(powerUpCard.getName());
             assertNotNull(powerUpCard.getAmmoValue());
             assertNotNull(powerUpCard.getBehaviour());
+            assertNotNull(powerUpCard.getGuiID());
         }
     }
 }

@@ -3,7 +3,7 @@ package it.polimi.se2019.model.action;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.action.responses.InvalidActionResponse;
+import it.polimi.se2019.model.action.response.InvalidActionResponse;
 
 import java.util.Optional;
 import java.util.Set;
@@ -26,9 +26,9 @@ public class DamageAction implements Action {
     public void perform(Game game) {
         mDefenderColors.stream()
                 .map(defenderColor -> game.getPlayerFromColor(defenderColor))
-                .forEach(defendingPlayer -> {
-                    defendingPlayer.onDamageTaken(mDamageToInflict, mAttackerColor);
-                });
+                .forEach(defendingPlayer ->
+                    defendingPlayer.onDamageTaken(mDamageToInflict, mAttackerColor)
+                );
     }
 
     // TODO: add doc

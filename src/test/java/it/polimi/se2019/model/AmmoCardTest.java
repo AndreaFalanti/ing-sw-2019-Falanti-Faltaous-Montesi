@@ -3,12 +3,10 @@ package it.polimi.se2019.model;
 import it.polimi.se2019.util.Jsons;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class AmmoCardTest {
     private static final int EXPECTED_CARDS_NUM = 36;
@@ -26,6 +24,7 @@ public class AmmoCardTest {
         for (AmmoCard ammocard : deck) {
             assertNotNull(ammocard);
             assertNotNull(ammocard.getAmmoGain());
+            assertNotNull(ammocard.getGuiID());
         }
     }
 }

@@ -1,9 +1,9 @@
 package it.polimi.se2019.model.action;
 
 import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.action.responses.ActionResponseStrings;
-import it.polimi.se2019.model.action.responses.InvalidActionResponse;
-import it.polimi.se2019.model.action.responses.MessageActionResponse;
+import it.polimi.se2019.model.action.response.ActionResponseStrings;
+import it.polimi.se2019.model.action.response.InvalidActionResponse;
+import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 

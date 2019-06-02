@@ -1,24 +1,44 @@
 package it.polimi.se2019.view;
 
-import com.sun.corba.se.impl.protocol.giopmsgheaders.RequestMessage;
+import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.update.Update;
+import it.polimi.se2019.model.update.UpdateHandler;
 import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.util.Either;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
+import it.polimi.se2019.view.request.Request;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class View extends Observable<RequestMessage> implements Observer<Update> {
-
+public abstract class View extends Observable<Either<Request, Action>> implements Observer<Either<Response, Update>> {
+    // fields
     protected ArrayList<Player> mPlayers;
     private Board board;
     protected PlayerColor activePlayer;
     protected Player owner;
+    protected UpdateHandler mUpdateHandler;
+    protected ResponseHandler mResponseHandler;
+
+    // constructor
+    public View(ResponseHandler responseHandler, UpdateHandler updateHandler) {
+        mResponseHandler = responseHandler;
+        mUpdateHandler = updateHandler;
+    }
+
+    // trivial getters
+    public ResponseHandler getResponseHandler() {
+        return mResponseHandler;
+    }
+    public UpdateHandler getUpdateHandler() {
+        return mUpdateHandler;
+    }
 
     public abstract void showMessage(String message);
 
@@ -61,6 +81,14 @@ public abstract class View extends Observable<RequestMessage> implements Observe
 
     public List<Player> getPlayers(){
         return mPlayers;
+    }
+
+    @Override
+    public final void update(Either<Response, Update> message) {
+        message.apply(
+                response -> response.handleMe(mResponseHandler),
+                update -> update.handleMe(mUpdateHandler)
+        );
     }
 
 }

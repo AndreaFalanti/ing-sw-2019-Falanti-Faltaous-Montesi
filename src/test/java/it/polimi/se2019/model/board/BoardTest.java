@@ -1,8 +1,9 @@
 package it.polimi.se2019.model.board;
 
+import com.google.gson.JsonPrimitive;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.util.JsonString;
 import it.polimi.se2019.util.Jsons;
+import it.polimi.se2019.util.PrettyJsonElement;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -106,8 +107,8 @@ public class BoardTest {
 
     @Test
     public void testToJsonBoardWithOneTile() {
-        assertEquals(new JsonString(mExampleBoardJsonString),
-                     new JsonString(mExampleUnitBoard.toJson()));
+        assertEquals(new PrettyJsonElement(mExampleBoardJsonString),
+                     new PrettyJsonElement(mExampleUnitBoard.toJson()));
     }
 
     @Test

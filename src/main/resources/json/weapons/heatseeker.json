@@ -10,24 +10,37 @@
     "yellow" : 1,
     "blue" : 0
   },
-  "primary" : {
+  "behaviour" : {
     "expr" : "InflictDamage",
-    "damage" : {
-      "expr" : "DamageLiteral",
-      "contents" : {
-        "damage" : 3,
-        "marksNum" : 0
-      }
-    },
-    "targets" : {
-      "expr" : "SelectOneTarget",
-      "from" : {
-        "expr" : "NegateSelection",
-        "do" : {
-          "expr" : "CanSee"
+    "subs" : {
+      "damage" : {
+        "expr" : "DamageLiteral",
+        "subs" : {},
+        "contents" : {
+          "damage" : 3,
+          "marksNum" : 0
+        }
+      },
+      "to" : {
+        "expr" : "SelectOneTarget",
+        "subs" : {
+          "from" : {
+            "expr" : "NegateSelection",
+            "subs" : {
+              "selection" : {
+                "expr" : "GetTargets",
+                "subs" : {
+                  "range" : {
+                    "expr" : "CanSee"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
   }
 }
+
 

@@ -1,5 +1,6 @@
 package it.polimi.se2019.model.weapon;
 
+import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
@@ -9,15 +10,16 @@ import it.polimi.se2019.model.action.DamageAction;
 import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.weapon.behaviour.*;
+import it.polimi.se2019.model.weapon.response.SelectionResponse;
+import it.polimi.se2019.model.weapon.response.TargetSelectionResponse;
 import it.polimi.se2019.util.Jsons;
+import it.polimi.se2019.view.ResponseHandler;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -50,7 +52,7 @@ public class WeaponsTest {
         Weapon heatseeker = Weapons.get("heatseeker");
 
         // provide needed information to shoot
-        mMarioBrosContext.pushCollectedInfo(new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN)));
+        mMarioBrosContext.provideInfo(new TargetsLiteral(Collections.singleton(PlayerColor.GREEN)));
         
         // produce result with complete context
         ShootResult result = heatseeker.shoot(mMarioBrosContext);
@@ -70,18 +72,23 @@ public class WeaponsTest {
         assertEquals(expected, actual);
     }
 
-    /*************************************************************/
-    /* @Test                                                     */
-    /* public void testHeatseekerMarioShootsLuigiMissingInfo() { */
-    /*      // instantiate weapon                                */
-    /*     Weapon heatseeker = Weapons.get("heatseeker");        */
-    /*                                                           */
-    /*     // shoot                                              */
-    /*     Expression expected = new InflictDamage(              */
-    /*             new DamageLiteral(new Damage(3, 0)),          */
-    /*             new WaitForInfo()                             */
-    /*             );                                            */
-    /*     // assertEquals(expected, actual);                    */
-    /* }                                                         */
-    /*************************************************************/
+    @Test
+    public void testHeatseekerMarioShootsLuigiMissingTarget() {
+         // instantiate weapon
+        Weapon heatseeker = Weapons.get("heatseeker");
+
+        // shoot
+        Response actual = heatseeker.shoot(mMarioBrosContext).asResponse();
+
+        // Expression expected = new InflictDamage(
+                // new DamageLiteral(new Damage(3, 0)),
+                // new WaitForInfo()
+        // );
+        Response expected = new TargetSelectionResponse(
+                1,
+                1,
+                Collections.emptySet()
+        );
+        assertEquals(expected, actual);
+    }
 }

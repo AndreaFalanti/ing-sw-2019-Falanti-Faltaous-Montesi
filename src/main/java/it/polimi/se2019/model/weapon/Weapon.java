@@ -4,15 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.weapon.behaviour.Expression;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.model.weapon.behaviour.ShootResult;
+import it.polimi.se2019.model.weapon.serialization.CustomExpressionAdapter;
 import it.polimi.se2019.model.weapon.serialization.CustomPrimaryEffectAdapter;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Exclude;
 
-import javax.net.ssl.SNIHostName;
 import java.util.*;
 
 public class Weapon {
@@ -23,21 +22,13 @@ public class Weapon {
     @Exclude
     private boolean mLoaded;
 
-    // various effects
-    @SerializedName("primary")
-    @JsonAdapter(CustomPrimaryEffectAdapter.class)
-    private PayedEffect mPrimaryEffect;
-
-    @SerializedName("secondary")
-    private PayedEffect mSecondaryEffect;
-
-    @SerializedName("additional")
-    private List<PayedEffect> mAdditionalEffects;
+    // weapon behaviour
+    private Expression mBehaviour;
 
     // used in tests
-    public Weapon () {}
+    public Weapon() {}
 
-    public Weapon (String name, AmmoValue reloadCost, AmmoValue grabCost) {
+    public Weapon(String name, AmmoValue reloadCost, AmmoValue grabCost) {
         if (reloadCost == null || grabCost == null) {
             throw new IllegalArgumentException("Can't use null ammoValues");
         }
@@ -65,10 +56,13 @@ public class Weapon {
         return mLoaded;
     }
 
+    public Expression getBehaviour() {
+        return mBehaviour;
+    }
+
     // trivial setters
-    public void setPrimaryEffect(Expression behaviour)  {
-        // primary effect is always free
-        mPrimaryEffect = new PayedEffect(new AmmoValue(), behaviour);
+    public void setBehaviour(Expression behaviour) {
+        mBehaviour = behaviour;
     }
 
     // TODO: add doc
@@ -86,12 +80,7 @@ public class Weapon {
     // TODO: add doc
     // TODO: implement this better
     public ShootResult shoot(ShootContext shootContext) {
-        Expression result = mPrimaryEffect.getBehaviour().eval(shootContext);
-
-        if (shootContext.isComplete())
-            return ShootResult.asAction(shootContext.getResultingAction());
-        else
-            return ShootResult.asResponse(null);
+        return getBehaviour().evalToShootResult(shootContext);
     }
 
     public static List<Weapon> returnDeckFromJson(String json) {

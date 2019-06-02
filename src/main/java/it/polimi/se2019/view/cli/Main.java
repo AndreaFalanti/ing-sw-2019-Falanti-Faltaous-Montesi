@@ -1,7 +1,5 @@
 package it.polimi.se2019.view.cli;
 
-import it.polimi.se2019.view.CLIView;
-
 public class Main {
 
 

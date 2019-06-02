@@ -1,8 +1,8 @@
 package it.polimi.se2019.network.client;
 
-import it.polimi.se2019.controller.responses.Response;
+import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.view.View;
-import it.polimi.se2019.view.requests.Request;
+import it.polimi.se2019.view.request.Request;
 
 public abstract class Client implements ClientInterface {
     protected View view;

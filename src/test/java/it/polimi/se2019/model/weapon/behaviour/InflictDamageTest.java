@@ -3,9 +3,10 @@ package it.polimi.se2019.model.weapon.behaviour;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.DamageAction;
+import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.weapon.Selection;
 import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,17 +18,17 @@ import java.util.HashSet;
 import static org.junit.Assert.assertEquals;
 
 public class InflictDamageTest {
-    ShootContext mGiorgioShootsMario;
+    ShootContext mMarioShootsLuigi;
 
     @Before
     public void instantiate() {
-        mGiorgioShootsMario = new ShootContext(
+        mMarioShootsLuigi = new ShootContext(
                 Board.fromJson(Jsons.get("boards/tests/simple_board")),
                 new HashSet(Arrays.asList(
-                        new Player("Giorgio", PlayerColor.BLUE),
-                        new Player("Mario", PlayerColor.GREEN)
+                        new Player("Mario", PlayerColor.PURPLE),
+                        new Player("Luigi", PlayerColor.GREEN)
                 )),
-                PlayerColor.BLUE
+                PlayerColor.PURPLE
         );
     }
 
@@ -36,18 +37,43 @@ public class InflictDamageTest {
         // inflict 1 damage to Mario
         InflictDamage tested = new InflictDamage(
                 new DamageLiteral(new Damage(1, 0)),
-                new TargetsLiteral(Selection.fromSingle(PlayerColor.GREEN))
+                new TargetsLiteral(Collections.singleton(PlayerColor.GREEN))
         );
 
-        // do it
-        Expression actual = tested.eval(mGiorgioShootsMario);
+        // check
+        Expression expected = new Done();
+        Expression actual = tested.eval(mMarioShootsLuigi);
+        assertEquals(expected, actual);
+
+        // check side effects on context (resulting action is stored there)
+        Action actualAction = mMarioShootsLuigi.getResultingAction();
+        Action expectedAction = new WeaponAction(
+                new DamageAction(
+                        PlayerColor.PURPLE,
+                        Collections.singleton(PlayerColor.GREEN),
+                        new Damage(1, 0)
+                )
+        );
+        assertEquals(expectedAction, actualAction);
+    }
+
+    @Test
+    public void testEvalToShootResult() {
+         // inflict 1 damage to Mario
+        InflictDamage tested = new InflictDamage(
+                new DamageLiteral(new Damage(1, 0)),
+                new TargetsLiteral(Collections.singleton(PlayerColor.GREEN))
+        );
 
         // check it
-        Expression expected = new ActionLiteral(new DamageAction(
-                PlayerColor.BLUE,
-                Collections.singleton(PlayerColor.GREEN),
-                new Damage(1, 0)
+        ShootResult expected = ShootResult.from(new WeaponAction(
+                new DamageAction(
+                        PlayerColor.PURPLE,
+                        Collections.singleton(PlayerColor.GREEN),
+                        new Damage(1, 0)
+                )
         ));
+        ShootResult actual = tested.evalToShootResult(mMarioShootsLuigi);
         assertEquals(expected, actual);
     }
 }

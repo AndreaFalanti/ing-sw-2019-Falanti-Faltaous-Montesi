@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 <AnchorPane id="playerPane" prefHeight="176.0" prefWidth="711.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.se2019.view.gui.PlayerPane">
 
     <children>
@@ -13,7 +16,7 @@
         </ImageView>
         <ImageView fx:id="actionTile" fitHeight="176.0" fitWidth="68.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0">
             <image>
-                <Image url="@../images/playerBoards/actionTileUpYellow.png" />
+                <Image url="@../images/playerBoards/actionTileYellow.png" />
             </image>
         </ImageView>
         <HBox fx:id="damageTokensBox" layoutX="61.0" layoutY="61.0" prefHeight="55.0" prefWidth="480.0">
@@ -35,44 +38,7 @@
                 </ImageView>
             </children>
         </HBox>
-        <HBox fx:id="marksBox" layoutX="301.0" layoutY="-3.0" prefHeight="48.0" prefWidth="120.0" scaleX="0.8" scaleY="0.85" scaleZ="0.8" AnchorPane.topAnchor="-3.0">
-            <children>
-                <ImageView fitHeight="54.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenPurple.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenGreen.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="50.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenBlue.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="90.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenBlue.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="130.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenBlue.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="170.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenBlue.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="50.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenGreen.png" />
-                    </image>
-                </ImageView>
-            </children>
+        <HBox fx:id="marksBox" layoutX="348.0" layoutY="1.0" prefHeight="54.0" prefWidth="160.0" scaleZ="0.8" translateY="-3.0" AnchorPane.topAnchor="0.0">
             <opaqueInsets>
                 <Insets />
             </opaqueInsets>
@@ -86,5 +52,46 @@
                 </ImageView>
             </children>
         </HBox>
+      <HBox layoutX="620.0" layoutY="88.0" prefHeight="55.0" prefWidth="60.0" spacing="3.0" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <VBox fx:id="redAmmoBox" alignment="BOTTOM_CENTER" prefHeight="90.0" prefWidth="18.0" HBox.hgrow="NEVER" />
+            <VBox fx:id="yellowAmmoBox" alignment="BOTTOM_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="90.0" prefWidth="18.0" HBox.hgrow="NEVER" />
+            <VBox fx:id="blueAmmoBox" alignment="BOTTOM_CENTER" layoutX="29.0" layoutY="10.0" prefHeight="90.0" prefWidth="18.0" HBox.hgrow="NEVER">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2000f7" height="18.0" layoutX="10.0" layoutY="57.0" stroke="BLACK" strokeType="INSIDE" width="18.0" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" blendMode="MULTIPLY" layoutX="70.0" layoutY="4.0" style="-fx-background-color: #222222; -fx-background-radius: 15;" AnchorPane.leftAnchor="70.0" AnchorPane.topAnchor="2.0">
+         <children>
+            <Label fx:id="nameLabel" alignment="CENTER" text="Bucciarati" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets bottom="1.0" left="5.0" right="5.0" top="1.0" />
+         </padding>
+      </HBox>
+      <HBox alignment="CENTER" blendMode="MULTIPLY" layoutX="242.0" layoutY="6.0" style="-fx-background-color: #222222;">
+         <children>
+            <Label fx:id="scoreLabel" alignment="CENTER" text="5 pts" textFill="WHITE">
+               <font>
+                  <Font name="System Bold Italic" size="14.0" />
+               </font>
+            </Label>
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets bottom="1.0" left="5.0" right="5.0" top="1.0" />
+         </padding>
+      </HBox>
     </children>
 </AnchorPane>

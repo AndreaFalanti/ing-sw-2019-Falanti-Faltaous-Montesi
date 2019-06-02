@@ -1,0 +1,37 @@
+{
+  "expr": "InflictDamage",
+  "subs" : {
+    "damage": {
+      "expr": "DamageLiteral",
+      "subs" : {},
+      "contents": {
+        "damage": 3,
+        "marksNum": 0
+      }
+    },
+    "targets": {
+      "expr": "SelectTargets",
+      "subs" : {
+        "min": {
+          "expr": "IntLiteral",
+          "subs" : {},
+          "contents": 1
+        },
+        "max": {
+          "expr": "IntLiteral",
+          "subs" : {},
+          "contents": 1
+        },
+        "from": {
+          "expr": "NegateSelection",
+          "subs" : {
+            "do": {
+              "expr": "CanSee",
+              "subs" : {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

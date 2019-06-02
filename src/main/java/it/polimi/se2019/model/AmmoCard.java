@@ -9,6 +9,7 @@ import java.util.List;
 public class AmmoCard {
     private AmmoValue mAmmoGain;
     private boolean mDrawPowerUp;
+    private String mGuiID;
 
     public AmmoCard() { }
 
@@ -32,6 +33,10 @@ public class AmmoCard {
 
     public boolean getDrawPowerUp() {
         return mDrawPowerUp;
+    }
+
+    public String getGuiID() {
+        return mGuiID;
     }
 
     public AmmoCard deepCopy() {
@@ -73,6 +78,7 @@ public class AmmoCard {
         return "AmmoCard{" +
                 "mAmmoGain=" + mAmmoGain +
                 ", mDrawPowerUp=" + mDrawPowerUp +
+                ", mGuiID='" + mGuiID + '\'' +
                 '}';
     }
 }

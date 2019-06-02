@@ -1,38 +1,28 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
 public class WaitForInfo extends Expression {
+    private Expression mAwaitedInfo; // TODO: use this to check if acquired info is rightly formed
+
+
+    public WaitForInfo() {}
+
+    public WaitForInfo(Expression awaitedInfo) {
+        super();
+
+        mAwaitedInfo = awaitedInfo;
+    }
+
     // TODO: add doc
     @Override
     protected Expression continueEval(ShootContext shootContext) {
-        return shootContext.popInfo().orElse(this);
-    }
-}
-
-// TODO: maybe consider doing this to prevent wrong info in the future
-/*
-public class MissingInfo<InfoType> extends Expression {
-    Class<InfoType> mInfoTypeClass;
-
-    public MissingInfo(Class<InfoType> infoTypeClass) {
-        super();
-
-        mInfoTypeClass = infoTypeClass;
-    }
-
-    @Override
-    protected Expression continueEval(ShootContext shootContext) {
-        Optional<Expression> maybeInfo = shootContext.popInfo();
-
-        if (maybeInfo.isPresent()) {
-            Expression info = maybeInfo.get();
-
-            if (!info.getClass().equals(mInfoTypeClass.getClass()))
-                throw new BadInfoException(info.getClass(), mInfoTypeClass.getClass());
-
-            return info;
+        // if info is available, consume it and substitute this expression with it
+        if (shootContext.peekProvidedInfo().isPresent()) {
+            // TODO: check if this is correct
+            return shootContext.consumeProvidedInfo();
         }
 
+        // if info is not available, just keep waiting
         return this;
     }
 }
- */
+

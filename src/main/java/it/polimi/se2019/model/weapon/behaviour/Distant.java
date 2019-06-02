@@ -4,21 +4,14 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 
 public class Distant extends Expression {
-    @SubExpression Expression mMinDistance;
-    @SubExpression Expression mMaxDistance;
-
     // trivial constructors
     public Distant(Expression minDistance, Expression maxDistance) {
-        super();
-
-        mMinDistance = maxDistance;
-        mMaxDistance = minDistance;
+        putSub("minDistance", minDistance);
+        putSub("maxDistance", maxDistance);
     }
     public Distant(Expression exactDistance) {
-        super();
-
-        mMinDistance = exactDistance;
-        mMaxDistance = exactDistance;
+        putSub("minDistance", exactDistance);
+        putSub("maxDistance", exactDistance);
     }
 
     // TODO: rephrase doc more succinctly...
@@ -37,8 +30,8 @@ public class Distant extends Expression {
 
         return new RangeLiteral(board.getReachablePositions(
                 shooterPos,
-                mMinDistance.asInt(),
-                mMaxDistance.asInt()
+                getSub("minDistance").asInt(),
+                getSub("maxDistance").asInt()
         ));
     }
 }

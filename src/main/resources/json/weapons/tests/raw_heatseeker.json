@@ -10,31 +10,31 @@
     "yellow" : 1,
     "blue" : 0
   },
-  "primary" : {
+  "behaviour" : {
     "expr" : "InflictDamage",
-    "damage" : {
-      "expr" : "DamageLiteral",
-      "contents" : {
-        "damage" : 3,
-        "marksNum" : 0
-      }
-    },
-    "targets" : {
-      "expr" : "SelectTargets",
-      "min" : {
-        "expr" : "IntLiteral",
-        "contents" : 1
+    "subs" : {
+      "damage" : {
+        "expr" : "DamageLiteral",
+        "subs" : {},
+        "contents" : {
+          "damage" : 3,
+          "marksNum" : 0
+        }
       },
-      "max" : {
-        "expr" : "IntLiteral",
-        "contents" : 1
-      },
-      "from" : {
-        "expr" : "NegateSelection",
-        "do" : {
-          "expr" : "CanSee"
+      "to" : {
+        "expr" : "SelectOneTarget",
+        "subs" : {
+          "from" : {
+            "expr" : "NegateSelection",
+            "subs" : {
+              "selection" : {
+                "expr" : "CanSee"
+              }
+            }
+          }
         }
       }
     }
   }
 }
+

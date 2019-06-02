@@ -10,7 +10,7 @@ public class ActionLiteral extends Literal<Action> {
 
     // conversion to primitive
     @Override
-    Action asAction() {
+    public Action asAction() {
         return getPrimitive();
     }
 }

@@ -10,9 +10,9 @@
     "yellow" : 1,
     "blue" : 0
   },
-  "primary" : {
+  "behaviour" : {
     "expr" : "InflictDamage",
-    "damage" : [1, 0],
+    "damage" : "1d",
     "targets" : {
       "expr" : "NegateSelection",
       "do" : {

@@ -1,6 +1,8 @@
 package it.polimi.se2019.model.weapon.response;
 
-public class SelectionResponse implements WeaponResponse {
+import it.polimi.se2019.controller.response.Response;
+
+public abstract class SelectionResponse implements Response {
     int mMinToSelect;
     int mMaxToSelect;
 

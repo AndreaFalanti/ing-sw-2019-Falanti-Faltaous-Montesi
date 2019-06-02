@@ -2,6 +2,9 @@ package it.polimi.se2019.model;
 
 
 import java.util.Objects;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AmmoValue {
     private int mRed;
@@ -30,6 +33,25 @@ public class AmmoValue {
         mRed = r;
         mYellow = y;
         mBlue = b;
+    }
+
+    /**
+     * Constructs an AmmoValue by parsing a string
+     * @param str textual representation of AmmoValue
+     * @return result or parsing
+     */
+    public static Optional<AmmoValue> from(String str) {
+        Matcher m = Pattern.compile("^(?!$)(?:(\\d)r)?(?:(\\d)y)?(?:(\\d)b)?$")
+                .matcher(str);
+
+        if (!m.matches())
+            return Optional.empty();
+
+        int red = Integer.parseInt(m.group(1) == null ? "0" : m.group(1));
+        int yellow = Integer.parseInt(m.group(2) == null ? "0" : m.group(2));
+        int blue = Integer.parseInt(m.group(3) == null ? "0" : m.group(3));
+
+        return Optional.of(new AmmoValue(red, yellow, blue));
     }
 
     public int getRed () {
