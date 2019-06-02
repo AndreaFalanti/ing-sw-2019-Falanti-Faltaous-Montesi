@@ -3,15 +3,18 @@ package it.polimi.se2019.view.gui;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.PlayerColor;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
+import java.util.EnumMap;
 
 
 public class PlayerPane {
@@ -46,6 +49,7 @@ public class PlayerPane {
 
     private MainScreen mMainScreen;
     private PlayerColor mPlayerBoardColor;
+    private EnumMap<PlayerColor, Label> mMarksNumLabels = new EnumMap<>(PlayerColor.class);
 
 
     public MainScreen getMainScreen() {
@@ -75,6 +79,7 @@ public class PlayerPane {
         mPlayerBoardColor = color;
 
         changeBoardImage(color.getPascalName());
+        initializeMarksBox();
     }
 
     /**
@@ -97,6 +102,38 @@ public class PlayerPane {
         for (int i = 0; i < quantity; i++) {
             GuiUtils.addImageViewToBox(damageTokensBox, DAMAGE_TOKEN_HEIGHT, DAMAGE_TOKEN_WIDTH, tokenImage);
         }
+    }
+
+    /**
+     * Setup mark images and labels, will instantiate all marks color that are not equal to this board one.
+     * This method also initialize a map for easier label updates.
+     */
+    public void initializeMarksBox () {
+        for (PlayerColor color : PlayerColor.values()) {
+            if (color != mPlayerBoardColor) {
+                Image markImage = new Image(GuiResourcePaths.DAMAGE_TOKEN + color.getPascalName() + ".png");
+                Label label = new Label("x0");
+                label.setTextFill(Paint.valueOf("white"));
+
+                StackPane stackPane = new StackPane();
+                GuiUtils.addImageViewToBox(stackPane, DAMAGE_TOKEN_HEIGHT, DAMAGE_TOKEN_WIDTH, markImage);
+                stackPane.getChildren().add(label);
+                stackPane.setAlignment(Pos.CENTER);
+
+                mMarksNumLabels.put(color, label);
+
+                marksBox.getChildren().add(stackPane);
+            }
+        }
+    }
+
+    /**
+     * Update mark displayed value with given parameter
+     * @param color Mark color to update
+     * @param value Marks num to set
+     */
+    public void updateMarkLabel (PlayerColor color, int value) {
+        mMarksNumLabels.get(color).setText("x" + value);
     }
 
     /**

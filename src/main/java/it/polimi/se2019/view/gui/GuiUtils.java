@@ -19,12 +19,16 @@ public final class GuiUtils {
      */
     public static ImageView addImageViewToBox(Pane box, int height, int width, Image image) {
         ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(height);
-        imageView.setFitWidth(width);
-        imageView.setPreserveRatio(true);
+        setupImageViewSize(imageView, height, width);
 
         box.getChildren().add(imageView);
         return imageView;
+    }
+
+    public static void setupImageViewSize(ImageView imageView, int height, int width) {
+        imageView.setFitHeight(height);
+        imageView.setFitWidth(width);
+        imageView.setPreserveRatio(true);
     }
 
     /**

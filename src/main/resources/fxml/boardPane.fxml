@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 <AnchorPane prefHeight="538.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.se2019.view.gui.BoardPane">
 
     <children>
@@ -77,15 +79,7 @@
                 <Insets left="9.0" right="9.0" />
             </padding>
         </HBox>
-        <HBox fx:id="deathsBox" alignment="TOP_RIGHT" layoutX="50.0" layoutY="27.0" prefHeight="39.0" prefWidth="240.0">
-            <children>
-            <ImageView fitHeight="41.0" fitWidth="32.0" layoutX="220.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/skull.png" />
-               </image>
-            </ImageView>
-            </children>
-        </HBox>
+        <HBox fx:id="deathsBox" alignment="TOP_RIGHT" layoutX="50.0" layoutY="27.0" prefHeight="39.0" prefWidth="240.0" />
         <ImageView fitHeight="120.0" fitWidth="77.0" layoutX="613.0" layoutY="139.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="85.0">
             <image>
                 <Image url="@../images/cards/AD_weapons_IT_0225.png" />
@@ -122,6 +116,22 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
             </rowConstraints>
         </GridPane>
+      <Label fx:id="activePlayerLabel" layoutX="25.0" layoutY="503.0" text="Active player: GREEN" textFill="WHITE" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <GridPane fx:id="frenzyKilltrackGridPane" layoutX="313.0" layoutY="20.0" prefHeight="72.0" prefWidth="81.0" AnchorPane.leftAnchor="287.0" AnchorPane.topAnchor="25.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+        </rowConstraints>
+      </GridPane>
     </children>
 
 </AnchorPane>

@@ -1,6 +1,9 @@
 package it.polimi.se2019.view.gui;
 
+import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.update.*;
+
+import java.util.Map;
 
 public class GraphicUpdateHandler implements UpdateHandler {
     private MainScreen mMainController;
@@ -27,7 +30,8 @@ public class GraphicUpdateHandler implements UpdateHandler {
 
     @Override
     public void handle(PlayerMarksUpdate update) {
-        // still to implement marks part
+        mMainController.getPlayerControllerFromColor(update.getTargetPlayerColor())
+                .updateMarkLabel(update.getShooterPlayerColor(), update.getMarks());
     }
 
     @Override
@@ -56,7 +60,11 @@ public class GraphicUpdateHandler implements UpdateHandler {
 
     @Override
     public void handle(KillScoredUpdate update) {
-
+        mMainController.getBoardController().addKillToKilltrack(update.getKillerColor(), update.isOverkill());
+        mMainController.getPlayerControllerFromColor(update.getPlayerKilledColor()).addDeath();
+        for (Map.Entry<PlayerColor, Integer> entry : update.getScores().entrySet()) {
+            mMainController.getPlayerControllerFromColor(entry.getKey()).setScore(entry.getValue());
+        }
     }
 
     @Override
@@ -66,6 +74,6 @@ public class GraphicUpdateHandler implements UpdateHandler {
 
     @Override
     public void handle(ActivePlayerUpdate update) {
-
+        mMainController.getBoardController().updateActivePlayerText(update.getPlayerColor());
     }
 }

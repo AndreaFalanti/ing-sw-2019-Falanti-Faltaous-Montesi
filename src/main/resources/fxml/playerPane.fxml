@@ -38,44 +38,7 @@
                 </ImageView>
             </children>
         </HBox>
-        <HBox fx:id="marksBox" layoutX="301.0" layoutY="-3.0" prefHeight="48.0" prefWidth="120.0" scaleX="0.8" scaleY="0.85" scaleZ="0.8" AnchorPane.topAnchor="-3.0">
-            <children>
-                <ImageView fitHeight="54.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenPurple.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenGreen.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="50.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenBlue.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="90.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenBlue.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="130.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenBlue.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="170.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenBlue.png" />
-                    </image>
-                </ImageView>
-                <ImageView fitHeight="55.0" fitWidth="40.0" layoutX="50.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/damageTokens/damageTokenGreen.png" />
-                    </image>
-                </ImageView>
-            </children>
+        <HBox fx:id="marksBox" layoutX="348.0" layoutY="1.0" prefHeight="54.0" prefWidth="160.0" scaleZ="0.8" translateY="-3.0" AnchorPane.topAnchor="0.0">
             <opaqueInsets>
                 <Insets />
             </opaqueInsets>

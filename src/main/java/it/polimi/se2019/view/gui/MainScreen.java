@@ -67,6 +67,8 @@ public class MainScreen {
         playerController.setPlayerName("Aldo");
         playerController.updateAmmo(new AmmoValue(1, 2, 3));
         playerController.setScore(3);
+        playerController.updateMarkLabel(PlayerColor.YELLOW, 3);
+        playerController.updateMarkLabel(PlayerColor.BLUE, 1);
         //playerController.flipBoard();
 
         playerPane.getChildren().add(newLoadedPane);
@@ -84,9 +86,14 @@ public class MainScreen {
 
         mBoardController = loader.getController();
         mBoardController.setMainController(this);
+
         Board board = Board.fromJson(Jsons.get("boards/game/board1"));
         mBoardController.initialize(board);
-        mBoardController.addTargetDeath(5);
+        mBoardController.addTargetDeath(4);
+        mBoardController.updateActivePlayerText(PlayerColor.PURPLE);
+        mBoardController.addKillToKilltrack(PlayerColor.YELLOW, true);
+        mBoardController.addKillToKilltrack(PlayerColor.BLUE, false);
+        mBoardController.addKillToKilltrack(PlayerColor.BLUE, true);
 
         boardPane.getChildren().add(newLoadedPane);
     }
@@ -214,10 +221,10 @@ public class MainScreen {
     }
 
     public void activateButtonGrid () {
-        mBoardController.switchButtonGrid(true);
+        mBoardController.switchButtonGridEnableStatus(true);
     }
 
     public void deactivateButtonGrid () {
-        mBoardController.switchButtonGrid(false);
+        mBoardController.switchButtonGridEnableStatus(false);
     }
 }
