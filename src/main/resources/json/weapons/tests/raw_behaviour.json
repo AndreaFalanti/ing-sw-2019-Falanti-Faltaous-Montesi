@@ -3,23 +3,20 @@
   "subs" : {
     "damage": {
       "expr": "DamageLiteral",
-      "subs" : {},
       "contents": {
         "damage": 3,
         "marksNum": 0
       }
     },
-    "targets": {
+    "to": {
       "expr": "SelectTargets",
       "subs" : {
         "min": {
           "expr": "IntLiteral",
-          "subs" : {},
           "contents": 1
         },
         "max": {
           "expr": "IntLiteral",
-          "subs" : {},
           "contents": 1
         },
         "from": {

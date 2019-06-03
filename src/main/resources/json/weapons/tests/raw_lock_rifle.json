@@ -1,58 +1,60 @@
 {
-  "expr": "Do",
-  "subs" : {
-    "0" : {
-      "expr": "InflictDamage",
+  "expr": "PickEffect",
+  "effects": [
+    {
       "name" : "Basic Effect",
       "priority": 0,
-      "subs" : {
-        "amount": {
-          "expr" : "DamageLiteral",
-          "subs" : {},
-          "contents" : {
-            "damage" : 2,
-            "marksNum" : 1
-          }
-        },
-        "to": {
-          "expr": "SelectOneTarget",
-          "subs" : {
-            "from": {
-              "expr": "CanSee",
-              "subs" : {}
+      "behaviour" : {
+        "expr": "InflictDamage",
+        "subs" : {
+          "amount": {
+            "expr" : "DamageLiteral",
+            "contents" : {
+              "damage" : 2,
+              "marksNum" : 1
+            }
+          },
+          "to": {
+            "expr": "SelectOneTarget",
+            "subs" : {
+              "from": {
+                "expr": "CanSee",
+                "subs" : {}
+              }
             }
           }
         }
       }
     },
-    "1": {
-      "expr": "InflictDamage",
-      "name" : "With Second Lock",
+    {
+      "name": "With Second Lock",
       "priority": 1,
       "optional": true,
-      "cost": "1r",
-      "subs" : {
-        "amount": {
-          "expr" : "DamageLiteral",
-          "subs" : {},
-          "contents" : {
-            "damage" : 2,
-            "marksNum" : 1
-          }
-        },
-        "to": {
-          "expr": "SelectOneTarget",
-          "subs" : {
-            "from": {
-              "expr": "Intersect",
-              "subs" : {
-                "lhs": {
-                  "expr": "Different",
-                  "subs" : {}
-                },
-                "rhs": {
-                  "expr": "CanSee",
-                  "subs" : {}
+      "cost" : "1r",
+      "behaviour" : {
+        "expr" : "InflictDamage",
+        "subs" : {
+          "amount": {
+            "expr" : "DamageLiteral",
+            "contents" : {
+              "damage" : 2,
+              "marksNum" : 1
+            }
+          },
+          "to": {
+            "expr": "SelectOneTarget",
+            "subs" : {
+              "from": {
+                "expr": "Intersect",
+                "subs" : {
+                  "lhs": {
+                    "expr": "Different",
+                    "subs" : {}
+                  },
+                  "rhs": {
+                    "expr": "CanSee",
+                    "subs" : {}
+                  }
                 }
               }
             }
@@ -60,5 +62,6 @@
         }
       }
     }
-  }
+  ]
 }
+

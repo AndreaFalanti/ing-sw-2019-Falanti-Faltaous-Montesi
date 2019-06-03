@@ -374,6 +374,10 @@ public class CLIView extends View {
         return command;
     }
 
+    @Override
+    public Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect) {
+        return null;
+    }
 
 
     public void deleteRequest(){

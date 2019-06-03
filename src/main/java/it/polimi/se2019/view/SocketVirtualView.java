@@ -1,12 +1,15 @@
 package it.polimi.se2019.view;
 
-import it.polimi.se2019.controller.response.Response;
+import it.polimi.se2019.controller.AbstractController;
+import it.polimi.se2019.controller.response.*;
+import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
 import it.polimi.se2019.model.weapon.Weapon;
 
 import java.util.List;
+import java.util.Set;
 
 public class SocketVirtualView extends View {
     public SocketVirtualView() {
@@ -88,6 +91,11 @@ public class SocketVirtualView extends View {
 
     @Override
     public String requestAdditionalInfo() {
+        return null;
+    }
+
+    @Override
+    public Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect) {
         return null;
     }
 

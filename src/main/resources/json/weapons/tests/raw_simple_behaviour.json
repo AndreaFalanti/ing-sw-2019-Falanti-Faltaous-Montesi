@@ -3,7 +3,6 @@
   "subs" : {
     "amount" : {
       "expr" : "DamageLiteral",
-      "subs" : {},
       "contents" : {
         "damage" : 1,
         "marksNum" : 0
@@ -11,7 +10,6 @@
     },
     "to" : {
       "expr" : "TargetsLiteral",
-      "subs" : {},
       "contents" : [
         "GREEN"
       ]

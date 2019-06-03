@@ -2,14 +2,15 @@ package it.polimi.se2019.model.weapon.behaviour;
 
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.weapon.Expression;
 
-public class Distant extends AtomicExpression {
+public class Distant extends Behaviour {
     // trivial constructors
-    public Distant(AtomicExpression minDistance, AtomicExpression maxDistance) {
+    public Distant(Expression minDistance, Expression maxDistance) {
         putSub("minDistance", minDistance);
         putSub("maxDistance", maxDistance);
     }
-    public Distant(AtomicExpression exactDistance) {
+    public Distant(Expression exactDistance) {
         putSub("minDistance", exactDistance);
         putSub("maxDistance", exactDistance);
     }
@@ -17,16 +18,16 @@ public class Distant extends AtomicExpression {
     // TODO: rephrase doc more succinctly...
     /**
      *
-     * @param shootContext used for board and shooter position
+     * @param context used for board and shooter position
      * @return RangeLiteral describing a "circular halo" that encircles the shooter position.
      *         Said halo contains all positions that are a contained between a range of distances
      *         from the shooter (the range is described by a minimum and a maximum distance, which are set
      *         when {@code this}  is instantiated (see the constructor for more info)
      */
     @Override
-    protected final AtomicExpression continueEval(ShootContext shootContext) {
-        Board board = shootContext.getBoard();
-        Position shooterPos = shootContext.getShooterPosition();
+    protected final Expression continueEval(ShootContext context) {
+        Board board = context.getBoard();
+        Position shooterPos = context.getShooterPosition();
 
         return new RangeLiteral(board.getReachablePositions(
                 shooterPos,

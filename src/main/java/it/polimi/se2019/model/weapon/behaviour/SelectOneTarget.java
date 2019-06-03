@@ -1,22 +1,24 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-public class SelectOneTarget extends AtomicExpression {
-    public SelectOneTarget(AtomicExpression from) {
+import it.polimi.se2019.model.weapon.Expression;
+
+public class SelectOneTarget extends Behaviour {
+    public SelectOneTarget(Expression from) {
         super();
 
         putSub("from", from);
     }
 
     @Override
-    public AtomicExpression continueEval(ShootContext shootContext) {
+    public Expression continueEval(ShootContext context) {
         // use generic expression to synthesise this
-        AtomicExpression moreGeneric = new SelectTargets(
+        Expression moreGeneric = new SelectTargets(
                 new IntLiteral(1),
                 new IntLiteral(1),
                 getSub("from")
         );
 
-        return moreGeneric.eval(shootContext);
+        return moreGeneric.eval(context);
     }
 }
 

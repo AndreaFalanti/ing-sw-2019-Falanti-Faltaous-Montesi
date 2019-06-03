@@ -16,6 +16,7 @@ import it.polimi.se2019.view.request.Request;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public abstract class View extends Observable<Either<Request, Action>> implements Observer<Either<Response, Update>> {
     // fields
@@ -67,6 +68,7 @@ public abstract class View extends Observable<Either<Request, Action>> implement
 
     public abstract String requestAdditionalInfo();//used to response more information about action
 
+    public abstract Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect);
 
 
     public abstract void interact();//used to parse the command

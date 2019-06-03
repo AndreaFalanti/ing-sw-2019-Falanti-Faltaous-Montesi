@@ -1,6 +1,7 @@
 package it.polimi.se2019.model.weapon.serialization;
 
 import com.google.gson.*;
+import it.polimi.se2019.model.weapon.Expression;
 import it.polimi.se2019.model.weapon.behaviour.*;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
@@ -11,8 +12,9 @@ public class ExpressionFactory {
 
     // GSON used to deal with serialization/deserialization
     // TODO: register all subtypes (maybe use generics to automate)
-    public static final RuntimeTypeAdapterFactory<AtomicExpression> RUN_TYPE_ADAPTER_FACTORY =
-            RuntimeTypeAdapterFactory.of(AtomicExpression.class, "expr")
+    public static final RuntimeTypeAdapterFactory<Expression> RUN_TYPE_ADAPTER_FACTORY =
+            RuntimeTypeAdapterFactory.of(Expression.class, "expr")
+                    .registerSubtype(Behaviour.class, "Behaviour")
                     .registerSubtype(InflictDamage.class, "InflictDamage")
                     .registerSubtype(TargetsLiteral.class, "TargetsLiteral")
                     .registerSubtype(DamageLiteral.class, "DamageLiteral")
@@ -34,12 +36,12 @@ public class ExpressionFactory {
 
     // TODO: add doc
     public static Expression fromJson(JsonElement toDeserialize) {
-        return GSON.fromJson(ExpressionParser.parse(toDeserialize), AtomicExpression.class);
+        return GSON.fromJson(ExpressionParser.parse(toDeserialize), Expression.class);
     }
 
     // TODO: add doc
     public static Expression fromJson(String toDeserialize) {
-        return GSON.fromJson(ExpressionParser.parse(new Gson().fromJson(toDeserialize, JsonElement.class)), AtomicExpression.class);
+        return GSON.fromJson(ExpressionParser.parse(new Gson().fromJson(toDeserialize, JsonElement.class)), Expression.class);
     }
 
     // TODO: add doc

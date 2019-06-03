@@ -1,11 +1,14 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-import it.polimi.se2019.model.weapon.response.TargetSelectionResponse;
-import it.polimi.se2019.view.request.weapon.ResponseLiteral;
+import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.weapon.Expression;
+import it.polimi.se2019.view.View;
+
+import java.util.Set;
 
 
-public class SelectTargets extends AtomicExpression {
-    public SelectTargets(AtomicExpression min, AtomicExpression max, AtomicExpression from) {
+public class SelectTargets extends Behaviour {
+    public SelectTargets(Expression min, Expression max, Expression from) {
         super();
 
         putSub("min", min);
@@ -15,13 +18,15 @@ public class SelectTargets extends AtomicExpression {
 
     // TODO: add doc
     @Override
-    public final AtomicExpression continueEval(ShootContext shootContext) {
-        AtomicExpression infoToRequest = new ResponseLiteral(new TargetSelectionResponse(
+    public final Expression continueEval(ShootContext context) {
+        View view = context.getView();
+
+        Set<PlayerColor> selectedTargets = view.selectTargets(
                 getSub("min").asInt(),
                 getSub("max").asInt(),
                 getSub("from").asTargets()
-        ));
+        );
 
-        return requestInfoFromPlayer(shootContext, infoToRequest);
+        return new TargetsLiteral(selectedTargets);
     }
 }

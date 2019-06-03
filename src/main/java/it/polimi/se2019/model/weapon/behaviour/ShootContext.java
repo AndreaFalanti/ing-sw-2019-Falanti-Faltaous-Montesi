@@ -4,6 +4,7 @@ import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.view.View;
 
 import java.util.*;
 
@@ -15,14 +16,7 @@ public class ShootContext {
     private Board mBoard;
     private Set<Player> mPlayers;
     private PlayerColor mShooterColor;
-    final private List<Action> mCachedActions = new ArrayList<>();
-    private final Deque<AtomicExpression> mRequestedInfo = new ArrayDeque<>();
-    private final Deque<AtomicExpression> mProvidedInfo = new ArrayDeque<>();
-
-    // temporary info representing changed game state
-    AmmoValue mPayedCost;
-    Set<Player> mAffectedPlayres; // only used for keeping track of opponents shoved around by weapon,
-    // ergo, only position is interesting
+    private View mView;
 
     // trivial constructors
     public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor) {
@@ -40,12 +34,15 @@ public class ShootContext {
     Board getBoard() {
         return mBoard;
     }
+
     Set<Player> getPlayers() {
         return mPlayers;
     }
+
     PlayerColor getShooterColor() {
         return mShooterColor;
     }
+
     Player getShooter() {
         return mPlayers.stream()
                 .filter(pl -> pl.getColor() == getShooterColor())
@@ -53,53 +50,13 @@ public class ShootContext {
                 .orElseThrow(() ->
                         new IllegalStateException(MISSING_PLAYER_MSG));
     }
+
     Position getShooterPosition() {
         return getShooter().getPos();
     }
 
-    // true if no info is required from context
-    public boolean isComplete() {
-        return mRequestedInfo.isEmpty() && mProvidedInfo.isEmpty();
-    }
-
-
-    // request and collect info
-    public void requestInfo(AtomicExpression infoRequested) {
-        mRequestedInfo.push(infoRequested);
-    }
-    public Optional<AtomicExpression> peekRequestedInfo() {
-        return Optional.ofNullable(mRequestedInfo.peek());
-    }
-    public AtomicExpression popRequestedInfo() {
-        if (mRequestedInfo.isEmpty())
-            throw new UnsupportedOperationException("Trying to pop requested info from and empty stack!");
-
-        return mRequestedInfo.pop();
-    }
-    public void provideInfo(AtomicExpression infoProvided) {
-        mProvidedInfo.push(infoProvided);
-    }
-    public void provideInfo(List<AtomicExpression> infoProvided) {
-        infoProvided.forEach(mProvidedInfo::push);
-    }
-    public Optional<AtomicExpression> peekProvidedInfo() {
-        return Optional.ofNullable(mProvidedInfo.peek());
-    }
-    public AtomicExpression popProvidedInfo() {
-        if (mProvidedInfo.isEmpty())
-            throw new UnsupportedOperationException("Trying to pop provided info from and empty stack!");
-
-        return mProvidedInfo.pop();
-    }
-
-    // build resulting action
-    void pushAction(Action action) {
-        mCachedActions.add(action);
-    }
-    public Action getResultingAction() {
-        List<Action> tmp = new ArrayList<>(mCachedActions);
-        mCachedActions.clear();
-        return new WeaponAction(tmp);
+    View getView() {
+        return mView;
     }
 }
 

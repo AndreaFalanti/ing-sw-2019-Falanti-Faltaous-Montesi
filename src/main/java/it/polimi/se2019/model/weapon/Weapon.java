@@ -2,9 +2,7 @@ package it.polimi.se2019.model.weapon;
 
 import com.google.gson.Gson;
 import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.model.weapon.behaviour.AtomicExpression;
-import it.polimi.se2019.model.weapon.behaviour.ShootContext;
-import it.polimi.se2019.model.weapon.behaviour.ShootResult;
+import it.polimi.se2019.model.weapon.behaviour.Behaviour;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Exclude;
 
@@ -23,7 +21,7 @@ public class Weapon {
     private boolean mLoaded;
 
     // weapon behaviour
-    private AtomicExpression mBehaviour;
+    private Expression mBehaviour;
 
     // used in tests
     public Weapon() {}
@@ -65,12 +63,12 @@ public class Weapon {
         return mLoaded;
     }
 
-    public AtomicExpression getBehaviour() {
+    public Expression getBehaviour() {
         return mBehaviour;
     }
 
     // trivial setters
-    public void setBehaviour(AtomicExpression behaviour) {
+    public void setBehaviour(Behaviour behaviour) {
         mBehaviour = behaviour;
     }
 
@@ -84,12 +82,6 @@ public class Weapon {
     // TODO: implement
     public Weapon deepCopy() {
         throw new UnsupportedOperationException();
-    }
-
-    // TODO: add doc
-    // TODO: implement this better
-    public ShootResult shoot(ShootContext shootContext) {
-        return getBehaviour().evalToShootResult(shootContext);
     }
 
     public static List<Weapon> returnDeckFromJson(String json) {

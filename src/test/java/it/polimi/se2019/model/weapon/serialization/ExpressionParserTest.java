@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ExpressionParserTest {
     @Test
-    public void parseDamageLiteralNoMarksTest() {
+    public void testParseDamageLiteralNoMarksTest() {
         JsonElement expected = ExpressionFactory.toJsonTree(
                 new DamageLiteral(new Damage(1, 0))
         );
@@ -24,7 +24,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void parseComplexBehaviour() {
+    public void testParseComplexBehaviour() {
         JsonElement expected = new Gson().fromJson(
                 Jsons.get("weapons/tests/raw_behaviour"),
                 JsonElement.class
@@ -41,7 +41,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void parserLockrifleBehaviour() {
+    public void testParseLockrifleBehaviour() {
         JsonElement expected = new Gson().fromJson(
                 Jsons.get("weapons/tests/raw_lock_rifle"),
                 JsonElement.class

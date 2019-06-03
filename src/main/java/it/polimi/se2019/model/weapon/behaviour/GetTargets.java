@@ -3,20 +3,21 @@ package it.polimi.se2019.model.weapon.behaviour;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.weapon.Expression;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class GetTargets extends AtomicExpression {
-    public GetTargets(AtomicExpression positions) {
+public class GetTargets extends Behaviour {
+    public GetTargets(Expression positions) {
         super();
 
         putSub("range", positions);
     }
 
     @Override
-    protected AtomicExpression continueEval(ShootContext shootContext) {
-        Set<Player> players = shootContext.getPlayers();
+    protected Expression continueEval(ShootContext context) {
+        Set<Player> players = context.getPlayers();
         Set<Position> positions = getSub("range").asRange();
 
         Set<PlayerColor> selectedPlayers = players.stream()

@@ -1,10 +1,12 @@
 package it.polimi.se2019.view.gui;
 
+import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.view.View;
 
 import java.util.List;
+import java.util.Set;
 
 public class GraphicView extends View {
     private MainScreen mMainFrameController;
@@ -82,6 +84,11 @@ public class GraphicView extends View {
 
     @Override
     public String requestAdditionalInfo() {
+        return null;
+    }
+
+    @Override
+    public Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect) {
         return null;
     }
 

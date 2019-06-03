@@ -1,6 +1,5 @@
 package it.polimi.se2019.model.weapon.serialization;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -8,7 +7,7 @@ import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.weapon.behaviour.DamageLiteral;
 import it.polimi.se2019.model.weapon.behaviour.IntLiteral;
-import it.polimi.se2019.util.JsonUtils;
+import sun.plugin.dom.exception.InvalidAccessException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,14 +23,9 @@ public class ExpressionParser {
             "subs",
             "contents"
     ));
-    private static final Set<String> EXCLUSIVE_KEYWORDS = new HashSet<>(Arrays.asList(
-            "cost",
-            "expr",
-            "name",
-            "priority",
-            "optional"
+    private static final Set<String> RESERVED_KEYWORDS = new HashSet<>(Arrays.asList(
+            "expr"
     ));
-    private static final String ANONYMOUS_LIST_KEYWORD = "list";
 
     private ExpressionParser() {}
 
@@ -50,6 +44,22 @@ public class ExpressionParser {
     private static boolean isCostStringLiteral(JsonPrimitive rawPrimitive) {
         return rawPrimitive.isString() &&
                 AmmoValue.from(rawPrimitive.getAsString()).isPresent();
+    }
+
+    // identifies an pick effect expression
+    private static boolean isPickEffectExpression(JsonElement raw) {
+        return raw.isJsonObject() &&
+                raw.getAsJsonObject().has("expr") &&
+                raw.getAsJsonObject().get("expr").equals(
+                        new JsonPrimitive("PickEffect")
+                );
+    }
+
+    // identifies a behavioural expression
+    // TODO: makes this better at identifying wrong behaviours
+    private static boolean isBehaviour(JsonElement raw) {
+        return raw.isJsonObject() &&
+                raw.getAsJsonObject().has("expr");
     }
 
     // parses a cost string literal
@@ -96,22 +106,23 @@ public class ExpressionParser {
     }
 
     // parses an anonymous list
-    private static JsonObject parseAnonymousList(JsonElement rawList) {
-        JsonObject result = new JsonObject();
-        JsonArray jList = rawList.getAsJsonArray();
+    private static JsonElement parsePicEffectExpression(JsonElement raw) {
+        JsonElement result  = raw.deepCopy();
 
-        int counter = 0;
-        for (JsonElement jSub : jList) {
-            result.add(Integer.toString(counter), parse(jSub));
-            counter++;
-        }
+        result.getAsJsonObject().get("effects").getAsJsonArray().iterator().forEachRemaining(ele -> {
+            JsonObject jEff = ele.getAsJsonObject();
+
+            JsonElement behavoiur = jEff.get("behaviour");
+            jEff.remove("behaviour");
+            jEff.add("behaviour", parse(behavoiur));
+        });
 
         return result;
     }
 
     // parse a complex expression
-    private static JsonElement parseComplexExpression(JsonElement rawPrimitive) {
-        JsonObject jExpression = rawPrimitive.getAsJsonObject();
+    private static JsonElement parseBehaviour(JsonElement raw) {
+        JsonObject jExpression = raw.getAsJsonObject();
 
         JsonObject result = new JsonObject();
         result.add("subs", new JsonObject());
@@ -124,16 +135,10 @@ public class ExpressionParser {
                 throw new IllegalArgumentException(
                         subName + " is a prohibited keyword and cannot be used as a subexpression name"
                 );
-            else if (ANONYMOUS_LIST_KEYWORD.equals(subName)) {
-                JsonObject parsedList = parseAnonymousList(jSub);
-
-                result.add("subs", parsedList);
-            }
-            else if (!EXCLUSIVE_KEYWORDS.contains(subName)) {
-                result.get("subs").getAsJsonObject().add(subName, parse(jSub));
-            }
-            else
+            else if (RESERVED_KEYWORDS.contains(subName))
                 result.add(subName, jSub);
+            else
+                result.get("subs").getAsJsonObject().add(subName, parse(jSub));
         }
 
         return result;
@@ -146,7 +151,13 @@ public class ExpressionParser {
         if (isPrimitive(raw))
             return parsePrimitive(raw);
 
-        // else treat it as a complex expression
-        return parseComplexExpression(raw);
+        else if (isPickEffectExpression(raw))
+            return parsePicEffectExpression(raw);
+
+        else if (isBehaviour(raw))
+            return parseBehaviour(raw);
+
+        else
+            throw new InvalidAccessException("Cannot identify type of expression while parsing!");
     }
 }

@@ -1,8 +1,10 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-public class GetVisibleRange extends AtomicExpression {
+import it.polimi.se2019.model.weapon.Expression;
+
+public class GetVisibleRange extends Behaviour {
     @Override
-    protected AtomicExpression continueEval(ShootContext shootContext) {
-        return new RangeLiteral(shootContext.getBoard().getAllSeenBy(shootContext.getShooterPosition()));
+    protected Expression continueEval(ShootContext context) {
+        return new RangeLiteral(context.getBoard().getAllSeenBy(context.getShooterPosition()));
     }
 }

@@ -1,5 +1,6 @@
-1. Refactor Expression hierarchy to expose only one eval-like method (evalToEvalResult probably)
+1. Refactor Expression hierarchy to expose only one eval-like method (evalToEvalResult probably) [DONE]
 2. Refactor Expression hierarchy to introduce AtomicExpression and ListExpression
-    a. Create hierarchy
+    a. Create hierarchy [DONE]
     b. Change internal representation of subexpression in ListExpression from map to array
         I. Change pretty parser to respect this new rep
+3. Check if Gson actually cares about default constructors
