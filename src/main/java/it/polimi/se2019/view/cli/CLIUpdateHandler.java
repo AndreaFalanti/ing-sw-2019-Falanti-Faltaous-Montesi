@@ -26,7 +26,7 @@ public class CLIUpdateHandler implements UpdateHandler {
     public void handle(PlayerPowerUpsUpdate update) {
 
     }
-    public void handle(BoardUpdate update) {
+    public void handle(BoardTileUpdate update) {
 
     }
     public void handle(KillScoredUpdate update) {

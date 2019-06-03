@@ -1,10 +1,10 @@
 package it.polimi.se2019.view.gui;
 
+import it.polimi.se2019.model.AmmoCard;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.board.Tile;
-import it.polimi.se2019.model.board.TileColor;
+import it.polimi.se2019.model.board.*;
+import it.polimi.se2019.model.weapon.Weapon;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -68,8 +68,6 @@ public class BoardPane {
     private MainScreen mMainController;
     private EnumMap<PlayerColor, Label> mFrenzyKilltrackLabels = new EnumMap<>(PlayerColor.class);
     private EnumMap<PlayerColor, Integer> mFrenzyKilltrackKillCounts = new EnumMap<>(PlayerColor.class);
-
-    private Board mBoard;
 
     private Button[][] mInteractiveButtons = new Button[BOARD_COLUMNS][BOARD_ROWS];
     private List<StackPane> mKilltrack = new ArrayList<>();
@@ -149,8 +147,19 @@ public class BoardPane {
      * @param pos Position where the player is moved
      * @param color Player color that is moved
      */
-    public void addPawnToCoordinate (Position pos, PlayerColor color) {
-        mSquareControllers[pos.getX()][pos.getY()].addPawn(mPawns.get(color));
+    public void movePawnToCoordinate(Position pos, PlayerColor color) {
+        Circle pawn = mPawns.get(color);
+        pawn.setVisible(true);
+        mSquareControllers[pos.getX()][pos.getY()].addPawn(pawn);
+    }
+
+    /**
+     * Set visibility of player pawn of given color
+     * @param color Player color
+     * @param value Value to set
+     */
+    public void setPlayerPawnVisibility (PlayerColor color, boolean value) {
+        mPawns.get(color).setVisible(value);
     }
 
     /**
@@ -188,10 +197,9 @@ public class BoardPane {
      * @throws IOException Thrown if square fxml is not found
      */
     public void initialize (Board board) throws IOException {
-        mBoard = board;
         createPawns();
         createSpawnEnumMap();
-        createBoardElements();
+        createBoardElements(board);
         initializeFrenzyKilltrack();
     }
 
@@ -248,29 +256,59 @@ public class BoardPane {
     }
 
     /**
+     * Update tile in board
+     * @param tile Tile with updated info
+     * @param pos Tile position
+     */
+    public void updateBoardTile (Tile tile, Position pos) {
+        if (tile.getTileType().equals("normal")) {
+            AmmoCard ammoCard = ((NormalTile)tile).getAmmoCard();
+            BoardSquare tileController = mSquareControllers[pos.getX()][pos.getY()];
+            if (ammoCard != null) {
+                tileController.updateAmmoCard(ammoCard.getGuiID());
+            }
+            else {
+                tileController.updateAmmoCard(null);
+            }
+        }
+        else {
+            HBox weaponBox = mSpawnBoxes.get(tile.getColor());
+            Weapon[] weapons = ((SpawnTile)tile).getWeapons();
+
+            String[] ids = new String[3];
+            for (int i = 0; i < weapons.length; i++) {
+                if (weapons[i] != null) {
+                    ids[i] = weapons[i].getGuiID();
+                }
+                else {
+                    ids[i] = null;
+                }
+            }
+            updateWeaponsInSpawn(weaponBox, ids);
+        }
+    }
+
+    /**
      * Create board elements from board set in the controller
+     * @param board Board to initialize
      * @throws IOException Thrown if square fxml is not found
      */
-    private void createBoardElements () throws IOException {
+    private void createBoardElements (Board board) throws IOException {
         for (int x = 0; x < BOARD_COLUMNS; x++) {
             for (int y = 0; y < BOARD_ROWS; y++) {
-                if (mBoard.getTileAt(new Position(x, y)) != null) {
+                if (board.getTileAt(new Position(x, y)) != null) {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/boardSquare.fxml"));
                     Pane newLoadedPane =  loader.load();
 
                     BoardSquare squareController = loader.getController();
                     mSquareControllers[x][y] = squareController;
 
-                    Tile tile = mBoard.getTileAt(new Position(x, y));
+                    Tile tile = board.getTileAt(new Position(x, y));
                     if (tile.getTileType().equals("normal")) {
                         // TODO: get correct ammoCard id from tile
                         squareController.addAmmoCardImage("042");
-                        squareController.addPawn(new Circle(9));
-                        squareController.addPawn(new Circle(9));
-                        squareController.addPawn(new Circle(9));
                     }
                     else {
-                        squareController.addPawn(new Circle(9));
                         // TODO: get correct weaponCard ids from tile
                         String[] ids = {"022", "023", "024"};
                         updateWeaponsInSpawn(mSpawnBoxes.get(tile.getColor()), ids);
@@ -369,9 +407,5 @@ public class BoardPane {
         mPawns.put(PlayerColor.YELLOW, createCircle(YELLOW_PAWN_COLOR));
         mPawns.put(PlayerColor.GREY, createCircle(GREY_PAWN_COLOR));
         mPawns.put(PlayerColor.PURPLE, createCircle(PURPLE_PAWN_COLOR));
-    }
-
-    public Board getBoard() {
-        return mBoard;
     }
 }

@@ -21,7 +21,7 @@ public interface UpdateHandler extends AbstractHandler<Update> {
     default void handle(PlayerPowerUpsUpdate update) {
         fallbackHandle(update);
     }
-    default void handle(BoardUpdate update) {
+    default void handle(BoardTileUpdate update) {
         fallbackHandle(update);
     }
     default void handle(KillScoredUpdate update) {

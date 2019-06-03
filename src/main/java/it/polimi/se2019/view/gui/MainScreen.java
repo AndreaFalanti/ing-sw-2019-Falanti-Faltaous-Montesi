@@ -1,8 +1,13 @@
 package it.polimi.se2019.view.gui;
 
+import it.polimi.se2019.model.AmmoCard;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.board.NormalTile;
+import it.polimi.se2019.model.board.SpawnTile;
+import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.Jsons;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -94,6 +99,28 @@ public class MainScreen {
         mBoardController.addKillToKilltrack(PlayerColor.YELLOW, true);
         mBoardController.addKillToKilltrack(PlayerColor.BLUE, false);
         mBoardController.addKillToKilltrack(PlayerColor.BLUE, true);
+
+        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.BLUE);
+        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.PURPLE);
+        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.YELLOW);
+        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.GREY);
+        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.GREEN);
+
+        mBoardController.movePawnToCoordinate(new Position(2), PlayerColor.PURPLE);
+
+        // Tile update test
+        NormalTile normalTile = new NormalTile();
+        AmmoCard ammoCard = new AmmoCard();
+        ammoCard.setGuiID("043");
+        normalTile.setAmmoCard(ammoCard);
+
+        SpawnTile spawnTile = new SpawnTile();
+        Weapon weapon = new Weapon();
+        weapon.setGuiID("026");
+        spawnTile.addWeapon(weapon);
+
+        mBoardController.updateBoardTile(normalTile, new Position(2, 1));
+        mBoardController.updateBoardTile(spawnTile, new Position(2, 0));
 
         boardPane.getChildren().add(newLoadedPane);
     }

@@ -10,6 +10,13 @@ public class SpawnTile extends Tile {
     public static final int MAX_WEAPONS = 3;
 
     /**
+     * Constructs blue empty tile
+     */
+    public SpawnTile () {
+        super();
+    }
+
+    /**
      * Add {@code value} to first null slot in spawn's weapon array
      * @param value Weapon to add
      */

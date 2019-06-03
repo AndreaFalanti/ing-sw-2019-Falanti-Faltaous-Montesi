@@ -27,12 +27,13 @@ public class BoardSquare {
         squareGrid.add(mAmmoCardView, 0, 2);
     }
 
-    public void onAmmoCardRefill (String id) {
-        mAmmoCardView.setImage(new Image(GuiResourcePaths.AMMO_CARD + id + ".png"));
-    }
-
-    public void onAmmoCardGrab () {
-        onAmmoCardRefill("04");
+    public void updateAmmoCard (String id) {
+        if (id != null) {
+            mAmmoCardView.setImage(new Image(GuiResourcePaths.AMMO_CARD + id + ".png"));
+        }
+        else {
+            mAmmoCardView.setImage(new Image(GuiResourcePaths.AMMO_CARD + "04" + ".png"));
+        }
     }
 
     public void addPawn (Circle circle) {

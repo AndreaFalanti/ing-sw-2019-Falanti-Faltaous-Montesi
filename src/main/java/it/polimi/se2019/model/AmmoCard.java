@@ -39,6 +39,11 @@ public class AmmoCard {
         return mGuiID;
     }
 
+    // for GUI testing
+    public void setGuiID(String guiID) {
+        mGuiID = guiID;
+    }
+
     public AmmoCard deepCopy() {
         AmmoCard result = new AmmoCard();
 

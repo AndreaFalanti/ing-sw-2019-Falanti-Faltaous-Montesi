@@ -1,23 +1,23 @@
 package it.polimi.se2019.model.weapon;
 
 import com.google.gson.Gson;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.annotations.SerializedName;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.weapon.behaviour.Expression;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.model.weapon.behaviour.ShootResult;
-import it.polimi.se2019.model.weapon.serialization.CustomExpressionAdapter;
-import it.polimi.se2019.model.weapon.serialization.CustomPrimaryEffectAdapter;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Exclude;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public class Weapon {
     private String mName;
     private AmmoValue mReloadCost;
     private AmmoValue mGrabCost;
+    private String mGuiID;
 
     @Exclude
     private boolean mLoaded;
@@ -50,6 +50,15 @@ public class Weapon {
 
     public AmmoValue getGrabCost() {
         return mGrabCost;
+    }
+
+    public String getGuiID() {
+        return mGuiID;
+    }
+
+    // for GUI testing
+    public void setGuiID(String guiID) {
+        mGuiID = guiID;
     }
 
     public boolean isLoaded() {
