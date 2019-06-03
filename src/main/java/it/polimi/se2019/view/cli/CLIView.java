@@ -50,12 +50,12 @@ public class CLIView extends View {
     private static final String QUIT                     =  "QUIT" + " to quit the game";//to delete is only for test
     private static final Logger logger = Logger.getLogger(CLIView.class.getName());
 
-
+    private CLIInfo mCLIInfo;
 
 
     public CLIView(CLIInfo cLIInfo) {
         super(new CLIResponseHandler(), new CLIUpdateHandler(cLIInfo));
-
+        mCLIInfo =cLIInfo;
     }
 
     public void availableCommands(){
@@ -259,23 +259,27 @@ public class CLIView extends View {
 
     public void infoPlayers(){
 
-        for(Player player: mPlayers) {
+        for(Player player: mCLIInfo.getPlayers()) {
             System.out.print(player.getName() + ":" + SPACE+
                             "Number of deaths: " + player.getDeathsNum() + SPACE +
                             "Marks: " + player.getMarks() + SPACE+
-                            "Is Dead ?" + player.isDead() + SPACE +
+                            "Is Dead ? " + player.isDead() + SPACE +
                             "Scores: " + player.getScore() + SPACE +
-                            "Position: " + player.getPos().getX()+player.getPos().getY() + SPACE +
-                            "Is overkilled ?" + player.isOverkilled()+SPACE);
-            if (owner.getName().equals(player.getName()))
-                weaponPlayer();
-            else{
-                System.out.print( "Weapons discharged: ");
-                weaponOtherPlayer(player.getWeapons());
-            }
+                            "Position: " + player.getPos().getX()+","+player.getPos().getY() + SPACE +
+                            "Is overkilled ? " + player.isOverkilled()+SPACE);
+   //         if (owner.getName().equals(player.getName()))//<----IMPORTANT
+   //             weaponPlayer();
+   //         else{
+   //             System.out.print( "Weapons discharged: ");
+   //             weaponOtherPlayer(player.getWeapons());
+   //         }
             System.out.print(SPACE);
             System.out.print("Damage: ");
-            damagePlayers(player.getDamageTaken());
+            if(player.getDamageTaken()[0]!=null)
+                damagePlayers(player.getDamageTaken());
+            else
+                System.out.print("No damage taken");
+            System.out.print(SPACE);
             System.out.print(SPACE);
         }
 
