@@ -23,6 +23,7 @@ public abstract class View extends Observable<Either<Request, Action>> implement
     private Board board;
     protected PlayerColor activePlayer;
     protected Player owner;
+    protected PlayerColor ownerColor=PlayerColor.BLUE;
     protected UpdateHandler mUpdateHandler;
     protected ResponseHandler mResponseHandler;
 
