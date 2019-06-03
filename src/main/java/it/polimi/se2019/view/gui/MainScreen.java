@@ -96,6 +96,8 @@ public class MainScreen {
         mBoardController.initialize(board);
         mBoardController.addTargetDeath(4);
         mBoardController.updateActivePlayerText(PlayerColor.PURPLE);
+        mBoardController.updateRemainingActionsText(2);
+        mBoardController.updateTurnText(15);
         mBoardController.addKillToKilltrack(PlayerColor.YELLOW, true);
         mBoardController.addKillToKilltrack(PlayerColor.BLUE, false);
         mBoardController.addKillToKilltrack(PlayerColor.BLUE, true);

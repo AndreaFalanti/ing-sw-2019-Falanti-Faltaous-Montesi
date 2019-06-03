@@ -37,7 +37,6 @@ public class GraphicUpdateHandler implements UpdateHandler {
 
     @Override
     public void handle(PlayerWeaponsUpdate update) {
-        // TODO: update this when ids are correctly set in weapons
         String[] ids = new String[3];
 
         Weapon[] weapons = update.getWeapons();
@@ -84,5 +83,7 @@ public class GraphicUpdateHandler implements UpdateHandler {
     @Override
     public void handle(ActivePlayerUpdate update) {
         mMainController.getBoardController().updateActivePlayerText(update.getPlayerColor());
+        mMainController.getBoardController().updateRemainingActionsText(update.getRemainingActions());
+        mMainController.getBoardController().updateTurnText(update.getTurnNumber());
     }
 }

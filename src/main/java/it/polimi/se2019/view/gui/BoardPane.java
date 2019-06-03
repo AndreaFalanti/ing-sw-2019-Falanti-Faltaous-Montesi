@@ -41,6 +41,10 @@ public class BoardPane {
     private Label activePlayerLabel;
     @FXML
     private GridPane frenzyKilltrackGridPane;
+    @FXML
+    private Label remainingActionsLabel;
+    @FXML
+    private Label turnLabel;
 
     private static final int SKULL_HEIGHT = 40;
     private static final int SKULL_WIDTH = 32;
@@ -140,6 +144,14 @@ public class BoardPane {
      */
     public void updateActivePlayerText (PlayerColor color) {
         activePlayerLabel.setText(ACTIVE_PLAYER_PREFIX + color.toString());
+    }
+
+    public void updateRemainingActionsText (int value) {
+        remainingActionsLabel.setText("Remaining actions: " + value);
+    }
+
+    public void updateTurnText (int value) {
+        turnLabel.setText("Turn: " + value);
     }
 
     /**
