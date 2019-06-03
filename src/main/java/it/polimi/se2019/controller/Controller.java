@@ -1,18 +1,17 @@
 package it.polimi.se2019.controller;
 
 
-import it.polimi.se2019.controller.response.MessageActionResponse;
 import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.util.Either;
-import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 
 public class Controller implements AbstractController {
@@ -69,11 +68,6 @@ public class Controller implements AbstractController {
     @Override
     public Response handle(ValidMoveRequest request) {
         System.out.println("Delivering moves");
-        return null;
-    }
-
-    @Override
-    public Response handle(MessageActionResponse request) {
         return null;
     }
 

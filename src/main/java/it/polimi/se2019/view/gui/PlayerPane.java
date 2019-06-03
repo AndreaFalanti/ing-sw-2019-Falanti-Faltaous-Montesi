@@ -103,6 +103,10 @@ public class PlayerPane {
         }
     }
 
+    public void eraseDamage () {
+        damageTokensBox.getChildren().clear();
+    }
+
     /**
      * Setup mark images and labels, will instantiate all marks color that are not equal to this board one.
      * This method also initialize a map for easier label updates.

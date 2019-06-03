@@ -75,6 +75,7 @@ public class MainScreen {
         playerController.updateMarkLabel(PlayerColor.YELLOW, 3);
         playerController.updateMarkLabel(PlayerColor.BLUE, 1);
         //playerController.flipBoard();
+        //playerController.eraseDamage();
 
         playerPane.getChildren().add(newLoadedPane);
         // second tab testing

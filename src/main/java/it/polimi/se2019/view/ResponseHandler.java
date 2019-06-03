@@ -17,9 +17,6 @@ public interface ResponseHandler extends AbstractHandler<Response> {
     default void handle(ValidMoveResponse response) {
         fallbackHandle(response);
     }
-    default void handle(MessageActionResponse response) {
-        fallbackHandle(response);
-    }
     default void handle(TargetSelectionResponse response) {
         fallbackHandle(response);
     }

@@ -1,11 +1,13 @@
 package it.polimi.se2019.model;
 
+import it.polimi.se2019.model.update.*;
 import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.util.Observable;
 
 import java.util.EnumMap;
 import java.util.Map;
 
-public class Player {
+public class Player extends Observable<Update> {
     private AmmoValue mAmmo;
     private PowerUpCard[] mPowerUpCards = new PowerUpCard[4];
     private Weapon[] mWeapons = new Weapon[3];
@@ -100,6 +102,8 @@ public class Player {
 
     public void flipBoard () {
         mBoardFlipped = true;
+
+        notify(new PlayerBoardFlipUpdate(mColor));
     }
 
     public boolean isOverkilled () {
@@ -171,12 +175,25 @@ public class Player {
         mScore += value;
     }
 
+    public void addAmmo (AmmoValue ammoValue) {
+        mAmmo.add(ammoValue);
+        notify(new PlayerAmmoUpdate(mColor, ammoValue));
+    }
+
+    public void payAmmo (AmmoValue ammoValue) {
+        mAmmo.subtract(ammoValue);
+        notify(new PlayerAmmoUpdate(mColor, ammoValue));
+    }
+
     /**
      * Update the damage taken of a player
      * @param attackingPlayer is player that attacks
      * @param damage value of damage to add to the current damage
      */
     private void sufferedDamage(PlayerColor attackingPlayer,int damage) {
+        // store initial damage value, so that can update view properly
+        int damageMemory = damage;
+
         if (damage != 0) {
             damage += getMarks().get(attackingPlayer);
             mMarks.put(attackingPlayer, 0);
@@ -188,6 +205,8 @@ public class Player {
                 damage--;
             }
         }
+
+        notify(new PlayerDamageUpdate(mColor, damageMemory - damage, attackingPlayer));
     }
 
     /**
@@ -202,6 +221,8 @@ public class Player {
         else{
             mMarks.put(attackingPlayer,marks);
         }
+
+        notify(new PlayerMarksUpdate(mColor, mMarks.get(attackingPlayer), attackingPlayer));
     }
 
     /**
@@ -247,6 +268,8 @@ public class Player {
         for (int i = 0; i < lengthToCheck; i++) {
             if (mPowerUpCards[i] == null) {
                 mPowerUpCards[i] = value;
+
+                notify(new PlayerPowerUpsUpdate(mColor, mPowerUpCards));
                 return;
             }
         }
@@ -271,6 +294,10 @@ public class Player {
         }
     }
 
+    /**
+     * Discard selected powerUp
+     * @param powerUpIndex PowerUp index
+     */
     public void discard (int powerUpIndex) {
         mPowerUpCards[powerUpIndex] = null;
     }
@@ -281,6 +308,8 @@ public class Player {
      */
     public void move(Position value) {
         mPos = value;
+
+        notify(new PlayerPositionUpdate(mColor, mPos));
     }
 
     /**
@@ -291,6 +320,9 @@ public class Player {
         for (int i = 0; i < mDamageTaken.length; i++) {
             mDamageTaken[i] = null;
         }
+
+        notify(new PlayerRespawnUpdate(mColor));
+
         incrementDeaths();
         setDeadStatus();
         move(value);
@@ -307,10 +339,16 @@ public class Player {
         setDeadStatus();
     }
 
+    /**
+     * Reload selected weapon
+     * @param weaponIndex Weapon index
+     */
     public void reloadWeapon (int weaponIndex) {
         Weapon weapon = getWeapon(weaponIndex);
 
-        getAmmo().subtract(weapon.getReloadCost());
+        payAmmo(weapon.getReloadCost());
         weapon.setLoaded(true);
+
+        notify(new PlayerWeaponsUpdate(mColor, mWeapons));
     }
 }

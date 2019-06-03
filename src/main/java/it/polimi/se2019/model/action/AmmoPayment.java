@@ -13,7 +13,7 @@ public final class AmmoPayment {
         }
 
         addAmmoAndDiscard(player, discardedCards);
-        player.getAmmo().subtract(cost);
+        player.payAmmo(cost);
     }
 
     public static boolean isValid (Player player, AmmoValue cost, boolean[] discardedCards) {
