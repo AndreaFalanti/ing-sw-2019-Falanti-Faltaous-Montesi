@@ -4,13 +4,14 @@ import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.model.Position;
 
 public class GrabRequest implements Request {
-    private Position pos;
+    private Position mPos;
 
-    public GrabRequest() {
+    public GrabRequest(Position pos) {
+        mPos = pos;
     }
 
     public Position getPos() {
-        return pos;
+        return mPos;
     }
 
     @Override

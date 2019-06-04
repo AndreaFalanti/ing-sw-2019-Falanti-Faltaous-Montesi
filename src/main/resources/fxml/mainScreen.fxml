@@ -73,8 +73,8 @@
                         </ScrollPane>
                         <VBox layoutX="4.0999755859375" layoutY="3.0999984741210938" spacing="10.0">
                            <children>
-                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGrid" prefHeight="50.0" prefWidth="90.0" text="MOVE" />
-                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGrid" prefHeight="50.0" prefWidth="90.0" text="GRAB" />
+                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForMove" prefHeight="50.0" prefWidth="90.0" text="MOVE" />
+                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForGrab" prefHeight="50.0" prefWidth="90.0" text="GRAB" />
                               <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#setShootOnWeapon" prefHeight="50.0" prefWidth="90.0" text="SHOOT" />
                               <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#setReloadOnWeapon" prefHeight="50.0" prefWidth="90.0" text="RELOAD" />
                               <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#deactivateButtonGrid" prefHeight="50.0" prefWidth="90.0" text="END TURN" />

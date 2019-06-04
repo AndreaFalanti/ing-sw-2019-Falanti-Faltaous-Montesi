@@ -3,8 +3,13 @@ package it.polimi.se2019.view.gui;
 import it.polimi.se2019.model.AmmoCard;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.action.MoveAction;
+import it.polimi.se2019.model.action.MoveGrabAction;
 import it.polimi.se2019.model.board.*;
 import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.util.Observable;
+import it.polimi.se2019.view.request.ActionRequest;
+import it.polimi.se2019.view.request.Request;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -24,7 +29,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-public class BoardPane {
+public class BoardPane extends Observable<Request> {
     @FXML
     private HBox redSpawnWeaponBox;
     @FXML
@@ -419,5 +424,43 @@ public class BoardPane {
         mPawns.put(PlayerColor.YELLOW, createCircle(YELLOW_PAWN_COLOR));
         mPawns.put(PlayerColor.GREY, createCircle(GREY_PAWN_COLOR));
         mPawns.put(PlayerColor.PURPLE, createCircle(PURPLE_PAWN_COLOR));
+    }
+
+    public void setupInteractiveGridForMoveAction () {
+        for (int i = 0; i < BOARD_COLUMNS; i++) {
+            for (int j = 0; j < BOARD_ROWS; j++) {
+                int x = i;
+                int y = j;
+
+                if (mInteractiveButtons[i][j] != null) {
+                    mInteractiveButtons[i][j].setOnMouseClicked(event -> {
+                        mMainController.logToChat("Move Action in pos (" + x + ", " + y + ")");
+                        switchButtonGridEnableStatus(false);
+
+                        notify(new ActionRequest(
+                                new MoveAction(mMainController.getClientColor(), new Position(x, y), true)));
+                    });
+                }
+            }
+        }
+    }
+
+    public void setupInteractiveGridForGrabAction () {
+        for (int i = 0; i < BOARD_COLUMNS; i++) {
+            for (int j = 0; j < BOARD_ROWS; j++) {
+                int x = i;
+                int y = j;
+
+                if (mInteractiveButtons[i][j] != null) {
+                    mInteractiveButtons[i][j].setOnMouseClicked(event -> {
+                        mMainController.logToChat("Grab Action in pos (" + x + ", " + y + ")");
+                        switchButtonGridEnableStatus(false);
+
+                        notify(new ActionRequest(
+                                new MoveGrabAction(mMainController.getClientColor(), new Position(x, y))));
+                    });
+                }
+            }
+        }
     }
 }

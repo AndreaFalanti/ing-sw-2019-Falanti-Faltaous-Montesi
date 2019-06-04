@@ -6,6 +6,10 @@ import it.polimi.se2019.model.action.Action;
 public class ActionRequest implements Request {
     Action mAction;
 
+    public ActionRequest(Action action) {
+        mAction = action;
+    }
+
     Action getAction() {
         return mAction;
     }

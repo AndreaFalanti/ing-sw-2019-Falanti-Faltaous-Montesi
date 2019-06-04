@@ -4,11 +4,15 @@ import it.polimi.se2019.model.AmmoCard;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.action.ReloadAction;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.Jsons;
+import it.polimi.se2019.util.Observable;
+import it.polimi.se2019.view.request.ActionRequest;
+import it.polimi.se2019.view.request.Request;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -25,7 +29,7 @@ import java.io.IOException;
 import java.util.EnumMap;
 import java.util.logging.Logger;
 
-public class MainScreen {
+public class MainScreen extends Observable<Request> {
     @FXML
     private Pane playerPane;
     @FXML
@@ -46,11 +50,21 @@ public class MainScreen {
     private static final double LOADED_OPACITY = 1;
     private static final double UNLOADED_OPACITY = 0.4;
 
+    private PlayerColor mClientColor;
+
     private BoardPane mBoardController;
     private EnumMap<PlayerColor, PlayerPane> mPlayerControllers = new EnumMap<>(PlayerColor.class);
 
     public BoardPane getBoardController() {
         return mBoardController;
+    }
+
+    public PlayerColor getClientColor() {
+        return mClientColor;
+    }
+
+    public void setClientColor (PlayerColor color) {
+        mClientColor = color;
     }
 
     public PlayerPane getPlayerControllerFromColor(PlayerColor color) {
@@ -216,6 +230,8 @@ public class MainScreen {
                 logToChat("Shooting with weapon of index: " + index);
                 setWeaponLoadStatus(index, false);
                 setBoxEnableStatus(weaponBox,false);
+
+                // TODO: add notify of shoot action
             }
             else {
                 logToChat("Can't shoot with unloaded weapon");
@@ -229,6 +245,8 @@ public class MainScreen {
                 logToChat("Reload weapon of index: " + index);
                 setWeaponLoadStatus(index, true);
                 setBoxEnableStatus(weaponBox,false);
+
+                notify(new ActionRequest(new ReloadAction(index)));
             }
             else {
                 logToChat("Can't reload an already loaded weapon");
@@ -256,5 +274,19 @@ public class MainScreen {
 
     public void deactivateButtonGrid () {
         mBoardController.switchButtonGridEnableStatus(false);
+    }
+
+    public void activateButtonGridForMove () {
+        activateButtonGrid();
+        mBoardController.setupInteractiveGridForMoveAction();
+
+        undoButton.setOnMouseClicked(event -> deactivateButtonGrid());
+    }
+
+    public void activateButtonGridForGrab () {
+        activateButtonGrid();
+        mBoardController.setupInteractiveGridForGrabAction();
+
+        undoButton.setOnMouseClicked(event -> deactivateButtonGrid());
     }
 }
