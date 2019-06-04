@@ -18,6 +18,13 @@ public class CLIInfo {
     }
 
     public List<Player> getPlayers(){return mPlayers;}
+    public Player getPlayerFromColor(PlayerColor color){
+        Player target = null;
+            for(Player player: mPlayers)
+                if(player.getColor()== color)
+                    target = player;
+         return target;
+    }
     public PlayerColor getActivePlayer(){return mActivePlayer;}
     public Player getOwner(){return mOwner;}
     public PlayerColor getOwnerColor(){return mOwnerColor;}

@@ -9,10 +9,11 @@ public class CLIUpdateHandler implements UpdateHandler {
     public CLIUpdateHandler(CLIInfo cLIInfo){mCLIInfo=cLIInfo;}
 
     public void handle(PlayerPositionUpdate update) {
+        mCLIInfo.getPlayerFromColor(update.getPlayerColor()).move(update.getPlayerPos());
 
     }
     public void handle(PlayerAmmoUpdate update) {
-
+        mCLIInfo.getPlayerFromColor(update.getPlayerColor());
     }
     public void handle(PlayerDamageUpdate update) {
 
