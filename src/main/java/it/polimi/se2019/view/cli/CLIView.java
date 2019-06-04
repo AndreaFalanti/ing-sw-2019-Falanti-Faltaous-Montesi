@@ -11,10 +11,7 @@ import it.polimi.se2019.view.ActionMessage;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.LeaderboardRequest;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;

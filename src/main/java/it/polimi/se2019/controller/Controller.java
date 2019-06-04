@@ -1,7 +1,6 @@
 package it.polimi.se2019.controller;
 
 
-import it.polimi.se2019.controller.response.MessageActionResponse;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
@@ -10,8 +9,7 @@ import it.polimi.se2019.model.weapon.Expression;
 import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 import it.polimi.se2019.view.request.*;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.HashSet;
 
 
 public class Controller implements AbstractController {
@@ -75,11 +73,6 @@ public class Controller implements AbstractController {
     @Override
     public void handle(ValidMoveRequest request) {
         System.out.println("Delivering moves");
-    }
-
-    @Override
-    public void handle(MessageActionResponse request) {
-
     }
 
     @Override

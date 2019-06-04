@@ -1,6 +1,5 @@
 package it.polimi.se2019.controller;
 
-import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.view.request.*;
 
 public interface RequestHandler {
@@ -11,8 +10,6 @@ public interface RequestHandler {
     void handle(LeaderboardRequest request);
 
     void handle(ValidMoveRequest request);
-
-    void handle(MessageActionResponse request);
 
     void handle(ShootRequest request);
 
