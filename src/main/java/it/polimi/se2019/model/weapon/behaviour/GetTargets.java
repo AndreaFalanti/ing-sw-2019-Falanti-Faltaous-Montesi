@@ -12,16 +12,18 @@ public class GetTargets extends Behaviour {
     public GetTargets(Expression positions) {
         super();
 
-        putSub("range", positions);
+        putSub("from", positions);
     }
 
     @Override
     protected Expression continueEval(ShootContext context) {
         Set<Player> players = context.getPlayers();
-        Set<Position> positions = getSub("range").asRange();
+        Set<Position> positions = getSub("from").asRange();
 
+        // get all players standing in provided range and are not the shooter
         Set<PlayerColor> selectedPlayers = players.stream()
                 .filter(pl -> positions.contains(pl.getPos()))
+                .filter(pl -> pl.getColor() != context.getShooterColor())
                 .map(Player::getColor)
                 .collect(Collectors.toSet());
 

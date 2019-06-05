@@ -1,0 +1,28 @@
+{
+  "name": "Electroscythe",
+  "shootCost": "1b",
+  "grabCost": "1b",
+  "behaviour": {
+    "expr": "XorEffect",
+    "lhs": {
+      "expr" : "InflictDamage",
+      "amount" : "1d",
+      "to" : {
+        "expr" : "All",
+        "from" : {
+          "expr" : "YourPosition"
+        }
+      }
+    },
+    "rhs" : {
+      "cost" : "1b1r",
+      "expr" : "InflictDamage",
+      "amount" : "2d",
+      "to" : {
+        "expr" : "GetTargets",
+        "from" : {
+          "expr" : "YourPosition"
+        }
+      }
+    }
+}
