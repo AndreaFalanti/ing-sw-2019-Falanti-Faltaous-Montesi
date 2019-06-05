@@ -99,7 +99,7 @@ public class CLIView extends View {
                 break;
             case "shoot":
                 pos=parseDestination(otherCommandPart);
-                action = new MoveShootAction(mCLIInfo.getOwnerColor(), pos);// to complete
+                action = new MoveShootAction(mCLIInfo.getOwnerColor(), pos , 1);// TODO: to complete
                 logger.log(Level.INFO,"Action: SHOOT  Pos: {0}",pos);
                 break;
             case "teleport":
@@ -116,7 +116,7 @@ public class CLIView extends View {
             case "reloadshoot":
                 pos=parseDestination(otherCommandPart);
                 index = reloadInteraction(mCLIInfo.getOwner().getWeapons());
-                action = new MoveReloadShootAction(mCLIInfo.getOwnerColor(), pos,index);
+                action = new MoveReloadShootAction(mCLIInfo.getOwnerColor(), pos, 1, index);  // TODO
                 logger.log(Level.INFO,"Action: RELOADSHOOT  Pos: {0}  ",pos );
                 break;
             default :

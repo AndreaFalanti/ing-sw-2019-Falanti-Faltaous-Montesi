@@ -37,27 +37,33 @@ public class GraphicUpdateHandler implements UpdateHandler {
 
     @Override
     public void handle(PlayerWeaponsUpdate update) {
-        String[] ids = new String[3];
+        if (update.getPlayerColor() == mMainController.getClientColor()) {
+            String[] ids = new String[3];
 
-        Weapon[] weapons = update.getWeapons();
-        for (int i = 0; i < 3; i++) {
-            if (weapons[i] != null) {
-                ids[i] = weapons[i].getGuiID();
+            Weapon[] weapons = update.getWeapons();
+            for (int i = 0; i < 3; i++) {
+                if (weapons[i] != null) {
+                    ids[i] = weapons[i].getGuiID();
+                }
+                else {
+                    ids[i] = null;
+                }
             }
-            else {
-                ids[i] = null;
-            }
+            mMainController.updateWeaponBox(ids);
         }
-        mMainController.updateWeaponBox(ids);
+        // TODO: handle other players case
     }
 
     @Override
     public void handle(PlayerPowerUpsUpdate update) {
-        String[] ids = new String[3];
-        for (int i = 0; i < 3; i++) {
-            ids[i] = update.getPowerUpCards()[i].getGuiID();
+        if (update.getPlayerColor() == mMainController.getClientColor()) {
+            String[] ids = new String[3];
+            for (int i = 0; i < 3; i++) {
+                ids[i] = update.getPowerUpCards()[i].getGuiID();
+            }
+            mMainController.updatePowerUpGrid(ids);
         }
-        mMainController.updatePowerUpGrid(ids);
+        // TODO: handle other players case
     }
 
     @Override

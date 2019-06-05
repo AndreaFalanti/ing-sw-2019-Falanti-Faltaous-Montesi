@@ -4,6 +4,7 @@ import it.polimi.se2019.model.AmmoCard;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.action.MoveShootAction;
 import it.polimi.se2019.model.action.ReloadAction;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.NormalTile;
@@ -44,6 +45,8 @@ public class MainScreen extends Observable<Request> {
     private VBox chatBox;
     @FXML
     private VBox otherPlayerBoardsBox;
+    @FXML
+    private VBox buttonBox;
 
     private static final Logger logger = Logger.getLogger(MainScreen.class.getName());
     
@@ -63,6 +66,10 @@ public class MainScreen extends Observable<Request> {
         return mClientColor;
     }
 
+    public Button getUndoButton() {
+        return undoButton;
+    }
+
     public void setClientColor (PlayerColor color) {
         mClientColor = color;
     }
@@ -71,6 +78,11 @@ public class MainScreen extends Observable<Request> {
         return mPlayerControllers.get(color);
     }
 
+    /**
+     * Load player board of given color
+     * @param color Player color
+     * @throws IOException Thrown if fxml is not found
+     */
     public void loadPlayerBoard(PlayerColor color) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/playerPane.fxml"));
         Pane newLoadedPane =  loader.load();
@@ -100,6 +112,10 @@ public class MainScreen extends Observable<Request> {
         }*/
     }
 
+    /**
+     * Load game board
+     * @throws IOException Thrown if fxml is not found
+     */
     public void loadBoard () throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/boardPane.fxml"));
         Pane newLoadedPane =  loader.load();
@@ -142,6 +158,11 @@ public class MainScreen extends Observable<Request> {
         boardPane.getChildren().add(newLoadedPane);
     }
 
+    /**
+     * Enable or disable selected box
+     * @param box Selected box
+     * @param enable true to enable box, false otherwise
+     */
     public void setBoxEnableStatus(Node box, boolean enable) {
         if (enable) {
             box.setDisable(false);
@@ -153,6 +174,11 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Change weapon image appearence, based on its loaded status
+     * @param index Weapon index
+     * @param value true if loaded, false otherwise
+     */
     public void setWeaponLoadStatus (int index, boolean value) {
         ImageView weaponView = (ImageView)weaponBox.getChildren().get(index);
         if (value) {
@@ -163,10 +189,10 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
-    public void enableGridForMove () {
-        // TODO: implement action methods
-    }
-
+    /**
+     * Update spawn's weapon box with latest model changes
+     * @param ids Weapon ids
+     */
     public void updateWeaponBox (String[] ids) {
         if (ids.length != 3) {
             throw new IllegalArgumentException("need 3 powerUp ids to update");
@@ -185,6 +211,10 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Update player's powerUps with latest changes
+     * @param ids PowerUp ids
+     */
     public void updatePowerUpGrid (String[] ids) {
         if (ids.length != 3) {
             throw new IllegalArgumentException("need 3 powerUp ids to update");
@@ -206,54 +236,11 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
-    public void setShootOnWeapon () {
-        setBoxEnableStatus(weaponBox,true);
-        for (int i = 0; i < weaponBox.getChildren().size(); i++) {
-            setShootingBehaviourOnWeapon(weaponBox.getChildren().get(i), i);
-        }
-
-        undoButton.setOnMouseClicked(event -> setBoxEnableStatus(weaponBox,false));
-    }
-
-    public void setReloadOnWeapon () {
-        setBoxEnableStatus(weaponBox,true);
-        for (int i = 0; i < weaponBox.getChildren().size(); i++) {
-            setReloadBehaviourOnWeapon(weaponBox.getChildren().get(i), i);
-        }
-
-        undoButton.setOnMouseClicked(event -> setBoxEnableStatus(weaponBox,false));
-    }
-
-    private void setShootingBehaviourOnWeapon (Node weapon, int index) {
-        weapon.setOnMouseClicked(event -> {
-            if (weapon.getOpacity() == LOADED_OPACITY) {
-                logToChat("Shooting with weapon of index: " + index);
-                setWeaponLoadStatus(index, false);
-                setBoxEnableStatus(weaponBox,false);
-
-                // TODO: add notify of shoot action
-            }
-            else {
-                logToChat("Can't shoot with unloaded weapon");
-            }
-        });
-    }
-
-    private void setReloadBehaviourOnWeapon (Node weapon, int index) {
-        weapon.setOnMouseClicked(event -> {
-            if (weapon.getOpacity() == UNLOADED_OPACITY) {
-                logToChat("Reload weapon of index: " + index);
-                setWeaponLoadStatus(index, true);
-                setBoxEnableStatus(weaponBox,false);
-
-                notify(new ActionRequest(new ReloadAction(index)));
-            }
-            else {
-                logToChat("Can't reload an already loaded weapon");
-            }
-        });
-    }
-
+    /**
+     * Set correct behaviours on powerUp images
+     * @param powerUp PowerUp image
+     * @param index PowerUp index
+     */
     private void setPowerUpBehaviour (ImageView powerUp, int index) {
         powerUp.setOnMouseClicked(event -> {
             logToChat("Using powerUp with index: " + index);
@@ -262,31 +249,159 @@ public class MainScreen extends Observable<Request> {
         });
     }
 
+    /**
+     * Log message to both GUI and console
+     * @param message Message to log
+     */
     public void logToChat (String message) {
         logger.info(message);
         Label label = new Label(message);
         chatBox.getChildren().add(label);
     }
 
-    public void activateButtonGrid () {
+    /**
+     * Activate interactive board button grid
+     */
+    public void activateBoardButtonGrid() {
         mBoardController.switchButtonGridEnableStatus(true);
     }
 
-    public void deactivateButtonGrid () {
+    /**
+     * Disable interactive board button grid
+     */
+    public void disableBoardButtonGrid() {
         mBoardController.switchButtonGridEnableStatus(false);
     }
 
-    public void activateButtonGridForMove () {
-        activateButtonGrid();
-        mBoardController.setupInteractiveGridForMoveAction();
-
-        undoButton.setOnMouseClicked(event -> deactivateButtonGrid());
+    /**
+     * Set enable property on action button box
+     * @param value true to enable, false to disable
+     */
+    public void setEnableStatusActionButtonBox(boolean value) {
+        buttonBox.setDisable(!value);
+        // TODO: do graphic things, like changing color for disabled buttons
     }
 
+    /**
+     * Activate interactive board button grid for move action
+     */
+    public void activateButtonGridForMove () {
+        activateBoardButtonGrid();
+        setEnableStatusActionButtonBox(false);
+
+        mBoardController.setupInteractiveGridForMoveAction();
+
+        undoButton.setOnMouseClicked(event -> {
+            disableBoardButtonGrid();
+            setEnableStatusActionButtonBox(true);
+        });
+    }
+
+    /**
+     * Activate interactive board button grid for grab action
+     */
     public void activateButtonGridForGrab () {
-        activateButtonGrid();
+        activateBoardButtonGrid();
+        setEnableStatusActionButtonBox(false);
+
         mBoardController.setupInteractiveGridForGrabAction();
 
-        undoButton.setOnMouseClicked(event -> deactivateButtonGrid());
+        undoButton.setOnMouseClicked(event -> {
+            disableBoardButtonGrid();
+            setEnableStatusActionButtonBox(true);
+        });
+    }
+
+    /**
+     * Activate interactive board button grid for shoot action
+     */
+    public void activateButtonGridForShoot () {
+        activateBoardButtonGrid();
+        setEnableStatusActionButtonBox(false);
+
+        mBoardController.setupInteractiveGridForShootAction(weaponBox);
+
+        undoButton.setOnMouseClicked(event -> {
+            disableBoardButtonGrid();
+            setEnableStatusActionButtonBox(true);
+        });
+    }
+
+    /**
+     * Enable weapon box and set shoot behaviour on weapon images
+     * @param pos Selected position for ShootAction
+     */
+    public void setShootOnWeapon (Position pos) {
+        setBoxEnableStatus(weaponBox,true);
+        setEnableStatusActionButtonBox(false);
+
+        for (int i = 0; i < weaponBox.getChildren().size(); i++) {
+            setShootingBehaviourOnWeapon(weaponBox.getChildren().get(i), i, pos);
+        }
+
+        undoButton.setOnMouseClicked(event -> {
+            setBoxEnableStatus(weaponBox,false);
+            setEnableStatusActionButtonBox(true);
+        });
+    }
+
+    /**
+     * Enable weapon box and set reload behaviour on weapon images
+     */
+    public void setReloadOnWeapon () {
+        setBoxEnableStatus(weaponBox,true);
+        setEnableStatusActionButtonBox(false);
+
+        for (int i = 0; i < weaponBox.getChildren().size(); i++) {
+            setReloadBehaviourOnWeapon(weaponBox.getChildren().get(i), i);
+        }
+
+        undoButton.setOnMouseClicked(event -> {
+            setBoxEnableStatus(weaponBox,false);
+            setEnableStatusActionButtonBox(true);
+        });
+    }
+
+    /**
+     * Set shoot behaviour on weapon images
+     * @param weapon Weapon image
+     * @param index Weapon index
+     * @param pos ShootAction position
+     */
+    private void setShootingBehaviourOnWeapon (Node weapon, int index, Position pos) {
+        weapon.setOnMouseClicked(event -> {
+            if (weapon.getOpacity() == LOADED_OPACITY) {
+                logToChat("Shooting with weapon of index: " + index);
+                setWeaponLoadStatus(index, false);
+                setBoxEnableStatus(weaponBox,false);
+                setEnableStatusActionButtonBox(true);
+
+                notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index)));
+            }
+            else {
+                logToChat("Can't shoot with unloaded weapon");
+            }
+        });
+    }
+
+    /**
+     * Set reload behaviour on weapon images
+     * @param weapon Weapon image
+     * @param index Weapon index
+     */
+    private void setReloadBehaviourOnWeapon (Node weapon, int index) {
+        weapon.setOnMouseClicked(event -> {
+            if (weapon.getOpacity() == UNLOADED_OPACITY) {
+                logToChat("Reload weapon of index: " + index);
+                setWeaponLoadStatus(index, true);
+                setBoxEnableStatus(weaponBox,false);
+                setEnableStatusActionButtonBox(true);
+
+                notify(new ActionRequest(new ReloadAction(index)));
+            }
+            else {
+                logToChat("Can't reload an already loaded weapon");
+            }
+        });
     }
 }

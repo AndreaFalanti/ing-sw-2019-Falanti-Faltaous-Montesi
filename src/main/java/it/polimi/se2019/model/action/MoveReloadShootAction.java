@@ -13,9 +13,10 @@ public class MoveReloadShootAction implements Action {
     private MoveShootAction mMoveShootAction;
     private ReloadAction mReloadAction;
 
-    public MoveReloadShootAction (PlayerColor playerColor, Position destination, int weaponIndex) {
-        mMoveShootAction = new MoveShootAction(playerColor, destination);
-        mReloadAction = new ReloadAction(weaponIndex);
+    public MoveReloadShootAction (PlayerColor playerColor, Position destination,
+                                  int shootWeaponIndex, int reloadWeaponIndex) {
+        mMoveShootAction = new MoveShootAction(playerColor, destination, shootWeaponIndex);
+        mReloadAction = new ReloadAction(reloadWeaponIndex);
     }
 
     public MoveShootAction getMoveShootAction() {

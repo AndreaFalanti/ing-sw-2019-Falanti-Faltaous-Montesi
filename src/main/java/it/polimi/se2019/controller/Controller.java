@@ -81,7 +81,7 @@ public class Controller implements AbstractController {
     }
 
     @Override
-    public void handle(ValidMoveRequest request) {
+    public void handle(ValidPositionRequest request) {
         System.out.println("Delivering moves");
     }
 

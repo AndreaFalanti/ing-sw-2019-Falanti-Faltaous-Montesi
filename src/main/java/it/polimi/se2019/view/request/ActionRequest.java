@@ -4,7 +4,7 @@ import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.model.action.Action;
 
 public class ActionRequest implements Request {
-    Action mAction;
+    private Action mAction;
 
     public ActionRequest(Action action) {
         mAction = action;

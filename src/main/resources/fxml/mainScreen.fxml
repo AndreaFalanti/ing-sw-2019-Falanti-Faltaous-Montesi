@@ -71,16 +71,16 @@
                               <VBox fx:id="chatBox" prefHeight="283.0" prefWidth="242.0" />
                            </content>
                         </ScrollPane>
-                        <VBox layoutX="4.0999755859375" layoutY="3.0999984741210938" spacing="10.0">
+                        <VBox fx:id="buttonBox" layoutX="4.0999755859375" layoutY="3.0999984741210938" spacing="10.0">
                            <children>
                               <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForMove" prefHeight="50.0" prefWidth="90.0" text="MOVE" />
                               <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForGrab" prefHeight="50.0" prefWidth="90.0" text="GRAB" />
-                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#setShootOnWeapon" prefHeight="50.0" prefWidth="90.0" text="SHOOT" />
+                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForShoot" prefHeight="50.0" prefWidth="90.0" text="SHOOT" />
                               <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#setReloadOnWeapon" prefHeight="50.0" prefWidth="90.0" text="RELOAD" />
-                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#deactivateButtonGrid" prefHeight="50.0" prefWidth="90.0" text="END TURN" />
-                              <Button fx:id="undoButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="UNDO" />
+                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#disableBoardButtonGrid" prefHeight="50.0" prefWidth="90.0" text="END TURN" />
                            </children>
                         </VBox>
+                        <Button fx:id="undoButton" layoutX="4.0" layoutY="324.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="UNDO" />
                      </children>
                   </Pane>
                </content>

@@ -9,7 +9,7 @@ public interface RequestHandler {
 
     void handle(LeaderboardRequest request);
 
-    void handle(ValidMoveRequest request);
+    void handle(ValidPositionRequest request);
 
     void handle(ShootRequest request);
 

@@ -13,6 +13,7 @@ import it.polimi.se2019.view.request.Request;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -436,6 +437,7 @@ public class BoardPane extends Observable<Request> {
                     mInteractiveButtons[i][j].setOnMouseClicked(event -> {
                         mMainController.logToChat("Move Action in pos (" + x + ", " + y + ")");
                         switchButtonGridEnableStatus(false);
+                        mMainController.setEnableStatusActionButtonBox(true);
 
                         notify(new ActionRequest(
                                 new MoveAction(mMainController.getClientColor(), new Position(x, y), true)));
@@ -455,9 +457,32 @@ public class BoardPane extends Observable<Request> {
                     mInteractiveButtons[i][j].setOnMouseClicked(event -> {
                         mMainController.logToChat("Grab Action in pos (" + x + ", " + y + ")");
                         switchButtonGridEnableStatus(false);
+                        mMainController.setEnableStatusActionButtonBox(true);
 
                         notify(new ActionRequest(
                                 new MoveGrabAction(mMainController.getClientColor(), new Position(x, y))));
+                    });
+                }
+            }
+        }
+    }
+
+    public void setupInteractiveGridForShootAction (Node weaponBox) {
+        for (int i = 0; i < BOARD_COLUMNS; i++) {
+            for (int j = 0; j < BOARD_ROWS; j++) {
+                int x = i;
+                int y = j;
+
+                if (mInteractiveButtons[i][j] != null) {
+                    mInteractiveButtons[i][j].setOnMouseClicked(event -> {
+                        mMainController.logToChat("Shoot Action pos set to: (" + x + ", " + y + ")");
+                        switchButtonGridEnableStatus(false);
+                        mMainController.setShootOnWeapon(new Position(x, y));
+
+                        mMainController.getUndoButton().setOnMouseClicked(event1 -> {
+                            mMainController.setBoxEnableStatus(weaponBox, false);
+                            mMainController.setEnableStatusActionButtonBox(true);
+                        });
                     });
                 }
             }

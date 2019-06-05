@@ -14,9 +14,9 @@ public class MoveShootAction implements Action {
     private MoveAction mMoveAction;
     private ShootAction mShootAction;
 
-    public MoveShootAction (PlayerColor playerColor, Position destination) {
+    public MoveShootAction (PlayerColor playerColor, Position destination, int weaponIndex) {
         mMoveAction = new MoveAction(playerColor, destination);
-        mShootAction = new ShootAction();
+        mShootAction = new ShootAction(weaponIndex);
     }
 
     public MoveAction getMoveAction() {

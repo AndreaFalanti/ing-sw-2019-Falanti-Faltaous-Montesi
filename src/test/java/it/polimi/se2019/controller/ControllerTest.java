@@ -2,10 +2,8 @@ package it.polimi.se2019.controller;
 
 import it.polimi.se2019.view.request.LeaderboardRequest;
 import it.polimi.se2019.view.request.Request;
-import it.polimi.se2019.view.request.ValidMoveRequest;
+import it.polimi.se2019.view.request.ValidPositionRequest;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 public class ControllerTest {
 
@@ -14,7 +12,7 @@ public class ControllerTest {
             return new LeaderboardRequest();
         }
         public Request makeValidMoveRequest() {
-            return new ValidMoveRequest();
+            return new ValidPositionRequest();
         }
     }
 
