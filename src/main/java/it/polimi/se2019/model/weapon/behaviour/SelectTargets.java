@@ -21,12 +21,16 @@ public class SelectTargets extends Behaviour {
     public final Expression continueEval(ShootContext context) {
         View view = context.getView();
 
-        Set<PlayerColor> selectedTargets = view.selectTargets(
+        // select targets
+        Expression selectedTargets = new TargetsLiteral(view.selectTargets(
                 getSub("min").asInt(),
                 getSub("max").asInt(),
                 getSub("from").asTargets()
-        );
+        ));
 
-        return new TargetsLiteral(selectedTargets);
+        // save them into a variable
+        context.setVar(LAST_SELECTED_TARGETS_VAR, selectedTargets.deepCopy());
+
+        return selectedTargets;
     }
 }

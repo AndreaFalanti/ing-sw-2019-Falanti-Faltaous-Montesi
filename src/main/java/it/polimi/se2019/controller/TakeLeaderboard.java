@@ -10,6 +10,10 @@ public class TakeLeaderboard extends Controller {
     private List<Player> mLeaderboard;
     private Game mGame;
 
+    public TakeLeaderboard(Game game) {
+        super(game);
+    }
+
     public void takeLeaderboard(){
         new LeaderboardResponse(mGame.getLeaderboard());
         //TODO handleMe

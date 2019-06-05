@@ -16,6 +16,16 @@ public class Controller implements AbstractController {
     // fields
     private Game mGame;
 
+    // constructors
+    public Controller(Game game) {
+        mGame = game;
+    }
+
+    // trivial getters
+    public Game getGame() {
+        return mGame;
+    }
+
     /*******************/
     /* control methods */
     /*******************/

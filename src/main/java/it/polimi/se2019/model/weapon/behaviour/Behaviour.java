@@ -6,7 +6,10 @@ import it.polimi.se2019.model.weapon.Expression;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Behaviour extends Expression {
+public abstract class Behaviour extends Expression {
+    // variable names used for saving particular things around the code
+    final String LAST_SELECTED_TARGETS_VAR = "last";
+
     // subexpressions evaluated before their parent expression and used in its evaluation
     @SerializedName("subs")
     Map<String, Expression> mSubexpressions;
@@ -55,8 +58,5 @@ public class Behaviour extends Expression {
     }
 
     // TODO: add doc
-    protected  Expression continueEval(ShootContext context) {
-        throw new UnsupportedOperationException("Cannot evaluate base Behaviour class");
-    }
-
+    protected abstract Expression continueEval(ShootContext context);
 }

@@ -6,7 +6,7 @@
     "expr": "PickEffect",
     "effects": [
       {
-        "name" : "Baic Effect",
+        "name" : "Basic Effect",
         "priority": 0,
         "behaviour" : {
           "expr": "InflictDamage",

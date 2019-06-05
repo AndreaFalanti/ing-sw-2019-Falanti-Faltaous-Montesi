@@ -4,6 +4,7 @@ import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.weapon.Expression;
 import it.polimi.se2019.view.View;
 
 import java.util.*;
@@ -17,6 +18,7 @@ public class ShootContext {
     private Set<Player> mPlayers;
     private PlayerColor mShooterColor;
     private View mView;
+    private Map<String, Expression> mScope;
 
     // trivial constructors
     public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor) {
@@ -57,6 +59,18 @@ public class ShootContext {
 
     View getView() {
         return mView;
+    }
+
+    // manipulate scope
+    Expression getVar(String name) {
+        if (mScope.get(name) == null)
+            throw new IllegalArgumentException("No variable named " + name + " found in scope...");
+
+        return mScope.get(name);
+    }
+
+    void setVar(String name, Expression value) {
+        mScope.put(name, value);
     }
 }
 

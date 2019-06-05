@@ -190,7 +190,7 @@ public class Player extends Observable<Update> {
      * @param attackingPlayer is player that attacks
      * @param damage value of damage to add to the current damage
      */
-    private void sufferedDamage(PlayerColor attackingPlayer,int damage) {
+    private void sufferedDamage(PlayerColor attackingPlayer, int damage) {
         // store initial damage value, so that can update view properly
         int damageMemory = damage;
 

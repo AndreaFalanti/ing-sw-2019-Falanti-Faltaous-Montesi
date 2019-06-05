@@ -42,8 +42,7 @@ public abstract class Expression {
 
     // TODO: add doc
     // TODO: maybe make faster
-    @Override
-    public Expression clone() {
+    public Expression deepCopy() {
         return ExpressionFactory.fromJson(ExpressionFactory.toJsonTree(this));
     }
 
@@ -83,6 +82,9 @@ public abstract class Expression {
     }
     public Response asResponse() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "Response");
+    }
+    public String asString() {
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "String");
     }
 }
 
