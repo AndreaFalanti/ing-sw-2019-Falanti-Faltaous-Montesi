@@ -1,17 +1,14 @@
 package it.polimi.se2019.model.weapon.serialization;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
+import it.polimi.se2019.model.weapon.Effect;
 import it.polimi.se2019.model.weapon.Expression;
-import it.polimi.se2019.model.weapon.behaviour.DamageLiteral;
-import it.polimi.se2019.model.weapon.behaviour.IntLiteral;
-import it.polimi.se2019.model.weapon.behaviour.Store;
-import it.polimi.se2019.model.weapon.behaviour.StringLiteral;
-import sun.plugin.dom.exception.InvalidAccessException;
+import it.polimi.se2019.model.weapon.PickEffect;
+import it.polimi.se2019.model.weapon.behaviour.*;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -21,18 +18,18 @@ import java.util.Set;
  * Exists to parse pretty (more readable) definition of expression in json into that can be more
  * easily serialized by the Gson library
  */
-public class ExpressionParser {
+public class ExpressionParser implements JsonDeserializer<Expression> {
+    private static final String BEHAVIOUR_PACKAGE_NAME = "it.polimi.se2019.model.weapon.behaviour";
+    private static final String STORE_KEYWORD = "store";
+    private static final String EXPR_KEYWORD = "expr";
     private static final Set<String> PROHIBITED_KEYWORDS = new HashSet<>(Arrays.asList(
             "subs",
             "contents"
     ));
     private static final Set<String> RESERVED_KEYWORDS = new HashSet<>(Arrays.asList(
-            "expr",
-            "store"
+            EXPR_KEYWORD,
+            STORE_KEYWORD
     ));
-    public static final String STORE_KEYWORD = "store";
-
-    private ExpressionParser() {}
 
     // identifies if expression is a primitive
     private static boolean isPrimitive(JsonElement raw) {
@@ -54,8 +51,8 @@ public class ExpressionParser {
     // identifies an pick effect expression
     private static boolean isPickEffectExpression(JsonElement raw) {
         return raw.isJsonObject() &&
-                raw.getAsJsonObject().has("expr") &&
-                raw.getAsJsonObject().get("expr").equals(
+                raw.getAsJsonObject().has(EXPR_KEYWORD) &&
+                raw.getAsJsonObject().get(EXPR_KEYWORD).equals(
                         new JsonPrimitive("PickEffect")
                 );
     }
@@ -64,25 +61,25 @@ public class ExpressionParser {
     // TODO: makes this better at identifying wrong behaviours
     private static boolean isBehaviour(JsonElement raw) {
         return raw.isJsonObject() &&
-                raw.getAsJsonObject().has("expr");
+                raw.getAsJsonObject().has(EXPR_KEYWORD);
     }
 
     // parses a cost string literal
-    private static JsonElement parseCostStringLiteral(JsonPrimitive rawPrimitive) {
+    private static Expression parseCostStringLiteral(JsonPrimitive rawPrimitive) {
         throw new UnsupportedOperationException("WIP");
     }
 
     // parses a cost string literal
-    private static JsonElement parseDamageStringLiteral(JsonPrimitive rawPrimitive) {
-        return ExpressionFactory.toJsonTree(new DamageLiteral(
+    private static Expression parseDamageStringLiteral(JsonPrimitive rawPrimitive) {
+        return new DamageLiteral(
                 Damage.from(rawPrimitive.getAsString())
                         .orElseThrow(() -> new IllegalArgumentException(
                                 rawPrimitive.getAsString() + " could not be parsed"))
-        ));
+        );
     }
 
     // parses a primitive
-    private static JsonElement parsePrimitive(JsonElement raw) {
+    private static Expression parsePrimitive(JsonElement raw) {
         JsonPrimitive rawPrimitive = raw.getAsJsonPrimitive();
 
         // parse numbers
@@ -104,61 +101,65 @@ public class ExpressionParser {
     }
 
     // parse a number into a number literal expression
-    private static JsonElement parseNumber(JsonPrimitive rawPrimitive) {
-        return ExpressionFactory.toJsonTree(
-                new IntLiteral(rawPrimitive.getAsInt())
-        );
+    private static Expression parseNumber(JsonPrimitive rawPrimitive) {
+        return new IntLiteral(rawPrimitive.getAsInt());
     }
 
     // parses an anonymous list
-    private static JsonElement parsePicEffectExpression(JsonElement raw) {
-        JsonElement result  = raw.deepCopy();
+    private static Expression parsePickEffectExpression(JsonElement raw, JsonDeserializationContext context) {
+        PickEffect result = new PickEffect();
 
-        result.getAsJsonObject().get("effects").getAsJsonArray().iterator().forEachRemaining(ele -> {
+        raw.getAsJsonObject().get("effects").getAsJsonArray().iterator().forEachRemaining(ele -> {
             JsonObject jEff = ele.getAsJsonObject();
 
-            JsonElement behavoiur = jEff.get("behaviour");
-            jEff.remove("behaviour");
-            jEff.add("behaviour", parse(behavoiur));
+            result.addEffect(context.deserialize(jEff, Effect.class));
         });
 
         return result;
     }
 
+    // create a default constructed behaviour from a string representation of its type
+    public static Behaviour createDefaultConstructedBehaviour(String strType) {
+        try {
+            Class type = Class.forName(BEHAVIOUR_PACKAGE_NAME + "." + strType);
+            return (Behaviour) (type.newInstance());
+        } catch (Exception e) {
+            throw new IllegalStateException(
+                    "Something went wrong during default initialization of " + strType + " expression\n" +
+                            "msg: " + e.getCause()
+            );
+        }
+    }
+
     // parse a complex expression
-    private static JsonElement parseBehaviour(JsonElement raw) {
+    private static Expression parseBehaviour(JsonElement raw, JsonDeserializationContext context) {
         JsonObject jExpression = raw.getAsJsonObject();
 
-        JsonObject result = new JsonObject();
-        result.add("subs", new JsonObject());
+        // find behaviour class and call its default constructor
+        //   NB: this is important for setting default subexpression values
+        Behaviour result = createDefaultConstructedBehaviour(
+                jExpression.get(EXPR_KEYWORD).getAsString()
+        );
 
+        // add subexpressions
         for (Map.Entry<String, JsonElement> entry : jExpression.entrySet()) {
             String subName = entry.getKey();
             JsonElement jSub = entry.getValue();
 
             if (PROHIBITED_KEYWORDS.contains(subName))
                 throw new IllegalArgumentException(
-                        subName + " is a prohibited keyword and cannot be used as a subexpression name"
+                        subName + " is a reserved keyword and cannot be used as a subexpression name"
                 );
-            else if (RESERVED_KEYWORDS.contains(subName))
-                result.add(subName, jSub);
-            else
-                result.get("subs").getAsJsonObject().add(subName, parse(jSub));
+            else if (!RESERVED_KEYWORDS.contains(subName))
+                result.putSub(subName, parse(jSub, context));
         }
 
         // decorate with store expression if necessary
-        if (result.has(STORE_KEYWORD)) {
-            // get and remove name of value to store
-            String storeName = result.get(STORE_KEYWORD).getAsString(); result.remove(STORE_KEYWORD);
-
-            // remember current json expression to store it later
-            JsonElement valueToStore = result;
-
-            // create store expression
-            result = ExpressionFactory.toJsonTree(new Store(
-                    new StringLiteral(storeName),
-                    ExpressionFactory.fromRawJson(valueToStore)
-            )).getAsJsonObject();
+        if (jExpression.has(STORE_KEYWORD)) {
+            return new Store(
+                    new StringLiteral(jExpression.get(STORE_KEYWORD).getAsString()),
+                    result
+            );
         }
 
         return result;
@@ -167,17 +168,22 @@ public class ExpressionParser {
     /**
      * Do what this class is supposed to do
      */
-    public static JsonElement parse(JsonElement raw) {
+    public static Expression parse(JsonElement raw, JsonDeserializationContext context) {
         if (isPrimitive(raw))
             return parsePrimitive(raw);
 
         else if (isPickEffectExpression(raw))
-            return parsePicEffectExpression(raw);
+            return parsePickEffectExpression(raw, context);
 
         else if (isBehaviour(raw))
-            return parseBehaviour(raw);
+            return parseBehaviour(raw, context);
 
         else
-            throw new InvalidAccessException("Cannot identify type of expression while parsing!");
+            throw new IllegalArgumentException("Cannot identify type of expression while parsing!");
+    }
+
+    @Override
+    public Expression deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) {
+        return parse(jsonElement, context);
     }
 }

@@ -36,7 +36,6 @@ public class WeaponFactoryTest {
     @Test
     public void testFromJsonHeatseeker() {
         Weapon actual = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
-        System.out.println(ExpressionFactory.toJsonTree(actual.getBehaviour()).toString());
 
         Weapon expected = mHeatseeker;
 

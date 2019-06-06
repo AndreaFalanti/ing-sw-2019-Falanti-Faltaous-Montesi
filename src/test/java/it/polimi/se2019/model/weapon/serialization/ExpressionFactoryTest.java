@@ -34,4 +34,9 @@ public class ExpressionFactoryTest {
                 new PrettyJsonElement(actual)
         );
     }
+
+    @Test
+    public void testSimpleDefaults() {
+        
+    }
 }

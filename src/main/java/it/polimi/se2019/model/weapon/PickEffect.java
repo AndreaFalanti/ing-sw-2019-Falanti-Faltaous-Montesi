@@ -23,7 +23,7 @@ public class PickEffect extends Expression {
      * Add a subexpression
      * @param value subexpression to add
      */
-    public void addSub(Effect value) {
+    public void addEffect(Effect value) {
         // update maximum priority
         if (value.getPriority() > mMaximumPriority)
             mMaximumPriority = value.getPriority();
@@ -55,7 +55,7 @@ public class PickEffect extends Expression {
             // evaluate picked subexpressions
             mSubexpressions.get(curPriority).stream()
                     .filter(eff -> selectedEffects.contains(eff.getId()))
-                    .forEach(eff -> discardResult(eff.getBehaviour().eval(context)));
+                    .forEach(eff -> discardEvalResult(eff.getBehaviour().eval(context)));
         }
 
         return new Done();

@@ -5,7 +5,10 @@ import it.polimi.se2019.model.weapon.Expression;
 import it.polimi.se2019.model.weapon.ShootContext;
 
 public class InflictDamage extends Behaviour {
-    // trivial constructor
+    public InflictDamage() {
+
+    }
+
     public InflictDamage(Expression damageToInflict, Expression targets) {
         putSub("amount", damageToInflict);
         putSub("to", targets);

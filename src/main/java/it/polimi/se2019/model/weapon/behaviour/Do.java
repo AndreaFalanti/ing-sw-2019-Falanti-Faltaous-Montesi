@@ -13,7 +13,7 @@ public class Do extends Expression {
     @Override
     public Expression eval(ShootContext context) {
         // TODO: use logger
-        mSubexpressions.forEach(sub -> discardResult(sub.eval(context)));
+        mSubexpressions.forEach(sub -> discardEvalResult(sub.eval(context)));
 
         return new Done();
     }

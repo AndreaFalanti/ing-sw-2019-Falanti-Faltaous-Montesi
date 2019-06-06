@@ -4,9 +4,10 @@ import it.polimi.se2019.model.weapon.Expression;
 import it.polimi.se2019.model.weapon.ShootContext;
 
 public class SelectOneTarget extends Behaviour {
-    public SelectOneTarget(Expression from) {
-        super();
+    public SelectOneTarget() {
+    }
 
+    public SelectOneTarget(Expression from) {
         putSub("from", from);
     }
 

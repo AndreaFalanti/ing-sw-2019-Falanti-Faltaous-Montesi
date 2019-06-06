@@ -9,6 +9,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class NegateSelection extends Behaviour {
+    public NegateSelection() {
+
+    }
+
     public NegateSelection(Expression selection) {
         putSub("selection", selection);
     }

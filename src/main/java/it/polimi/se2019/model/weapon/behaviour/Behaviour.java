@@ -1,5 +1,6 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import it.polimi.se2019.model.weapon.Expression;
 import it.polimi.se2019.model.weapon.ShootContext;

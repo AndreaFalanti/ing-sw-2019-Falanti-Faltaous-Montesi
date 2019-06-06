@@ -10,20 +10,11 @@ import java.util.stream.Collectors;
 
 public class CanSee extends Behaviour {
     public CanSee() {
+        putSub("observer", new You());
     }
 
     public CanSee(Expression observer) {
         putSub("observer", observer);
-    }
-
-    // TODO: add doc
-    @Override
-    protected final Expression handleSubDefaultValue(String subName, ShootContext context) {
-        if (subName.equals("observer")) {
-            return new You();
-        }
-
-        return super.handleSubDefaultValue(subName, context);
     }
 
     // TODO: add doc

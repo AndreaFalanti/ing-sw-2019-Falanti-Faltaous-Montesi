@@ -1,10 +1,12 @@
 package it.polimi.se2019.model.weapon;
 
+import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.weapon.behaviour.UnsupportedConversionException;
 import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
+import it.polimi.se2019.model.weapon.serialization.ExpressionParser;
 import it.polimi.se2019.view.request.Request;
 
 import java.util.Objects;
@@ -55,14 +57,16 @@ public abstract class Expression {
 
     }
 
-    // used to safely discard an expression result
-    protected static void discardResult(Expression result) {
+    // safely discard result of evaluated expression by issuing a warning
+    protected static Expression discardEvalResult(Expression result) {
         if (!result.isDone())
+            // TODO: use logger (todof)
             System.out.println(
-                    "WARNING: ignoring value or evaluated expression: " + result.getClass() + "\n"
+                    "WARNING:" + result.getClass().getSimpleName() + "was discarded after evaluation!"
             );
-    }
 
+        return result;
+    }
 
     // evaluation is done (it's only done in Done expression)
     public boolean isDone() {
