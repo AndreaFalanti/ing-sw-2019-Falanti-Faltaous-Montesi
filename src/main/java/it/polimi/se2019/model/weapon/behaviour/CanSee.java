@@ -10,13 +10,28 @@ import java.util.stream.Collectors;
 
 public class CanSee extends Behaviour {
     public CanSee() {
-        super();
+    }
+
+    public CanSee(Expression observer) {
+        putSub("observer", observer);
+    }
+
+    // TODO: add doc
+    @Override
+    protected final Expression handleSubDefaultValue(String subName, ShootContext context) {
+        if (subName.equals("observer")) {
+            return new You();
+        }
+
+        return super.handleSubDefaultValue(subName, context);
     }
 
     // TODO: add doc
     @Override
     public Expression continueEval(ShootContext context) {
-        Set<Position> visibleRange = new GetVisibleRange().eval(context).asRange();
+        Set<Position> visibleRange = new GetVisibleRange(
+                getSub("observer")
+        ).eval(context).asRange();
         Set<Player> allPlayers = context.getPlayers();
 
         return new TargetsLiteral(allPlayers.stream()

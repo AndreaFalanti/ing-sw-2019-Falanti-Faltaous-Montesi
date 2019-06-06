@@ -59,5 +59,13 @@ public abstract class Behaviour extends Expression {
     }
 
     // TODO: add doc
+    protected Expression handleSubDefaultValue(String subName, ShootContext context) {
+        throw new UnsupportedOperationException(
+                subName + " was not set in " + getClass().getSimpleName() + " expression and" +
+                        "has no assigned defaults."
+        );
+    }
+
+    // TODO: add doc
     protected abstract Expression continueEval(ShootContext context);
 }
