@@ -1,0 +1,69 @@
+{
+  "name" : "heatseeker",
+  "reloadCost" : "1b1r",
+  "grabCost" : "1b",
+  "behaviour" : {
+    "expr": "PickEffect",
+    "effects": [
+      {
+        "name" : "Basic Effect",
+        "priority": 0,
+        "behaviour" : {
+          "expr": "InflictDamage",
+          "amount": "2d",
+          "to": {
+            "expr": "SelectOneTarget",
+            "from": {
+              "expr": "CanSee"
+            }
+          }
+        }
+      },
+      {
+        "name": "With chain reaction",
+        "priority": 1,
+        "optional": true,
+        "cost" : "1b",
+        "behaviour" : {
+          "expr" : "InflictDamage",
+          "amount": "1d",
+          "to": {
+            "expr": "SelectOneTarget",
+            "from": {
+              "rhs": {
+                "expr": "CanSee",
+                "observer" : {
+                  "expr" : "Look",
+                  "name" : "LastSelected"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "With high voltage",
+        "priority": 2,
+        "optional": true,
+        "cost" : "1b",
+        "behaviour" : {
+          "expr" : "InflictDamage",
+          "amount": "1d",
+          "to": {
+            "expr": "SelectOneTarget",
+            "from": {
+              "rhs": {
+                "expr": "CanSee",
+                "observer" : {
+                  "expr" : "Look",
+                  "name" : "LastSelected"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}
+
