@@ -55,6 +55,15 @@ public abstract class Expression {
 
     }
 
+    // used to safely discard an expression result
+    protected static void discardResult(Expression result) {
+        if (!result.isDone())
+            System.out.println(
+                    "WARNING: ignoring value or evaluated expression: " + result.getClass() + "\n"
+            );
+    }
+
+
     // evaluation is done (it's only done in Done expression)
     public boolean isDone() {
         return false;

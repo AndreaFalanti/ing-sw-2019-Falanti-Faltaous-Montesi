@@ -22,6 +22,7 @@ public class ExpressionFactory {
                     .registerSubtype(SelectTargets.class, "SelectTargets")
                     .registerSubtype(CanSee.class, "CanSee")
                     .registerSubtype(GetTargets.class, "GetTargets")
+                    .registerSubtype(Do.class, "Do")
                     .registerSubtype(IntLiteral.class, "IntLiteral")
                     .registerSubtype(NegateSelection.class, "NegateSelection")
                     .registerSubtype(Store.class, "Store")

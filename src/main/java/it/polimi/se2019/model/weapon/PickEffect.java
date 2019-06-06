@@ -55,14 +55,7 @@ public class PickEffect extends Expression {
             // evaluate picked subexpressions
             mSubexpressions.get(curPriority).stream()
                     .filter(eff -> selectedEffects.contains(eff.getId()))
-                    .map(eff -> eff.getBehaviour().eval(context))
-                    // TODO: turn this into a logger call
-                    .forEach(result -> {
-                        if (!result.isDone())
-                            System.out.println(
-                                    "WARNING: ignoring value or evaluated expression: "+ result.getClass() + "\n"
-                            );
-                    });
+                    .forEach(eff -> discardResult(eff.getBehaviour().eval(context)));
         }
 
         return new Done();
