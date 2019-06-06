@@ -1,6 +1,6 @@
 package it.polimi.se2019.model.weapon;
 
-import it.polimi.se2019.view.View;
+import it.polimi.se2019.model.weapon.behaviour.ShootContext;
 
 public class XorEffect extends Expression {
     @Override
