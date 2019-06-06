@@ -279,7 +279,6 @@ public class MainScreen extends Observable<Request> {
      */
     public void setEnableStatusActionButtonBox(boolean value) {
         buttonBox.setDisable(!value);
-        // TODO: do graphic things, like changing color for disabled buttons
     }
 
     /**

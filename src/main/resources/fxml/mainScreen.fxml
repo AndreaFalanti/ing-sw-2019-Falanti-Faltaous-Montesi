@@ -60,7 +60,7 @@
             <Button mnemonicParsing="false" text="Discard" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <TabPane layoutX="793.0" layoutY="5.0" prefHeight="473.0" prefWidth="546.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+      <TabPane layoutX="793.0" layoutY="5.0" prefHeight="500.0" prefWidth="546.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
         <tabs>
           <Tab text="Untitled Tab 1">
                <content>
@@ -68,7 +68,7 @@
                      <children>
                         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="171.0" layoutY="3.0" prefHeight="330.0" prefWidth="290.0" vbarPolicy="ALWAYS">
                            <content>
-                              <VBox fx:id="chatBox" prefHeight="283.0" prefWidth="242.0" />
+                              <VBox fx:id="chatBox" prefHeight="327.0" prefWidth="278.0" />
                            </content>
                         </ScrollPane>
                         <VBox fx:id="buttonBox" layoutX="4.0999755859375" layoutY="3.0999984741210938" spacing="10.0">
@@ -87,12 +87,95 @@
           </Tab>
           <Tab text="Untitled Tab 2">
                <content>
-                  <VBox fx:id="otherPlayerBoardsBox" spacing="2.0">
+                  <VBox fx:id="otherPlayerBoardsBox" spacing="5.0">
                      <children>
-                        <Pane layoutX="10.0" layoutY="10.0" prefHeight="135.0" prefWidth="711.0" />
-                        <Pane layoutX="10.0" layoutY="145.0" prefHeight="135.0" prefWidth="711.0" />
-                        <Pane layoutX="10.0" layoutY="145.0" prefHeight="135.0" prefWidth="711.0" />
-                        <Pane layoutX="10.0" layoutY="280.0" prefHeight="135.0" prefWidth="711.0" />
+                        <Pane fx:id="smallPlayerBoard" layoutX="10.0" layoutY="10.0" prefHeight="110.0" prefWidth="546.0">
+                           <children>
+                              <Pane prefHeight="110.0" prefWidth="448.0" visible="false">
+                                 <children>
+                                    <ImageView fitHeight="110.0" fitWidth="448.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/playerBoards/playerBoardYellow.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="110.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/playerBoards/actionTileYellow.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </Pane>
+                              <Button layoutX="462.0" layoutY="40.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="70.0" text="Weapons" />
+                              <HBox prefHeight="110.0" prefWidth="448.0" spacing="10.0">
+                                 <children>
+                                    <ImageView fitHeight="110.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/cards/AD_weapons_IT_0213.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="110.0" fitWidth="200.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/cards/AD_weapons_IT_0213.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="110.0" fitWidth="200.0" layoutX="76.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/cards/AD_weapons_IT_0213.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="90.0" fitWidth="200.0" layoutX="142.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/cards/AD_powerups_IT_02.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets left="10.0" top="10.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                 </children>
+                              </HBox>
+                           </children></Pane>
+                        <Pane layoutX="10.0" layoutY="10.0" prefHeight="110.0" prefWidth="546.0">
+                           <children>
+                              <ImageView fitHeight="110.0" fitWidth="448.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/playerBoards/playerBoardYellow.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="110.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/playerBoards/actionTileYellow.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </Pane>
+                        <Pane layoutX="10.0" layoutY="122.0" prefHeight="110.0" prefWidth="546.0">
+                           <children>
+                              <ImageView fitHeight="110.0" fitWidth="448.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/playerBoards/playerBoardYellow.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="110.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/playerBoards/actionTileYellow.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </Pane>
+                        <Pane layoutX="10.0" layoutY="234.0" prefHeight="110.0" prefWidth="546.0">
+                           <children>
+                              <ImageView fitHeight="110.0" fitWidth="448.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/playerBoards/playerBoardYellow.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="110.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/playerBoards/actionTileYellow.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </Pane>
                      </children>
                   </VBox>
                </content></Tab>
