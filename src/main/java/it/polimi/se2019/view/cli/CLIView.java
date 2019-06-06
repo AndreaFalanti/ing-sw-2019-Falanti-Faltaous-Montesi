@@ -9,7 +9,6 @@ import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.weapon.Effect;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.view.View;
-import it.polimi.se2019.view.request.GrabRequest;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -93,7 +92,7 @@ public class CLIView extends View {
             case "grab":
                 pos=parseDestination(otherCommandPart);
                 action = new MoveGrabAction(mCLIInfo.getOwnerColor(), pos);
-                new GrabRequest();//<--to add request
+             //   new GrabRequest();//<--to add request
                 logger.log(Level.INFO,"Action: GRAB  Pos: {0}",pos);
                 break;
             case "shoot":

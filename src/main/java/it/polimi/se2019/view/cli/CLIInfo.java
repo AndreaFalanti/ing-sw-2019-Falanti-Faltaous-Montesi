@@ -7,9 +7,11 @@ import java.util.List;
 
 public class CLIInfo {
     private List<Player> mPlayers;
-    private String mActivePlayer;
+    private String mActivePlayerf;
     private Player mOwner;
-    private String mOwnerColor;
+    private PlayerColor mActivePlayer;
+    private PlayerColor mOwnerColor;
+    private String mOwnerColorf;
 
 
     private final static int sizePlayer = 11;
@@ -32,7 +34,7 @@ public class CLIInfo {
         mPlayer = new CLIPlayer(players);
     }
     public void setActivePlayer(PlayerColor color){
-        mActivePlayer = color.getPascalName();
+        mActivePlayerf = color.getPascalName();
     }
 
 
@@ -47,7 +49,7 @@ public class CLIInfo {
          return target;
     }
 
-    public String getActivePlayer(){return mActivePlayer;}
+    public PlayerColor getActivePlayer(){return mActivePlayer;}
     public Player getOwner(){return mOwner;}
-    public String getOwnerColor(){return mOwnerColor;}
+    public PlayerColor getOwnerColor(){return mOwnerColor;}
 }
