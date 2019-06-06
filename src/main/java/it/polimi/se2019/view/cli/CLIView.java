@@ -7,8 +7,8 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.PowerUpCard;
 import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.weapon.Weapon;
-import it.polimi.se2019.view.ActionMessage;
 import it.polimi.se2019.view.View;
+import it.polimi.se2019.view.request.GrabRequest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -95,6 +95,7 @@ public class CLIView extends View {
             case "grab":
                 pos=parseDestination(otherCommandPart);
                 action = new MoveGrabAction(mCLIInfo.getOwnerColor(), pos);
+                new GrabRequest();//<--to add request
                 logger.log(Level.INFO,"Action: GRAB  Pos: {0}",pos);
                 break;
             case "shoot":
@@ -125,7 +126,7 @@ public class CLIView extends View {
                 logger.log(Level.INFO,"Action: RELOAD  index: {0}",index);
                 break;
         }
-        new ActionMessage(action);
+
 
 
         availableCommands();
@@ -262,7 +263,7 @@ public class CLIView extends View {
                                 powerPlayer();
                                 weaponPlayer();
                                 System.out.println(mCLIInfo.getOwner().getAmmo().toString());
-                                System.out.println(mCLIInfo.getOwner().getMarks());
+                                System.out.println(mCLIInfo.getOwner().getMarks());//to add score and position
                                 if(mCLIInfo.getOwner().getDamageTaken()[0]!=null)
                                     damagePlayers(mCLIInfo.getOwner().getDamageTaken());
                                 else
