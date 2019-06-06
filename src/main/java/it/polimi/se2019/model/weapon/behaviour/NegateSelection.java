@@ -3,6 +3,7 @@ package it.polimi.se2019.model.weapon.behaviour;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.weapon.Expression;
+import it.polimi.se2019.model.weapon.ShootContext;
 
 import java.util.Set;
 import java.util.stream.Collectors;

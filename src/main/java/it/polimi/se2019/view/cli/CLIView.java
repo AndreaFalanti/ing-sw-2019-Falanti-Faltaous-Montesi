@@ -6,14 +6,12 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.PowerUpCard;
 import it.polimi.se2019.model.action.*;
+import it.polimi.se2019.model.weapon.Effect;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.GrabRequest;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -394,6 +392,11 @@ public class CLIView extends View {
 
     @Override
     public Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect) {
+        return null;
+    }
+
+    @Override
+    public Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
         return null;
     }
 

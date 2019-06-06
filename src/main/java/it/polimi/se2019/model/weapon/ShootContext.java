@@ -1,4 +1,4 @@
-package it.polimi.se2019.model.weapon.behaviour;
+package it.polimi.se2019.model.weapon;
 
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.Action;
@@ -17,6 +17,7 @@ public class ShootContext {
     private Board mBoard;
     private Set<Player> mPlayers;
     private PlayerColor mShooterColor;
+    private int mCurrentPriority;
     private View mView;
     private Map<String, Expression> mScope;
 
@@ -33,19 +34,19 @@ public class ShootContext {
     }
 
     // trivial getters
-    Board getBoard() {
+    public Board getBoard() {
         return mBoard;
     }
 
-    Set<Player> getPlayers() {
+    public Set<Player> getPlayers() {
         return mPlayers;
     }
 
-    PlayerColor getShooterColor() {
+    public PlayerColor getShooterColor() {
         return mShooterColor;
     }
 
-    Player getShooter() {
+    public Player getShooter() {
         return mPlayers.stream()
                 .filter(pl -> pl.getColor() == getShooterColor())
                 .findFirst()
@@ -53,24 +54,28 @@ public class ShootContext {
                         new IllegalStateException(MISSING_PLAYER_MSG));
     }
 
-    Position getShooterPosition() {
+    public Position getShooterPosition() {
         return getShooter().getPos();
     }
 
-    View getView() {
+    public View getView() {
         return mView;
     }
 
     // manipulate scope
-    Expression getVar(String name) {
+    public Expression getVar(String name) {
         if (mScope.get(name) == null)
             throw new IllegalArgumentException("No variable named " + name + " found in scope...");
 
         return mScope.get(name);
     }
 
-    void setVar(String name, Expression value) {
+    public void setVar(String name, Expression value) {
         mScope.put(name, value);
+    }
+
+    public int getCurrentPriority() {
+        return mCurrentPriority;
     }
 }
 

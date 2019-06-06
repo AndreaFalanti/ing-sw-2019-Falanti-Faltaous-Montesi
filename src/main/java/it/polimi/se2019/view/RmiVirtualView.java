@@ -5,10 +5,12 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
+import it.polimi.se2019.model.weapon.Effect;
 import it.polimi.se2019.model.weapon.Weapon;
 
 import java.util.List;
 import java.util.Set;
+import java.util.SortedMap;
 
 public class RmiVirtualView extends View {
     public RmiVirtualView() {
@@ -95,6 +97,11 @@ public class RmiVirtualView extends View {
 
     @Override
     public Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect) {
+        return null;
+    }
+
+    @Override
+    public Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
         return null;
     }
 

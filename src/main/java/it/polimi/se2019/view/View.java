@@ -8,15 +8,14 @@ import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
+import it.polimi.se2019.model.weapon.Effect;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.Either;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.request.Request;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class View extends Observable<Either<Request, Action>> implements Observer<Either<Response, Update>> {
     // fields
@@ -69,6 +68,8 @@ public abstract class View extends Observable<Either<Request, Action>> implement
     public abstract String requestAdditionalInfo();//used to response more information about action
 
     public abstract Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect);
+
+    public abstract Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority);
 
 
     public abstract void interact();//used to parse the command

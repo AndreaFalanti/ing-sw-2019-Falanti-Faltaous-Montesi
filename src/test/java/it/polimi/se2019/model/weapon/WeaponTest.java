@@ -1,21 +1,14 @@
 package it.polimi.se2019.model.weapon;
 
-import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.action.Action;
-import it.polimi.se2019.model.action.DamageAction;
 import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.weapon.behaviour.ShootContext;
-import it.polimi.se2019.model.weapon.behaviour.TargetsLiteral;
 import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;

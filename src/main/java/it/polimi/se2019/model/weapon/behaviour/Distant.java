@@ -3,6 +3,7 @@ package it.polimi.se2019.model.weapon.behaviour;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.weapon.Expression;
+import it.polimi.se2019.model.weapon.ShootContext;
 
 public class Distant extends Behaviour {
     // trivial constructors

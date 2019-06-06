@@ -1,6 +1,3 @@
-1. Refactor Expression hierarchy to expose only one eval-like method (evalToEvalResult probably) [DONE]
-2. Refactor Expression hierarchy to introduce AtomicExpression and ListExpression
-    a. Create hierarchy [DONE]
-    b. Change internal representation of subexpression in ListExpression from map to array
-        I. Change pretty parser to respect this new rep
-3. Check if Gson actually cares about default constructors
+1. Create EffectInfo class to separate model from controller
+2. Use logging inside PickExpression class
+2. Check if Gson actually cares about default constructors

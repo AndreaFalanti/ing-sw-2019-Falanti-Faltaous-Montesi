@@ -1,10 +1,8 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.weapon.Expression;
+import it.polimi.se2019.model.weapon.ShootContext;
 import it.polimi.se2019.view.View;
-
-import java.util.Set;
 
 
 public class SelectTargets extends Behaviour {
