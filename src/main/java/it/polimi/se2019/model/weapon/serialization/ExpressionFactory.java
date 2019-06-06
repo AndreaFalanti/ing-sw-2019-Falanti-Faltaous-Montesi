@@ -32,7 +32,7 @@ public class ExpressionFactory {
 
     static Gson makeGsonDeserializer() {
         return new GsonBuilder()
-                .registerTypeAdapter(Expression.class, ExpressionParser.class)
+                .registerTypeAdapter(Expression.class, new ExpressionParser())
                 .setPrettyPrinting()
                 .setFieldNamingStrategy(new CustomFieldNamingStrategy())
                 .addSerializationExclusionStrategy(new AnnotationExclusionStrategy())

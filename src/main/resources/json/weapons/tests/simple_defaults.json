@@ -1,0 +1,6 @@
+{
+  "expr" : "SelectOneTarget",
+  "from" : {
+    "expr" : "CanSee"
+  }
+}
