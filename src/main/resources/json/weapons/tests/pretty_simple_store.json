@@ -1,0 +1,11 @@
+{
+  "expr" : "InflictDamage",
+  "amount" : "1d",
+  "to" : {
+    "expr" : "SelectOneTarget",
+    "store" : "var",
+    "from" : {
+      "expr" : "CanSee"
+    }
+  }
+}

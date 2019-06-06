@@ -5,8 +5,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
+import it.polimi.se2019.model.weapon.Expression;
 import it.polimi.se2019.model.weapon.behaviour.DamageLiteral;
 import it.polimi.se2019.model.weapon.behaviour.IntLiteral;
+import it.polimi.se2019.model.weapon.behaviour.Store;
+import it.polimi.se2019.model.weapon.behaviour.StringLiteral;
 import sun.plugin.dom.exception.InvalidAccessException;
 
 import java.util.Arrays;
@@ -24,8 +27,10 @@ public class ExpressionParser {
             "contents"
     ));
     private static final Set<String> RESERVED_KEYWORDS = new HashSet<>(Arrays.asList(
-            "expr"
+            "expr",
+            "store"
     ));
+    public static final String STORE_KEYWORD = "store";
 
     private ExpressionParser() {}
 
@@ -139,6 +144,21 @@ public class ExpressionParser {
                 result.add(subName, jSub);
             else
                 result.get("subs").getAsJsonObject().add(subName, parse(jSub));
+        }
+
+        // decorate with store expression if necessary
+        if (result.has(STORE_KEYWORD)) {
+            // get and remove name of value to store
+            String storeName = result.get(STORE_KEYWORD).getAsString(); result.remove(STORE_KEYWORD);
+
+            // remember current json expression to store it later
+            JsonElement valueToStore = result;
+
+            // create store expression
+            result = ExpressionFactory.toJsonTree(new Store(
+                    new StringLiteral(storeName),
+                    ExpressionFactory.fromRawJson(valueToStore)
+            )).getAsJsonObject();
         }
 
         return result;

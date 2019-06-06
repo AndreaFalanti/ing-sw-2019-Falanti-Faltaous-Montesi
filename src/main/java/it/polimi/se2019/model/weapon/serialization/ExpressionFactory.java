@@ -24,6 +24,8 @@ public class ExpressionFactory {
                     .registerSubtype(GetTargets.class, "GetTargets")
                     .registerSubtype(IntLiteral.class, "IntLiteral")
                     .registerSubtype(NegateSelection.class, "NegateSelection")
+                    .registerSubtype(Store.class, "Store")
+                    .registerSubtype(StringLiteral.class, "StringLiteral")
                     .registerSubtype(Done.class, "Done")
                     .registerSubtype(SelectOneTarget.class, "SelectOneTarget");
 
@@ -42,6 +44,11 @@ public class ExpressionFactory {
     // TODO: add doc
     public static Expression fromJson(String toDeserialize) {
         return GSON.fromJson(ExpressionParser.parse(new Gson().fromJson(toDeserialize, JsonElement.class)), Expression.class);
+    }
+
+    // TODO: add doc
+    public static Expression fromRawJson(JsonElement toDeserialize) {
+        return GSON.fromJson(new Gson().fromJson(toDeserialize, JsonElement.class), Expression.class);
     }
 
     // TODO: add doc

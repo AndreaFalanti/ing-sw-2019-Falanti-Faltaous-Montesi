@@ -56,4 +56,21 @@ public class ExpressionParserTest {
                 new PrettyJsonElement(actual)
         );
     }
+
+    @Test
+    public void testParseSimpleStore() {
+         JsonElement expected = new Gson().fromJson(
+                Jsons.get("weapons/tests/raw_simple_store"),
+                JsonElement.class
+        );
+
+        JsonElement actual = ExpressionParser.parse(
+                new Gson().fromJson(Jsons.get("weapons/tests/pretty_simple_store"), JsonElement.class)
+        );
+
+        assertEquals(
+                new PrettyJsonElement(expected),
+                new PrettyJsonElement(actual)
+        );
+    }
 }
