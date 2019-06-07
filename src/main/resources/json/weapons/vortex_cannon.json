@@ -6,9 +6,9 @@
     "expr": "PickEffect",
     "effects": [
       {
-        "name" : "Basic Effect",
+        "name": "Basic effect",
         "priority": 0,
-        "behaviour" : {
+        "behaviour": {
           "expr": "Do",
           "list": [
             {
@@ -20,40 +20,84 @@
             },
             {
               "expr": "SelectOneTarget",
+              "store": "target",
               "from": {
-                "expr": "Distant",
-                "from": {
+                "expr": "DistanceRange",
+                "origin": {
                   "expr": "Load",
                   "name": "the_vortex"
                 },
-                "amount": 1
+                "min": 0,
+                "max": 1
+              }
+            },
+            {
+              "expr": "Move",
+              "from": {
+                "expr": "Load",
+                "name": "target"
+              },
+              "to": {
+                "expr": "Load",
+                "name": "the_vortex"
+              }
+            },
+            {
+              "expr": "InflictDamage",
+              "amount": "2d",
+              "to": {
+                "expr": "Load",
+                "name": "target"
               }
             }
-            }
-          }
-          },
+          ]
+        }
+      },
+      {
+        "name": "With black hole",
+        "cost": "1r",
+        "priority": 1,
+        "optional": true,
+        "behaviour": {
+          "expr": "Do",
+          "list": [
             {
-              "name": "With Second Lock",
-              "priority": 1,
-              "optional": true,
-              "cost" : "1r",
-              "behaviour" : {
-                "expr" : "InflictDamage",
-                "amount": "2d1m",
-                "to": {
-                  "expr": "SelectOneTarget",
-                  "from": {
-                    "expr": "Intersect",
-                    "lhs": {
-                      "expr": "Different"
-                    },
-                    "rhs": {
-                      "expr": "CanSee"
-                    }
-                  }
-                }
+              "expr": "SelectTargets",
+              "store": "target",
+              "min": 2,
+              "max": 2,
+              "from": {
+                "expr": "DistanceRange",
+                "origin": {
+                  "expr": "Load",
+                  "name": "the_vortex"
+                },
+                "min": 0,
+                "max": 2
+              }
+            },
+            {
+              "expr": "Move",
+              "from": {
+                "expr": "Load",
+                "name": "target"
+              },
+              "to": {
+                "expr": "Load",
+                "name": "the_vortex"
+              }
+            },
+            {
+              "expr": "InflictDamage",
+              "amount": "1d",
+              "to": {
+                "expr": "Load",
+                "name": "target"
               }
             }
           ]
         }
       }
+    ]
+  }
+}
