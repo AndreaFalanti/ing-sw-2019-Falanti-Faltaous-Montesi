@@ -1,9 +1,6 @@
 package it.polimi.se2019.view.gui;
 
-import it.polimi.se2019.model.AmmoCard;
-import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.MoveShootAction;
 import it.polimi.se2019.model.action.ReloadAction;
 import it.polimi.se2019.model.board.Board;
@@ -27,7 +24,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class MainScreen extends Observable<Request> {
@@ -104,12 +103,39 @@ public class MainScreen extends Observable<Request> {
         //playerController.eraseDamage();
 
         playerPane.getChildren().add(newLoadedPane);
+
         // second tab testing
-        /*for (int i = 0; i < 4; i++ ) {
-            loader = new FXMLLoader(getClass().getResource("/fxml/playerPane.fxml"));
+        List<Player> players = new ArrayList<>();
+        players.add(new Player("aaa", PlayerColor.YELLOW));
+        players.add(new Player("bbb", PlayerColor.GREY));
+
+        for (Player player : players) {
+            loader = new FXMLLoader(getClass().getResource("/fxml/otherPlayerPane.fxml"));
             newLoadedPane =  loader.load();
+
+            PlayerPane otherPlayerController = loader.getController();
+            mPlayerControllers.put(color, otherPlayerController);
+
+            otherPlayerController.setMainScreen(this);
+            otherPlayerController.setupBoardImage(player.getColor());
             otherPlayerBoardsBox.getChildren().add(newLoadedPane);
-        }*/
+
+            // test methods
+            otherPlayerController.updateAmmo(new AmmoValue(2,1,1));
+            otherPlayerController.addDamageTokens(PlayerColor.YELLOW, 5);
+
+            Weapon[] weapons = {
+                    new Weapon(),
+                    new Weapon(),
+                    null
+            };
+            weapons[0].setLoaded(true);
+            weapons[0].setGuiID("022");
+            weapons[1].setGuiID("023");
+
+            ((OtherPlayerPane)otherPlayerController).updatePlayerWeapons(weapons);
+            ((OtherPlayerPane)otherPlayerController).updatePowerUpNum(3);
+        }
     }
 
     /**

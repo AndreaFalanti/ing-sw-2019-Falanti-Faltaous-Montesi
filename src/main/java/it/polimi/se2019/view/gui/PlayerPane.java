@@ -18,36 +18,36 @@ import java.util.EnumMap;
 
 public class PlayerPane {
     @FXML
-    private ImageView playerBoard;
+    protected ImageView playerBoard;
     @FXML
-    private ImageView actionTile;
+    protected ImageView actionTile;
     @FXML
-    private HBox deathsBox;
+    protected HBox deathsBox;
     @FXML
-    private HBox damageTokensBox;
+    protected HBox damageTokensBox;
     @FXML
-    private HBox marksBox;
+    protected HBox marksBox;
     @FXML
-    private Label nameLabel;
+    protected Label nameLabel;
     @FXML
-    private Label scoreLabel;
+    protected Label scoreLabel;
     @FXML
-    private VBox redAmmoBox;
+    protected VBox redAmmoBox;
     @FXML
-    private VBox yellowAmmoBox;
+    protected VBox yellowAmmoBox;
     @FXML
-    private VBox blueAmmoBox;
+    protected VBox blueAmmoBox;
 
-    private static final int DAMAGE_TOKEN_HEIGHT = 55;
-    private static final int DAMAGE_TOKEN_WIDTH = 40;
+    protected int mDamageTokenHeight = 55;
+    protected int mDamageTokenWidth = 40;
 
-    private static final int SKULL_HEIGHT = 52;
-    private static final int SKULL_WIDTH = 46;
+    protected int mSkullHeight = 52;
+    protected int mSkullWidth = 46;
 
-    private static final int AMMO_SQUARE_SIDE = 18;
+    protected int mAmmoSquareSide = 18;
 
     private MainScreen mMainScreen;
-    private PlayerColor mPlayerBoardColor;
+    protected PlayerColor mPlayerBoardColor;
     private EnumMap<PlayerColor, Label> mMarksNumLabels = new EnumMap<>(PlayerColor.class);
 
 
@@ -99,7 +99,7 @@ public class PlayerPane {
         Image tokenImage = new Image(GuiResourcePaths.DAMAGE_TOKEN + color.getPascalName() + ".png");
 
         for (int i = 0; i < quantity; i++) {
-            GuiUtils.addImageViewToBox(damageTokensBox, DAMAGE_TOKEN_HEIGHT, DAMAGE_TOKEN_WIDTH, tokenImage);
+            GuiUtils.addImageViewToBox(damageTokensBox, mDamageTokenHeight, mDamageTokenWidth, tokenImage);
         }
     }
 
@@ -119,7 +119,7 @@ public class PlayerPane {
                 label.setTextFill(Paint.valueOf("white"));
 
                 StackPane stackPane = new StackPane();
-                GuiUtils.addImageViewToBox(stackPane, DAMAGE_TOKEN_HEIGHT, DAMAGE_TOKEN_WIDTH, markImage);
+                GuiUtils.addImageViewToBox(stackPane, mDamageTokenHeight, mDamageTokenWidth, markImage);
                 stackPane.getChildren().add(label);
                 stackPane.setAlignment(Pos.CENTER);
 
@@ -144,7 +144,7 @@ public class PlayerPane {
      */
     public void addDeath () {
         Image skullImage = new Image(GuiResourcePaths.SKULL);
-        GuiUtils.addImageViewToBox(deathsBox, SKULL_HEIGHT, SKULL_WIDTH, skullImage);
+        GuiUtils.addImageViewToBox(deathsBox, mSkullHeight, mSkullWidth, skullImage);
     }
 
     /**
@@ -199,7 +199,7 @@ public class PlayerPane {
      * @return Instantiated ammo square
      */
     private Rectangle instantiateAmmoSquare (String color) {
-        Rectangle square = new Rectangle(AMMO_SQUARE_SIDE, AMMO_SQUARE_SIDE);
+        Rectangle square = new Rectangle(mAmmoSquareSide, mAmmoSquareSide);
         square.setFill(Paint.valueOf(color));
         square.setStroke(Paint.valueOf("black"));
 

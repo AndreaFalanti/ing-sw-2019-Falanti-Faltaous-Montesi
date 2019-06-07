@@ -1,6 +1,7 @@
 package it.polimi.se2019.view.gui;
 
 import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.PowerUpCard;
 import it.polimi.se2019.model.update.*;
 import it.polimi.se2019.model.weapon.Weapon;
 
@@ -51,7 +52,11 @@ public class GraphicUpdateHandler implements UpdateHandler {
             }
             mMainController.updateWeaponBox(ids);
         }
-        // TODO: handle other players case
+        else {
+            OtherPlayerPane playerController = (OtherPlayerPane)mMainController
+                    .getPlayerControllerFromColor(update.getPlayerColor());
+            playerController.updatePlayerWeapons(update.getWeapons());
+        }
     }
 
     @Override
@@ -63,7 +68,18 @@ public class GraphicUpdateHandler implements UpdateHandler {
             }
             mMainController.updatePowerUpGrid(ids);
         }
-        // TODO: handle other players case
+        else {
+            OtherPlayerPane playerController = (OtherPlayerPane)mMainController
+                    .getPlayerControllerFromColor(update.getPlayerColor());
+
+            int counter = 0;
+            for (PowerUpCard powerUpCard : update.getPowerUpCards()) {
+                if (powerUpCard != null) {
+                    counter++;
+                }
+            }
+            playerController.updatePowerUpNum(counter);
+        }
     }
 
     @Override

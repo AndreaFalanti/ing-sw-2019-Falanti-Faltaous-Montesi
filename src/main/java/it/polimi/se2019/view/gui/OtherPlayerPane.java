@@ -1,4 +1,67 @@
 package it.polimi.se2019.view.gui;
 
-public class OtherPlayerPane {
+import it.polimi.se2019.model.weapon.Weapon;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+
+public class OtherPlayerPane extends PlayerPane {
+    @FXML
+    private Button switchButton;
+    @FXML
+    private HBox cardDetailBox;
+    @FXML
+    private Pane boardPane;
+    @FXML
+    private Label powerUpNumLabel;
+
+
+    @FXML
+    public void initialize () {
+        mDamageTokenHeight = 34;
+        mDamageTokenWidth = 25;
+        mSkullHeight = 32;
+        mSkullWidth = 24;
+        mAmmoSquareSide = 16;
+    }
+
+    public void switchDetailPane () {
+        if (boardPane.isVisible()) {
+            boardPane.setVisible(false);
+            cardDetailBox.setVisible(true);
+            switchButton.setText("Player board");
+        }
+        else {
+            boardPane.setVisible(true);
+            cardDetailBox.setVisible(false);
+            switchButton.setText("Weapons");
+        }
+    }
+
+    public void updatePlayerWeapons (Weapon[] weapons) {
+        for (int i = 0; i < weapons.length; i++ ) {
+            ImageView weaponView = (ImageView) cardDetailBox.getChildren().get(i);
+            Image weaponImage = null;
+
+            if (weapons[i] != null) {
+                if (weapons[i].isLoaded()) {
+                    weaponImage = new Image(GuiResourcePaths.WEAPON_CARD + "02.png");
+                }
+                else {
+                    String id = weapons[i].getGuiID();
+                    weaponImage = new Image(GuiResourcePaths.WEAPON_CARD + id + ".png");
+                }
+            }
+
+            weaponView.setImage(weaponImage);
+        }
+    }
+
+    public void updatePowerUpNum (int num) {
+        powerUpNumLabel.setText(Integer.toString(num));
+    }
 }
