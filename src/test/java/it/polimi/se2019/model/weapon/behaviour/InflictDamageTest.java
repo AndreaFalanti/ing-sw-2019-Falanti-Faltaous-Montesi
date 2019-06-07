@@ -1,22 +1,5 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-import it.polimi.se2019.model.Damage;
-import it.polimi.se2019.model.Player;
-import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.action.Action;
-import it.polimi.se2019.model.action.DamageAction;
-import it.polimi.se2019.model.action.WeaponAction;
-import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.util.Jsons;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-
-import static org.junit.Assert.assertEquals;
-
 public class InflictDamageTest {
     /****************************************************************************/
     /* ShootContext mMarioShootsLuigi;                                          */

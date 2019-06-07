@@ -3,7 +3,10 @@ package it.polimi.se2019.model.weapon;
 import it.polimi.se2019.model.weapon.behaviour.Done;
 import it.polimi.se2019.view.View;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class PickEffect extends Expression {
 

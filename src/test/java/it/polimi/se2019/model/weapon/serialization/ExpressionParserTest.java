@@ -1,16 +1,5 @@
 package it.polimi.se2019.model.weapon.serialization;
 
-import com.google.gson.*;
-import it.polimi.se2019.model.Damage;
-import it.polimi.se2019.model.weapon.behaviour.*;
-import it.polimi.se2019.util.Jsons;
-import it.polimi.se2019.util.PrettyJsonElement;
-import org.junit.Test;
-
-import java.lang.reflect.Type;
-
-import static org.junit.Assert.assertEquals;
-
 @Deprecated
 public class ExpressionParserTest {
     /******************************************************************************************************/

@@ -1,6 +1,9 @@
 package it.polimi.se2019.controller;
 
-import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.Game;
+import it.polimi.se2019.model.Player;
+import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.model.weapon.Weapons;
@@ -9,7 +12,9 @@ import it.polimi.se2019.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertArrayEquals;

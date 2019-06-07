@@ -1,6 +1,8 @@
 package it.polimi.se2019.model.weapon.serialization;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import it.polimi.se2019.model.weapon.Expression;
 import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;

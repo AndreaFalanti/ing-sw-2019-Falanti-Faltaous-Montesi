@@ -2,7 +2,6 @@ package it.polimi.se2019.model.weapon;
 
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.weapon.behaviour.Behaviour;
-import it.polimi.se2019.util.Exclude;
 
 /**
  * Used for storing information about effect priorities and costs

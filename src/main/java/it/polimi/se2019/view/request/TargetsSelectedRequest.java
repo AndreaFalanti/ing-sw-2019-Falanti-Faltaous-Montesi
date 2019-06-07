@@ -2,7 +2,6 @@ package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.model.PlayerColor;
-import sun.nio.cs.ext.PCK;
 
 import java.util.Set;
 

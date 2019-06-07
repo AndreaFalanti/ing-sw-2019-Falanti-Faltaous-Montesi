@@ -5,9 +5,6 @@ import it.polimi.se2019.model.weapon.response.TargetSelectionResponse;
 import it.polimi.se2019.util.AbstractHandler;
 
 public interface ResponseHandler extends AbstractHandler<Response> {
-    default void handle(LeaderboardResponse response) {
-        fallbackHandle(response);
-    }
     default void handle(MessageResponse response) {
         fallbackHandle(response);
     }
@@ -18,6 +15,9 @@ public interface ResponseHandler extends AbstractHandler<Response> {
         fallbackHandle(response);
     }
     default void handle(TargetSelectionResponse response) {
+        fallbackHandle(response);
+    }
+    default void handle(DiscardPowerUpResponse response) {
         fallbackHandle(response);
     }
 }

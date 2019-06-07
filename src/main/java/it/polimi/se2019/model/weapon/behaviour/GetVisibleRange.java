@@ -1,6 +1,5 @@
 package it.polimi.se2019.model.weapon.behaviour;
 
-import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.weapon.Expression;
 import it.polimi.se2019.model.weapon.ShootContext;

@@ -2,14 +2,15 @@ package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
 
-public class ReloadRequest implements Request {
-    private int weaponIndex;
+public class WeaponSelectedRequest implements Request {
+    private int mWeaponIndex;
 
-    public ReloadRequest() {
+    public WeaponSelectedRequest(int weaponIndex) {
+        mWeaponIndex = weaponIndex;
     }
 
     public int getWeaponIndex() {
-        return weaponIndex;
+        return mWeaponIndex;
     }
 
     @Override

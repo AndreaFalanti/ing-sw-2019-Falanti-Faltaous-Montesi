@@ -1,6 +1,5 @@
 package it.polimi.se2019.controller;
 
-import it.polimi.se2019.view.request.LeaderboardRequest;
 import it.polimi.se2019.view.request.Request;
 import it.polimi.se2019.view.request.ValidPositionRequest;
 import org.junit.Test;
@@ -8,9 +7,6 @@ import org.junit.Test;
 public class ControllerTest {
 
     private class RequestMaker {
-        public Request makeLeaderboardRequest () {
-            return new LeaderboardRequest();
-        }
         public Request makeValidMoveRequest() {
             return new ValidPositionRequest();
         }

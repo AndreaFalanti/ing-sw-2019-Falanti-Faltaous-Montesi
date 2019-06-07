@@ -15,7 +15,10 @@ import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.request.Request;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedMap;
 
 public abstract class View extends Observable<Either<Request, Action>> implements Observer<Either<Response, Update>> {
     // fields

@@ -63,34 +63,27 @@ public class Controller implements AbstractController {
     /******************************/
 
     @Override
-    public void handle(ShootRequest request) {
-        shoot(request.getShooterColor(), request.getBehaviour());
-    }
-
-    @Override
-    public void handle(GrabRequest request) {
-    }
-
-    @Override
-    public void handle(ReloadRequest request) {
-    }
-
-    @Override
-    public void handle(LeaderboardRequest request) {
-        System.out.println("Delivering leaderboard");
-    }
-
-    @Override
     public void handle(ValidPositionRequest request) {
         System.out.println("Delivering moves");
     }
 
     @Override
     public void handle(TargetsSelectedRequest request) {
+
     }
 
     @Override
     public void handle(ActionRequest actionRequest) {
+
+    }
+
+    @Override
+    public void handle(PowerUpDiscardedRequest request) {
+
+    }
+
+    @Override
+    public void handle(WeaponSelectedRequest request) {
 
     }
 

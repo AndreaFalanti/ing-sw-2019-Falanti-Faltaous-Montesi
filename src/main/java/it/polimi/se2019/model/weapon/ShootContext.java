@@ -1,13 +1,13 @@
 package it.polimi.se2019.model.weapon;
 
-import it.polimi.se2019.model.*;
-import it.polimi.se2019.model.action.Action;
-import it.polimi.se2019.model.action.WeaponAction;
+import it.polimi.se2019.model.Player;
+import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.weapon.Expression;
 import it.polimi.se2019.view.View;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 
 public class ShootContext {
     // statics

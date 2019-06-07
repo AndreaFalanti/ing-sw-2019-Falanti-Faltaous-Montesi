@@ -1,13 +1,10 @@
 package it.polimi.se2019.model.weapon;
 
-import com.google.gson.annotations.JsonAdapter;
-import it.polimi.se2019.controller.response.Response;
-import it.polimi.se2019.model.*;
-import it.polimi.se2019.model.action.Action;
+import it.polimi.se2019.model.Damage;
+import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.weapon.behaviour.UnsupportedConversionException;
 import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
-import it.polimi.se2019.model.weapon.serialization.ExpressionParser;
-import it.polimi.se2019.view.request.Request;
 
 import java.util.Objects;
 import java.util.Set;
