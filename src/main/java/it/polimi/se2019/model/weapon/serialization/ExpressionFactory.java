@@ -16,7 +16,6 @@ public class ExpressionFactory {
                 .registerSubtype(InflictDamage.class, "InflictDamage")
                 .registerSubtype(TargetsLiteral.class, "TargetsLiteral")
                 .registerSubtype(DamageLiteral.class, "DamageLiteral")
-                .registerSubtype(ActionLiteral.class, "ActionLiteral")
                 .registerSubtype(SelectTargets.class, "SelectTargets")
                 .registerSubtype(CanSee.class, "CanSee")
                 .registerSubtype(GetTargets.class, "GetTargets")

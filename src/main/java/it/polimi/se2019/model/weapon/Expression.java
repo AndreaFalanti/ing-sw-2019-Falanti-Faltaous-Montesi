@@ -86,15 +86,6 @@ public abstract class Expression {
     public Damage asDamage() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "Damage");
     }
-    public Action asAction() {
-        throw new UnsupportedConversionException(getClass().getSimpleName(), "Action");
-    }
-    public Request asRequest() {
-        throw new UnsupportedConversionException(getClass().getSimpleName(), "Request");
-    }
-    public Response asResponse() {
-        throw new UnsupportedConversionException(getClass().getSimpleName(), "Response");
-    }
     public String asString() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "String");
     }

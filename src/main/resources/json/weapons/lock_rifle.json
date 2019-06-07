@@ -1,7 +1,8 @@
 {
   "name": "Lock Rifle",
-  "shootCost": "1b",
-  "grabCost": "2b",
+  "guiID": "0221",
+  "grabCost": "1b",
+  "reloadCost": "2b",
   "behaviour": {
     "expr": "PickEffect",
     "effects": [
@@ -26,7 +27,7 @@
         "cost" : "1r",
         "behaviour" : {
           "expr" : "InflictDamage",
-          "amount": "2d1m",
+          "amount": "1m",
           "to": {
             "expr": "SelectOneTarget",
             "from": {

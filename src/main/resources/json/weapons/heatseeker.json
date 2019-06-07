@@ -1,15 +1,7 @@
 {
-  "name" : "heatseeker",
-  "reloadCost" : {
-    "red" : 2,
-    "yellow" : 1,
-    "blue" : 0
-  },
-  "grabCost" : {
-    "red" : 1,
-    "yellow" : 1,
-    "blue" : 0
-  },
+  "name" : "Heatseeker",
+  "grabCost" : "1r",
+  "reloadCost" : "2r1y",
   "behaviour" : {
     "expr" : "InflictDamage",
     "amount" : "3d",
