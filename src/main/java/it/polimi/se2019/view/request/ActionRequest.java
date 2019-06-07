@@ -10,7 +10,7 @@ public class ActionRequest implements Request {
         mAction = action;
     }
 
-    Action getAction() {
+    private Action getAction() {
         return mAction;
     }
 

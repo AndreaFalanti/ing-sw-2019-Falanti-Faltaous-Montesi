@@ -15,7 +15,7 @@ public class GraphicView extends View {
 
 
     public GraphicView(MainScreen mainFrameController) {
-        super(new GraphicResponseHandler(), new GraphicUpdateHandler(mainFrameController));
+        super(new GraphicResponseHandler(mainFrameController), new GraphicUpdateHandler(mainFrameController));
         mMainFrameController = mainFrameController;
     }
 

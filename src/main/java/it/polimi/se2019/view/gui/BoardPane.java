@@ -10,6 +10,7 @@ import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.view.request.ActionRequest;
 import it.polimi.se2019.view.request.Request;
+import it.polimi.se2019.view.request.WeaponSelectedRequest;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -480,12 +481,29 @@ public class BoardPane extends Observable<Request> {
                         mMainController.setShootOnWeapon(new Position(x, y));
 
                         mMainController.getUndoButton().setOnMouseClicked(event1 -> {
-                            mMainController.setBoxEnableStatus(weaponBox, false);
+                            GuiUtils.setBoxEnableStatus(weaponBox, false);
                             mMainController.setEnableStatusActionButtonBox(true);
                         });
                     });
                 }
             }
         }
+    }
+
+    public void enableSpawnWeaponBoxForSendingIndex(TileColor spawnColor) {
+        HBox selectedSpawn = mSpawnBoxes.get(spawnColor);
+
+        GuiUtils.setBoxEnableStatus(selectedSpawn,true);
+        mMainController.setEnableStatusActionButtonBox(false);
+
+        for (int i = 0; i < selectedSpawn.getChildren().size(); i++) {
+            final int index = i;
+            selectedSpawn.getChildren().get(i).setOnMouseClicked(event -> notify(new WeaponSelectedRequest(index)));
+        }
+
+        mMainController.getUndoButton().setOnMouseClicked(event -> {
+            GuiUtils.setBoxEnableStatus(selectedSpawn,false);
+            mMainController.setEnableStatusActionButtonBox(true);
+        });
     }
 }

@@ -46,4 +46,20 @@ public final class GuiUtils {
         }
         return null;
     }
+
+    /**
+     * Enable or disable selected box
+     * @param box Selected box
+     * @param enable true to enable box, false otherwise
+     */
+    public static void setBoxEnableStatus(Node box, boolean enable) {
+        if (enable) {
+            box.setDisable(false);
+            box.setStyle("-fx-background-color: RED");
+        }
+        else {
+            box.setDisable(true);
+            box.setStyle("-fx-background-color: rgba(255, 0, 0, 0.0)");
+        }
+    }
 }

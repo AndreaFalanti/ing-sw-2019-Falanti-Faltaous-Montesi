@@ -10,7 +10,9 @@ import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.view.request.ActionRequest;
+import it.polimi.se2019.view.request.PowerUpDiscardedRequest;
 import it.polimi.se2019.view.request.Request;
+import it.polimi.se2019.view.request.WeaponSelectedRequest;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -46,6 +48,8 @@ public class MainScreen extends Observable<Request> {
     private VBox otherPlayerBoardsBox;
     @FXML
     private VBox buttonBox;
+    @FXML
+    private Button powerUpDiscardButton;
 
     private static final Logger logger = Logger.getLogger(MainScreen.class.getName());
     
@@ -56,6 +60,8 @@ public class MainScreen extends Observable<Request> {
 
     private BoardPane mBoardController;
     private EnumMap<PlayerColor, PlayerPane> mPlayerControllers = new EnumMap<>(PlayerColor.class);
+    private boolean[] mDiscardedPowerUpsCache = new boolean[3];
+
 
     public BoardPane getBoardController() {
         return mBoardController;
@@ -184,21 +190,7 @@ public class MainScreen extends Observable<Request> {
         boardPane.getChildren().add(newLoadedPane);
     }
 
-    /**
-     * Enable or disable selected box
-     * @param box Selected box
-     * @param enable true to enable box, false otherwise
-     */
-    public void setBoxEnableStatus(Node box, boolean enable) {
-        if (enable) {
-            box.setDisable(false);
-            box.setStyle("-fx-background-color: RED");
-        }
-        else {
-            box.setDisable(true);
-            box.setStyle("-fx-background-color: rgba(255, 0, 0, 0.0)");
-        }
-    }
+
 
     /**
      * Change weapon image appearence, based on its loaded status
@@ -357,7 +349,7 @@ public class MainScreen extends Observable<Request> {
      * @param pos Selected position for ShootAction
      */
     public void setShootOnWeapon (Position pos) {
-        setBoxEnableStatus(weaponBox,true);
+        GuiUtils.setBoxEnableStatus(weaponBox,true);
         setEnableStatusActionButtonBox(false);
 
         for (int i = 0; i < weaponBox.getChildren().size(); i++) {
@@ -365,7 +357,7 @@ public class MainScreen extends Observable<Request> {
         }
 
         undoButton.setOnMouseClicked(event -> {
-            setBoxEnableStatus(weaponBox,false);
+            GuiUtils.setBoxEnableStatus(weaponBox,false);
             setEnableStatusActionButtonBox(true);
         });
     }
@@ -374,7 +366,7 @@ public class MainScreen extends Observable<Request> {
      * Enable weapon box and set reload behaviour on weapon images
      */
     public void setReloadOnWeapon () {
-        setBoxEnableStatus(weaponBox,true);
+        GuiUtils.setBoxEnableStatus(weaponBox,true);
         setEnableStatusActionButtonBox(false);
 
         for (int i = 0; i < weaponBox.getChildren().size(); i++) {
@@ -382,8 +374,59 @@ public class MainScreen extends Observable<Request> {
         }
 
         undoButton.setOnMouseClicked(event -> {
-            setBoxEnableStatus(weaponBox,false);
+            GuiUtils.setBoxEnableStatus(weaponBox,false);
             setEnableStatusActionButtonBox(true);
+        });
+    }
+
+    public void enableWeaponBoxForSendingIndex () {
+        GuiUtils.setBoxEnableStatus(weaponBox,true);
+        setEnableStatusActionButtonBox(false);
+
+        for (int i = 0; i < weaponBox.getChildren().size(); i++) {
+            setIndexForwardingOnWeapon(weaponBox.getChildren().get(i), i);
+        }
+
+        undoButton.setOnMouseClicked(event -> {
+            GuiUtils.setBoxEnableStatus(weaponBox,false);
+            setEnableStatusActionButtonBox(true);
+        });
+    }
+
+    public void enablePowerUpBoxForSendingDiscardedIndex () {
+        GuiUtils.setBoxEnableStatus(powerUpGrid, true);
+        setEnableStatusActionButtonBox(false);
+        powerUpDiscardButton.setDisable(false);
+
+        for (int i = 0; i < mDiscardedPowerUpsCache.length; i++) {
+            mDiscardedPowerUpsCache[i] = false;
+            final int index = i;
+
+            Node powerUp = powerUpGrid.getChildren().get(i);
+            powerUp.setOpacity(UNLOADED_OPACITY);
+
+            powerUp.setOnMouseClicked(event -> {
+                mDiscardedPowerUpsCache[index] = !mDiscardedPowerUpsCache[index];
+                if (powerUp.getOpacity() == LOADED_OPACITY) {
+                    powerUp.setOpacity(UNLOADED_OPACITY);
+                }
+                else {
+                    powerUp.setOpacity(LOADED_OPACITY);
+                }
+            });
+        }
+
+        powerUpDiscardButton.setOnMouseClicked(event -> {
+            notify(new PowerUpDiscardedRequest(mDiscardedPowerUpsCache));
+            powerUpDiscardButton.setDisable(true);
+        });
+
+        undoButton.setOnMouseClicked(event -> {
+            GuiUtils.setBoxEnableStatus(powerUpGrid,false);
+            setEnableStatusActionButtonBox(true);
+            for (Node node : powerUpGrid.getChildren()) {
+                node.setOpacity(LOADED_OPACITY);
+            }
         });
     }
 
@@ -398,7 +441,7 @@ public class MainScreen extends Observable<Request> {
             if (weapon.getOpacity() == LOADED_OPACITY) {
                 logToChat("Shooting with weapon of index: " + index);
                 setWeaponLoadStatus(index, false);
-                setBoxEnableStatus(weaponBox,false);
+                GuiUtils.setBoxEnableStatus(weaponBox,false);
                 setEnableStatusActionButtonBox(true);
 
                 notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index)));
@@ -419,7 +462,7 @@ public class MainScreen extends Observable<Request> {
             if (weapon.getOpacity() == UNLOADED_OPACITY) {
                 logToChat("Reload weapon of index: " + index);
                 setWeaponLoadStatus(index, true);
-                setBoxEnableStatus(weaponBox,false);
+                GuiUtils.setBoxEnableStatus(weaponBox,false);
                 setEnableStatusActionButtonBox(true);
 
                 notify(new ActionRequest(new ReloadAction(index)));
@@ -428,5 +471,11 @@ public class MainScreen extends Observable<Request> {
                 logToChat("Can't reload an already loaded weapon");
             }
         });
+    }
+
+    private void setIndexForwardingOnWeapon(Node weapon, int index) {
+        weapon.setOnMouseClicked(event ->
+            notify(new WeaponSelectedRequest(index))
+        );
     }
 }

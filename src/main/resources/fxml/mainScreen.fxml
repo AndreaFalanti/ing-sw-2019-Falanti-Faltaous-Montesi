@@ -57,7 +57,7 @@
                   <Image url="@../images/cards/AD_powerups_IT_022.png" />
                </image>
             </ImageView>
-            <Button mnemonicParsing="false" text="Discard" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Button fx:id="powerUpDiscardButton" disable="true" mnemonicParsing="false" text="Discard" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
       <TabPane layoutX="793.0" layoutY="5.0" prefHeight="500.0" prefWidth="546.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">

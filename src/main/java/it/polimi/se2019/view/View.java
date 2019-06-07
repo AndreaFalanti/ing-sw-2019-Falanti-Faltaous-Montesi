@@ -4,7 +4,6 @@ import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
-public abstract class View extends Observable<Either<Request, Action>> implements Observer<Either<Response, Update>> {
+public abstract class View extends Observable<Request> implements Observer<Either<Response, Update>> {
     // fields
     protected ArrayList<Player> mPlayers;
     private Board board;

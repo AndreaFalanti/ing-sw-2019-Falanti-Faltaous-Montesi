@@ -11,7 +11,7 @@ import it.polimi.se2019.util.Observable;
 
 import java.util.Optional;
 
-public class PerformPlayerAction implements InvalidActionResponseHandler {
+public class PlayerActionController implements InvalidActionResponseHandler {
     private Game mGame;
     private Action mAction;
 

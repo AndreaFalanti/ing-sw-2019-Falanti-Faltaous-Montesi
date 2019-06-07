@@ -27,7 +27,10 @@ public class Main extends Application {
         primaryStage.centerOnScreen();
 
         MainScreen controller = loader.getController();
+        GraphicView GuiView = new GraphicView(controller);
         controller.setClientColor(PlayerColor.PURPLE);
+
+
         controller.loadPlayerBoard(PlayerColor.GREY);
         controller.loadBoard();
         String[] ids = {"022", "023", "024"};
