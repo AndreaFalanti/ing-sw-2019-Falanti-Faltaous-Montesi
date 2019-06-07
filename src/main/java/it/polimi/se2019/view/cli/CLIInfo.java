@@ -16,7 +16,7 @@ public class CLIInfo {
 
     private final static int sizePlayer = 11;
     private CLIPlayer mPlayer ;
-    private List<String[]> mPlayersInfo;
+    private List<CLIPlayer> mPlayersInfo;
 
     public CLIInfo (List<Player> players, Player owner,PlayerColor ownerColor,PlayerColor activePlayer){
         mPlayers = players;
@@ -31,11 +31,15 @@ public class CLIInfo {
     }
 
     public void initialization(List<Player> players){
-        mPlayer = new CLIPlayer(players);
+        for (Player player : players) {
+            mPlayer = new CLIPlayer(players);
+        }
+        mPlayersInfo.add(mPlayer);
     }
     public void setActivePlayer(PlayerColor color){
         mActivePlayerf = color.getPascalName();
     }
+
 
 
 
