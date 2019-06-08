@@ -6,10 +6,10 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.controller.weapon.Weapon;
-import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.util.Jsons;
+import it.polimi.se2019.util.Pair;import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
+import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.View;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,13 +22,15 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class WeaponsTest {
     private Game mAllInOriginGame;
     private Game mLuigiHidesFromYellowParty;
 
+    /**
+     * Utility to assert that a player has been damaged correctly
+     */
     private void assertPlayerDamage(Player damagedPlayer, List<PlayerColor> damage, List<Pair<PlayerColor, Integer>> marks) {
         assertArrayEquals(
                 damage.toArray(),
@@ -55,7 +57,7 @@ public class WeaponsTest {
                         new Player("Smurfette", PlayerColor.BLUE, new Position(0, 0)),
                         new Player("Banano", PlayerColor.YELLOW, new Position(0, 0))
                 )),
-                0
+                1
         );
 
         mLuigiHidesFromYellowParty = new Game(
@@ -67,8 +69,14 @@ public class WeaponsTest {
                         new Player("Smurfette", PlayerColor.BLUE, new Position(3, 1)),
                         new Player("Banano", PlayerColor.YELLOW, new Position(2, 2))
                 )),
-                0
+                1
         );
+    }
+
+    @Test
+    public void testWeaponsLoading() {
+        // try to get a weapon and in doing so expect no exceptions
+        Weapons.get(Weapons.listResourceNames().iterator().next());
     }
 
     @Test
@@ -84,7 +92,7 @@ public class WeaponsTest {
 
         // produce result with complete context
         // TODO: wire to mock view
-        testController.shoot(view, PlayerColor.PURPLE, heatseeker.getBehaviour());
+        testController.shoot(viewMock, PlayerColor.PURPLE, heatseeker.getBehaviour());
 
         // assert that Luigi was hurt
         assertPlayerDamage(

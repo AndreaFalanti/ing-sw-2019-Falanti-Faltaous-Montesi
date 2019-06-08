@@ -105,7 +105,7 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
         return new IntLiteral(rawPrimitive.getAsInt());
     }
 
-    // parses an anonymous list
+    // parses a parsePickEffectExpression
     private static Expression parsePickEffectExpression(JsonElement raw, JsonDeserializationContext context) {
         PickEffect result = new PickEffect();
 
@@ -118,6 +118,8 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
         return result;
     }
 
+    // parses a XorEffect expression
+
     // create a default constructed behaviour from a string representation of its type
     public static Behaviour createDefaultConstructedBehaviour(String strType) {
         try {
@@ -125,8 +127,7 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
             return (Behaviour) (type.newInstance());
         } catch (Exception e) {
             throw new IllegalStateException(
-                    "Something went wrong during default initialization of " + strType + " expression\n" +
-                            "msg: " + e.getCause()
+                    "Something went wrong during default initialization of " + strType + " expression" + e
             );
         }
     }

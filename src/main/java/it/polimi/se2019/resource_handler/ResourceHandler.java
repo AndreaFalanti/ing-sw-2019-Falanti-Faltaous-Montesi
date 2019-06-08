@@ -18,7 +18,17 @@ public class ResourceHandler {
     public void registerResource(Function<String, Resource> loader, String path, String customName) {
         if (path.isEmpty())
             throw new IllegalArgumentException("Cannot load resource from empty path!");
-        mResources.put(customName, loader.apply(path));
+
+        Resource toRegister;
+        try {
+            toRegister = loader.apply(path);
+        } catch(Exception e) {
+            throw new IllegalArgumentException(
+                    "Could not load resource [key: " + customName + "; path: " + path + "]: " + e
+            );
+        }
+
+        mResources.put(customName, toRegister);
     }
     public void registerResource(Function<String, Resource> loader, String path) {
         // check if base paths exists, if so save it for later (to remove it)

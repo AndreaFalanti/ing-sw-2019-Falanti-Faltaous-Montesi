@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import it.polimi.se2019.controller.weapon.Expression;
 import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.model.AmmoValue;
+import it.polimi.se2019.model.serialization.AmmoValueDeserializer;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 
@@ -14,6 +16,7 @@ public class WeaponFactory {
     static Gson makeGsonDeserializer() {
         return new GsonBuilder()
                 .registerTypeAdapter(Expression.class, new ExpressionParser())
+                .registerTypeAdapter(AmmoValue.class, new AmmoValueDeserializer())
                 .setPrettyPrinting()
                 .setFieldNamingStrategy(new CustomFieldNamingStrategy())
                 .addSerializationExclusionStrategy(new AnnotationExclusionStrategy())
