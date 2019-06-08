@@ -20,5 +20,7 @@ public class Move extends Behaviour {
                 getSub("from").asTargets(),
                 getSub("to").asPosition()
         );
+
+        return new Done();
     }
 }

@@ -2,7 +2,7 @@
   "name": "Whipser",
   "guiID": "0218",
   "grabCost": "1b",
-  "reloadCost": "2b1y",
+  "reloadCost": "1y2b",
   "behaviour": {
     "expr": "InflictDamage",
     "amount": "3d1m",

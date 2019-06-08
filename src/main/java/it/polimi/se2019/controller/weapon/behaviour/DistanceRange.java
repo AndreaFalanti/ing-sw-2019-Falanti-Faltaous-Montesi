@@ -1,19 +1,24 @@
 package it.polimi.se2019.controller.weapon.behaviour;
 
-import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.controller.weapon.Expression;
 import it.polimi.se2019.controller.weapon.ShootContext;
+import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.board.Board;
 
-public class Distant extends Behaviour {
-    // trivial constructors
-    public Distant(Expression minDistance, Expression maxDistance) {
-        putSub("minDistance", minDistance);
-        putSub("maxDistance", maxDistance);
+public class DistanceRange extends Behaviour {
+    public DistanceRange() {
+        putSub("origin", new You());
     }
-    public Distant(Expression exactDistance) {
-        putSub("minDistance", exactDistance);
-        putSub("maxDistance", exactDistance);
+
+    public DistanceRange(Expression origin, Expression min, Expression max) {
+        putSub("origin", origin);
+        putSub("min", min);
+        putSub("max", max);
+    }
+
+    public DistanceRange(Expression min, Expression max) {
+        putSub("min", min);
+        putSub("max", max);
     }
 
     // TODO: rephrase doc more succinctly...
@@ -28,13 +33,11 @@ public class Distant extends Behaviour {
     @Override
     protected final Expression continueEval(ShootContext context) {
         Board board = context.getBoard();
-        Position shooterPos = context.getShooterPosition();
 
         return new RangeLiteral(board.getReachablePositions(
-                shooterPos,
-                getSub("minDistance").asInt(),
-                getSub("maxDistance").asInt()
+                getSub("origin").asPosition(),
+                getSub("min").asInt(),
+                getSub("max").asInt()
         ));
     }
 }
-
