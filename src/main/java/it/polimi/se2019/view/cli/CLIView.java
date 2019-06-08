@@ -75,7 +75,6 @@ public class CLIView extends View {
         interact();
     }
 
-    @Override
     public void commandAction (String command,String otherCommandPart) {
         Action action = null;
         int index;
@@ -215,7 +214,7 @@ public class CLIView extends View {
         return index;
     }
 
-    @Override
+
     public void weaponPlayer(){
       //  for(Weapon weapon : mCLIInfo.getOwner().getWeapons()) {
       //      System.out.print(weapon.getName() + " ");
@@ -226,7 +225,7 @@ public class CLIView extends View {
         System.out.print("\n");
     }
 
-    @Override
+
     public int reloadInteraction(){//Weapon[] weapon
         int index= -1;
         boolean isValid = false;
@@ -249,7 +248,7 @@ public class CLIView extends View {
         return index;
     }
 
-    @Override
+
     public void easyCommand(String command){
 
         switch(command){
@@ -345,7 +344,6 @@ public class CLIView extends View {
 
 
 
-    @Override
     public void parseCommand(String command) {
 
         command = command.toLowerCase();
@@ -367,7 +365,7 @@ public class CLIView extends View {
         interact();
     }
 
-    @Override
+
     public String requestAdditionalInfo(){
         Scanner scanner = new Scanner(System.in);
         String command = "" ;
@@ -383,7 +381,7 @@ public class CLIView extends View {
     }
 
     @Override
-    public Set<Position> selectPositions(int minToSelect, int maxToSelect, Set<Position> possiblePositions) {
+    public Position selectPosition(Set<Position> possiblePositions) {
         return null;
     }
 
@@ -416,7 +414,7 @@ public class CLIView extends View {
         System.out.println(error);
     }
 
-    @Override
+
     public void interact(){
         String command = requestAdditionalInfo();
         parseCommand(command);

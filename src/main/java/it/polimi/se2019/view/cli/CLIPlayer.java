@@ -1,9 +1,10 @@
 package it.polimi.se2019.view.cli;
 
-import it.polimi.se2019.model.*;
 import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.model.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public class CLIPlayer {
     private String overkilled;
     private String mPlayerWeapons ;
     private String mPlayerPos;
-    private Map<String,Integer> mPlayerMarks;
+    private Map<String,Integer> mPlayerMarks = new HashMap<>();
     private String mDamageTaken;
     private String mPlayerPowerUps;
     private String mDeathNum;
@@ -27,21 +28,22 @@ public class CLIPlayer {
 
             mPlayerName = player.getName();
             mPlayerColor = player.getColor().getPascalName();
-            mPlayerScore = "0";
+            setScore(player.getScore());
             setAmmo(player.getAmmo());
-            dead = "is not dead";//to update
-            overkilled = "not is overkilled";//to update
-            mBoardIsFlipped="false";
-            mDeathNum = "0";
+            dead = "Is not dead";//to update
+            overkilled = "Is not overkilled";//to update
+
+           // setDeathNums(player.getDeathsNum());
             setWeaponOtherPlayer(player.getWeapons());
             setPosition(player.getPos());
             setScore(player.getScore());
             setWeaponOwner(player.getWeapons());
             for(Map.Entry<PlayerColor,Integer> entry: player.getMarks().entrySet()){
-                mPlayerMarks.put(player.getColor().getPascalName(),player.getMarks().get(player.getColor()));
+                mPlayerMarks.put(entry.getKey().getPascalName(),entry.getValue());
             }
+            setAllDamageTaken(player.getDamageTaken());
 
-        setMarks(player.getMarks().get(player.getColor()),player.getColor());
+       // setMarks(player.getMarks().get(player.getColor()),player.getColor());
 
     }
 
@@ -78,8 +80,9 @@ public class CLIPlayer {
         mDeathNum = String.valueOf(Integer.parseInt(mDeathNum) + 1);
     }
 
-    public void flipBoard(){
-        mBoardIsFlipped = "true";
+    public void flipBoard(boolean isFlipped){
+        if(isFlipped)
+            mBoardIsFlipped = "Board is flipped,frenzy mode ";
     }
 
     public void setAmmo(AmmoValue ammo){
@@ -117,6 +120,20 @@ public class CLIPlayer {
     }
 
 
+    public void setAllDamageTaken(PlayerColor[] damage){
+        StringBuilder shooter = new StringBuilder();
+        if(damage[0]==null) {
+            mDamageTaken = "Has not suffered damage";
+        }
+        else{
+            for(PlayerColor color: damage)
+                if(color != null)
+                    shooter.append(color.getPascalName());
+            mDamageTaken = shooter.toString();
+        }
+
+    }
+
     public void setDamageTaken(int damageTaken, PlayerColor shooterPlayerColor){
         StringBuilder damage = new StringBuilder();
         damage.append(mDamageTaken);
@@ -131,7 +148,8 @@ public class CLIPlayer {
             mPlayerWeapons = "not have weapon";
         else{
             for(Weapon weapon: weapons){
-                if(weapon.isLoaded())
+
+                if(weapon != null && !weapon.isLoaded())
                     nameWeapon.add(weapon.getName());
             }
             mPlayerWeapons = String.join(",",nameWeapon);
@@ -145,9 +163,11 @@ public class CLIPlayer {
             mPlayerWeapons = "not have weapon";
         else{
             for(Weapon weapon: weapons){
-                if(!weapon.isLoaded())
-                    load = "(to load)";
-                nameWeapon.add(weapon.getName() + load);
+                if(weapon!= null){
+                    if(!weapon.isLoaded())
+                        load = "(to load)";
+                    nameWeapon.add(weapon.getName() + load);
+                }
             }
             mPlayerWeapons = String.join(",",nameWeapon);
         }
@@ -161,8 +181,5 @@ public class CLIPlayer {
             mPlayerPos =  pos.toString();
         }
     }
-
-
-
 
 }

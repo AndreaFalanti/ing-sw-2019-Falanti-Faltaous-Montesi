@@ -31,11 +31,6 @@ public class GraphicView extends View {
     }
 
     @Override
-    public void commandAction(String command, String otherCommandPart) {
-
-    }
-
-    @Override
     public Position parseInformationOnDestination(List<Position> pos) {
         return null;
     }
@@ -51,37 +46,12 @@ public class GraphicView extends View {
     }
 
     @Override
-    public void weaponPlayer() {
-
-    }
-
-    @Override
-    public int reloadInteraction() {
-        return 0;
-    }
-
-    @Override
-    public void easyCommand(String command) {
-
-    }
-
-    @Override
-    public void parseCommand(String command) {
-
-    }
-
-    @Override
-    public String requestAdditionalInfo() {
-        return null;
-    }
-
-    @Override
     public Direction pickDirection() {
         return null;
     }
 
     @Override
-    public Set<Position> selectPositions(int minToSelect, int maxToSelect, Set<Position> possiblePositions) {
+    public Position selectPosition(Set<Position> possiblePositions) {
         return null;
     }
 
@@ -95,8 +65,4 @@ public class GraphicView extends View {
         return null;
     }
 
-    @Override
-    public void interact(){
-
-    }
 }

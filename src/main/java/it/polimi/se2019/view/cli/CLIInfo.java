@@ -1,11 +1,12 @@
 package it.polimi.se2019.view.cli;
 
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.PowerUpCard;
-import it.polimi.se2019.controller.weapon.Weapon;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public class CLIInfo {
     private PlayerColor mOwnerColorf;
     private String mOwnerColor;
     private CLIPlayer mOwner;
-    private List<CLIPlayer> mPlayersInfo;
+    private List<CLIPlayer> mPlayersInfo = new ArrayList<>();
     private String mKillTrack;
 
     public CLIInfo (List<Player> players, Player owner,PlayerColor ownerColor,PlayerColor activePlayer){
@@ -29,10 +30,12 @@ public class CLIInfo {
         setActivePlayer(activePlayerColor);
         mOwnerColor = ownerColor.getPascalName();
         for (Player player : players) {
-            playerInfo = new CLIPlayer(player);
-            if(player.getColor().getPascalName().equals(mOwnerColor))
-                mOwner = playerInfo;
-            mPlayersInfo.add(playerInfo);
+            if(player!=null){
+                playerInfo = new CLIPlayer(player);
+                if(player.getColor().getPascalName().equals(mOwnerColor))
+                    mOwner = playerInfo;
+                mPlayersInfo.add(playerInfo);
+            }
         }
 
     }
@@ -75,7 +78,7 @@ public class CLIInfo {
     }
 
     public void updateBoardFlip(PlayerColor playerColor){
-        playerFromColor(playerColor).flipBoard();
+ //        playerFromColor(playerColor).flipBoard(playerFromColor(playerColor).;);
     }
 
     public void updateKillTrak(PlayerColor killedCollor,PlayerColor killerColor,
