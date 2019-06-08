@@ -1,30 +1,30 @@
 package it.polimi.se2019.controller;
 
-import it.polimi.se2019.controller.response.Response;
-import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.model.action.response.DiscardRequiredActionResponse;
 import it.polimi.se2019.model.action.response.InvalidActionResponse;
 import it.polimi.se2019.model.action.response.MessageActionResponse;
 import it.polimi.se2019.model.action.response.SelectWeaponRequiredActionResponse;
-import it.polimi.se2019.util.Observable;
+import it.polimi.se2019.view.View;
 
 import java.util.Optional;
 
 public class PlayerActionController implements InvalidActionResponseHandler {
-    private Game mGame;
-    private Action mAction;
+    private Controller mMainController;
+    private View mRequestingView;
 
-    public void update(Observable remoteView, Action action){
-        mAction = action;
+    public PlayerActionController(Controller mainController) {
+        mMainController = mainController;
     }
 
-    public void Execute(){
-        Optional<InvalidActionResponse> response = mAction.getErrorResponse(mGame);
+    public void executeAction (Action action, View requestingView){
+        mRequestingView = requestingView;
+
+        Optional<InvalidActionResponse> response = action.getErrorResponse(mMainController.getGame());
         if(!response.isPresent()) {
-            mAction.perform(mGame);
-            if(mAction.consumeAction())
-                mGame.decreaseActionCounter();
+            action.perform(mMainController.getGame());
+            if(action.consumeAction())
+                mMainController.getGame().decreaseActionCounter();
         }
         else {
              response.get().handle(this);
@@ -32,18 +32,18 @@ public class PlayerActionController implements InvalidActionResponseHandler {
     }
 
     @Override
-    public Response handle(MessageActionResponse actionResponse) {
-        return null;
+    public void handle(MessageActionResponse actionResponse) {
+        mRequestingView.showMessage(actionResponse.getMessage());
     }
 
     @Override
-    public Response handle(DiscardRequiredActionResponse actionResponse) {
-        return null;
+    public void handle(DiscardRequiredActionResponse actionResponse) {
+
     }
 
     @Override
-    public Response handle(SelectWeaponRequiredActionResponse actionResponse) {
-        return null;
+    public void handle(SelectWeaponRequiredActionResponse actionResponse) {
+
     }
 }
 

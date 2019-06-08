@@ -1,14 +1,14 @@
 package it.polimi.se2019.view;
 
 import it.polimi.se2019.controller.response.Response;
+import it.polimi.se2019.controller.weapon.Effect;
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
-import it.polimi.se2019.controller.weapon.Effect;
-import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.util.Either;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
@@ -47,10 +47,6 @@ public abstract class View extends Observable<Request> implements Observer<Eithe
 
     public abstract void reportError(String error);
 
-    public abstract void updateBoard();
-
-    public abstract void updatePlayers();
-
     public abstract void commandAction (String command,String otherCommandPart);//to distinguish and make response for an action
 
     public abstract Position parseInformationOnDestination(List<Position> pos);//used from controller to response more info on destination
@@ -73,15 +69,9 @@ public abstract class View extends Observable<Request> implements Observer<Eithe
 
     public abstract Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority);
 
-
     public abstract void interact();//used to parse the command
 
-    public void notifyController() {
-        // TODO: implement
-    }
-
     public PlayerColor getActivePlayer() {
-
         return null;
     }
 

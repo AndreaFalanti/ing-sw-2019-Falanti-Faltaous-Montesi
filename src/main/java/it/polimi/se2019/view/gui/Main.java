@@ -28,6 +28,7 @@ public class Main extends Application {
 
         MainScreen controller = loader.getController();
         GraphicView GuiView = new GraphicView(controller);
+        controller.setView(GuiView);
         controller.setClientColor(PlayerColor.PURPLE);
 
 

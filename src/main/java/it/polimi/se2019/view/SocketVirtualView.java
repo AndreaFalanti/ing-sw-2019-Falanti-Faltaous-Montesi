@@ -1,12 +1,12 @@
 package it.polimi.se2019.view;
 
 import it.polimi.se2019.controller.response.Response;
+import it.polimi.se2019.controller.weapon.Effect;
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
-import it.polimi.se2019.controller.weapon.Effect;
-import it.polimi.se2019.controller.weapon.Weapon;
 
 import java.util.List;
 import java.util.Set;
@@ -37,16 +37,6 @@ public class SocketVirtualView extends View {
 
     @Override
     public void reportError(String error) {
-
-    }
-
-    @Override
-    public void updateBoard() {
-
-    }
-
-    @Override
-    public void updatePlayers() {
 
     }
 

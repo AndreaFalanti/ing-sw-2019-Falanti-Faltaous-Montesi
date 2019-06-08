@@ -1,12 +1,12 @@
 package it.polimi.se2019.view.gui;
 
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.AmmoCard;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.MoveAction;
 import it.polimi.se2019.model.action.MoveGrabAction;
 import it.polimi.se2019.model.board.*;
-import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.view.request.ActionRequest;
 import it.polimi.se2019.view.request.Request;
@@ -441,7 +441,8 @@ public class BoardPane extends Observable<Request> {
                         mMainController.setEnableStatusActionButtonBox(true);
 
                         notify(new ActionRequest(
-                                new MoveAction(mMainController.getClientColor(), new Position(x, y), true)));
+                                new MoveAction(mMainController.getClientColor(), new Position(x, y), true),
+                                mMainController.getView()));
                     });
                 }
             }
@@ -461,7 +462,8 @@ public class BoardPane extends Observable<Request> {
                         mMainController.setEnableStatusActionButtonBox(true);
 
                         notify(new ActionRequest(
-                                new MoveGrabAction(mMainController.getClientColor(), new Position(x, y))));
+                                new MoveGrabAction(mMainController.getClientColor(), new Position(x, y)),
+                                mMainController.getView()));
                     });
                 }
             }
@@ -498,7 +500,8 @@ public class BoardPane extends Observable<Request> {
 
         for (int i = 0; i < selectedSpawn.getChildren().size(); i++) {
             final int index = i;
-            selectedSpawn.getChildren().get(i).setOnMouseClicked(event -> notify(new WeaponSelectedRequest(index)));
+            selectedSpawn.getChildren().get(i).setOnMouseClicked(event -> notify(
+                    new WeaponSelectedRequest(index, mMainController.getView())));
         }
 
         mMainController.getUndoButton().setOnMouseClicked(event -> {

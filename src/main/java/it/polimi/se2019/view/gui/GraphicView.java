@@ -1,9 +1,9 @@
 package it.polimi.se2019.view.gui;
 
-import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.Position;
 import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.view.View;
 
 import java.util.List;
@@ -19,28 +19,13 @@ public class GraphicView extends View {
         mMainFrameController = mainFrameController;
     }
 
-    public void showPanel(int panel) {
-
-    }
-
-
     @Override
     public void showMessage(String message){
-
+        mMainFrameController.logToChat(message);
     }
 
     @Override
     public void reportError(String error){
-
-    }
-
-    @Override
-    public void updateBoard(){
-
-    }
-
-    @Override
-    public void updatePlayers(){
 
     }
 

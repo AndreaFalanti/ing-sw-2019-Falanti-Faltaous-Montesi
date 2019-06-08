@@ -1,12 +1,12 @@
 package it.polimi.se2019.view.gui;
 
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.MoveShootAction;
 import it.polimi.se2019.model.action.ReloadAction;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
-import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.view.request.ActionRequest;
@@ -56,6 +56,7 @@ public class MainScreen extends Observable<Request> {
     private static final double LOADED_OPACITY = 1;
     private static final double UNLOADED_OPACITY = 0.4;
 
+    private GraphicView mView;
     private PlayerColor mClientColor;
 
     private BoardPane mBoardController;
@@ -71,12 +72,20 @@ public class MainScreen extends Observable<Request> {
         return mClientColor;
     }
 
+    public GraphicView getView() {
+        return mView;
+    }
+
     public Button getUndoButton() {
         return undoButton;
     }
 
     public void setClientColor (PlayerColor color) {
         mClientColor = color;
+    }
+
+    public void setView(GraphicView view) {
+        mView = view;
     }
 
     public PlayerPane getPlayerControllerFromColor(PlayerColor color) {
@@ -417,7 +426,7 @@ public class MainScreen extends Observable<Request> {
         }
 
         powerUpDiscardButton.setOnMouseClicked(event -> {
-            notify(new PowerUpDiscardedRequest(mDiscardedPowerUpsCache));
+            notify(new PowerUpDiscardedRequest(mDiscardedPowerUpsCache, mView));
             powerUpDiscardButton.setDisable(true);
         });
 
@@ -444,7 +453,7 @@ public class MainScreen extends Observable<Request> {
                 GuiUtils.setBoxEnableStatus(weaponBox,false);
                 setEnableStatusActionButtonBox(true);
 
-                notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index)));
+                notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index), mView));
             }
             else {
                 logToChat("Can't shoot with unloaded weapon");
@@ -465,7 +474,7 @@ public class MainScreen extends Observable<Request> {
                 GuiUtils.setBoxEnableStatus(weaponBox,false);
                 setEnableStatusActionButtonBox(true);
 
-                notify(new ActionRequest(new ReloadAction(index)));
+                notify(new ActionRequest(new ReloadAction(index), mView));
             }
             else {
                 logToChat("Can't reload an already loaded weapon");
@@ -475,7 +484,7 @@ public class MainScreen extends Observable<Request> {
 
     private void setIndexForwardingOnWeapon(Node weapon, int index) {
         weapon.setOnMouseClicked(event ->
-            notify(new WeaponSelectedRequest(index))
+            notify(new WeaponSelectedRequest(index, mView))
         );
     }
 }

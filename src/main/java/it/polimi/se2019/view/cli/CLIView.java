@@ -1,11 +1,11 @@
 package it.polimi.se2019.view.cli;
 
 
+import it.polimi.se2019.controller.weapon.Effect;
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.*;
-import it.polimi.se2019.controller.weapon.Effect;
-import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.view.View;
 
 import java.util.*;
@@ -403,16 +403,6 @@ public class CLIView extends View {
     @Override
     public void reportError(String error){
         System.out.println(error);
-    }
-
-    @Override
-    public void updateBoard(){
-
-    }
-
-    @Override
-    public void updatePlayers(){
-
     }
 
     @Override
