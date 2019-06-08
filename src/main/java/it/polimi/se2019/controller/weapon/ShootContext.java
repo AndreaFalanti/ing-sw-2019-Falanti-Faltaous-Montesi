@@ -7,10 +7,7 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.view.View;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ShootContext {
     // statics
@@ -22,7 +19,7 @@ public class ShootContext {
     private PlayerColor mShooterColor;
     private Map<String, Expression> mScope;
 
-    // trivial constructors
+    // trivial constructor
     public ShootContext(Game game, View view, PlayerColor shooterColor) {
         // safety check to assure that shooter is present among provided players
         List<Player> players = game.getPlayers();
@@ -35,6 +32,14 @@ public class ShootContext {
         mShooterColor = shooterColor;
     }
 
+    // construct from board and players
+    public ShootContext(View view, Board board, Set<Player> players, PlayerColor shooterColor) {
+        this(
+                new Game(board, new ArrayList<>(players), 0),
+                view,
+                shooterColor
+        );
+    }
     // trivial getters
     public Board getBoard() {
         return mGame.getBoard();

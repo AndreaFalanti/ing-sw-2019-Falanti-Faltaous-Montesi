@@ -1,120 +1,131 @@
 package it.polimi.se2019.controller.weapon;
 
-import it.polimi.se2019.controller.weapon.behaviour.ShootResult;
-import it.polimi.se2019.controller.weapon.behaviour.TargetsLiteral;
+import it.polimi.se2019.controller.Controller;
+import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.action.Action;
-import it.polimi.se2019.model.action.DamageAction;
-import it.polimi.se2019.model.action.WeaponAction;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.util.Jsons;
+import it.polimi.se2019.util.Pair;
+import it.polimi.se2019.view.View;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class WeaponsTest {
-    private ShootContext mAllInOriginContext;
+    private Game mAllInOriginGame;
+
+    private void assertPlayerDamage(Player damagedPlayer, List<PlayerColor> damage, List<Pair<PlayerColor, Integer>> marks) {
+        assertArrayEquals(
+                damage.toArray(),
+                damagedPlayer.getDamageTaken()
+        );
+        assertEquals(
+                marks.stream()
+                        .collect(Collectors.toMap(
+                                Pair::getFirst,
+                                Pair::getSecond
+                        )),
+                damagedPlayer.getMarks()
+        );
+    }
 
     @Before
     public void instantiate() {
         // mario bros
-        mAllInOriginContext = new ShootContext(
+        mAllInOriginGame = new Game(
                 Board.fromJson(Jsons.get("boards/game/board1")),
-                new HashSet(Arrays.asList(
+                new ArrayList<>(Arrays.asList(
                         new Player("Mario", PlayerColor.PURPLE, new Position(0, 0)),
                         new Player("Luigi", PlayerColor.GREEN, new Position(0, 0)),
                         new Player("Dorian", PlayerColor.GREY, new Position(0, 0)),
                         new Player("Smurfette", PlayerColor.BLUE, new Position(0, 0)),
                         new Player("Banano", PlayerColor.YELLOW, new Position(0, 0))
                 )),
-                PlayerColor.PURPLE
+                0
         );
     }
 
     @Test
     public void testHeatseekerMarioShootsLuigi() {
+        // instantiate controller
+        Controller testController = new Controller(mAllInOriginGame);
+
+        // instantiate mock view
+        View view = mock(View.class);
+
         // instantiate weapon
         Weapon heatseeker = Weapons.get("heatseeker");
 
-        // provide needed information to shoot
-        mAllInOriginContext.provideInfo(new TargetsLiteral(Collections.singleton(PlayerColor.GREEN)));
-
         // produce result with complete context
-        ShootResult result = heatseeker.shoot(mAllInOriginContext);
+        // TODO: wire to mock view
+        testController.shoot(view, PlayerColor.PURPLE, heatseeker.getBehaviour());
 
-        // assert that result is an action (since context was complete)
-        assertTrue(result.isComplete());
-
-        // test that action is correct
-        Action actual = result.asAction();
-        Action expected = new WeaponAction(
-                new DamageAction(
+        // assert that Luigi was hurt
+        assertPlayerDamage(
+                mAllInOriginGame.getPlayerFromColor(PlayerColor.GREEN),
+                Arrays.asList(
                         PlayerColor.PURPLE,
-                        Collections.singleton(PlayerColor.GREEN),
-                        new Damage(3, 0)
-                )
+                        PlayerColor.PURPLE,
+                        PlayerColor.PURPLE
+                ),
+                Arrays.asList()
         );
-        assertEquals(expected, actual);
-    }
 
-    @Test
-    public void testHeatseekerMarioShootsLuigiMissingTarget() {
-         // instantiate weapon
-        Weapon heatseeker = Weapons.get("heatseeker");
-
-        // shoot
-        Response actual = heatseeker.shoot(mAllInOriginContext).asResponse();
-
-        // AtomicExpression expected = new InflictDamage(
-                // new DamageLiteral(new Damage(3, 0)),
-                // new WaitForInfo()
-        // );
-        Response expected = new TargetSelectionResponse(
-                1,
-                1,
-                Collections.emptySet()
-        );
-        assertEquals(expected, actual);
     }
 
     @Test
     public void testLockRifleMarioShootsLuigiAndThenDorian() {
+        // instantiate controller
+        Controller testController = new Controller(mAllInOriginGame);
+
+        // mock view
+        View view = mock(View.class);
+
         // instantiate weapon
         Weapon lockrifle = Weapons.get("lock_rifle");
 
         // provide needed information to shoot
-        mAllInOriginContext.provideInfo(Arrays.asList(
-                new TargetsLiteral(Collections.singleton(PlayerColor.GREEN)),
-                new TargetsLiteral(Collections.singleton(PlayerColor.GREY))
-        ));
+        // TODO: use mock view for these
+        // mAllInOriginGame.provideInfo(Arrays.asList(
+                // new TargetsLiteral(Collections.singleton(PlayerColor.GREEN)),
+                // new TargetsLiteral(Collections.singleton(PlayerColor.GREY))
+        // ));
 
         // produce result with complete context
-        ShootResult result = lockrifle.shoot(mAllInOriginContext);
+        testController.shoot(view, PlayerColor.PURPLE, lockrifle.getBehaviour());
 
-        // assert that result is an action (since context was complete)
-        assertTrue(result.isComplete());
-
-        // test that action is correct
-        Action actual = result.asAction();
-        Action expected = new WeaponAction(
-                new DamageAction(
+        // assert that luigi is hurt
+        assertPlayerDamage(
+                mAllInOriginGame.getPlayerFromColor(PlayerColor.GREEN),
+                Arrays.asList(
                         PlayerColor.PURPLE,
-                        Collections.singleton(PlayerColor.GREEN),
-                        new Damage(2, 1)
+                        PlayerColor.PURPLE
                 ),
-                new DamageAction(
-                        PlayerColor.PURPLE,
-                        Collections.singleton(PlayerColor.GREY),
-                        new Damage(0, 1)
+                Arrays.asList(
+                        new Pair(PlayerColor.PURPLE, 1)
                 )
         );
-        assertEquals(expected, actual);
+
+        // assert that Dorian is hurt
+        assertPlayerDamage(
+                mAllInOriginGame.getPlayerFromColor(PlayerColor.GREY),
+                Arrays.asList(),
+                Arrays.asList(
+                        new Pair(PlayerColor.PURPLE, 1)
+                )
+        );
     }
 }

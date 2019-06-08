@@ -7,6 +7,7 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
 import it.polimi.se2019.controller.weapon.Expression;
 import it.polimi.se2019.controller.weapon.ShootContext;
+import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
 import java.util.HashSet;
@@ -30,9 +31,10 @@ public class Controller implements AbstractController {
     /* control methods */
     /*******************/
 
-    public void shoot(PlayerColor shooter, Expression weaponBehaviour) {
+    public void shoot(View view, PlayerColor shooter, Expression weaponBehaviour) {
         // initialize context for shooting
         ShootContext initialContext = new ShootContext(
+                view,
                 mGame.getBoard(),
                 new HashSet<>(mGame.getPlayers()),
                 shooter

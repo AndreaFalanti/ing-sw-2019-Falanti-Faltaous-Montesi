@@ -21,6 +21,7 @@ public class InflictDamage extends Behaviour {
 
         // calculate resulting action
         inflictDamage(
+                context,
                 inflicterColor,
                 getSub("to").asTargets(),
                 getSub("amount").asDamage()
