@@ -5,37 +5,69 @@ import it.polimi.se2019.model.weapon.Weapon;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CLIPlayer {
 
     private String mPlayerName ;
     private String mPlayerColor ;
     private String mPlayerScore;
-    private String isDead;
-    private String isOverkilled;
+    private String dead;
+    private String overkilled;
     private String mPlayerWeapons ;
     private String mPlayerPos;
-    private String mPlayerMarks;
+    private Map<String,Integer> mPlayerMarks;
     private String mDamageTaken;
     private String mPlayerPowerUps;
-    private String mDeathNums;
+    private String mDeathNum;
     private String mPlayerAmmo;
     private String mBoardIsFlipped ;
 
-    public CLIPlayer(List<Player> players){
-        for(Player player: players) {
+    public CLIPlayer(Player player){
+
             mPlayerName = player.getName();
             mPlayerColor = player.getColor().getPascalName();
             mPlayerScore = "0";
             setAmmo(player.getAmmo());
-            //isDead
-            //isOverkilled
+            dead = "is not dead";//to update
+            overkilled = "not is overkilled";//to update
             mBoardIsFlipped="false";
-            mDeathNums="0";
+            mDeathNum = "0";
             setWeaponOtherPlayer(player.getWeapons());
             setPosition(player.getPos());
-        }
+            setScore(player.getScore());
+            setWeaponOwner(player.getWeapons());
+            for(Map.Entry<PlayerColor,Integer> entry: player.getMarks().entrySet()){
+                mPlayerMarks.put(player.getColor().getPascalName(),player.getMarks().get(player.getColor()));
+            }
+
+        setMarks(player.getMarks().get(player.getColor()),player.getColor());
+
     }
+
+    public String getPlayerColor(){return mPlayerColor;}
+
+    public String getPlayerName(){return mPlayerName;}
+
+    public String getPlayerPowerUps(){return mPlayerPowerUps;}
+
+    public String getPlayerAmmo(){return mPlayerAmmo;}
+
+    public String getPlayerDeaths(){return mDeathNum;}
+
+    public String getPlayerDamage(){return mDamageTaken;}
+
+    public Map<String, Integer> getPlayerMarks(){return mPlayerMarks;}
+
+    public String playerIsDead(){return dead;}
+
+    public String playerIsOverkilled(){return overkilled;}
+
+    public String getPlayerPosition(){return mPlayerPos;}
+
+    public String getPlayerWeapons(){return mPlayerWeapons;}
+
+    public String getPlayerScore(){return mPlayerScore;}
 
 
     public void setScore(int i){
@@ -43,7 +75,7 @@ public class CLIPlayer {
     }
 
     public void setDeathNums(){
-        mDeathNums = String.valueOf(Integer.parseInt(mDeathNums) + 1);
+        mDeathNum = String.valueOf(Integer.parseInt(mDeathNum) + 1);
     }
 
     public void flipBoard(){
@@ -58,8 +90,13 @@ public class CLIPlayer {
         mPlayerPowerUps = String.valueOf(i);
     }
 
-    public void setPowerUpsOwnerPlayers(PowerUpCard[] powerUpCards){
+    public void setPowerUpsOwnerPlayer(PowerUpCard[] powerUpCards){
         StringBuilder power = new StringBuilder();
+
+        if (powerUpCards == null){
+            mPlayerPowerUps = "not have power up card !";
+            return;
+        }
 
         for (PowerUpCard powerUpCard : powerUpCards) {
             power.append("PowerUpCard{ ");
@@ -75,11 +112,8 @@ public class CLIPlayer {
     }
 
     public void setMarks(int marks,PlayerColor shooterPlayerColor){
-        StringBuilder mark = new StringBuilder();
-        mark.append(mDamageTaken);
-        for(int i=0 ; i<marks; i++)
-            mark.append(shooterPlayerColor.getPascalName());
-        mPlayerMarks = mark.toString();
+
+        mPlayerMarks.put(shooterPlayerColor.getPascalName(),marks);
     }
 
 

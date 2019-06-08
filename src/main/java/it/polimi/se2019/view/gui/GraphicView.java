@@ -70,7 +70,7 @@ public class GraphicView extends View {
     }
 
     @Override
-    public int reloadInteraction(Weapon[] weapons) {
+    public int reloadInteraction() {
         return 0;
     }
 

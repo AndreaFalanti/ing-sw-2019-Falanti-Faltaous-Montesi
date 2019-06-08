@@ -61,7 +61,7 @@ public abstract class View extends Observable<Request> implements Observer<Eithe
 
     public abstract void weaponPlayer();//to see weapon of player
 
-    public abstract int reloadInteraction(Weapon[] weapons);//to choose the weapon that you want reload
+    public abstract int reloadInteraction();//to choose the weapon that you want reload
 
     public abstract void easyCommand(String command);//command as print Players name
 

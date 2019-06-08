@@ -76,7 +76,7 @@ public class RmiVirtualView extends View {
     }
 
     @Override
-    public int reloadInteraction(Weapon[] weapons) {
+    public int reloadInteraction() {
         return 0;
     }
 
