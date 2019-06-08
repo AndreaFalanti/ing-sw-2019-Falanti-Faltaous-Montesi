@@ -1,6 +1,7 @@
 package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.model.Damage;
+import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.controller.weapon.behaviour.UnsupportedConversionException;
@@ -45,13 +46,19 @@ public abstract class Expression {
     }
 
     // inflict damage
-    protected void inflictDamage(PlayerColor inflicterColor, Set<PlayerColor> to, Damage amount) {
+    protected void inflictDamage(ShootContext context, PlayerColor inflicter, Set<PlayerColor> inflicted, Damage amount) {
+        Game game = context.getGame();
 
+        inflicted.forEach(
+                singularInflicted -> game.handleDamageInteraction(inflicter, singularInflicted, amount)
+        );
     }
 
     // move player around
-    protected void move(PlayerColor who, Position where) {
+    protected void move(ShootContext context, PlayerColor who, Position where) {
+        Game game = context.getGame();
 
+        throw new UnsupportedOperationException("WIP");
     }
 
     // safely discard result of evaluated expression by issuing a warning

@@ -1,11 +1,14 @@
 package it.polimi.se2019.controller.weapon;
 
+import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.view.View;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,32 +17,31 @@ public class ShootContext {
     private static final String MISSING_PLAYER_MSG = "Shooter is not present among provided list of players!";
 
     // fields
-    private Board mBoard;
-    private Set<Player> mPlayers;
-    private PlayerColor mShooterColor;
-    private int mCurrentPriority;
+    private Game mGame;
     private View mView;
+    private PlayerColor mShooterColor;
     private Map<String, Expression> mScope;
 
     // trivial constructors
-    public ShootContext(Board board, Set<Player> players, PlayerColor shooterColor) {
+    public ShootContext(Game game, View view, PlayerColor shooterColor) {
         // safety check to assure that shooter is present among provided players
+        List<Player> players = game.getPlayers();
         if (!players.stream().anyMatch(pl -> pl.getColor() == shooterColor))
             throw new IllegalArgumentException(MISSING_PLAYER_MSG);
 
         // initialize fields
-        mBoard = board;
-        mPlayers = players;
+        mGame = game;
+        mView = view;
         mShooterColor = shooterColor;
     }
 
     // trivial getters
     public Board getBoard() {
-        return mBoard;
+        return mGame.getBoard();
     }
 
     public Set<Player> getPlayers() {
-        return mPlayers;
+        return new HashSet<>(mGame.getPlayers());
     }
 
     public PlayerColor getShooterColor() {
@@ -47,7 +49,7 @@ public class ShootContext {
     }
 
     public Player getShooter() {
-        return mPlayers.stream()
+        return getPlayers().stream()
                 .filter(pl -> pl.getColor() == getShooterColor())
                 .findFirst()
                 .orElseThrow(() ->
@@ -74,8 +76,8 @@ public class ShootContext {
         mScope.put(name, value);
     }
 
-    public int getCurrentPriority() {
-        return mCurrentPriority;
+    public Game getGame() {
+        return mGame;
     }
 }
 
