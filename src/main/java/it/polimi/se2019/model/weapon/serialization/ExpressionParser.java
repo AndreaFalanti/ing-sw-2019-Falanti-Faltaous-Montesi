@@ -59,6 +59,11 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
                 AmmoValue.from(rawPrimitive.getAsString()).isPresent();
     }
 
+    // identifies a pure string
+    private static boolean isPureStringLiteral(JsonPrimitive rawPrimitive) {
+        return rawPrimitive.isString();
+    }
+
     // identifies a pick effect expression
     private static boolean isPickEffectExpression(JsonElement raw) {
         return raw.isJsonObject() &&
@@ -98,6 +103,11 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
         );
     }
 
+    // parses a pure string literal
+    private static Expression parsePureStringLiteral(JsonPrimitive rawPrimitive) {
+        return new StringLiteral(rawPrimitive.getAsString());
+    }
+
     // parses a primitive
     private static Expression parsePrimitive(JsonElement raw) {
         JsonPrimitive rawPrimitive = raw.getAsJsonPrimitive();
@@ -110,8 +120,11 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
         if (rawPrimitive.isString()) {
             if (isCostStringLiteral(rawPrimitive))
                 return parseCostStringLiteral(rawPrimitive);
-            else if(isDamageStringLiteral(rawPrimitive))
+            else if (isDamageStringLiteral(rawPrimitive))
                 return parseDamageStringLiteral(rawPrimitive);
+            // this has to be last
+            else if (isPureStringLiteral(rawPrimitive))
+                return parsePureStringLiteral(rawPrimitive);
         }
 
         // if this point is reached, then a malformed primitive has been encountered

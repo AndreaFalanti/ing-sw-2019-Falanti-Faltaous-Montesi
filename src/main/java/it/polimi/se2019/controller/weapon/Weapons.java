@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  * Singleton containing all weapons
  */
 public class Weapons {
-    public static final String PATH_TO_WEAPONS_RESOURCES_FOLDER = Jsons.PATH_TO_JSON_RESOURCES_FOLDER + "weapons/";
+    public static final String PATH_TO_WEAPONS_RESOURCES_FOLDER = Jsons.PATH_TO_JSON_RESOURCES_FOLDER + "weapons/real/";
 
     private static boolean resourcesLoaded = false;
     private static ResourceHandler resourceHandler = new ResourceHandler();
