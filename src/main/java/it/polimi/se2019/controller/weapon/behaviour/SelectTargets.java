@@ -4,6 +4,8 @@ import it.polimi.se2019.controller.weapon.Expression;
 import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.view.View;
 
+import static it.polimi.se2019.controller.weapon.ShootContext.SPECIAL_VAR_LAST_SELECTED;
+
 
 public class SelectTargets extends Behaviour {
     public SelectTargets() {
@@ -28,7 +30,7 @@ public class SelectTargets extends Behaviour {
         ));
 
         // save them into a variable
-        context.setVar(LAST_SELECTED_TARGETS_VAR, selectedTargets.deepCopy());
+        context.setVar(SPECIAL_VAR_LAST_SELECTED, selectedTargets.deepCopy());
 
         return selectedTargets;
     }

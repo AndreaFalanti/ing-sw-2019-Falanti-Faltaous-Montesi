@@ -145,7 +145,7 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
             return (Behaviour) (type.newInstance());
         } catch (Exception e) {
             throw new IllegalStateException(
-                    "Something went wrong during default initialization of " + strType + " expression" + e
+                    "Something went wrong during default initialization of " + strType + " expression: " + e
             );
         }
     }
@@ -192,7 +192,7 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
             return parsePrimitive(raw);
 
         else if (isTriviallyDeserializableExpression(raw))
-            makeTrivialExpressionGson().toJson(raw, Expression.class);
+            return makeTrivialExpressionGson().fromJson(raw, Expression.class);
 
         else if (isPickEffectExpression(raw))
             return parsePickEffectExpression(raw, context);

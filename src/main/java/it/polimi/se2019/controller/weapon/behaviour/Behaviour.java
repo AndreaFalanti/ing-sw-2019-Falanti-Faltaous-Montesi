@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Behaviour extends Expression {
-    // variable names used for saving particular things around the code
-    final static String LAST_SELECTED_TARGETS_VAR = "last";
-
     // subexpressions evaluated before their parent expression and used in its evaluation
     @SerializedName("subs")
     Map<String, Expression> mSubexpressions;

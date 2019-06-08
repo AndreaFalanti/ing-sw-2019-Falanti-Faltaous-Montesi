@@ -49,11 +49,11 @@
           "to" : {
             "expr" : "Difference",
             "lhs" : {
-              "expr" : "Look",
+              "expr" : "Load",
               "name" : "basic_effect_selection"
             },
             "rhs" : {
-              "expr" : "Look",
+              "expr" : "Load",
               "name" : "focus_shot_selection"
             }
           }
@@ -72,7 +72,7 @@
               "expr" : "CanSee"
             },
             "rhs" : {
-              "expr" : "Look",
+              "expr" : "Load",
               "name" : "basic_effect_selection"
             }
           }

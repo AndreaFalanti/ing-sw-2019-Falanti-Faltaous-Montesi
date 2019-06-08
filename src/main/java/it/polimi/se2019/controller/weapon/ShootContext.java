@@ -13,6 +13,9 @@ public class ShootContext {
     // statics
     private static final String MISSING_PLAYER_MSG = "Shooter is not present among provided list of players!";
 
+    // special variables handled directly by expression other than Load and Look
+    public static final String SPECIAL_VAR_LAST_SELECTED = "$last";
+
     // fields
     private Game mGame;
     private View mView;
