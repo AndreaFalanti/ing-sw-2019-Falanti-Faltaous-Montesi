@@ -1,8 +1,6 @@
 package it.polimi.se2019.controller.weapon;
 
 import com.google.gson.annotations.SerializedName;
-import it.polimi.se2019.controller.weapon.Expression;
-import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.controller.weapon.behaviour.Done;
 
 import java.util.List;

@@ -1,7 +1,6 @@
 package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.controller.weapon.behaviour.Behaviour;
 
 /**
  * Used for storing information about effect priorities and costs

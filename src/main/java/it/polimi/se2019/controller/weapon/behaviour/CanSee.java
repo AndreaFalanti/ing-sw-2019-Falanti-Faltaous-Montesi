@@ -9,19 +9,21 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CanSee extends Behaviour {
+    public static String OBSERVER = "observer";
+
     public CanSee() {
-        putSub("observer", new You());
+        putSub(OBSERVER, new You());
     }
 
     public CanSee(Expression observer) {
-        putSub("observer", observer);
+        putSub(OBSERVER, observer);
     }
 
     // TODO: add doc
     @Override
     public Expression continueEval(ShootContext context) {
         Set<Position> visibleRange = new GetVisibleRange(
-                getSub("observer")
+                getSub(OBSERVER)
         ).eval(context).asRange();
         Set<Player> allPlayers = context.getPlayers();
 

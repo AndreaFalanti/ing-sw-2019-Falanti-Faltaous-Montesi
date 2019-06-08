@@ -7,7 +7,7 @@ import static it.polimi.se2019.controller.weapon.ShootContext.SPECIAL_VAR_LAST_S
 
 public class LastSelected extends Behaviour {
     public LastSelected() {
-
+        // TODO: implement
     }
 
     @Override
