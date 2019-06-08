@@ -6,9 +6,10 @@ import it.polimi.se2019.view.View;
 
 
 public class SelectTargets extends Behaviour {
-    public SelectTargets(Expression min, Expression max, Expression from) {
-        super();
+    public SelectTargets() {
+    }
 
+    public SelectTargets(Expression min, Expression max, Expression from) {
         putSub("min", min);
         putSub("max", max);
         putSub("from", from);

@@ -17,7 +17,7 @@ public class Effect {
     private AmmoValue mCost;
 
     // behaviour
-    private Behaviour mBehaviour;
+    private Expression mBehaviour;
 
     // trivial getters
     public String getId() {
@@ -40,7 +40,7 @@ public class Effect {
         return mCost;
     }
 
-    public Behaviour getBehaviour() {
+    public Expression getBehaviour() {
         return mBehaviour;
     }
 }

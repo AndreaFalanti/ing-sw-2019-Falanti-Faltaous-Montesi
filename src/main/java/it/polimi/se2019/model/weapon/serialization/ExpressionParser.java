@@ -1,12 +1,11 @@
 package it.polimi.se2019.model.weapon.serialization;
 
 import com.google.gson.*;
+import it.polimi.se2019.controller.weapon.*;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
-import it.polimi.se2019.controller.weapon.Effect;
-import it.polimi.se2019.controller.weapon.Expression;
-import it.polimi.se2019.controller.weapon.PickEffect;
 import it.polimi.se2019.controller.weapon.behaviour.*;
+import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -30,6 +29,18 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
             EXPR_KEYWORD,
             STORE_KEYWORD
     ));
+    private static final Set<String> TRIVIALLY_DESERIALIZABLE_EXPRESSION_TYPES = new HashSet<>(Arrays.asList(
+            "XorEffect",
+            "Do"
+    ));
+
+    private static Gson makeTrivialExpressionGson() {
+        return new GsonBuilder()
+                .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Expression.class, "expr")
+                        .registerSubtype(XorEffect.class, "XorEffect")
+                        .registerSubtype(Do.class, "Do"))
+                .create();
+    }
 
     // identifies if expression is a primitive
     private static boolean isPrimitive(JsonElement raw) {
@@ -48,12 +59,21 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
                 AmmoValue.from(rawPrimitive.getAsString()).isPresent();
     }
 
-    // identifies an pick effect expression
+    // identifies a pick effect expression
     private static boolean isPickEffectExpression(JsonElement raw) {
         return raw.isJsonObject() &&
                 raw.getAsJsonObject().has(EXPR_KEYWORD) &&
                 raw.getAsJsonObject().get(EXPR_KEYWORD).equals(
                         new JsonPrimitive("PickEffect")
+                );
+    }
+
+    // identifies a trivially deserializable expression
+    private static boolean isTriviallyDeserializableExpression(JsonElement raw) {
+        return raw.isJsonObject() &&
+                raw.getAsJsonObject().has(EXPR_KEYWORD) &&
+                TRIVIALLY_DESERIALIZABLE_EXPRESSION_TYPES.contains(
+                        raw.getAsJsonObject().get(EXPR_KEYWORD).getAsString()
                 );
     }
 
@@ -118,8 +138,6 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
         return result;
     }
 
-    // parses a XorEffect expression
-
     // create a default constructed behaviour from a string representation of its type
     public static Behaviour createDefaultConstructedBehaviour(String strType) {
         try {
@@ -173,9 +191,13 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
         if (isPrimitive(raw))
             return parsePrimitive(raw);
 
+        else if (isTriviallyDeserializableExpression(raw))
+            makeTrivialExpressionGson().toJson(raw, Expression.class);
+
         else if (isPickEffectExpression(raw))
             return parsePickEffectExpression(raw, context);
 
+        // this needs to remain last
         else if (isBehaviour(raw))
             return parseBehaviour(raw, context);
 

@@ -1,7 +1,7 @@
 {
   "name": "Machine Gun",
   "shootCost": "1b",
-  "grabCost": "1b1r",
+  "grabCost": "1r1b",
   "behaviour": {
     "expr": "PickEffect",
     "effects": [
