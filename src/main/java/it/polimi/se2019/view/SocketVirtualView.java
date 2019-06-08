@@ -57,6 +57,11 @@ public class SocketVirtualView extends View {
     }
 
     @Override
+    public boolean[] discardPowerUps() {
+        return new boolean[0];
+    }
+
+    @Override
     public Direction pickDirection() {
         return null;
     }

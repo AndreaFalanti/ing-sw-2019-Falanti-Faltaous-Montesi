@@ -48,6 +48,7 @@ public abstract class View extends Observable<Request> implements Observer<Eithe
 
     public abstract Integer weaponPlayerController();// the weapon index of the weapon that you want exchange<to change a parse
 
+    public abstract boolean[] discardPowerUps ();
 
     /**
      * Ask player a cardinal direction
@@ -56,10 +57,10 @@ public abstract class View extends Observable<Request> implements Observer<Eithe
     public abstract Direction pickDirection();
 
     /**
-     * Ask player to select a range of positions from the board
+     * Ask player to select a position from the board
      * @param possiblePositions possible selectable positions (any position selected from outside this range should be
      *                          considered an input error by the controller)
-     * @return the selected positions
+     * @return the selected position
      */
     public abstract Position selectPosition(Set<Position> possiblePositions);
 

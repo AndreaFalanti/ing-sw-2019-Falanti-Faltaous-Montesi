@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.se2019.view.gui.MainScreen">
    <children>
       <Pane fx:id="boardPane" layoutX="5.0" layoutY="5.0" prefHeight="538.0" prefWidth="773.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
@@ -62,33 +63,130 @@
       </GridPane>
       <TabPane layoutX="793.0" layoutY="5.0" prefHeight="500.0" prefWidth="546.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
         <tabs>
-          <Tab text="Untitled Tab 1">
+          <Tab text="Actions">
                <content>
                   <Pane prefWidth="546.0">
                      <children>
-                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="171.0" layoutY="3.0" prefHeight="330.0" prefWidth="290.0" vbarPolicy="ALWAYS">
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="171.0" layoutY="3.0" prefHeight="382.0" prefWidth="340.0" vbarPolicy="ALWAYS">
                            <content>
                               <VBox fx:id="chatBox" prefHeight="327.0" prefWidth="278.0" />
                            </content>
                         </ScrollPane>
-                        <VBox fx:id="buttonBox" layoutX="4.0999755859375" layoutY="3.0999984741210938" spacing="10.0">
+                        <VBox fx:id="buttonBox" layoutX="4.0999755859375" layoutY="3.0999984741210938" prefWidth="100.0" spacing="10.0">
                            <children>
-                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForMove" prefHeight="50.0" prefWidth="90.0" text="MOVE" />
-                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForGrab" prefHeight="50.0" prefWidth="90.0" text="GRAB" />
-                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForShoot" prefHeight="50.0" prefWidth="90.0" text="SHOOT" />
-                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#setReloadOnWeapon" prefHeight="50.0" prefWidth="90.0" text="RELOAD" />
-                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#disableBoardButtonGrid" prefHeight="50.0" prefWidth="90.0" text="END TURN" />
+                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForMove" prefHeight="55.0" prefWidth="100.0" text="MOVE" />
+                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForGrab" prefHeight="55.0" prefWidth="100.0" text="GRAB" />
+                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForShoot" prefHeight="55.0" prefWidth="100.0" text="SHOOT" />
+                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#setReloadOnWeapon" prefHeight="55.0" prefWidth="100.0" text="RELOAD" />
+                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#disableBoardButtonGrid" prefHeight="55.0" prefWidth="100.0" text="END TURN" />
                            </children>
                         </VBox>
-                        <Button fx:id="undoButton" layoutX="4.0" layoutY="324.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="UNDO" />
+                        <Button fx:id="undoButton" layoutX="4.0" layoutY="349.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="UNDO" />
                      </children>
                   </Pane>
                </content>
           </Tab>
-          <Tab text="Untitled Tab 2">
+          <Tab text="Players">
                <content>
                   <VBox fx:id="otherPlayerBoardsBox" spacing="5.0" />
                </content></Tab>
+            <Tab text="Effects">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="414.0" prefWidth="428.0" spacing="6.0">
+                           <children>
+                              <AnchorPane prefHeight="134.0" prefWidth="458.0" style="-fx-background-color: #eeeeee;">
+                                 <children>
+                                    <Label layoutX="24.0" layoutY="14.0" text="Weapon effect title" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                       <font>
+                                          <Font name="System Bold Italic" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="353.0" layoutY="9.0" text="(1, 2, 1)" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <CheckBox layoutX="341.0" layoutY="103.0" mnemonicParsing="false" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="134.0" prefWidth="458.0" style="-fx-background-color: #eeeeee;">
+                                 <children>
+                                    <Label layoutX="24.0" layoutY="14.0" text="Weapon effect title" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                       <font>
+                                          <Font name="System Bold Italic" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="353.0" layoutY="9.0" text="(1, 2, 1)" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <CheckBox layoutX="341.0" layoutY="103.0" mnemonicParsing="false" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutX="10.0" layoutY="150.0" prefHeight="134.0" prefWidth="458.0" style="-fx-background-color: #eeeeee;">
+                                 <children>
+                                    <Label layoutX="24.0" layoutY="14.0" text="Weapon effect title" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                       <font>
+                                          <Font name="System Bold Italic" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="353.0" layoutY="9.0" text="(1, 2, 1)" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <CheckBox layoutX="341.0" layoutY="103.0" mnemonicParsing="false" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </VBox>
+                        <Button layoutX="447.0" layoutY="383.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="OK" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Direction">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label alignment="CENTER" layoutX="187.0" layoutY="27.0" prefHeight="25.0" prefWidth="174.0" text="Choose a direction..." textFill="WHITE">
+                           <font>
+                              <Font name="System Bold Italic" size="18.0" />
+                           </font>
+                        </Label>
+                        <Button layoutX="209.0" layoutY="92.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" text="NORD" />
+                        <Button layoutX="209.0" layoutY="267.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" text="SUD" />
+                        <Button layoutX="77.0" layoutY="180.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" text="OVEST" />
+                        <Button layoutX="339.0" layoutY="180.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" text="EST" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Targets">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="414.0" prefWidth="428.0" spacing="12.0">
+                           <children>
+                              <Label text="Select targets" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="20.0" />
+                                 </font>
+                              </Label>
+                              <RadioButton mnemonicParsing="false" text="Player1 [GREEN]" textFill="WHITE" />
+                              <RadioButton layoutX="10.0" layoutY="52.0" mnemonicParsing="false" text="Player2 [BLUE]" textFill="WHITE" />
+                              <RadioButton layoutX="10.0" layoutY="81.0" mnemonicParsing="false" text="Player3 [YELLOW]" textFill="WHITE" />
+                              <RadioButton layoutX="10.0" layoutY="110.0" mnemonicParsing="false" text="Player4 [PURPLE]" textFill="WHITE" />
+                           </children>
+                        </VBox>
+                        <Button layoutX="447.0" layoutY="383.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="OK" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
         </tabs>
       </TabPane>
    </children>

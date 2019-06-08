@@ -214,6 +214,11 @@ public class CLIView extends View {
         return index;
     }
 
+    @Override
+    public boolean[] discardPowerUps() {
+        return new boolean[0];
+    }
+
 
     public void weaponPlayer(){
       //  for(Weapon weapon : mCLIInfo.getOwner().getWeapons()) {
