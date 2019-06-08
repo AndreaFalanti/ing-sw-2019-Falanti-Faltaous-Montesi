@@ -23,6 +23,7 @@ public class ResourceHandler {
         try {
             toRegister = loader.apply(path);
         } catch(Exception e) {
+            // TODO: use logger instead of cacthing all expressions
             throw new IllegalArgumentException(
                     "Could not load resource [key: " + customName + "; path: " + path + "]: " + e
             );

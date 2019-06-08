@@ -215,7 +215,9 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
             return parseBehaviour(raw, context);
 
         else
-            throw new IllegalArgumentException("Cannot identify type of expression while parsing!");
+            throw new IllegalArgumentException(
+                    "Cannot identify type of expression while parsing! Malformed expression: " + raw
+            );
     }
 
     @Override
