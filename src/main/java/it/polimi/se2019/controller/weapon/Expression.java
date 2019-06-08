@@ -55,10 +55,11 @@ public abstract class Expression {
     }
 
     // move player around
-    protected void move(ShootContext context, PlayerColor who, Position where) {
+    protected void move(ShootContext context, Set<PlayerColor> who, Position where) {
         Game game = context.getGame();
 
-        throw new UnsupportedOperationException("WIP");
+        who
+                .forEach(pl -> game.getPlayerFromColor(pl).move(where));
     }
 
     // safely discard result of evaluated expression by issuing a warning
@@ -84,8 +85,14 @@ public abstract class Expression {
     public Set<PlayerColor> asTargets() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "Targets");
     }
+    public PlayerColor asTarget() {
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Target");
+    }
     public Set<Position> asRange() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "Range");
+    }
+    public Position asPosition() {
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Position");
     }
     public Damage asDamage() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "Damage");

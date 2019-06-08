@@ -13,4 +13,14 @@ public class RangeLiteral extends Literal<Set<Position>> {
     public Set<Position> asRange() {
         return getPrimitive();
     }
+
+    @Override
+    public Position asPosition() {
+        if (mContents.size() == 1)
+            return mContents.iterator().next();
+
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Position",
+                "This RangeLiteral contains multiple positions!"
+        );
+    }
 }
