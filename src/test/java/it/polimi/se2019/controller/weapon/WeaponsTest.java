@@ -21,11 +21,13 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class WeaponsTest {
     private Game mAllInOriginGame;
+    private Game mLuigiHidesFromYellowParty;
 
     private void assertPlayerDamage(Player damagedPlayer, List<PlayerColor> damage, List<Pair<PlayerColor, Integer>> marks) {
         assertArrayEquals(
@@ -44,7 +46,6 @@ public class WeaponsTest {
 
     @Before
     public void instantiate() {
-        // mario bros
         mAllInOriginGame = new Game(
                 Board.fromJson(Jsons.get("boards/game/board1")),
                 new ArrayList<>(Arrays.asList(
@@ -56,15 +57,27 @@ public class WeaponsTest {
                 )),
                 0
         );
+
+        mLuigiHidesFromYellowParty = new Game(
+                Board.fromJson(Jsons.get("boards/game/board1")),
+                new ArrayList<>(Arrays.asList(
+                        new Player("Mario", PlayerColor.PURPLE, new Position(3, 2)),
+                        new Player("Luigi", PlayerColor.GREEN, new Position(2, 0)),
+                        new Player("Dorian", PlayerColor.GREY, new Position(3, 2)),
+                        new Player("Smurfette", PlayerColor.BLUE, new Position(3, 1)),
+                        new Player("Banano", PlayerColor.YELLOW, new Position(2, 2))
+                )),
+                0
+        );
     }
 
     @Test
-    public void testHeatseekerMarioShootsLuigi() {
+    public void testHeatseekerMarioShootsHiddenLuigi() {
         // instantiate controller
         Controller testController = new Controller(mAllInOriginGame);
 
-        // instantiate mock view
-        View view = mock(View.class);
+        // instantiate and customize mock view
+        View viewMock = mock(View.class);
 
         // instantiate weapon
         Weapon heatseeker = Weapons.get("heatseeker");
