@@ -6,7 +6,7 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.MoveAction;
 import it.polimi.se2019.model.action.MoveGrabAction;
 import it.polimi.se2019.model.board.*;
-import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.view.request.ActionRequest;
 import it.polimi.se2019.view.request.Request;

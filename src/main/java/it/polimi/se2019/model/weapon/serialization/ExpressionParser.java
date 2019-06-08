@@ -3,10 +3,10 @@ package it.polimi.se2019.model.weapon.serialization;
 import com.google.gson.*;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
-import it.polimi.se2019.model.weapon.Effect;
-import it.polimi.se2019.model.weapon.Expression;
-import it.polimi.se2019.model.weapon.PickEffect;
-import it.polimi.se2019.model.weapon.behaviour.*;
+import it.polimi.se2019.controller.weapon.Effect;
+import it.polimi.se2019.controller.weapon.Expression;
+import it.polimi.se2019.controller.weapon.PickEffect;
+import it.polimi.se2019.controller.weapon.behaviour.*;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -19,7 +19,7 @@ import java.util.Set;
  * easily serialized by the Gson library
  */
 public class ExpressionParser implements JsonDeserializer<Expression> {
-    private static final String BEHAVIOUR_PACKAGE_NAME = "it.polimi.se2019.model.weapon.behaviour";
+    private static final String BEHAVIOUR_PACKAGE_NAME = "it.polimi.se2019.controller.weapon.behaviour";
     private static final String STORE_KEYWORD = "store";
     private static final String EXPR_KEYWORD = "expr";
     private static final Set<String> PROHIBITED_KEYWORDS = new HashSet<>(Arrays.asList(

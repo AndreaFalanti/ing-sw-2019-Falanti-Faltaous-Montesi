@@ -1,5 +1,6 @@
 {
   "name": "Vortex Cannon",
+  "guiID": "029",
   "shootCost": "1b1r",
   "grabCost": "1r",
   "behaviour": {

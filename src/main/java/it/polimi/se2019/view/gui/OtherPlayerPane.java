@@ -1,6 +1,6 @@
 package it.polimi.se2019.view.gui;
 
-import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapon;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

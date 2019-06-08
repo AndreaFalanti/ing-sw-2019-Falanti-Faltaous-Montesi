@@ -1,6 +1,6 @@
 package it.polimi.se2019.model.board;
 
-import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapon;
 
 import java.util.Arrays;
 

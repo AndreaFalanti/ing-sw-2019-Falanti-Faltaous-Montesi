@@ -4,7 +4,7 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.PowerUpCard;
-import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapon;
 
 import java.util.List;
 import java.util.Map;

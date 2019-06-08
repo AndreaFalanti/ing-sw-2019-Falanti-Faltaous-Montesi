@@ -6,7 +6,7 @@ import it.polimi.se2019.model.action.ReloadAction;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
-import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.view.request.ActionRequest;

@@ -4,8 +4,8 @@ package it.polimi.se2019.view.cli;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.*;
-import it.polimi.se2019.model.weapon.Effect;
-import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Effect;
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.view.View;
 
 import java.util.*;

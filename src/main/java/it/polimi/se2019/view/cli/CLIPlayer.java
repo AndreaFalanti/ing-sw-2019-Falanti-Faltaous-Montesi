@@ -1,7 +1,7 @@
 package it.polimi.se2019.view.cli;
 
 import it.polimi.se2019.model.*;
-import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapon;
 
 import java.util.ArrayList;
 import java.util.List;

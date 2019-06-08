@@ -5,8 +5,8 @@ import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.Action;
-import it.polimi.se2019.model.weapon.Expression;
-import it.polimi.se2019.model.weapon.ShootContext;
+import it.polimi.se2019.controller.weapon.Expression;
+import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.view.request.*;
 
 import java.util.HashSet;

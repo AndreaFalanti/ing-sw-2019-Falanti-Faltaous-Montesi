@@ -6,7 +6,7 @@ import it.polimi.se2019.model.action.response.ActionResponseStrings;
 import it.polimi.se2019.model.action.response.DiscardRequiredActionResponse;
 import it.polimi.se2019.model.action.response.InvalidActionResponse;
 import it.polimi.se2019.model.action.response.MessageActionResponse;
-import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapon;
 
 import java.util.Optional;
 

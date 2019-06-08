@@ -7,7 +7,7 @@ import it.polimi.se2019.model.board.Tile;
 import it.polimi.se2019.model.update.ActivePlayerUpdate;
 import it.polimi.se2019.model.update.KillScoredUpdate;
 import it.polimi.se2019.model.update.Update;
-import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
 

@@ -6,7 +6,7 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.response.*;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.Tile;
-import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapon;
 
 import java.util.Optional;
 
