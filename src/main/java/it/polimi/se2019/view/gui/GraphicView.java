@@ -4,6 +4,7 @@ import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.view.View;
 
 import java.util.List;
@@ -71,6 +72,16 @@ public class GraphicView extends View {
 
     @Override
     public String requestAdditionalInfo() {
+        return null;
+    }
+
+    @Override
+    public Direction pickDirection() {
+        return null;
+    }
+
+    @Override
+    public Set<Position> selectPositions(int minToSelect, int maxToSelect, Set<Position> possiblePositions) {
         return null;
     }
 

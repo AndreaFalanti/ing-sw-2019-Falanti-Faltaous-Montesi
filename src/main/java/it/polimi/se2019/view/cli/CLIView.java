@@ -6,6 +6,7 @@ import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.*;
+import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.view.View;
 
 import java.util.*;
@@ -374,6 +375,16 @@ public class CLIView extends View {
             command = scanner.nextLine();
         }
         return command;
+    }
+
+    @Override
+    public Direction pickDirection() {
+        return null;
+    }
+
+    @Override
+    public Set<Position> selectPositions(int minToSelect, int maxToSelect, Set<Position> possiblePositions) {
+        return null;
     }
 
     @Override
