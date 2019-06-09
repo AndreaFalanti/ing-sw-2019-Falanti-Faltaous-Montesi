@@ -5,6 +5,7 @@ import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.MoveShootAction;
 import it.polimi.se2019.model.action.ReloadAction;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.util.Jsons;
@@ -18,6 +19,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -29,6 +32,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class MainScreen extends Observable<Request> {
@@ -50,8 +54,24 @@ public class MainScreen extends Observable<Request> {
     private VBox buttonBox;
     @FXML
     private Button powerUpDiscardButton;
+    @FXML
+    private TabPane tabPane;
+    @FXML
+    private Pane directionButtonsPane;
+    @FXML
+    private VBox effectsBox;
+    @FXML
+    private VBox targetsBox;
+
 
     private static final Logger logger = Logger.getLogger(MainScreen.class.getName());
+
+    private static final int ACTIONS_TAB = 0;
+    private static final int PLAYERS_TAB = 1;
+    private static final int EFFECTS_TAB = 2;
+    private static final int DIRECTION_TAB = 3;
+    private static final int TARGETS_TAB = 4;
+
     
     private static final double LOADED_OPACITY = 1;
     private static final double UNLOADED_OPACITY = 0.4;
@@ -388,6 +408,9 @@ public class MainScreen extends Observable<Request> {
         });
     }
 
+    /**
+     * Enable player weapon box for sending notification about clicked weapon index
+     */
     public void enableWeaponBoxForSendingIndex () {
         GuiUtils.setBoxEnableStatus(weaponBox,true);
         setEnableStatusActionButtonBox(false);
@@ -402,6 +425,9 @@ public class MainScreen extends Observable<Request> {
         });
     }
 
+    /**
+     * Enable powerUp box for sending notification about what powerUps players want to discard
+     */
     public void enablePowerUpBoxForSendingDiscardedIndex () {
         GuiUtils.setBoxEnableStatus(powerUpGrid, true);
         setEnableStatusActionButtonBox(false);
@@ -482,9 +508,34 @@ public class MainScreen extends Observable<Request> {
         });
     }
 
+    /**
+     * Set weapon image to send notification that contains its index when clicked
+     * @param weapon Weapon imageView
+     * @param index Index to set in notification
+     */
     private void setIndexForwardingOnWeapon(Node weapon, int index) {
         weapon.setOnMouseClicked(event ->
             notify(new WeaponSelectedRequest(index, mView))
         );
+    }
+
+    private void setupDirectionButtonsBehaviour () {
+        Direction[] directions = Direction.values();
+        for (int i = 0; i < directions.length; i++) {
+            // TODO: notify controller with a message about direction
+            //directionButtonsPane.getChildren().get(i).setOnMouseClicked(event -> notify(directions(i));
+        }
+    }
+
+    public void activateTargetsTab (Set<PlayerColor> possibleTargets, int minTargets, int maxTargets) {
+        tabPane.getSelectionModel().select(TARGETS_TAB);
+        targetsBox.getChildren().clear();
+        for (PlayerColor color : possibleTargets) {
+            RadioButton radioButton = new RadioButton(
+                    getPlayerControllerFromColor(color).getPlayerUsername() + " [" + color.getPascalName() + "]");
+            // TODO: add onClick
+
+            targetsBox.getChildren().add(radioButton);
+        }
     }
 }
