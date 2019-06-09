@@ -1,6 +1,5 @@
 package it.polimi.se2019.controller.weapon;
 
-import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
@@ -8,7 +7,6 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
-import it.polimi.se2019.view.View;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +17,6 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
 
 public class WeaponsTest {
     private Game mAllInOriginGame;

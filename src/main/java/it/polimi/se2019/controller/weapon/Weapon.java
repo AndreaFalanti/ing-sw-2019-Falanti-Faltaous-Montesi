@@ -1,8 +1,8 @@
 package it.polimi.se2019.controller.weapon;
 
 import com.google.gson.Gson;
-import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.controller.weapon.behaviour.Behaviour;
+import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Exclude;
 

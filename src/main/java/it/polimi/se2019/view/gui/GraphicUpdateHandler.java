@@ -1,9 +1,9 @@
 package it.polimi.se2019.view.gui;
 
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.PowerUpCard;
 import it.polimi.se2019.model.update.*;
-import it.polimi.se2019.controller.weapon.Weapon;
 
 import java.util.Map;
 

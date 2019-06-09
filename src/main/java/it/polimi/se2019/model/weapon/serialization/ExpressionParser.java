@@ -2,9 +2,9 @@ package it.polimi.se2019.model.weapon.serialization;
 
 import com.google.gson.*;
 import it.polimi.se2019.controller.weapon.*;
+import it.polimi.se2019.controller.weapon.behaviour.*;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
-import it.polimi.se2019.controller.weapon.behaviour.*;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 import java.lang.reflect.Type;

@@ -28,8 +28,8 @@ public class Main extends Application {
         primaryStage.centerOnScreen();
 
         MainScreen controller = loader.getController();
-        GraphicView GuiView = new GraphicView(controller);
-        controller.setView(GuiView);
+        GraphicView guiView = new GraphicView(controller);
+        controller.setView(guiView);
         controller.setClientColor(PlayerColor.PURPLE);
 
 

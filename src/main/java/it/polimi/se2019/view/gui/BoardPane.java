@@ -84,7 +84,6 @@ public class BoardPane extends Observable<Request> {
     private List<StackPane> mKilltrack = new ArrayList<>();
     private EnumMap<PlayerColor, Circle> mPawns = new EnumMap<>(PlayerColor.class);
     private EnumMap<TileColor, HBox> mSpawnBoxes = new EnumMap<>(TileColor.class);
-    //private GridPane[][] mInternalCellGrid = new GridPane[BOARD_COLUMNS][BOARD_ROWS];
     private BoardSquare[][] mSquareControllers = new BoardSquare[BOARD_COLUMNS][BOARD_ROWS];
 
     private int mKilltrackTargetKills;
@@ -345,44 +344,6 @@ public class BoardPane extends Observable<Request> {
         }
 
         buttonGrid.setVisible(false);
-
-        // from script dynamic instantiation (Problems with anchorPane probably)
-        /*for (int x = 0; x < BOARD_COLUMNS; x++) {
-            for (int y = 0; y < BOARD_ROWS; y++) {
-                AnchorPane anchorPane = new AnchorPane();
-                anchorPane.setPrefWidth(GRID_WIDTH);
-                anchorPane.setPrefHeight(GRID_HEIGHT);
-                anchorPane.setMinSize(GRID_WIDTH, GRID_HEIGHT);
-                anchorPane.setPadding(new Insets(15));
-
-                GridPane gridPane = new GridPane();
-
-                // 3*3 grid
-                for (int i = 0; i < 3; i++) {
-                    RowConstraints rowConstraints = new RowConstraints();
-                    rowConstraints.setValignment(VPos.CENTER);
-                    rowConstraints.setFillHeight(true);
-                    rowConstraints.setVgrow(Priority.SOMETIMES);
-                    gridPane.getRowConstraints().add(rowConstraints);
-                    ColumnConstraints columnConstraints = new ColumnConstraints();
-                    columnConstraints.setHalignment(HPos.CENTER);
-                    columnConstraints.setFillWidth(true);
-                    columnConstraints.setHgrow(Priority.SOMETIMES);
-                    gridPane.getColumnConstraints().add(columnConstraints);
-
-                    //gridPane.addColumn(i);
-                    //gridPane.addRow(i);
-                    // DEBUG: add circles on diagonal to see if instantiation is correct
-                    gridPane.add(new Circle(10), i, i);
-                }
-
-                mInternalCellGrid[x][y] = gridPane;
-
-                anchorPane.getChildren().add(gridPane);
-                boardGrid.add(anchorPane, x, y);
-                System.out.println("Size: " + anchorPane.getWidth() + "*" + anchorPane.getHeight());
-            }
-        }*/
     }
 
     /**

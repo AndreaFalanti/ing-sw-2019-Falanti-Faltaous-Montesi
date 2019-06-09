@@ -2,14 +2,10 @@ package it.polimi.se2019.model;
 
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.controller.weapon.Weapons;
-import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
-import it.polimi.se2019.util.Jsons;
 import org.junit.Test;
 
 import static java.util.Arrays.fill;
 import static org.junit.Assert.*;
-
-//import javax.swing.text.Position;
 
 public class PlayerTest {
 

@@ -1,7 +1,7 @@
 package it.polimi.se2019.model;
 
-import it.polimi.se2019.model.update.*;
 import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.model.update.*;
 import it.polimi.se2019.util.Observable;
 
 import java.util.EnumMap;

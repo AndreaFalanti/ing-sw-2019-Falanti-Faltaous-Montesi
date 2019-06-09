@@ -1,5 +1,6 @@
 package it.polimi.se2019.model;
 
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
@@ -7,7 +8,6 @@ import it.polimi.se2019.model.board.Tile;
 import it.polimi.se2019.model.update.ActivePlayerUpdate;
 import it.polimi.se2019.model.update.KillScoredUpdate;
 import it.polimi.se2019.model.update.Update;
-import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
 

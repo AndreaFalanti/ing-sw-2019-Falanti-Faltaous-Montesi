@@ -1,9 +1,9 @@
 package it.polimi.se2019.model.weapon.serialization;
 
-import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.controller.weapon.behaviour.*;
+import it.polimi.se2019.model.AmmoValue;
+import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
