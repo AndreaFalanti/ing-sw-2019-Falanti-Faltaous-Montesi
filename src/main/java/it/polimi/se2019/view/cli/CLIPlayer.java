@@ -30,20 +30,17 @@ public class CLIPlayer {
             mPlayerColor = player.getColor().getPascalName();
             setScore(player.getScore());
             setAmmo(player.getAmmo());
-            dead = "Is not dead";//to update
-            overkilled = "Is not overkilled";//to update
-
-           // setDeathNums(player.getDeathsNum());
+            setDead(player.isDead());
+            setOverkilled(player.isOverkilled());
+            mDeathNum = String.valueOf(player.getDeathsNum());
             setWeaponOtherPlayer(player.getWeapons());
             setPosition(player.getPos());
             setScore(player.getScore());
             setWeaponOwner(player.getWeapons());
             for(Map.Entry<PlayerColor,Integer> entry: player.getMarks().entrySet()){
-                mPlayerMarks.put(entry.getKey().getPascalName(),entry.getValue());
+                setMarks(entry.getValue(),entry.getKey());
             }
             setAllDamageTaken(player.getDamageTaken());
-
-       // setMarks(player.getMarks().get(player.getColor()),player.getColor());
 
     }
 
@@ -72,17 +69,14 @@ public class CLIPlayer {
     public String getPlayerScore(){return mPlayerScore;}
 
 
+
+
     public void setScore(int i){
         mPlayerScore = String.valueOf(i);
     }
 
     public void setDeathNums(){
         mDeathNum = String.valueOf(Integer.parseInt(mDeathNum) + 1);
-    }
-
-    public void flipBoard(boolean isFlipped){
-        if(isFlipped)
-            mBoardIsFlipped = "Board is flipped,frenzy mode ";
     }
 
     public void setAmmo(AmmoValue ammo){
@@ -102,16 +96,32 @@ public class CLIPlayer {
         }
 
         for (PowerUpCard powerUpCard : powerUpCards) {
-            power.append("PowerUpCard{ ");
-            power.append("Name= ");
-            power.append(powerUpCard.getName());
-            power.append(" ");
-            power.append("AmmoValue= ");
-            power.append(powerUpCard.getAmmoValue().toString());
-            power.append("}");
+            if(powerUpCard != null){
+                power.append("PowerUpCard{ ");
+                power.append("Name= ");
+                power.append(powerUpCard.getName());
+                power.append(" ");
+                power.append("AmmoValue= ");
+                power.append(powerUpCard.getAmmoValue().toString());
+                power.append("}");
+            }
         }
 
         mPlayerPowerUps = power.toString();
+    }
+
+    public void setDead(boolean isDead){
+        if(!isDead)
+            dead = "false";
+        else
+            dead = "true";
+    }
+
+    public void setOverkilled(boolean isOverkilled){
+        if(!isOverkilled)
+            overkilled = "false";
+        else
+            overkilled = "true";
     }
 
     public void setMarks(int marks,PlayerColor shooterPlayerColor){
@@ -119,11 +129,15 @@ public class CLIPlayer {
         mPlayerMarks.put(shooterPlayerColor.getPascalName(),marks);
     }
 
+    public void setDamageTakenToZero(){
+        mDamageTaken = "Has not suffered Damage";
+    }
+
 
     public void setAllDamageTaken(PlayerColor[] damage){
         StringBuilder shooter = new StringBuilder();
         if(damage[0]==null) {
-            mDamageTaken = "Has not suffered damage";
+            setDamageTakenToZero();
         }
         else{
             for(PlayerColor color: damage)
@@ -165,11 +179,11 @@ public class CLIPlayer {
             for(Weapon weapon: weapons){
                 if(weapon!= null){
                     if(!weapon.isLoaded())
-                        load = "(to load)";
+                        load = "to load, cost"+ weapon.getReloadCost().toString();
                     nameWeapon.add(weapon.getName() + load);
                 }
             }
-            mPlayerWeapons = String.join(",",nameWeapon);
+            mPlayerWeapons = String.join( ",",nameWeapon);
         }
     }
 

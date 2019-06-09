@@ -126,9 +126,7 @@ public class BoardCLI {
         long start;
         int end;
         StringBuilder line = new StringBuilder();
-        //     if(i==grandcella*lung)
-        //       if (board1[i/grandcella].getColor() == board1[i/grandcella + lung].getColor())
-        //         line.append(colleague(false,i));
+
         if(indexTile ==lung*2) {
             line.append("_");
             return line;

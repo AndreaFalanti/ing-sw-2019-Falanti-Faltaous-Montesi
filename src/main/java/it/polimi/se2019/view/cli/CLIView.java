@@ -2,12 +2,13 @@ package it.polimi.se2019.view.cli;
 
 
 import it.polimi.se2019.controller.weapon.Effect;
-import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.board.Direction;
+import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.view.View;
+import it.polimi.se2019.view.request.ActionRequest;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -90,7 +91,6 @@ public class CLIView extends View {
             case "grab":
                 pos=parseDestination(otherCommandPart);
                 action = new MoveGrabAction(mCLIInfo.getOwnerColorf(), pos);
-             //   new GrabRequest();//<--to add request
                 logger.log(Level.INFO,"Action: GRAB  Pos: {0}",pos);
                 break;
             case "shoot":
@@ -123,22 +123,9 @@ public class CLIView extends View {
         }
 
 
-
+        new ActionRequest(action,this);
         availableCommands();
     }
-
-    @Override
-    public Position parseInformationOnDestination(List<Position> pos){
-        Scanner scanner = null;
-
-        System.out.println("Write one of these coordinates");
-        for(Position position: pos)
-            System.out.println(position.getX()+" "+position.getY());
-        String destination = requestAdditionalInfo();
-
-        return  parseDestination(destination);
-    }
-
 
     public Position parseDestination(String destination){
         Position pos = null;
@@ -146,13 +133,6 @@ public class CLIView extends View {
 
         String coordTogether = destination.replaceAll("\\D","");
         String[] coord = coordTogether.split("");
-
-  //      while(coord[0].equals("") ){
-  //          System.out.println("Insert coord:");
-   //         destination = requestAdditionalInfo();
-   //         coordTogether = destination.replaceAll("\\D","");
-   //         coord = coordTogether.split("");
-   //     }
 
         while(!isValid){
             try {
@@ -174,13 +154,12 @@ public class CLIView extends View {
     }
 
     @Override
-    public int parseWeaponInformation(Weapon[] weapons){
+    public int parseWeaponInformation(TileColor tileColor){
         Integer index = null;
         boolean isValid = false;
 
-        System.out.print("Type the index of the weapon you want ");
-        for(Weapon weapon : weapons)
-            System.out.print(weapon.getName());
+        System.out.print("Type the index of the weapon you want " +
+                mCLIInfo.getSpawnTiles().get(tileColor.getPascalName()));
 
         do{
             try{
@@ -195,7 +174,7 @@ public class CLIView extends View {
     }
 
     @Override
-    public Integer weaponPlayerController(){
+    public int parseWeaponInformation(){
         Integer index = null;
         boolean isValid = false;
 
@@ -221,13 +200,7 @@ public class CLIView extends View {
 
 
     public void weaponPlayer(){
-      //  for(Weapon weapon : mCLIInfo.getOwner().getWeapons()) {
-      //      System.out.print(weapon.getName() + " ");
-     //       if(!weapon.isLoaded())
-    //            System.out.println("<----to reload");
-      //  }
         System.out.println(mCLIInfo.getOwner().getPlayerWeapons());
-        System.out.print("\n");
     }
 
 
@@ -347,8 +320,6 @@ public class CLIView extends View {
 
     }
 
-
-
     public void parseCommand(String command) {
 
         command = command.toLowerCase();
@@ -387,7 +358,14 @@ public class CLIView extends View {
 
     @Override
     public Position selectPosition(Set<Position> possiblePositions) {
-        return null;
+        Position[] positions = possiblePositions.toArray(new Position[0]);
+
+        System.out.println("Write one of these coordinates");
+        for(Position position: positions)
+            System.out.println(position.toString());
+
+        String destination = requestAdditionalInfo();
+        return  parseDestination(destination);
     }
 
     @Override

@@ -2,10 +2,10 @@ package it.polimi.se2019.view;
 
 import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.controller.weapon.Effect;
-import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Direction;
+import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
 import it.polimi.se2019.util.Either;
@@ -13,7 +13,6 @@ import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.request.Request;
 
-import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
@@ -34,6 +33,7 @@ public abstract class View extends Observable<Request> implements Observer<Eithe
     public ResponseHandler getResponseHandler() {
         return mResponseHandler;
     }
+
     public UpdateHandler getUpdateHandler() {
         return mUpdateHandler;
     }
@@ -42,11 +42,10 @@ public abstract class View extends Observable<Request> implements Observer<Eithe
 
     public abstract void reportError(String error);
 
-    public abstract Position parseInformationOnDestination(List<Position> pos);//used from controller to response more info on destination
+    public abstract int parseWeaponInformation(TileColor tileColor);// the weapon index that you want to grab<---color
 
-    public abstract int parseWeaponInformation(Weapon[] weapons);// the weapon index that you want to grab<---color
+    public abstract int parseWeaponInformation();// the weapon index of the weapon that you want exchange<to change a parse
 
-    public abstract Integer weaponPlayerController();// the weapon index of the weapon that you want exchange<to change a parse
 
     public abstract boolean[] discardPowerUps ();
 
