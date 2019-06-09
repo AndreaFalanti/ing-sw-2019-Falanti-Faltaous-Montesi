@@ -1,0 +1,44 @@
+{
+  "name": "Heatseeker",
+  "reloadCost": {
+    "red": 2,
+    "yellow": 1,
+    "blue": 0
+  },
+  "grabCost": {
+    "red": 1,
+    "yellow": 0,
+    "blue": 0
+  },
+  "behaviour": {
+    "expr": "InflictDamage",
+    "subs": {
+      "amount": {
+        "expr": "DamageLiteral",
+        "contents": {
+          "damage": 3,
+          "marksNum": 0
+        }
+      },
+      "to": {
+        "expr": "SelectOneTarget",
+        "subs": {
+          "from": {
+            "expr": "NegateSelection",
+            "subs": {
+              "selection": {
+                "expr": "CanSee",
+                "subs": {
+                  "observer": {
+                    "expr": "You",
+                    "subs": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

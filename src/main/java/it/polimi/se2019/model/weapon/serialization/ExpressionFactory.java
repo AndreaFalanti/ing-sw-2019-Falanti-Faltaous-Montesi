@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import it.polimi.se2019.controller.weapon.Do;
 import it.polimi.se2019.controller.weapon.Expression;
+import it.polimi.se2019.controller.weapon.PickEffect;
 import it.polimi.se2019.controller.weapon.behaviour.*;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
@@ -21,6 +22,10 @@ public class ExpressionFactory {
                 .registerSubtype(DamageLiteral.class, "DamageLiteral")
                 .registerSubtype(SelectTargets.class, "SelectTargets")
                 .registerSubtype(CanSee.class, "CanSee")
+                .registerSubtype(PickEffect.class, "PickEffect")
+                .registerSubtype(Move.class, "Move")
+                .registerSubtype(DistanceRange.class, "DistanceRange")
+                .registerSubtype(LastSelected.class, "LastSelected")
                 .registerSubtype(GetTargets.class, "GetTargets")
                 .registerSubtype(Do.class, "Do")
                 .registerSubtype(You.class, "You")

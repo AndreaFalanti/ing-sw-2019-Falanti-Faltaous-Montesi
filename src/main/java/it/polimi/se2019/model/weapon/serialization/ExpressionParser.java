@@ -1,17 +1,22 @@
 package it.polimi.se2019.model.weapon.serialization;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import it.polimi.se2019.controller.weapon.*;
 import it.polimi.se2019.controller.weapon.behaviour.*;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
+import javax.naming.InvalidNameException;
+import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Exists to parse pretty (more readable) definition of expression in json into that can be more
@@ -29,16 +34,36 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
             EXPR_KEYWORD,
             STORE_KEYWORD
     ));
-    private static final Set<String> TRIVIALLY_DESERIALIZABLE_EXPRESSION_TYPES = new HashSet<>(Arrays.asList(
-            "XorEffect",
-            "Do"
+    private static final Set<Type> TRIVIALLY_DESERIALIZABLE_EXPRESSION_TYPES = new HashSet<>(Arrays.asList(
+            XorEffect.class,
+            Do.class
     ));
 
     private static Gson makeTrivialExpressionGson() {
         return new GsonBuilder()
-                .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Expression.class, "expr")
-                        .registerSubtype(XorEffect.class, "XorEffect")
-                        .registerSubtype(Do.class, "Do"))
+                .registerTypeAdapterFactory(new TypeAdapterFactory() {
+                                                @Override
+                                                public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> typeToken) {
+                                                    if(TRIVIALLY_DESERIALIZABLE_EXPRESSION_TYPES.contains(
+                                                            typeToken.getRawType()))
+                                                        return RuntimeTypeAdapterFactory.of(Expression.class, "expr")
+                                                            .registerSubtype(XorEffect.class, "XorEffect")
+                                                            .registerSubtype(Do.class, "Do")
+                                                            .create(gson, typeToken);
+
+                                                    return (TypeAdapter<T>) new TypeAdapter<Expression>() {
+                                                        @Override
+                                                        public void write(JsonWriter jsonWriter, Expression expression) {
+                                                            throw new UnsupportedOperationException("This should not be used to serialize!!!");
+                                                        }
+
+                                                        @Override
+                                                        public Expression read(JsonReader jsonReader) {
+                                                            return parse(jsonReader);
+                                                        }
+                                                    };
+                                                }
+                                            })
                 .create();
     }
 
@@ -77,9 +102,19 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
     private static boolean isTriviallyDeserializableExpression(JsonElement raw) {
         return raw.isJsonObject() &&
                 raw.getAsJsonObject().has(EXPR_KEYWORD) &&
-                TRIVIALLY_DESERIALIZABLE_EXPRESSION_TYPES.contains(
-                        raw.getAsJsonObject().get(EXPR_KEYWORD).getAsString()
-                );
+                TRIVIALLY_DESERIALIZABLE_EXPRESSION_TYPES.stream()
+                        //.map(type -> Pattern.compile("^.*\\.(.*)$").matcher(type.getTypeName()).group(1))
+                        .map(Type::getTypeName)
+                        .map(name -> {
+                            Matcher matcher = Pattern.compile("^.*\\.(.*)$").matcher(name);
+
+                            matcher.find();
+
+                            return matcher.group(1);
+                        })
+                        .anyMatch(name -> name.equals(
+                                raw.getAsJsonObject().get(EXPR_KEYWORD).getAsString()
+                        ));
     }
 
     // identifies a behavioural expression
@@ -195,6 +230,18 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
         }
 
         return result;
+    }
+
+    public static Expression parse(JsonReader reader) {
+        return parse(
+                new Gson().toJsonTree(reader.toString()),
+                new JsonDeserializationContext() {
+                    @Override
+                    public <T> T deserialize(JsonElement jsonElement, Type type) throws JsonParseException {
+                        throw new UnsupportedOperationException("This should not happen...");
+                    }
+                }
+        );
     }
 
     /**

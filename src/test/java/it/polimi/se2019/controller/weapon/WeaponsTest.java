@@ -1,5 +1,6 @@
 package it.polimi.se2019.controller.weapon;
 
+import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
@@ -7,6 +8,7 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
+import it.polimi.se2019.view.View;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class WeaponsTest {
     private Game mAllInOriginGame;
@@ -70,38 +73,36 @@ public class WeaponsTest {
     @Test
     public void testWeaponsLoading() {
         // try to get a weapon and in doing so expect no exceptions
-        /***************************************************************/
-        /* Weapons.get(Weapons.listResourceNames().iterator().next()); */
-        /***************************************************************/
+        Weapons.get(Weapons.listResourceNames().iterator().next());
+
+        System.out.println(Weapons.get("heatseeker"));
     }
 
     @Test
     public void testHeatseekerMarioShootsHiddenLuigi() {
-        /**********************************************************************************/
-        /* // instantiate controller                                                      */
-        /* Controller testController = new Controller(mAllInOriginGame);                  */
-        /*                                                                                */
-        /* // instantiate and customize mock view                                         */
-        /* View viewMock = mock(View.class);                                              */
-        /*                                                                                */
-        /* // instantiate weapon                                                          */
-        /* Weapon heatseeker = Weapons.get("heatseeker");                                 */
-        /*                                                                                */
-        /* // produce result with complete context                                        */
-        /* // TODO: wire to mock view                                                     */
-        /* testController.shoot(viewMock, PlayerColor.PURPLE, heatseeker.getBehaviour()); */
-        /*                                                                                */
-        /* // assert that Luigi was hurt                                                  */
-        /* assertPlayerDamage(                                                            */
-        /*         mAllInOriginGame.getPlayerFromColor(PlayerColor.GREEN),                */
-        /*         Arrays.asList(                                                         */
-        /*                 PlayerColor.PURPLE,                                            */
-        /*                 PlayerColor.PURPLE,                                            */
-        /*                 PlayerColor.PURPLE                                             */
-        /*         ),                                                                     */
-        /*         Arrays.asList()                                                        */
-        /* );                                                                             */
-        /**********************************************************************************/
+        // instantiate controller
+        Controller testController = new Controller(mAllInOriginGame);
+
+        // instantiate and customize mock view
+        View viewMock = mock(View.class);
+
+        // instantiate weapon
+        Weapon heatseeker = Weapons.get("heatseeker");
+
+        // produce result with complete context
+        // TODO: wire to mock view
+        testController.shoot(viewMock, PlayerColor.PURPLE, heatseeker.getBehaviour());
+
+        // assert that Luigi was hurt
+        assertPlayerDamage(
+                mAllInOriginGame.getPlayerFromColor(PlayerColor.GREEN),
+                Arrays.asList(
+                        PlayerColor.PURPLE,
+                        PlayerColor.PURPLE,
+                        PlayerColor.PURPLE
+                ),
+                Arrays.asList()
+        );
     }
 
     @Test
