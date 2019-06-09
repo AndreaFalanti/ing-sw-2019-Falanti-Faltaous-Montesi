@@ -1,6 +1,7 @@
 package it.polimi.se2019.model;
 
 import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Jsons;
 import org.junit.Test;
@@ -25,9 +26,9 @@ public class PlayerTest {
     public void testIsFullOfWeapon(){
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
 
-        Weapon weapon1 = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
-        Weapon weapon2 = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
-        Weapon weapon3 = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
+        Weapon weapon1 = Weapons.get("heatseeker");
+        Weapon weapon2 = Weapons.get("heatseeker");
+        Weapon weapon3 = Weapons.get("heatseeker");
         try{
             player1.addWeapon(weapon1);
             player1.addWeapon(weapon2);
@@ -47,9 +48,9 @@ public class PlayerTest {
     @Test
     public void testTakeWeapon(){
         Player player1 = new Player("testPlayer",PlayerColor.BLUE);
-        Weapon weapon1 = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
-        Weapon weapon2 = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
-        Weapon weapon3 = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
+        Weapon weapon1 = Weapons.get("heatseeker");
+        Weapon weapon2 = Weapons.get("heatseeker");
+        Weapon weapon3 = Weapons.get("heatseeker");
         try{
             player1.addWeapon(weapon1);
             player1.addWeapon(weapon2);
@@ -108,9 +109,9 @@ public class PlayerTest {
     @Test
     public void testAddWeapon() {
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
-        Weapon weapon1 = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
-        Weapon weapon2 = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
-        Weapon weapon3 = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
+        Weapon weapon1 = Weapons.get("heatseeker");
+        Weapon weapon2 = Weapons.get("heatseeker");
+        Weapon weapon3 = Weapons.get("heatseeker");
         try{
             player1.addWeapon(weapon1);
             player1.addWeapon(weapon2);
@@ -125,10 +126,10 @@ public class PlayerTest {
     @Test
     public void testAddWeaponFullHandException() {
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
-        Weapon weapon1 = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
-        Weapon weapon2 = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
-        Weapon weapon3 = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
-        Weapon weapon4 = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
+        Weapon weapon1 = Weapons.get("heatseeker");
+        Weapon weapon2 = Weapons.get("heatseeker");
+        Weapon weapon3 = Weapons.get("heatseeker");
+        Weapon weapon4 = Weapons.get("heatseeker");
         try{
             player1.addWeapon(weapon1);
             player1.addWeapon(weapon2);

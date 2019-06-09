@@ -17,7 +17,7 @@ public class WeaponFactoryTest {
     @Before
     public void instantiate() {
         // TODO: consider using builder instead of setters
-        mHeatseeker = new Weapon("heatseeker", new AmmoValue(2, 1, 0), new AmmoValue(1, 1, 0));
+        mHeatseeker = new Weapon("Heatseeker", new AmmoValue(2, 1, 0), new AmmoValue(1, 0, 0));
         mHeatseeker.setBehaviour(
                 new InflictDamage(
                         new DamageLiteral(
@@ -35,7 +35,7 @@ public class WeaponFactoryTest {
     // TODO: add doc
     @Test
     public void testFromJsonHeatseeker() {
-        Weapon actual = WeaponFactory.fromJson(Jsons.get("weapons/heatseeker"));
+        Weapon actual = WeaponFactory.fromJson(Jsons.get("weapons/real/heatseeker"));
 
         Weapon expected = mHeatseeker;
 

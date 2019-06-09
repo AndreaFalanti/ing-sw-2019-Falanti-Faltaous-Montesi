@@ -69,7 +69,7 @@ public abstract class View extends Observable<Request> implements Observer<Eithe
      * @param minToSelect minimum number of targets requested
      * @param maxToSelect maximum number of targets allowed
      * @param possibleTargets possible selectable targets (any target selected from outside this group should be
-     *                          considered an input error by the controller)
+     *                        considered an input error by the controller)
      * @return the selected targets
      */
     public abstract Set<PlayerColor> selectTargets(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets);
@@ -84,7 +84,6 @@ public abstract class View extends Observable<Request> implements Observer<Eithe
      * @return The selected effect
      */
     public abstract Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority);
-
 
     @Override
     public final void update(Either<Response, Update> message) {
