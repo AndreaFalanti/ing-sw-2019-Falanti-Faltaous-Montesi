@@ -1,0 +1,48 @@
+{
+  "name": "Furnace",
+  "grabCost": "1r",
+  "reloadCost": "1r1b",
+  "behaviour": {
+    "expr": "XorEffect",
+    "lhs": {
+      "name": "Basic Effect",
+      "behaviour": {
+        "expr": "InflictDamage",
+        "amount": "1d",
+        "to": {
+          "expr": "All",
+          "from": {
+            "expr": "SelectOnePosition",
+            "from": {
+              "expr": "Difference",
+              "lhs": {
+                "expr": "CanSee"
+              },
+              "rhs": {
+                "expr": "Distance",
+                "amount": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "rhs": {
+      "name": "In cozy fire mode",
+      "behaviour": {
+        "expr": "InflictDamage",
+        "amount": "1d1m",
+        "to": {
+          "expr": "All",
+          "from": {
+            "expr": "SelectOnePosition",
+            "from": {
+              "expr": "Distance",
+              "amount": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

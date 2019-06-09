@@ -1,11 +1,13 @@
 package it.polimi.se2019.model;
 
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.Tile;
+import it.polimi.se2019.model.update.ActivePlayerUpdate;
+import it.polimi.se2019.model.update.KillScoredUpdate;
 import it.polimi.se2019.model.update.Update;
-import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
 
@@ -173,7 +175,7 @@ public class Game extends Observable<Update> {
 
         mRemainingActions = calculateTurnActions();
 
-        //TODO: message to all clients containing new active player and turn number
+        notify(new ActivePlayerUpdate(getActivePlayer().getColor(), mRemainingActions, mTurnNumber));
     }
 
     /**
@@ -330,13 +332,22 @@ public class Game extends Observable<Update> {
         int killsScored = 0;
         for (Player player : mPlayers) {
             if (player.isDead()) {
+                boolean overkill = false;
                 killsScored++;
+
                 registerKill(getActivePlayer().getColor());
                 if (player.isOverkilled()) {
                     registerOverkill(getActivePlayer().getColor());
                     getActivePlayer().onDamageTaken(new Damage(0, 1), player.getColor());
+
+                    overkill = true;
                 }
+
                 distributePlayerKillScore(player.getColor());
+
+                notify(new KillScoredUpdate(player.getColor(), getActivePlayer().getColor(),
+                        overkill, getScoreMap()));
+
                 // Remove temporarily player from board
                 player.move(null);
             }
@@ -357,6 +368,15 @@ public class Game extends Observable<Update> {
         }
 
         refillAmmoTiles();
+    }
+
+    private Map<PlayerColor, Integer> getScoreMap () {
+        Map<PlayerColor, Integer> playerScores = new EnumMap<>(PlayerColor.class);
+        for (Player p : mPlayers) {
+            playerScores.put(p.getColor(), p.getScore());
+        }
+
+        return playerScores;
     }
 
     /**

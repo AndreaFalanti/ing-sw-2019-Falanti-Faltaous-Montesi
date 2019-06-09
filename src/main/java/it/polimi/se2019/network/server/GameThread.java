@@ -72,7 +72,7 @@ public class GameThread extends Thread {
 
     private void initializeGame (Board board, List<Player> players, int killsTarget) {
         mGame = new Game(board, players, killsTarget);
-        mController = new Controller();
+        mController = new Controller(mGame);
         for (PlayerConnection playerConnection : mPlayerConnections) {
             switch (playerConnection.getType()) {
                 case SOCKET:

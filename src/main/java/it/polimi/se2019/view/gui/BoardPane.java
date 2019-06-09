@@ -1,13 +1,20 @@
 package it.polimi.se2019.view.gui;
 
+import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.model.AmmoCard;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.board.Tile;
-import it.polimi.se2019.model.board.TileColor;
+import it.polimi.se2019.model.action.MoveAction;
+import it.polimi.se2019.model.action.MoveGrabAction;
+import it.polimi.se2019.model.board.*;
+import it.polimi.se2019.util.Observable;
+import it.polimi.se2019.view.request.ActionRequest;
+import it.polimi.se2019.view.request.Request;
+import it.polimi.se2019.view.request.WeaponSelectedRequest;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -24,7 +31,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-public class BoardPane {
+public class BoardPane extends Observable<Request> {
     @FXML
     private HBox redSpawnWeaponBox;
     @FXML
@@ -41,6 +48,10 @@ public class BoardPane {
     private Label activePlayerLabel;
     @FXML
     private GridPane frenzyKilltrackGridPane;
+    @FXML
+    private Label remainingActionsLabel;
+    @FXML
+    private Label turnLabel;
 
     private static final int SKULL_HEIGHT = 40;
     private static final int SKULL_WIDTH = 32;
@@ -69,13 +80,10 @@ public class BoardPane {
     private EnumMap<PlayerColor, Label> mFrenzyKilltrackLabels = new EnumMap<>(PlayerColor.class);
     private EnumMap<PlayerColor, Integer> mFrenzyKilltrackKillCounts = new EnumMap<>(PlayerColor.class);
 
-    private Board mBoard;
-
     private Button[][] mInteractiveButtons = new Button[BOARD_COLUMNS][BOARD_ROWS];
     private List<StackPane> mKilltrack = new ArrayList<>();
     private EnumMap<PlayerColor, Circle> mPawns = new EnumMap<>(PlayerColor.class);
     private EnumMap<TileColor, HBox> mSpawnBoxes = new EnumMap<>(TileColor.class);
-    //private GridPane[][] mInternalCellGrid = new GridPane[BOARD_COLUMNS][BOARD_ROWS];
     private BoardSquare[][] mSquareControllers = new BoardSquare[BOARD_COLUMNS][BOARD_ROWS];
 
     private int mKilltrackTargetKills;
@@ -144,13 +152,32 @@ public class BoardPane {
         activePlayerLabel.setText(ACTIVE_PLAYER_PREFIX + color.toString());
     }
 
+    public void updateRemainingActionsText (int value) {
+        remainingActionsLabel.setText("Remaining actions: " + value);
+    }
+
+    public void updateTurnText (int value) {
+        turnLabel.setText("Turn: " + value);
+    }
+
     /**
      * Move player pawn of desired color to given position
      * @param pos Position where the player is moved
      * @param color Player color that is moved
      */
-    public void addPawnToCoordinate (Position pos, PlayerColor color) {
-        mSquareControllers[pos.getX()][pos.getY()].addPawn(mPawns.get(color));
+    public void movePawnToCoordinate(Position pos, PlayerColor color) {
+        Circle pawn = mPawns.get(color);
+        pawn.setVisible(true);
+        mSquareControllers[pos.getX()][pos.getY()].addPawn(pawn);
+    }
+
+    /**
+     * Set visibility of player pawn of given color
+     * @param color Player color
+     * @param value Value to set
+     */
+    public void setPlayerPawnVisibility (PlayerColor color, boolean value) {
+        mPawns.get(color).setVisible(value);
     }
 
     /**
@@ -188,10 +215,9 @@ public class BoardPane {
      * @throws IOException Thrown if square fxml is not found
      */
     public void initialize (Board board) throws IOException {
-        mBoard = board;
         createPawns();
         createSpawnEnumMap();
-        createBoardElements();
+        createBoardElements(board);
         initializeFrenzyKilltrack();
     }
 
@@ -248,29 +274,59 @@ public class BoardPane {
     }
 
     /**
+     * Update tile in board
+     * @param tile Tile with updated info
+     * @param pos Tile position
+     */
+    public void updateBoardTile (Tile tile, Position pos) {
+        if (tile.getTileType().equals("normal")) {
+            AmmoCard ammoCard = ((NormalTile)tile).getAmmoCard();
+            BoardSquare tileController = mSquareControllers[pos.getX()][pos.getY()];
+            if (ammoCard != null) {
+                tileController.updateAmmoCard(ammoCard.getGuiID());
+            }
+            else {
+                tileController.updateAmmoCard(null);
+            }
+        }
+        else {
+            HBox weaponBox = mSpawnBoxes.get(tile.getColor());
+            Weapon[] weapons = ((SpawnTile)tile).getWeapons();
+
+            String[] ids = new String[3];
+            for (int i = 0; i < weapons.length; i++) {
+                if (weapons[i] != null) {
+                    ids[i] = weapons[i].getGuiID();
+                }
+                else {
+                    ids[i] = null;
+                }
+            }
+            updateWeaponsInSpawn(weaponBox, ids);
+        }
+    }
+
+    /**
      * Create board elements from board set in the controller
+     * @param board Board to initialize
      * @throws IOException Thrown if square fxml is not found
      */
-    private void createBoardElements () throws IOException {
+    private void createBoardElements (Board board) throws IOException {
         for (int x = 0; x < BOARD_COLUMNS; x++) {
             for (int y = 0; y < BOARD_ROWS; y++) {
-                if (mBoard.getTileAt(new Position(x, y)) != null) {
+                if (board.getTileAt(new Position(x, y)) != null) {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/boardSquare.fxml"));
                     Pane newLoadedPane =  loader.load();
 
                     BoardSquare squareController = loader.getController();
                     mSquareControllers[x][y] = squareController;
 
-                    Tile tile = mBoard.getTileAt(new Position(x, y));
+                    Tile tile = board.getTileAt(new Position(x, y));
                     if (tile.getTileType().equals("normal")) {
                         // TODO: get correct ammoCard id from tile
                         squareController.addAmmoCardImage("042");
-                        squareController.addPawn(new Circle(9));
-                        squareController.addPawn(new Circle(9));
-                        squareController.addPawn(new Circle(9));
                     }
                     else {
-                        squareController.addPawn(new Circle(9));
                         // TODO: get correct weaponCard ids from tile
                         String[] ids = {"022", "023", "024"};
                         updateWeaponsInSpawn(mSpawnBoxes.get(tile.getColor()), ids);
@@ -288,44 +344,6 @@ public class BoardPane {
         }
 
         buttonGrid.setVisible(false);
-
-        // from script dynamic instantiation (Problems with anchorPane probably)
-        /*for (int x = 0; x < BOARD_COLUMNS; x++) {
-            for (int y = 0; y < BOARD_ROWS; y++) {
-                AnchorPane anchorPane = new AnchorPane();
-                anchorPane.setPrefWidth(GRID_WIDTH);
-                anchorPane.setPrefHeight(GRID_HEIGHT);
-                anchorPane.setMinSize(GRID_WIDTH, GRID_HEIGHT);
-                anchorPane.setPadding(new Insets(15));
-
-                GridPane gridPane = new GridPane();
-
-                // 3*3 grid
-                for (int i = 0; i < 3; i++) {
-                    RowConstraints rowConstraints = new RowConstraints();
-                    rowConstraints.setValignment(VPos.CENTER);
-                    rowConstraints.setFillHeight(true);
-                    rowConstraints.setVgrow(Priority.SOMETIMES);
-                    gridPane.getRowConstraints().add(rowConstraints);
-                    ColumnConstraints columnConstraints = new ColumnConstraints();
-                    columnConstraints.setHalignment(HPos.CENTER);
-                    columnConstraints.setFillWidth(true);
-                    columnConstraints.setHgrow(Priority.SOMETIMES);
-                    gridPane.getColumnConstraints().add(columnConstraints);
-
-                    //gridPane.addColumn(i);
-                    //gridPane.addRow(i);
-                    // DEBUG: add circles on diagonal to see if instantiation is correct
-                    gridPane.add(new Circle(10), i, i);
-                }
-
-                mInternalCellGrid[x][y] = gridPane;
-
-                anchorPane.getChildren().add(gridPane);
-                boardGrid.add(anchorPane, x, y);
-                System.out.println("Size: " + anchorPane.getWidth() + "*" + anchorPane.getHeight());
-            }
-        }*/
     }
 
     /**
@@ -371,7 +389,85 @@ public class BoardPane {
         mPawns.put(PlayerColor.PURPLE, createCircle(PURPLE_PAWN_COLOR));
     }
 
-    public Board getBoard() {
-        return mBoard;
+    public void setupInteractiveGridForMoveAction () {
+        for (int i = 0; i < BOARD_COLUMNS; i++) {
+            for (int j = 0; j < BOARD_ROWS; j++) {
+                int x = i;
+                int y = j;
+
+                if (mInteractiveButtons[i][j] != null) {
+                    mInteractiveButtons[i][j].setOnMouseClicked(event -> {
+                        mMainController.logToChat("Move Action in pos (" + x + ", " + y + ")");
+                        switchButtonGridEnableStatus(false);
+                        mMainController.setEnableStatusActionButtonBox(true);
+
+                        notify(new ActionRequest(
+                                new MoveAction(mMainController.getClientColor(), new Position(x, y), true),
+                                mMainController.getView()));
+                    });
+                }
+            }
+        }
+    }
+
+    public void setupInteractiveGridForGrabAction () {
+        for (int i = 0; i < BOARD_COLUMNS; i++) {
+            for (int j = 0; j < BOARD_ROWS; j++) {
+                int x = i;
+                int y = j;
+
+                if (mInteractiveButtons[i][j] != null) {
+                    mInteractiveButtons[i][j].setOnMouseClicked(event -> {
+                        mMainController.logToChat("Grab Action in pos (" + x + ", " + y + ")");
+                        switchButtonGridEnableStatus(false);
+                        mMainController.setEnableStatusActionButtonBox(true);
+
+                        notify(new ActionRequest(
+                                new MoveGrabAction(mMainController.getClientColor(), new Position(x, y)),
+                                mMainController.getView()));
+                    });
+                }
+            }
+        }
+    }
+
+    public void setupInteractiveGridForShootAction (Node weaponBox) {
+        for (int i = 0; i < BOARD_COLUMNS; i++) {
+            for (int j = 0; j < BOARD_ROWS; j++) {
+                int x = i;
+                int y = j;
+
+                if (mInteractiveButtons[i][j] != null) {
+                    mInteractiveButtons[i][j].setOnMouseClicked(event -> {
+                        mMainController.logToChat("Shoot Action pos set to: (" + x + ", " + y + ")");
+                        switchButtonGridEnableStatus(false);
+                        mMainController.setShootOnWeapon(new Position(x, y));
+
+                        mMainController.getUndoButton().setOnMouseClicked(event1 -> {
+                            GuiUtils.setBoxEnableStatus(weaponBox, false);
+                            mMainController.setEnableStatusActionButtonBox(true);
+                        });
+                    });
+                }
+            }
+        }
+    }
+
+    public void enableSpawnWeaponBoxForSendingIndex(TileColor spawnColor) {
+        HBox selectedSpawn = mSpawnBoxes.get(spawnColor);
+
+        GuiUtils.setBoxEnableStatus(selectedSpawn,true);
+        mMainController.setEnableStatusActionButtonBox(false);
+
+        for (int i = 0; i < selectedSpawn.getChildren().size(); i++) {
+            final int index = i;
+            selectedSpawn.getChildren().get(i).setOnMouseClicked(event -> notify(
+                    new WeaponSelectedRequest(index, mMainController.getView())));
+        }
+
+        mMainController.getUndoButton().setOnMouseClicked(event -> {
+            GuiUtils.setBoxEnableStatus(selectedSpawn,false);
+            mMainController.setEnableStatusActionButtonBox(true);
+        });
     }
 }

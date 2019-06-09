@@ -1,0 +1,83 @@
+{
+  "name": "Machine Gun",
+  "shootCost": "1b",
+  "grabCost": "1r1b",
+  "behaviour": {
+    "expr": "PickEffect",
+    "effects": [
+      {
+        "name" : "Basic effect",
+        "priority": 0,
+        "behaviour" : {
+          "expr": "InflictDamage",
+          "amount": "1d",
+          "to" : {
+            "expr": "SelectTargets",
+            "store" : "basic_effect_selection",
+            "min" : 1,
+            "max" : 2,
+            "from": {
+              "expr": "CanSee"
+            }
+          }
+        }
+      },
+      {
+        "name": "With focus shot",
+        "priority": 1,
+        "optional": true,
+        "cost" : "1y",
+        "behaviour" : {
+          "expr" : "InflictDamage",
+          "amount": "1d",
+          "to": {
+            "expr": "SelectOneTarget",
+            "store" : "focus_shot_selection",
+            "from": {
+              "expr" : "LastSelected"
+            }
+          }
+        }
+      },
+      {
+        "name" : "With turrent tripod 1",
+        "priority" : 1,
+        "optional" : true,
+        "behaviour" : {
+          "expr" : "InflictDamage",
+          "amount" : 1,
+          "to" : {
+            "expr" : "Difference",
+            "lhs" : {
+              "expr" : "Load",
+              "name" : "basic_effect_selection"
+            },
+            "rhs" : {
+              "expr" : "Load",
+              "name" : "focus_shot_selection"
+            }
+          }
+        }
+      },
+      {
+        "name" : "With turrent tripod 2",
+        "priority" : 1,
+        "optional" : true,
+        "behaviour" : {
+          "expr" : "InflictDamage",
+          "amount" : 1,
+          "to" : {
+            "expr" : "Difference",
+            "lhs" : {
+              "expr" : "CanSee"
+            },
+            "rhs" : {
+              "expr" : "Load",
+              "name" : "basic_effect_selection"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

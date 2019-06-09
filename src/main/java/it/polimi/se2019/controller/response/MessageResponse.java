@@ -4,18 +4,20 @@ import it.polimi.se2019.view.ResponseHandler;
 
 
 public class MessageResponse implements Response {
-    private String message;
-    private boolean error;
+    private String mMessage;
+    private boolean mError;
 
-    public MessageResponse() {
+    public MessageResponse(String message, boolean error) {
+        mMessage = message;
+        mError = error;
     }
 
     public String getMessage() {
-        return null;
+        return mMessage;
     }
 
     public boolean isError() {
-        return false;
+        return mError;
     }
 
     @Override

@@ -1,3 +1,8 @@
-1. Deal with second stash (it is important)
-2. Remove requested info stack from shoot context
-3. Consider using List expression instead of @SubExpressionList
+1. Check if Gson actually cares about default constructors
+2. Try to streamline selections in weapon behaviour
+3. Create EffectInfo class to separate model from controller
+4. Use logging inside PickExpression class
+5. Implement better version of XorEffect that does not use EffectInfo
+    NB. this is because EffectInfo has additional information that are useless to
+        XorEffect (priority and optionality)
+6. Build the MWEL

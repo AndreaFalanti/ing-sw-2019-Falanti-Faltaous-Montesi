@@ -17,7 +17,7 @@ public class GrabAmmoAction implements GrabAction {
         AmmoCard ammoCard = tile.grabAmmo();
         Player player = game.getActivePlayer();
 
-        player.getAmmo().add(ammoCard.getAmmoGain());
+        player.addAmmo(ammoCard.getAmmoGain());
 
         // check if grabbed ammo card allows drawing a power up card
         if (ammoCard.getDrawPowerUp()) {

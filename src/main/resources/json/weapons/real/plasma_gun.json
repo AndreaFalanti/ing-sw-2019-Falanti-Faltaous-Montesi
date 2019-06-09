@@ -1,0 +1,53 @@
+{
+  "name": "Plasma Gun",
+  "grabCost": "1b",
+  "reloadCost": "1y1b",
+  "behaviour": {
+    "expr": "PickEffect",
+    "effects": [
+      {
+        "name": "Basic effect",
+        "priority": 0,
+        "behaviour": {
+          "expr": "InflictDamage",
+          "amount": "1d",
+          "to": {
+            "expr": "SelectOneTarget",
+            "from": {
+              "expr": "CanSee"
+            }
+          }
+        }
+      },
+      {
+        "name": "Basic effect move",
+        "priority": 0,
+        "optional": true,
+        "behaviour": {
+          "expr": "Move",
+          "from": {
+            "expr": "You"
+          },
+          "to": {
+            "expr": "DistanceRange",
+            "min": 1,
+            "max": 2
+          }
+        }
+      },
+      {
+        "name": "With charged shot",
+        "cost": "1b",
+        "priority": 1,
+        "optional": true,
+        "behaviour": {
+          "expr": "InflictDamage",
+          "amount": "1d",
+          "to": {
+            "expr": "LastSelected"
+          }
+        }
+      }
+    ]
+  }
+}

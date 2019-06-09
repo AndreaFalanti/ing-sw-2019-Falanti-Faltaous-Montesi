@@ -1,0 +1,121 @@
+{
+  "name": "Power glove",
+  "guiID": "024",
+  "grabCost": "1y",
+  "reloadCost": "1y1b",
+  "behaviour": {
+    "expr": "XorEffect",
+    "lhs": {
+      "name": "Basic mode",
+      "behaviour": {
+        "expr": "Do",
+        "list": [
+          {
+            "expr": "SelectOneTarget",
+            "from": {
+              "expr": "Distance",
+              "amount": 1
+            }
+          },
+          {
+            "expr": "Move",
+            "from": {
+              "expr": "You"
+            },
+            "to": {
+              "expr": "Pos",
+              "who": {
+                "expr": "LastSelected"
+              }
+            }
+          },
+          {
+            "expr": "InflictDamage",
+            "amount": "1d1m",
+            "to": {
+              "expr": "LastSelected"
+            }
+          }
+        ]
+      }
+    },
+    "rhs": {
+      "name": "In rocket fist mode",
+      "cost": "1b",
+      "behaviour": {
+        "expr": "PickEffect",
+        "effects": [
+          {
+            "priority": 0,
+            "behaviour": {
+              "expr": "Move",
+              "to": {
+                "expr": "Line",
+                "direction": {
+                  "expr": "SelectOneDirection",
+                  "store": "punch_direction"
+                },
+                "length": 1
+              }
+            }
+          },
+          {
+            "priority": 1,
+            "optional": true,
+            "behaviour": {
+              "expr": "InflictDamage",
+              "amount": "2d",
+              "to": {
+                "expr": "SelectOneTarget",
+                "from": {
+                  "expr": "All",
+                  "from": {
+                    "expr": "Pos",
+                    "who": {
+                      "expr": "You"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "priority": 2,
+            "optional": true,
+            "behaviour": {
+              "expr": "Move",
+              "to": {
+                "expr": "Line",
+                "direction": {
+                  "expr": "Load",
+                  "name": "punch_direction"
+                },
+                "length": 1
+              }
+            }
+          },
+          {
+            "priority": 3,
+            "optional": true,
+            "behaviour": {
+              "expr": "InflictDamage",
+              "amount": "2d",
+              "to": {
+                "expr": "SelectOneTarget",
+                "from": {
+                  "expr": "All",
+                  "from": {
+                    "expr": "Pos",
+                    "who": {
+                      "expr": "You"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

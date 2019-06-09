@@ -1,28 +1,25 @@
 package it.polimi.se2019.view;
 
 import it.polimi.se2019.controller.response.Response;
-import it.polimi.se2019.model.Player;
+import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.action.Action;
-import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.board.Direction;
+import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
-import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.Either;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.request.Request;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.SortedMap;
 
-public abstract class View extends Observable<Either<Request, Action>> implements Observer<Either<Response, Update>> {
+public abstract class View extends Observable<Request> implements Observer<Either<Response, Update>> {
     // fields
-    protected ArrayList<Player> mPlayers;
-    private Board board;
-    protected PlayerColor activePlayer;
-    protected Player owner;
+
+    protected PlayerColor ownerColor;
     protected UpdateHandler mUpdateHandler;
     protected ResponseHandler mResponseHandler;
 
@@ -36,6 +33,7 @@ public abstract class View extends Observable<Either<Request, Action>> implement
     public ResponseHandler getResponseHandler() {
         return mResponseHandler;
     }
+
     public UpdateHandler getUpdateHandler() {
         return mUpdateHandler;
     }
@@ -44,44 +42,47 @@ public abstract class View extends Observable<Either<Request, Action>> implement
 
     public abstract void reportError(String error);
 
-    public abstract void updateBoard();
+    public abstract int parseWeaponInformation(TileColor tileColor);// the weapon index that you want to grab<---color
 
-    public abstract void updatePlayers();
-
-    public abstract void commandAction (String command,String otherCommandPart);//to distinguish and make response for an action
-
-    public abstract Position parseInformationOnDestination(List<Position> pos);//used from controller to response more info on destination
-
-    public abstract int parseWeaponInformation(Weapon[] weapons);// the weapon index that you want to grab
-
-    public abstract Integer weaponPlayerController();// the weapon index of the weapon that you want exchange
-
-    public abstract void weaponPlayer();//to see weapon of player
-
-    public abstract int reloadInteraction(Weapon[] weapons);//to choose the weapon that you want reload
-
-    public abstract void easyCommand(String command);//command as print Players name
-
-    public abstract void parseCommand(String command);//to distinguish the type of command
-
-    public abstract String requestAdditionalInfo();//used to response more information about action
+    public abstract int parseWeaponInformation();// the weapon index of the weapon that you want exchange<to change a parse
 
 
+    public abstract boolean[] discardPowerUps ();
 
-    public abstract void interact();//used to parse the command
+    /**
+     * Ask player a cardinal direction
+     * @return the selected direction
+     */
+    public abstract Direction pickDirection();
 
-    public void notifyController() {
-        // TODO: implement
-    }
+    /**
+     * Ask player to select a position from the board
+     * @param possiblePositions possible selectable positions (any position selected from outside this range should be
+     *                          considered an input error by the controller)
+     * @return the selected position
+     */
+    public abstract Position selectPosition(Set<Position> possiblePositions);
 
-    public PlayerColor getActivePlayer() {
+    /**
+     * Ask player to select a group of targets (represented through PlayerColor) from the board
+     * @param minToSelect minimum number of targets requested
+     * @param maxToSelect maximum number of targets allowed
+     * @param possibleTargets possible selectable targets (any target selected from outside this group should be
+     *                        considered an input error by the controller)
+     * @return the selected targets
+     */
+    public abstract Set<PlayerColor> selectTargets(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets);
 
-        return null;
-    }
-
-    public List<Player> getPlayers(){
-        return mPlayers;
-    }
+    /**
+     * Ask player to select a list of effects
+     * @param priorityMap The possible effects that the player can choose from. The effects are associated to their
+     *                    respective priorities. If an effect is picked that is not present among this map, the the
+     *                    controller should consider the call an input error.
+     * @param currentPriority The required priority of the picked effect. If an effect is returned that does not have
+     *                        this priority, then the controller should consider the call an input error.
+     * @return The selected effect
+     */
+    public abstract Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority);
 
     @Override
     public final void update(Either<Response, Update> message) {

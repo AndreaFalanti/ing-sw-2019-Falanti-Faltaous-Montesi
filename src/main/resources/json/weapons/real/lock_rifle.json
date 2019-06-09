@@ -1,0 +1,47 @@
+{
+  "name": "Lock Rifle",
+  "guiID": "0221",
+  "grabCost": "1b",
+  "reloadCost": "2b",
+  "behaviour": {
+    "expr": "PickEffect",
+    "effects": [
+      {
+        "name" : "Basic Effect",
+        "priority": 0,
+        "behaviour" : {
+          "expr": "InflictDamage",
+          "amount": "2d1m",
+          "to": {
+            "expr": "SelectOneTarget",
+            "from": {
+              "expr": "CanSee"
+            }
+          }
+        }
+      },
+      {
+        "name": "With Second Lock",
+        "priority": 1,
+        "optional": true,
+        "cost" : "1r",
+        "behaviour" : {
+          "expr" : "InflictDamage",
+          "amount": "1m",
+          "to": {
+            "expr": "SelectOneTarget",
+            "from": {
+              "expr": "Intersect",
+              "lhs": {
+                "expr": "Difference"
+              },
+              "rhs": {
+                "expr": "CanSee"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

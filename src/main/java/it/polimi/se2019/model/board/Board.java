@@ -4,11 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
+import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -168,7 +171,11 @@ public class Board {
         return result;
     }
 
-    // TODO: write doc
+    /**
+     * Return list index of given position
+     * @param pos Position to check
+     * @return Tile list index
+     */
     private int getIndexFromPosition (Position pos) {
         int requestedIndex = mWidth * pos.getY() + pos.getX();
         if (requestedIndex > getSize()) {
@@ -179,7 +186,11 @@ public class Board {
         return requestedIndex;
     }
 
-    // TODO: write doc
+    /**
+     * Get the tile at given position
+     * @param pos Tile position
+     * @return Tile at given position
+     */
     public Tile getTileAt (Position pos) {
         if (isOutOfBounds(pos))
             throw new IndexOutOfBoundsException("Trying to reference tile outside of the board's bounds!\n" +
@@ -196,7 +207,12 @@ public class Board {
         mTiles.set(getIndexFromPosition(pos), toSet);
     }
 
-    // TODO: write doc
+    /**
+     * Get distance between given tiles
+     * @param pos1 Position of the first tile
+     * @param pos2 Position of the second tile
+     * @return Distance between the tiles
+     */
     public int getTileDistance (Position pos1, Position pos2) {
         return getRangeInfo(pos1).getDistAt(pos2);
     }

@@ -1,0 +1,104 @@
+{
+  "name": "Vortex Cannon",
+  "guiID": "029",
+  "shootCost": "1b1r",
+  "grabCost": "1r",
+  "behaviour": {
+    "expr": "PickEffect",
+    "effects": [
+      {
+        "name": "Basic effect",
+        "priority": 0,
+        "behaviour": {
+          "expr": "Do",
+          "list": [
+            {
+              "expr": "SelectOnePosition",
+              "store": "the_vortex",
+              "from": {
+                "expr": "CanSee"
+              }
+            },
+            {
+              "expr": "SelectOneTarget",
+              "store": "target",
+              "from": {
+                "expr": "DistanceRange",
+                "origin": {
+                  "expr": "Load",
+                  "name": "the_vortex"
+                },
+                "min": 0,
+                "max": 1
+              }
+            },
+            {
+              "expr": "Move",
+              "from": {
+                "expr": "Load",
+                "name": "target"
+              },
+              "to": {
+                "expr": "Load",
+                "name": "the_vortex"
+              }
+            },
+            {
+              "expr": "InflictDamage",
+              "amount": "2d",
+              "to": {
+                "expr": "Load",
+                "name": "target"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "With black hole",
+        "cost": "1r",
+        "priority": 1,
+        "optional": true,
+        "behaviour": {
+          "expr": "Do",
+          "list": [
+            {
+              "expr": "SelectTargets",
+              "store": "target",
+              "min": 2,
+              "max": 2,
+              "from": {
+                "expr": "DistanceRange",
+                "origin": {
+                  "expr": "Load",
+                  "name": "the_vortex"
+                },
+                "min": 0,
+                "max": 2
+              }
+            },
+            {
+              "expr": "Move",
+              "from": {
+                "expr": "Load",
+                "name": "target"
+              },
+              "to": {
+                "expr": "Load",
+                "name": "the_vortex"
+              }
+            },
+            {
+              "expr": "InflictDamage",
+              "amount": "1d",
+              "to": {
+                "expr": "Load",
+                "name": "target"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

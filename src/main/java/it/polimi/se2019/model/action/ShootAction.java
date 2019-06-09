@@ -8,7 +8,14 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 import java.util.Optional;
 
 public class ShootAction implements Action {
-    public ShootAction () {
+    private int mWeaponIndex;
+
+    public ShootAction(int weaponIndex) {
+        mWeaponIndex = weaponIndex;
+    }
+
+    public int getWeaponIndex() {
+        return mWeaponIndex;
     }
 
     @Override

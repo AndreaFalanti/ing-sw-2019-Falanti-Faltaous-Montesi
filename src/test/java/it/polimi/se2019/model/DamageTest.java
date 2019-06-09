@@ -2,8 +2,6 @@ package it.polimi.se2019.model;
 
 import org.junit.Test;
 
-import java.util.Optional;
-
 import static org.junit.Assert.*;
 
 public class DamageTest {

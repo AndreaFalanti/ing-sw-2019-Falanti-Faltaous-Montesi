@@ -1,6 +1,6 @@
 package it.polimi.se2019.model.board;
 
-import it.polimi.se2019.model.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapon;
 
 import java.util.Arrays;
 
@@ -8,6 +8,13 @@ import java.util.Arrays;
 public class SpawnTile extends Tile {
     private Weapon[] mWeapons = new Weapon[MAX_WEAPONS];
     public static final int MAX_WEAPONS = 3;
+
+    /**
+     * Constructs blue empty tile
+     */
+    public SpawnTile () {
+        super();
+    }
 
     /**
      * Add {@code value} to first null slot in spawn's weapon array

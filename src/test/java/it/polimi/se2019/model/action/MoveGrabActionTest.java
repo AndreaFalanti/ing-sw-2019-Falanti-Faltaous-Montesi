@@ -1,9 +1,9 @@
 package it.polimi.se2019.model.action;
 
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
-import it.polimi.se2019.model.weapon.Weapon;
 import it.polimi.se2019.util.GameTestCaseBuilder;
 import org.junit.Test;
 

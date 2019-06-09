@@ -1,9 +1,9 @@
 package it.polimi.se2019.model.weapon.serialization;
 
+import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.behaviour.*;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
-import it.polimi.se2019.model.weapon.Weapon;
-import it.polimi.se2019.model.weapon.behaviour.*;
 import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class WeaponFactoryTest {
     @Before
     public void instantiate() {
         // TODO: consider using builder instead of setters
-        mHeatseeker = new Weapon("heatseeker", new AmmoValue(2, 1, 0), new AmmoValue(1, 1, 0));
+        mHeatseeker = new Weapon("Heatseeker", new AmmoValue(2, 1, 0), new AmmoValue(1, 0, 0));
         mHeatseeker.setBehaviour(
                 new InflictDamage(
                         new DamageLiteral(
@@ -35,7 +35,7 @@ public class WeaponFactoryTest {
     // TODO: add doc
     @Test
     public void testFromJsonHeatseeker() {
-        Weapon actual = WeaponFactory.fromJson(Jsons.get("weapons/tests/raw_heatseeker"));
+        Weapon actual = WeaponFactory.fromJson(Jsons.get("weapons/real/heatseeker"));
 
         Weapon expected = mHeatseeker;
 

@@ -1,0 +1,21 @@
+Info(
+  name: "VortexCannon",
+  reload_cost: 1r1b,
+  grab_cost: 1r
+)
+
+Do(
+  Do(
+    Store("var", 1Pos(CanSee())),
+    Store("tar", 1Tar(DistRng(["var"], 0, 1))),
+    Move(["tar"], ["var"]),
+    Dam(2d, ["tar"])
+  ),
+  Do(
+    opt: 1,
+    cost: 1r,
+    Store("tar", 2Tar(DistRng(["var"], 0, 2))),
+    Move(["tar"], ["var"]),
+    Dam(1d, ["tar"])
+  )
+)

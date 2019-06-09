@@ -1,12 +1,16 @@
 package it.polimi.se2019.view;
 
 import it.polimi.se2019.controller.response.Response;
+import it.polimi.se2019.controller.weapon.Effect;
+import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.board.Direction;
+import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
-import it.polimi.se2019.model.weapon.Weapon;
 
-import java.util.List;
+import java.util.Set;
+import java.util.SortedMap;
 
 public class SocketVirtualView extends View {
     public SocketVirtualView() {
@@ -37,62 +41,37 @@ public class SocketVirtualView extends View {
     }
 
     @Override
-    public void updateBoard() {
-
-    }
-
-    @Override
-    public void updatePlayers() {
-
-    }
-
-    @Override
-    public void commandAction(String command, String otherCommandPart) {
-
-    }
-
-    @Override
-    public Position parseInformationOnDestination(List<Position> pos) {
-        return null;
-    }
-
-    @Override
-    public int parseWeaponInformation(Weapon[] weapons) {
+    public int parseWeaponInformation(TileColor tileColor) {
         return 0;
     }
 
     @Override
-    public Integer weaponPlayerController() {
+    public int parseWeaponInformation() {return 0;    }
+
+    @Override
+    public boolean[] discardPowerUps() {
+        return new boolean[0];
+    }
+
+    @Override
+    public Direction pickDirection() {
         return null;
     }
 
     @Override
-    public void weaponPlayer() {
-
-    }
-
-    @Override
-    public int reloadInteraction(Weapon[] weapons) {
-        return 0;
-    }
-
-    @Override
-    public void easyCommand(String command) {
-
-    }
-
-    @Override
-    public void parseCommand(String command) {
-
-    }
-
-    @Override
-    public String requestAdditionalInfo() {
+    public Position selectPosition(Set<Position> possiblePositions) {
         return null;
     }
 
     @Override
-    public void interact() {
-
+    public Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect) {
+        return null;
     }
+
+    @Override
+    public Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
+        return null;
+    }
+
+
 }

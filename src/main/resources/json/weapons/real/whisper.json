@@ -1,0 +1,21 @@
+{
+  "name": "Whipser",
+  "guiID": "0218",
+  "grabCost": "1b",
+  "reloadCost": "1y2b",
+  "behaviour": {
+    "expr": "InflictDamage",
+    "amount": "3d1m",
+    "to": {
+      "expr": "Difference",
+      "lhs": {
+        "expr": "CanSee"
+      },
+      "rhs": {
+        "expr": "DistanceRange",
+        "min": 0,
+        "max": 1
+      }
+    }
+  }
+}

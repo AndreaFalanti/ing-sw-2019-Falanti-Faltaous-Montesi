@@ -1,0 +1,67 @@
+{
+  "expr": "PickEffect",
+  "effects": [
+    {
+      "name" : "Basic Effect",
+      "priority": 0,
+      "behaviour" : {
+        "expr": "InflictDamage",
+        "subs" : {
+          "amount": {
+            "expr" : "DamageLiteral",
+            "contents" : {
+              "damage" : 2,
+              "marksNum" : 1
+            }
+          },
+          "to": {
+            "expr": "SelectOneTarget",
+            "subs" : {
+              "from": {
+                "expr": "CanSee",
+                "subs" : {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "With Second Lock",
+      "priority": 1,
+      "optional": true,
+      "cost" : "1r",
+      "behaviour" : {
+        "expr" : "InflictDamage",
+        "subs" : {
+          "amount": {
+            "expr" : "DamageLiteral",
+            "contents" : {
+              "damage" : 2,
+              "marksNum" : 1
+            }
+          },
+          "to": {
+            "expr": "SelectOneTarget",
+            "subs" : {
+              "from": {
+                "expr": "Intersect",
+                "subs" : {
+                  "lhs": {
+                    "expr": "Different",
+                    "subs" : {}
+                  },
+                  "rhs": {
+                    "expr": "CanSee",
+                    "subs" : {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
+

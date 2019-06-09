@@ -45,6 +45,22 @@ public class AmmoValueTest {
      * Test parsing a string with all color into into an AmmoValue
      */
     @Test
+    public void testFromStringOneColor() {
+        AmmoValue expected = new AmmoValue(1, 0, 0);
+
+        AmmoValue actual = AmmoValue.from("1r")
+                .orElseGet(() -> {
+                    fail();
+                    return null;
+                });
+
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Test parsing a string with all color into into an AmmoValue
+     */
+    @Test
     public void testFromStringAllColors() {
         AmmoValue expected = new AmmoValue(1, 2, 3);
 

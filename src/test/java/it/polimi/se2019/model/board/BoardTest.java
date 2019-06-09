@@ -1,13 +1,11 @@
 package it.polimi.se2019.model.board;
 
-import com.google.gson.JsonPrimitive;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.PrettyJsonElement;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

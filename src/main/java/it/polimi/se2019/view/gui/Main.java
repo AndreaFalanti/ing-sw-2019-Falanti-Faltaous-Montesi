@@ -23,11 +23,17 @@ public class Main extends Application {
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/css/button.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/css/tabPaneBar.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
 
         MainScreen controller = loader.getController();
-        controller.loadPlayerBoard(PlayerColor.PURPLE);
+        GraphicView guiView = new GraphicView(controller);
+        controller.setView(guiView);
+        controller.setClientColor(PlayerColor.PURPLE);
+
+
+        controller.loadPlayerBoard(PlayerColor.GREY);
         controller.loadBoard();
         String[] ids = {"022", "023", "024"};
         controller.updatePowerUpGrid(ids);

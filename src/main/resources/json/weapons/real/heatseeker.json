@@ -1,0 +1,19 @@
+{
+  "name" : "Heatseeker",
+  "grabCost" : "1r",
+  "reloadCost" : "2r1y",
+  "behaviour" : {
+    "expr" : "InflictDamage",
+    "amount" : "3d",
+    "to" : {
+      "expr" : "SelectOneTarget",
+      "from" : {
+        "expr" : "NegateSelection",
+        "selection" : {
+          "expr" : "CanSee"
+        }
+      }
+    }
+  }
+}
+
