@@ -22,7 +22,7 @@ public class CLIPlayer {
     private String mPlayerPowerUps;
     private String mDeathNum;
     private String mPlayerAmmo;
-    private String mBoardIsFlipped ;
+  // TO ADd boardflipped
 
     public CLIPlayer(Player player){
 

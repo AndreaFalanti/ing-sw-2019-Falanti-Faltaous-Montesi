@@ -4,13 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BoardCLI {
-    public static final int lung = 4;
-    public static final int grandcella = 29;
-    public static final int altezzacella = 8;
-    public static final int grandcellaltezza = 8;
-    private StringBuilder line1 = new StringBuilder();
-    private StringBuilder line2;
-    private StringBuilder line3;
+    public static final int LENGTH = 4;
+    public static final int SIZECELL = 29;
+    public static final int HIGHCELL = 8;
     public static final StringBuilder ANSI_RESET = new StringBuilder("\u001B[0m");
     public static final StringBuilder ANSI_BLACK = new StringBuilder("\u001B[30m");
     public static final StringBuilder ANSI_RED = new StringBuilder("\u001B[31m");
@@ -54,8 +50,8 @@ public class BoardCLI {
     public static final testTile tile10 = new testTile(color5, false, false, true, true);
     public static final testTile tile11 = new testTile(color4, false, false, false, true);
 
-    public static final List<testTile> board = new ArrayList<>();
-    public static final testTile[] board1 = new testTile[12];
+    private static final List<testTile> board = new ArrayList<>();
+    private static final testTile[] board1 = new testTile[12];
 
 
     public static void crea() {
@@ -75,25 +71,23 @@ public class BoardCLI {
         board.toArray(board1);
     }
 
-    public static void board(){
+    public static void boardCreation(){
         StringBuilder line0 = new StringBuilder();
         StringBuilder line1 = new StringBuilder();
         StringBuilder line2 = new StringBuilder();
         StringBuilder line3 = new StringBuilder();
         StringBuilder line4 = new StringBuilder();
-        StringBuilder line5 = new StringBuilder();
 
         line0.append(firstline());
         line1.append(creaprima(0));
-        line2.append(creaprima(lung));
-        line3.append(ultimaLinea(lung*2));
+        line2.append(creaprima(LENGTH));
+        line3.append(ultimaLinea(LENGTH *2));
 
 
         line4.append(line0);
         line4.append(line1);
         line4.append(line2);
         line4.append(line3);
-        String boarder= line4.substring(0);
 
         System.out.println(line1);
 
@@ -102,7 +96,7 @@ public class BoardCLI {
     public static StringBuilder colleague(boolean door, int i){
         StringBuilder line = new StringBuilder();
         if(door) {
-            if((i<5 || i>grandcella-5) && (i<grandcella+5 ||i>grandcella*2-5)  )
+            if((i<5 || i> SIZECELL -5) && (i< SIZECELL +5 ||i> SIZECELL *2-5)  )
                 line.append("_");
             else
                 line.append(" ");
@@ -110,7 +104,7 @@ public class BoardCLI {
 
         else{
 
-            if(i==grandcella-1 || i==grandcella*2-1 || i==grandcella*3-1|| i==1 || i==grandcella+1 || i==grandcella*2+1 || i==grandcella*3+1 ||i==grandcella*4-1 )
+            if(i== SIZECELL -1 || i== SIZECELL *2-1 || i== SIZECELL *3-1|| i==1 || i== SIZECELL +1 || i== SIZECELL *2+1 || i== SIZECELL *3+1 ||i== SIZECELL *4-1 )
                 line.append("_");
             else
                 line.append(" ");
@@ -123,22 +117,21 @@ public class BoardCLI {
     }
 
     public static StringBuilder addSouthernDoors(int i,int indexTile){
-        long start;
-        int end;
+
         StringBuilder line = new StringBuilder();
 
-        if(indexTile ==lung*2) {
+        if(indexTile == LENGTH *2) {
             line.append("_");
             return line;
         }
 
 
-        if(board1[i/grandcella+indexTile]!=null && board1[i/grandcella + lung +indexTile]!=null ) {
+        if(board1[i/ SIZECELL +indexTile]!=null && board1[i/ SIZECELL + LENGTH +indexTile]!=null ) {
 
-            if (board1[i/grandcella +indexTile].getColor() == board1[i/grandcella + lung+indexTile].getColor()) {
+            if (board1[i/ SIZECELL +indexTile].getColor() == board1[i/ SIZECELL + LENGTH +indexTile].getColor()) {
                 line.append(colleague(false,i));
             } else {
-                if (board1[i/grandcella].getDoors()[1])
+                if (board1[i/ SIZECELL].getDoors()[1])
                     line.append(colleague(true,i));
                 else line.append("_");
             }
@@ -165,11 +158,11 @@ public class BoardCLI {
 
     public static StringBuilder firstline(){
         StringBuilder line = new StringBuilder();
-        int indexLenght = lung;
-        if(board1[lung-1] == null )
-            indexLenght = lung -1;
+        int indexLenght = LENGTH;
+        if(board1[LENGTH -1] == null )
+            indexLenght = LENGTH -1;
 
-        for (int i = 0; i <= grandcella * indexLenght; i++) {
+        for (int i = 0; i <= SIZECELL * indexLenght; i++) {
             line.append("_");
         }
         line.append("\n");
@@ -181,14 +174,14 @@ public class BoardCLI {
     public static StringBuilder creaprima(int indexTile) {
         StringBuilder line = new StringBuilder();
 
-        for (int j = 0; j <= altezzacella; j++) {
-            for (int i = 0; i <= grandcella * lung; i++) {
-                if (  board1[ i/grandcella + indexTile] != null) {
-                    if (i < grandcella * lung ) {
+        for (int j = 0; j <= HIGHCELL; j++) {
+            for (int i = 0; i <= SIZECELL * LENGTH; i++) {
+                if (  board1[ i/ SIZECELL + indexTile] != null) {
+                    if (i < SIZECELL * LENGTH) {
                         line.append(valutation(i,j,indexTile));
                     }
                     else line.append(makeLastWall());
-                }else if(indexTile ==lung)
+                }else if(indexTile == LENGTH)
                     line.append(makeLastWall());
             }
         }
@@ -199,19 +192,17 @@ public class BoardCLI {
 
     public static StringBuilder ultimaLinea(int indexTile){
         StringBuilder line = new StringBuilder();
-
-        for (int j = 0; j <= altezzacella; j++) {
-            for (int i = 0; i <= grandcella * lung; i++) {
-                if(board1[indexTile] != null){
+        int indexValutation;
+        for (int j = 0; j <= HIGHCELL; j++) {
+            for (int i = 0; i <= SIZECELL * LENGTH; i++) {
+                indexValutation =i/ SIZECELL +indexTile;
+                if(board1[indexTile] != null || indexValutation!= LENGTH *2 && indexValutation != LENGTH *2 +1){
                     line.append(valutation2(i,j,indexTile));
                 } else {
-                    if (i/grandcella + indexTile == lung*2)
+                    if (i/ SIZECELL + indexTile == LENGTH *2)
                         line.append(" ");
                     else{
-                        if (i/grandcella + indexTile == lung*2+1 )
-                            line.append(valutation3(i,j,indexTile));
-                        else
-                            line.append(valutation2(i,j,indexTile));
+                         line.append(valutation3(i,j,indexTile));
                     }
                 }
             }
@@ -224,10 +215,10 @@ public class BoardCLI {
 
     public static StringBuilder valutation2(int i,int j,int indexTile){
         StringBuilder line = new StringBuilder();
-        if (  i/grandcella + indexTile != board1.length && board1[ i/grandcella + indexTile] != null) {
+        if (  i/ SIZECELL + indexTile != board1.length && board1[ i/ SIZECELL + indexTile] != null) {
             line.append(valutation(i,j,indexTile));
         } else {
-            if ( i/grandcella + indexTile == board1.length)
+            if ( i/ SIZECELL + indexTile == board1.length)
                 line.append(makeLastWall());
         }
         return line;
@@ -235,13 +226,13 @@ public class BoardCLI {
 
     public static StringBuilder valutation(int i,int j,int indexTile ){
         StringBuilder line = new StringBuilder();
-        if (board1[(i-1)/grandcella +indexTile].getColor() == (board1[i/grandcella+indexTile].getColor()))
-            line.append(sameRoom(i, j, board1[i/grandcella+indexTile].getColor(),indexTile));
+        if (board1[(i-1)/ SIZECELL +indexTile].getColor() == (board1[i/ SIZECELL +indexTile].getColor()))
+            line.append(sameRoom(i, j, board1[i/ SIZECELL +indexTile].getColor(),indexTile));
         else {
-            if (board1[(i-1)/grandcella+indexTile].getDoors()[2])
-                line.append(makeDoor(i, j, board1[i/grandcella+indexTile].getColor()));
+            if (board1[(i-1)/ SIZECELL +indexTile].getDoors()[2])
+                line.append(makeDoor(i, j, board1[i/ SIZECELL +indexTile].getColor()));
             else
-                line.append(makeWall(i, board1[i/grandcella+indexTile].getColor()));
+                line.append(makeWall(i, board1[i/ SIZECELL +indexTile].getColor()));
         }
 
         return line;
@@ -251,15 +242,15 @@ public class BoardCLI {
         StringBuilder line = new StringBuilder();
 
 
-        if(j!=0 &&j%altezzacella==0){
-            line.append(getColorTile(board1[i/grandcella+indexTile].getColor()));
-            if(i%grandcella==0)
+        if(j!=0 &&j% HIGHCELL ==0){
+            line.append(getColorTile(board1[i/ SIZECELL +indexTile].getColor()));
+            if(i% SIZECELL ==0)
                 line.append("|");
             else
                 line.append("_");
             line.append(ANSI_RESET);
         }
-        else line.append(makeWall(i, board1[i/grandcella+indexTile].getColor()));
+        else line.append(makeWall(i, board1[i/ SIZECELL +indexTile].getColor()));
         return line;
     }
 
@@ -267,8 +258,8 @@ public class BoardCLI {
     public static StringBuilder sameRoom(int i,int j,StringBuilder color,int indexTile){
         StringBuilder line = new StringBuilder();
         line.append(getColorTile(color));
-        if(j%altezzacella==0){
-            if(i%grandcella == 0 )
+        if(j% HIGHCELL ==0){
+            if(i% SIZECELL == 0 )
                 line.append("|");
             else{
                 if(j!=0){
@@ -291,7 +282,7 @@ public class BoardCLI {
     public static StringBuilder makeDoor(int i,int j, StringBuilder color){
         StringBuilder line = new StringBuilder();
         line.append(getColorTile(color));
-        if(j!=altezzacella/2 && j!=altezzacella/2+1 && i%grandcella==0)
+        if(j!= HIGHCELL /2 && j!= HIGHCELL /2+1 && i% SIZECELL ==0)
             line.append("|");
         else
             line.append(" ");
@@ -303,10 +294,10 @@ public class BoardCLI {
     public static StringBuilder makeWall(int i, StringBuilder color){
         StringBuilder line = new StringBuilder();
         line.append(getColorTile(color));
-        if(i==grandcella*lung)
+        if(i== SIZECELL * LENGTH)
             line.append("|\n");
         else{
-            if(i%grandcella==0)
+            if(i% SIZECELL ==0)
                 line.append("|");
             else
                 line.append(" ");
@@ -328,10 +319,9 @@ public class BoardCLI {
 
 
     public static void main(String[] arg) {
-        int mono =1;
         System.out.print("\n\n\n\n\n\n\n\n\n");
         crea();
-        board();
+        boardCreation();
 
 
 
