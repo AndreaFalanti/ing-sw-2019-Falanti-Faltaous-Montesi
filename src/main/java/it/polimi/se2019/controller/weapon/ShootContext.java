@@ -1,5 +1,6 @@
 package it.polimi.se2019.controller.weapon;
 
+import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;

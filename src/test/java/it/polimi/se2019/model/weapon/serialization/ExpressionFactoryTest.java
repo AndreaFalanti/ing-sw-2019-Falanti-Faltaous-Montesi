@@ -1,7 +1,7 @@
 package it.polimi.se2019.model.weapon.serialization;
 
-import it.polimi.se2019.controller.weapon.Expression;
-import it.polimi.se2019.controller.weapon.behaviour.*;
+import it.polimi.se2019.controller.weapon.expression.Expression;
+import it.polimi.se2019.controller.weapon.expression.*;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.util.Jsons;

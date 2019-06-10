@@ -374,7 +374,7 @@ public class MainScreen extends Observable<Request> {
     }
 
     /**
-     * Enable weapon box and set shoot behaviour on weapon images
+     * Enable weapon box and set shoot expression on weapon images
      * @param pos Selected position for ShootAction
      */
     public void setShootOnWeapon (Position pos) {
@@ -392,7 +392,7 @@ public class MainScreen extends Observable<Request> {
     }
 
     /**
-     * Enable weapon box and set reload behaviour on weapon images
+     * Enable weapon box and set reload expression on weapon images
      */
     public void setReloadOnWeapon () {
         GuiUtils.setBoxEnableStatus(weaponBox,true);
@@ -466,7 +466,7 @@ public class MainScreen extends Observable<Request> {
     }
 
     /**
-     * Set shoot behaviour on weapon images
+     * Set shoot expression on weapon images
      * @param weapon Weapon image
      * @param index Weapon index
      * @param pos ShootAction position
@@ -488,7 +488,7 @@ public class MainScreen extends Observable<Request> {
     }
 
     /**
-     * Set reload behaviour on weapon images
+     * Set reload expression on weapon images
      * @param weapon Weapon image
      * @param index Weapon index
      */

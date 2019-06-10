@@ -1,29 +1,24 @@
 package it.polimi.se2019.model.weapon.serialization;
 
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import it.polimi.se2019.controller.weapon.*;
-import it.polimi.se2019.controller.weapon.behaviour.*;
+import it.polimi.se2019.controller.weapon.expression.*;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
-import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
+import org.omg.CosNaming.BindingHelper;
 
-import javax.naming.InvalidNameException;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Exists to parse pretty (more readable) definition of expression in json into that can be more
  * easily serialized by the Gson library
  */
 public class ExpressionParser implements JsonDeserializer<Expression> {
-    private static final String BEHAVIOUR_PACKAGE_NAME = "it.polimi.se2019.controller.weapon.behaviour";
+    private static final String EXPRESSION_PACKAGE_NAME = "it.polimi.se2019.controller.weapon.expression";
     private static final String STORE_KEYWORD = "store";
     private static final String EXPR_KEYWORD = "expr";
     private static final Set<String> PROHIBITED_KEYWORDS = new HashSet<>(Arrays.asList(
@@ -34,38 +29,10 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
             EXPR_KEYWORD,
             STORE_KEYWORD
     ));
-    private static final Set<Type> TRIVIALLY_DESERIALIZABLE_EXPRESSION_TYPES = new HashSet<>(Arrays.asList(
-            XorEffect.class,
-            Do.class
+    private static final Set<String> TRIVIALLY_DESERIALIZABLE_EXPRESSION_TYPES = new HashSet<>(Arrays.asList(
+            "XorEffect",
+            "Do"
     ));
-
-    private static Gson makeTrivialExpressionGson() {
-        return new GsonBuilder()
-                .registerTypeAdapterFactory(new TypeAdapterFactory() {
-                                                @Override
-                                                public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> typeToken) {
-                                                    if(TRIVIALLY_DESERIALIZABLE_EXPRESSION_TYPES.contains(
-                                                            typeToken.getRawType()))
-                                                        return RuntimeTypeAdapterFactory.of(Expression.class, "expr")
-                                                            .registerSubtype(XorEffect.class, "XorEffect")
-                                                            .registerSubtype(Do.class, "Do")
-                                                            .create(gson, typeToken);
-
-                                                    return (TypeAdapter<T>) new TypeAdapter<Expression>() {
-                                                        @Override
-                                                        public void write(JsonWriter jsonWriter, Expression expression) {
-                                                            throw new UnsupportedOperationException("This should not be used to serialize!!!");
-                                                        }
-
-                                                        @Override
-                                                        public Expression read(JsonReader jsonReader) {
-                                                            return parse(jsonReader);
-                                                        }
-                                                    };
-                                                }
-                                            })
-                .create();
-    }
 
     // identifies if expression is a primitive
     private static boolean isPrimitive(JsonElement raw) {
@@ -102,19 +69,9 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
     private static boolean isTriviallyDeserializableExpression(JsonElement raw) {
         return raw.isJsonObject() &&
                 raw.getAsJsonObject().has(EXPR_KEYWORD) &&
-                TRIVIALLY_DESERIALIZABLE_EXPRESSION_TYPES.stream()
-                        //.map(type -> Pattern.compile("^.*\\.(.*)$").matcher(type.getTypeName()).group(1))
-                        .map(Type::getTypeName)
-                        .map(name -> {
-                            Matcher matcher = Pattern.compile("^.*\\.(.*)$").matcher(name);
-
-                            matcher.find();
-
-                            return matcher.group(1);
-                        })
-                        .anyMatch(name -> name.equals(
-                                raw.getAsJsonObject().get(EXPR_KEYWORD).getAsString()
-                        ));
+                TRIVIALLY_DESERIALIZABLE_EXPRESSION_TYPES.contains(
+                        raw.getAsJsonObject().get(EXPR_KEYWORD).getAsString()
+                );
     }
 
     // identifies a behavioural expression
@@ -186,10 +143,21 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
         return result;
     }
 
-    // create a default constructed behaviour from a string representation of its type
-    public static Behaviour createDefaultConstructedBehaviour(String strType) {
+    // get the type of an expression from its string representation
+    private static Class<? extends Expression> getExpressionTypeFromString(String strType) {
         try {
-            Class type = Class.forName(BEHAVIOUR_PACKAGE_NAME + "." + strType);
+            return Class.forName(EXPRESSION_PACKAGE_NAME + "." + strType).asSubclass(Expression.class);
+        } catch (Exception e) {
+            throw new IllegalStateException(
+                    "Something went wrong during default initialization of " + strType + " expression: " + e
+            );
+        }
+    }
+
+    // create a default constructed expression from a string representation of its type
+    private static Behaviour createDefaultConstructedBehaviour(String strType) {
+        try {
+            Class type = Class.forName(EXPRESSION_PACKAGE_NAME + "." + strType);
             return (Behaviour) (type.newInstance());
         } catch (Exception e) {
             throw new IllegalStateException(
@@ -202,7 +170,7 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
     private static Expression parseBehaviour(JsonElement raw, JsonDeserializationContext context) {
         JsonObject jExpression = raw.getAsJsonObject();
 
-        // find behaviour class and call its default constructor
+        // find expression class and call its default constructor
         //   NB: this is important for setting default subexpression values
         Behaviour result = createDefaultConstructedBehaviour(
                 jExpression.get(EXPR_KEYWORD).getAsString()
@@ -251,8 +219,15 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
         if (isPrimitive(raw))
             return parsePrimitive(raw);
 
-        else if (isTriviallyDeserializableExpression(raw))
-            return makeTrivialExpressionGson().fromJson(raw, Expression.class);
+        else if (isTriviallyDeserializableExpression(raw)) {
+            return new GsonBuilder()
+                    .registerTypeAdapter(Expression.class, new CustomExpressionAdapter())
+                    .create()
+                    .fromJson(
+                            raw,
+                            getExpressionTypeFromString(raw.getAsJsonObject().get(EXPR_KEYWORD).getAsString())
+                    );
+        }
 
         else if (isPickEffectExpression(raw))
             return parsePickEffectExpression(raw, context);

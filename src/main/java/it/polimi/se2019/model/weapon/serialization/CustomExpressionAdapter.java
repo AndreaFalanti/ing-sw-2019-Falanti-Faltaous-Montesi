@@ -1,7 +1,7 @@
 package it.polimi.se2019.model.weapon.serialization;
 
 import com.google.gson.*;
-import it.polimi.se2019.controller.weapon.Expression;
+import it.polimi.se2019.controller.weapon.expression.Expression;
 
 import java.lang.reflect.Type;
 

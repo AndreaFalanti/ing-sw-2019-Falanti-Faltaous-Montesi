@@ -1,0 +1,155 @@
+{
+  "name": "Rocket Launcher",
+  "reloadCost": {
+    "red": 2,
+    "yellow": 0,
+    "blue": 0
+  },
+  "grabCost": {
+    "red": 1,
+    "yellow": 0,
+    "blue": 0
+  },
+  "guiID": "0211",
+  "behaviour": {
+    "expr": "PickEffect",
+    "subexpressions": {
+      "0": [
+        {
+          "name": "Basic effect move",
+          "priority": 0,
+          "optional": true,
+          "behaviour": {
+            "expr": "Move",
+            "subs": {
+              "from": {
+                "expr": "Load",
+                "subs": {
+                  "name": {
+                    "expr": "StringLiteral",
+                    "contents": "first_target"
+                  }
+                }
+              },
+              "to": {
+                "expr": "Distance",
+                "subs": {
+                  "amount": {
+                    "expr": "IntLiteral",
+                    "contents": 1
+                  },
+                  "origin": {
+                    "expr": "Load",
+                    "subs": {
+                      "name": {
+                        "expr": "StringLiteral",
+                        "contents": "first_target"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "With rocket jump",
+          "priority": 0,
+          "optional": true,
+          "cost": {
+            "red": 0,
+            "yellow": 0,
+            "blue": 1
+          },
+          "behaviour": {
+            "expr": "Move",
+            "subs": {
+              "from": {
+                "expr": "You",
+                "subs": {}
+              },
+              "to": {
+                "expr": "DistanceRange",
+                "subs": {
+                  "min": {
+                    "expr": "IntLiteral",
+                    "contents": 1
+                  },
+                  "max": {
+                    "expr": "IntLiteral",
+                    "contents": 2
+                  },
+                  "origin": {
+                    "expr": "You",
+                    "subs": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Basic Effect",
+          "priority": 0,
+          "optional": false,
+          "behaviour": {
+            "expr": "StringLiteral",
+            "contents": "JsonTreeReader"
+          }
+        },
+        {
+          "name": "With fragmenting warhead",
+          "priority": 0,
+          "optional": true,
+          "cost": {
+            "red": 0,
+            "yellow": 1,
+            "blue": 0
+          },
+          "behaviour": {
+            "expr": "InflictDamage",
+            "subs": {
+              "amount": {
+                "expr": "DamageLiteral",
+                "contents": {
+                  "damage": 1,
+                  "marksNum": 0
+                }
+              },
+              "to": {
+                "expr": "Union",
+                "subs": {
+                  "lhs": {
+                    "expr": "All",
+                    "subs": {
+                      "from": {
+                        "expr": "Load",
+                        "subs": {
+                          "name": {
+                            "expr": "StringLiteral",
+                            "contents": "explosion_position"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "rhs": {
+                    "expr": "Load",
+                    "subs": {
+                      "name": {
+                        "expr": "StringLiteral",
+                        "contents": "first_target"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "maximumPriority": 0
+  }
+}
+

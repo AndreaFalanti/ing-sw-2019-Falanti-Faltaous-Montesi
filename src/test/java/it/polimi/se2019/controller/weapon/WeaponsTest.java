@@ -75,7 +75,7 @@ public class WeaponsTest {
         // try to get a weapon and in doing so expect no exceptions
         Weapons.get(Weapons.listResourceNames().iterator().next());
 
-        System.out.println(Weapons.get("power_glove"));
+        System.out.println(Weapons.get("rocket_launcher"));
     }
 
     @Test

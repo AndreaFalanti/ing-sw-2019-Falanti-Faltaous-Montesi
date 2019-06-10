@@ -1,5 +1,6 @@
 package it.polimi.se2019.controller.weapon;
 
+import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.AmmoValue;
 
 /**
@@ -15,7 +16,7 @@ public class Effect {
     private boolean mOptional;
     private AmmoValue mCost;
 
-    // behaviour
+    // expression
     private Expression mBehaviour;
 
     // trivial getters

@@ -3,10 +3,10 @@ package it.polimi.se2019.model.weapon.serialization;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import it.polimi.se2019.controller.weapon.Do;
-import it.polimi.se2019.controller.weapon.Expression;
-import it.polimi.se2019.controller.weapon.PickEffect;
-import it.polimi.se2019.controller.weapon.behaviour.*;
+import it.polimi.se2019.controller.weapon.expression.Do;
+import it.polimi.se2019.controller.weapon.expression.Expression;
+import it.polimi.se2019.controller.weapon.expression.PickEffect;
+import it.polimi.se2019.controller.weapon.expression.*;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
@@ -25,6 +25,12 @@ public class ExpressionFactory {
                 .registerSubtype(PickEffect.class, "PickEffect")
                 .registerSubtype(Move.class, "Move")
                 .registerSubtype(DistanceRange.class, "DistanceRange")
+                .registerSubtype(Load.class, "Load")
+                .registerSubtype(Pos.class, "Pos")
+                .registerSubtype(Difference.class, "Difference")
+                .registerSubtype(Distance.class, "Distance")
+                .registerSubtype(Union.class, "Union")
+                .registerSubtype(All.class, "All")
                 .registerSubtype(LastSelected.class, "LastSelected")
                 .registerSubtype(GetTargets.class, "GetTargets")
                 .registerSubtype(Do.class, "Do")
