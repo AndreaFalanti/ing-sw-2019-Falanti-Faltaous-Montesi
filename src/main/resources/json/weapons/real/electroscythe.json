@@ -1,27 +1,33 @@
 {
-  "expr": "XorEffect",
-  "lhs": {
-    "expr": "InflictDamage",
-    "amount": "1d",
-    "to": {
-      "expr": "All",
-      "from": {
-        "expr": "Pos",
-        "who": {
-          "expr": "You"
+  "name": "Electroscythe",
+  "guiID": "0222",
+  "grabCost": "1b",
+  "reloadCost": "1b",
+  "behaviour": {
+    "expr": "XorEffect",
+    "lhs": {
+      "expr": "InflictDamage",
+      "amount": "1d",
+      "to": {
+        "expr": "All",
+        "from": {
+          "expr": "Pos",
+          "who": {
+            "expr": "You"
+          }
         }
       }
-    }
-  },
-  "rhs": {
-    "expr": "InflictDamage",
-    "amount": "2d",
-    "to": {
-      "expr": "All",
-      "from": {
-        "expr": "Pos",
-        "who": {
-          "expr": "You"
+    },
+    "rhs": {
+      "expr": "InflictDamage",
+      "amount": "2d",
+      "to": {
+        "expr": "All",
+        "from": {
+          "expr": "Pos",
+          "who": {
+            "expr": "You"
+          }
         }
       }
     }
