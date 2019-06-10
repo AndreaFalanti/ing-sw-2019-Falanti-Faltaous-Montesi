@@ -1,0 +1,29 @@
+{
+  "expr": "XorEffect",
+  "lhs": {
+    "expr": "InflictDamage",
+    "amount": "1d",
+    "to": {
+      "expr": "All",
+      "from": {
+        "expr": "Pos",
+        "who": {
+          "expr": "You"
+        }
+      }
+    }
+  },
+  "rhs": {
+    "expr": "InflictDamage",
+    "amount": "2d",
+    "to": {
+      "expr": "All",
+      "from": {
+        "expr": "Pos",
+        "who": {
+          "expr": "You"
+        }
+      }
+    }
+  }
+}
