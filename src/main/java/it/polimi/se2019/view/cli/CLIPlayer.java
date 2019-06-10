@@ -3,10 +3,8 @@ package it.polimi.se2019.view.cli;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CLIPlayer {
 
@@ -94,16 +92,15 @@ public class CLIPlayer {
             mPlayerPowerUps = "not have power up card !";
             return;
         }
-
+        power.append("PowerUpCard: ");
         for (PowerUpCard powerUpCard : powerUpCards) {
             if(powerUpCard != null){
-                power.append("PowerUpCard{ ");
-                power.append("Name= ");
+                power.append("Name : ");
                 power.append(powerUpCard.getName());
                 power.append(" ");
-                power.append("AmmoValue= ");
-                power.append(powerUpCard.getAmmoValue().toString());
-                power.append("}");
+                power.append("Color: ");
+                power.append(powerUpCard.getColor().getPascalName());
+                power.append("\n\t\t\t\t\t\t ");
             }
         }
 
@@ -136,13 +133,36 @@ public class CLIPlayer {
 
     public void setAllDamageTaken(PlayerColor[] damage){
         StringBuilder shooter = new StringBuilder();
+        int count=0;
+        int size = Arrays.asList(damage).size();
         if(damage[0]==null) {
             setDamageTakenToZero();
         }
-        else{
-            for(PlayerColor color: damage)
-                if(color != null)
+        else {
+            List<PlayerColor> colorPlayerThatDamage = Arrays.stream(damage)
+                    .distinct()
+                    .collect(Collectors.toList());
+            shooter.append("First damage from ->");
+            shooter.append(damage[0].getPascalName());
+            shooter.append("\n\t\t\t\t\t ");
+            for (PlayerColor color : colorPlayerThatDamage) {
+                count = 0;
+                if (color != null) {
+                    for (int i = 0; i < size; i++) {
+                        if (damage[i] != null && color.equals(damage[i])) {
+                            count += 1;
+                        }
+                    }
+
+                }
+
+                if(color !=null){
+                    shooter.append(count);
+                    shooter.append("<-");
                     shooter.append(color.getPascalName());
+                    shooter.append(" ");
+                }
+            }
             mDamageTaken = shooter.toString();
         }
 
