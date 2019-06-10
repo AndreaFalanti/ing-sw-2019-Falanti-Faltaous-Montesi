@@ -11,7 +11,7 @@ public class Do extends Expression {
     }
 
     @SerializedName("list")
-    List<Expression> mSubexpressions;
+    private List<Expression> mSubexpressions;
 
     @Override
     public Expression eval(ShootContext context) {

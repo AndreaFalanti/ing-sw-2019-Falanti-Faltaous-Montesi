@@ -6,6 +6,7 @@ import it.polimi.se2019.controller.weapon.*;
 import it.polimi.se2019.controller.weapon.expression.*;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
+import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import org.omg.CosNaming.BindingHelper;
 
 import java.lang.reflect.Type;
@@ -220,9 +221,7 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
             return parsePrimitive(raw);
 
         else if (isTriviallyDeserializableExpression(raw)) {
-            return new GsonBuilder()
-                    .registerTypeAdapter(Expression.class, new CustomExpressionAdapter())
-                    .create()
+            return ExpressionFactory.makeGsonDeserializer()
                     .fromJson(
                             raw,
                             getExpressionTypeFromString(raw.getAsJsonObject().get(EXPR_KEYWORD).getAsString())
