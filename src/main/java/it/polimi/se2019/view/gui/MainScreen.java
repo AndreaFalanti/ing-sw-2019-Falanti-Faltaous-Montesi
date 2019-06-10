@@ -1,5 +1,6 @@
 package it.polimi.se2019.view.gui;
 
+import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.MoveShootAction;
@@ -10,10 +11,7 @@ import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
-import it.polimi.se2019.view.request.ActionRequest;
-import it.polimi.se2019.view.request.PowerUpDiscardedRequest;
-import it.polimi.se2019.view.request.Request;
-import it.polimi.se2019.view.request.WeaponSelectedRequest;
+import it.polimi.se2019.view.request.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -328,19 +326,30 @@ public class MainScreen extends Observable<Request> {
         buttonBox.setDisable(!value);
     }
 
+    // TODO remove
+    public synchronized void notifyThread() {
+        notifyAll();
+    }
+
     /**
      * Activate interactive board button grid for move action
      */
     public void activateButtonGridForMove () {
-        activateBoardButtonGrid();
-        setEnableStatusActionButtonBox(false);
-
-        mBoardController.setupInteractiveGridForMoveAction();
-
-        undoButton.setOnMouseClicked(event -> {
-            disableBoardButtonGrid();
-            setEnableStatusActionButtonBox(true);
-        });
+        // TODO: make this work again...
+        /*********************************************************/
+        /* activateBoardButtonGrid();                            */
+        /* setEnableStatusActionButtonBox(false);                */
+        /*                                                       */
+        /* mBoardController.setupInteractiveGridForMoveAction(); */
+        /*                                                       */
+        /* undoButton.setOnMouseClicked(event -> {               */
+        /*     disableBoardButtonGrid();                         */
+        /*     setEnableStatusActionButtonBox(true);             */
+        /* });                                                   */
+        /*********************************************************/
+        new Thread(() ->
+            notify(new ShootRequest(getView(), "heatseeker", PlayerColor.PURPLE))
+        ).start();
     }
 
     /**

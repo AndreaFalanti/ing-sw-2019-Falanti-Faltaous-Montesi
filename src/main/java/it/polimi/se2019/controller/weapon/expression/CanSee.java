@@ -20,7 +20,7 @@ public class CanSee extends Behaviour {
     @Override
     public Expression continueEval(ShootContext context) {
         Set<Position> visibleRange = new GetVisibleRange(
-                getSub("observer")
+                new Pos(getSub("observer"))
         ).eval(context).asRange();
         Set<Player> allPlayers = context.getPlayers();
 

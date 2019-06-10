@@ -5,7 +5,7 @@ import it.polimi.se2019.model.Position;
 
 public class GetVisibleRange extends Behaviour {
     public GetVisibleRange() {
-        putSub("observer", new You());
+        putSub("observer", new Pos(new You()));
     }
 
     public GetVisibleRange(Expression observer) {

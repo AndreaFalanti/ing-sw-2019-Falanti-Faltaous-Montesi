@@ -7,6 +7,7 @@ import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.view.View;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.SortedMap;
 
@@ -46,7 +47,7 @@ public class GraphicView extends View {
 
     @Override
     public Direction pickDirection() {
-        return null;
+        return Direction.NORTH;
     }
 
     @Override
@@ -55,8 +56,23 @@ public class GraphicView extends View {
     }
 
     @Override
-    public Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect) {
-        return null;
+    synchronized public Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect) {
+        // tell view to notify
+        mMainFrameController.getUndoButton().setOnMouseClicked(event -> {
+            synchronized (this) {
+                notifyAll();
+            }
+        });
+
+        // wait for notification
+        try {
+            wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // return GREEN at random when notified
+        return Collections.singleton(PlayerColor.GREEN);
     }
 
     @Override

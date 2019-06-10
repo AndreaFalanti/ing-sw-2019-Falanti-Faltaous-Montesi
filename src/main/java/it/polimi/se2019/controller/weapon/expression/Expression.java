@@ -56,6 +56,8 @@ public abstract class Expression {
         inflicted.forEach(
                 singularInflicted -> game.handleDamageInteraction(inflicter, singularInflicted, amount)
         );
+
+        System.out.println("ouchy");
     }
 
     // move player around

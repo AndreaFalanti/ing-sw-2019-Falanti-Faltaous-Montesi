@@ -36,14 +36,6 @@ public class ShootContext {
         mShooterColor = shooterColor;
     }
 
-    // construct from board and players
-    public ShootContext(View view, Board board, Set<Player> players, PlayerColor shooterColor) {
-        this(
-                new Game(board, new ArrayList<>(players), 0),
-                view,
-                shooterColor
-        );
-    }
     // trivial getters
     public Board getBoard() {
         return mGame.getBoard();
