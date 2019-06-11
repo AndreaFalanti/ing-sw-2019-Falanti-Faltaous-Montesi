@@ -94,7 +94,7 @@ public class PowerUpCard {
                     struct.card.mBehaviour = new NewtonBehaviour();
                     break;
                 default:
-                    throw new IllegalArgumentException("PowerUp name not recognized, can't set proper expression");
+                    throw new IllegalArgumentException("PowerUp name not recognized, can't set proper behaviour");
             }
 
             for (int i = 0; i < struct.quantity; i++) {

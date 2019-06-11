@@ -1,5 +1,6 @@
 package it.polimi.se2019.view.gui;
 
+import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.MoveShootAction;
@@ -23,16 +24,11 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class MainScreen extends Observable<Request> {
@@ -82,6 +78,7 @@ public class MainScreen extends Observable<Request> {
     private BoardPane mBoardController;
     private EnumMap<PlayerColor, PlayerPane> mPlayerControllers = new EnumMap<>(PlayerColor.class);
     private boolean[] mDiscardedPowerUpsCache = new boolean[3];
+    private Direction mSelectedDirection;
 
 
     public BoardPane getBoardController() {
@@ -217,6 +214,9 @@ public class MainScreen extends Observable<Request> {
         mBoardController.updateBoardTile(spawnTile, new Position(2, 0));
 
         boardPane.getChildren().add(newLoadedPane);
+
+        // TODO: move in a proper setup method someday
+        setupDirectionButtonsBehaviour();
     }
 
 
@@ -374,7 +374,7 @@ public class MainScreen extends Observable<Request> {
     }
 
     /**
-     * Enable weapon box and set shoot expression on weapon images
+     * Enable weapon box and set shoot behaviour on weapon images
      * @param pos Selected position for ShootAction
      */
     public void setShootOnWeapon (Position pos) {
@@ -392,7 +392,7 @@ public class MainScreen extends Observable<Request> {
     }
 
     /**
-     * Enable weapon box and set reload expression on weapon images
+     * Enable weapon box and set reload behaviour on weapon images
      */
     public void setReloadOnWeapon () {
         GuiUtils.setBoxEnableStatus(weaponBox,true);
@@ -466,7 +466,7 @@ public class MainScreen extends Observable<Request> {
     }
 
     /**
-     * Set shoot expression on weapon images
+     * Set shoot behaviour on weapon images
      * @param weapon Weapon image
      * @param index Weapon index
      * @param pos ShootAction position
@@ -488,7 +488,7 @@ public class MainScreen extends Observable<Request> {
     }
 
     /**
-     * Set reload expression on weapon images
+     * Set reload behaviour on weapon images
      * @param weapon Weapon image
      * @param index Weapon index
      */
@@ -522,14 +522,35 @@ public class MainScreen extends Observable<Request> {
     private void setupDirectionButtonsBehaviour () {
         Direction[] directions = Direction.values();
         for (int i = 0; i < directions.length; i++) {
-            // TODO: notify controller with a message about direction
-            //directionButtonsPane.getChildren().get(i).setOnMouseClicked(event -> notify(directions(i));
+            final int index = i;
+            directionButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
+                mSelectedDirection = directions[index];
+                logToChat("Selected direction: " + directions[index].toString());
+            });
         }
+    }
+
+    public void activateDirectionTab () {
+        tabPane.getSelectionModel().select(DIRECTION_TAB);
+        mSelectedDirection = null;
     }
 
     public void activateTargetsTab (Set<PlayerColor> possibleTargets, int minTargets, int maxTargets) {
         tabPane.getSelectionModel().select(TARGETS_TAB);
         targetsBox.getChildren().clear();
+
+        Label title;
+        if (minTargets == maxTargets) {
+            title = new Label("Select " + minTargets + "target");
+        }
+        else {
+            title = new Label("Select from " + minTargets + " to " + maxTargets + " targets");
+        }
+        title.setTextFill(Paint.valueOf("white"));
+        title.setStyle("-fx-font: 20; -fx-font-weight: bold");
+        targetsBox.getChildren().add(title);
+
+
         for (PlayerColor color : possibleTargets) {
             RadioButton radioButton = new RadioButton(
                     getPlayerControllerFromColor(color).getPlayerUsername() + " [" + color.getPascalName() + "]");
@@ -537,5 +558,33 @@ public class MainScreen extends Observable<Request> {
 
             targetsBox.getChildren().add(radioButton);
         }
+    }
+
+    public void activateEffectsTab (SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
+        tabPane.getSelectionModel().select(EFFECTS_TAB);
+        effectsBox.getChildren().clear();
+
+        for (Map.Entry<Integer, Set<Effect>> entry : priorityMap.entrySet()) {
+            if (entry.getKey() == currentPriority) {
+                for (Effect effect : entry.getValue()) {
+                    effectsBox.getChildren().add(createEffectPane(effect));
+                }
+            }
+        }
+    }
+
+    private AnchorPane createEffectPane (Effect effect) {
+        AnchorPane anchorPane = new AnchorPane();
+        Label nameLabel = new Label(effect.getName());
+        Label costLabel = new Label("(1, 2, 3)");
+
+        anchorPane.getChildren().add(nameLabel);
+        anchorPane.getChildren().add(costLabel);
+        AnchorPane.setTopAnchor(nameLabel, 5d);
+        AnchorPane.setTopAnchor(costLabel, 5d);
+        AnchorPane.setLeftAnchor(nameLabel, 5d);
+        AnchorPane.setRightAnchor(costLabel, 5d);
+
+        return anchorPane;
     }
 }
