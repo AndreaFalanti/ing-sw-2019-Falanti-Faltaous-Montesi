@@ -1,5 +1,7 @@
 package it.polimi.se2019.view.cli;
 
+import it.polimi.se2019.model.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,13 +45,14 @@ public class BoardCLI {
     public static final testTile tile5 = new testTile(color1, false, true, false, true);
     public static final testTile tile6 = new testTile(color1, false, false, true, true);
     public static final testTile tile7 = new testTile(color4, false, true, true, true);
-    public static final testTile tile8 =  null;
+    public static final testTile tile8 =  new testTile(color5, false, false, false, true);
     public static final testTile tile9 = new testTile(color5, false, false, false, true);
     public static final testTile tile10 = new testTile(color5, false, false, true, true);
     public static final testTile tile11 = new testTile(color4, false, false, false, true);
-
     private static final List<testTile> board = new ArrayList<>();
     private static final testTile[] board1 = new testTile[12];
+
+
 
 
     public static void crea() {
@@ -69,7 +72,7 @@ public class BoardCLI {
         board.toArray(board1);
     }
 
-    public static void boardCreation(){
+    public static void boardCreation(CLIInfo cliInfo){
         StringBuilder line0 = new StringBuilder();
         StringBuilder line1 = new StringBuilder();
         StringBuilder line2 = new StringBuilder();
@@ -78,8 +81,11 @@ public class BoardCLI {
 
         line0.append(firstline());
         line1.append(creaprima(0));
+        if(board1[3] == null)
+            line1.replace(line1.lastIndexOf("|\n"),line1.lastIndexOf("\n"),addLastLine());
         line2.append(creaprima(LENGTH));
         line3.append(ultimaLinea(LENGTH *2));
+        addPlayers(line1,line2,line3,cliInfo);
 
 
         line4.append(line0);
@@ -87,30 +93,34 @@ public class BoardCLI {
         line4.append(line2);
         line4.append(line3);
 
-        System.out.println(line1);
+        System.out.println("\n\n\n\n\n\n"+line4);
 
+    }
+
+    public static String addLastLine(){
+        StringBuilder line = new StringBuilder();
+
+        line.append("|");
+        for(int i = 0 ;i< SIZECELL;i++)
+            line.append("_");
+
+        return line.toString();
     }
 
     public static StringBuilder colleague(boolean door, int i){
         StringBuilder line = new StringBuilder();
         if(door) {
-            if((i<5 || i> SIZECELL -5) && (i< SIZECELL +5 ||i> SIZECELL *2-5)  )
-                line.append("_");
-            else
+            if((i>7 && i<SIZECELL -7) || (i>SIZECELL +7 &&i< SIZECELL *2-7) || (i>SIZECELL*2 +7 &&i< SIZECELL *3-7)||(i>SIZECELL*3 +7 &&i< SIZECELL *4-7))
                 line.append(" ");
+            else
+                line.append("_");
         }
-
         else{
-
             if(i== SIZECELL -1 || i== SIZECELL *2-1 || i== SIZECELL *3-1|| i==1 || i== SIZECELL +1 || i== SIZECELL *2+1 || i== SIZECELL *3+1 ||i== SIZECELL *4-1 )
                 line.append("_");
             else
                 line.append(" ");
-
-
         }
-
-
         return line;
     }
 
@@ -123,13 +133,12 @@ public class BoardCLI {
             return line;
         }
 
-
         if(board1[i/ SIZECELL +indexTile]!=null && board1[i/ SIZECELL + LENGTH +indexTile]!=null ) {
 
-            if (board1[i/ SIZECELL +indexTile].getColor() == board1[i/ SIZECELL + LENGTH +indexTile].getColor()) {
+            if (board1[i/ SIZECELL +indexTile].getColor().equals(board1[i/ SIZECELL + LENGTH +indexTile].getColor())) {
                 line.append(colleague(false,i));
             } else {
-                if (board1[i/ SIZECELL].getDoors()[1])
+                if (board1[i/ SIZECELL+indexTile].getDoors()[1])
                     line.append(colleague(true,i));
                 else line.append("_");
             }
@@ -315,11 +324,82 @@ public class BoardCLI {
     }
 
 
+    public static void addPlayers(StringBuilder line1,StringBuilder line2,StringBuilder line3,CLIInfo cliInfo){
+    int numberPlayer = 0;
+        for(CLIPlayer player: cliInfo.getPlayersInfo().values()){
+            numberPlayer +=1;
+            String[] coord = player.getPlayerPosition()
+                            .replaceAll("\\D","")
+                            .split("");
+           if(coord[0].equals("0"))
+               addPlayer(line1,coord[1],player.getPlayerColor(),numberPlayer);
+             else{
+               if(coord[0].equals("1"))
+                addPlayer(line2,coord[1],player.getPlayerColor(),numberPlayer);
+                else
+                   addPlayer(line3,coord[1],player.getPlayerColor(),numberPlayer);
+           }
+        }
+    }
+
+    public static void addPlayer(StringBuilder line , String vertical,String color,int numberPlayer){
+        int index=0;
+        int coordy=Integer.parseInt(vertical);
+        for(int i=0;i<HIGHCELL/2;i++){
+            index = line.indexOf("|\n",line.indexOf("|\n")+index);
+        }
+        index+=1;
+        for(int i=0;i<(SIZECELL*coordy)/2 + numberPlayer;i++){
+            index = line.indexOf(" ",line.indexOf(" ")+index);
+        }
+
+        line.replace(index-7,index+1,ANSI_BLACK_BACKGROUND+Colors.getColorTile(color)+"P"+ANSI_RESET);
+
+        System.out.print(line);
+    }
+
 
     public static void main(String[] arg) {
         System.out.print("\n\n\n\n\n\n\n\n\n");
+        StringBuilder line1=new StringBuilder();
+
+
+        List<Player> mPlayers = new ArrayList<>() ;
+        PlayerColor activePlayer = PlayerColor.BLUE;
+        Player owner = new Player("Owner",PlayerColor.GREEN,new Position(1,0));
+        Player player1 = new Player("Player1",PlayerColor.BLUE,new Position(0,1));
+        Player player2 = new Player("Player2",PlayerColor.GREY,new Position(1,3));
+        Player player3 = new Player("Player3",PlayerColor.YELLOW,new Position(1,2));
+        Player player4 = new Player("Player4",PlayerColor.PURPLE,new Position(0,0));
+        owner.onDamageTaken(new Damage(3,0), PlayerColor.YELLOW);
+        owner.onDamageTaken(new Damage(3,1), PlayerColor.BLUE);
+        owner.onDamageTaken(new Damage(3,0), PlayerColor.YELLOW);
+        owner.onDamageTaken(new Damage(3,2), PlayerColor.GREY);
+        player2.onDamageTaken(new Damage(3,0), PlayerColor.YELLOW);
+        player2.onDamageTaken(new Damage(3,1), PlayerColor.YELLOW);
+        player3.onDamageTaken(new Damage(3,2), PlayerColor.YELLOW);
+        PowerUpCard card1 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
+        PowerUpCard card2 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
+        PowerUpCard card3 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
+        owner.addPowerUp(card1);
+        owner.addPowerUp(card2);
+        owner.addPowerUp(card3);
+        player1.addPowerUp(card1);
+        player1.addPowerUp(card2);
+        player2.addPowerUp(card3);
+        mPlayers.add(owner);
+        mPlayers.add(player1);
+        mPlayers.add(player2);
+        mPlayers.add(player3);
+        mPlayers.add(player4);
+        PlayerColor ownerColor = PlayerColor.GREEN;
+        //end test
+
+        CLIInfo cLIInfo = new CLIInfo(mPlayers,owner,ownerColor,activePlayer);
+
         crea();
-        boardCreation();
+        boardCreation(cLIInfo);
+
 
 
 
