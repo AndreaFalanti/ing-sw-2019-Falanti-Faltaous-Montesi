@@ -7,36 +7,34 @@ public class BoardCLI {
     public static final int LENGTH = 4;
     public static final int SIZECELL = 29;
     public static final int HIGHCELL = 8;
-    public static final StringBuilder ANSI_RESET = new StringBuilder("\u001B[0m");
-    public static final StringBuilder ANSI_BLACK = new StringBuilder("\u001B[30m");
-    public static final StringBuilder ANSI_RED = new StringBuilder("\u001B[31m");
-    public static final StringBuilder ANSI_GREEN = new StringBuilder("\u001B[32m");
-    public static final StringBuilder ANSI_YELLOW = new StringBuilder("\u001B[33m");
-    public static final StringBuilder ANSI_BLUE = new StringBuilder("\u001B[34m");
-    public static final StringBuilder ANSI_PURPLE = new StringBuilder("\u001B[35m");
-    public static final StringBuilder ANSI_CYAN = new StringBuilder("\u001B[36m");
-    public static final StringBuilder ANSI_WHITE = new StringBuilder("\u001B[37m");
-    public static final StringBuilder ANSI_BLACK_BACKGROUND = new StringBuilder("\u001B[40m");
-    public static final StringBuilder ANSI_RED_BACKGROUND = new StringBuilder("\u001B[41m");
-    public static final StringBuilder ANSI_GREEN_BACKGROUND = new StringBuilder("\u001B[42m");
-    public static final StringBuilder ANSI_YELLOW_BACKGROUND = new StringBuilder("\u001B[43m");
-    public static final StringBuilder ANSI_BLUE_BACKGROUND = new StringBuilder("\u001B[44m");
-    public static final StringBuilder ANSI_PURPLE_BACKGROUND = new StringBuilder("\u001B[45m");
-    public static final StringBuilder ANSI_CYAN_BACKGROUND = new StringBuilder("\u001B[46m");
-    public static final StringBuilder ANSI_WHITE_BACKGROUND = new StringBuilder("\u001B[47m");
-    public static final StringBuilder ANSI_BRED_BACKGROUND = new StringBuilder("\u001B[41;1m");
-    public static final StringBuilder ANSI_BGREEN_BACKGROUND = new StringBuilder("\u001B[42;1m");
-    public static final StringBuilder ANSI_BYELLOW_BACKGROUND = new StringBuilder("\u001B[43;1m");
-    public static final StringBuilder ANSI_BBLUE_BACKGROUND = new StringBuilder("\u001B[44;1m");
-    public static final StringBuilder ANSI_BPURPLE_BACKGROUND = new StringBuilder("\u001B[45;1m");
-    public static final StringBuilder ANSI_BCYAN_BACKGROUND = new StringBuilder("\u001B[46;1m");
-    public static final StringBuilder color1 = new StringBuilder("RED");
-    public static final StringBuilder color4 = new StringBuilder("YELLOW");
-    public static final StringBuilder color2 = new StringBuilder("GREEN");
-    public static final StringBuilder color3 = new StringBuilder("BLUE");
-    public static final StringBuilder color5 = new StringBuilder("WHITE");
-    public static final StringBuilder sud = new StringBuilder("sud");
-    public static final StringBuilder est = new StringBuilder("est");
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+    public static final String ANSI_BLACK_BACKGROUND ="\u001B[40m";
+    public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
+    public static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
+    public static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
+    public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
+    public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
+    public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
+    public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
+    public static final String ANSI_BRED_BACKGROUND = "\u001B[41;1m";
+    public static final String ANSI_BGREEN_BACKGROUND = "\u001B[42;1m";
+    public static final String ANSI_BYELLOW_BACKGROUND = "\u001B[43;1m";
+    public static final String ANSI_BBLUE_BACKGROUND = "\u001B[44;1m";
+    public static final String ANSI_BPURPLE_BACKGROUND = "\u001B[45;1m";
+    public static final String ANSI_BCYAN_BACKGROUND = "\u001B[46;1m";
+    public static final String color1 =  "RED";
+    public static final String color4 = "YELLOW";
+    public static final String color2 = "GREEN";
+    public static final String color3 = "BLUE";
+    public static final String color5 = "WHITE";
     public static final testTile tile0 = new testTile(color3, false, true, true, true);
     public static final testTile tile1 = new testTile(color3, false, false, false, true);
     public static final testTile tile2 = new testTile(color3, false, true, true, true);
@@ -141,15 +139,15 @@ public class BoardCLI {
         return line;
     }
 
-    public static StringBuilder getColorTile(StringBuilder color){
+    public static String getColorTile(String color){
 
-        if(color == color1 )
+        if(color.equals(color1) )
             return ANSI_BRED_BACKGROUND;
-        if(color == color2)
+        if(color.equals(color2))
             return ANSI_BGREEN_BACKGROUND;
-        if(color == color3)
+        if(color.equals(color3))
             return ANSI_BBLUE_BACKGROUND;
-        if(color == color4)
+        if(color.equals(color4))
             return ANSI_BYELLOW_BACKGROUND;
         else
             return ANSI_WHITE_BACKGROUND;
@@ -226,7 +224,7 @@ public class BoardCLI {
 
     public static StringBuilder valutation(int i,int j,int indexTile ){
         StringBuilder line = new StringBuilder();
-        if (board1[(i-1)/ SIZECELL +indexTile].getColor() == (board1[i/ SIZECELL +indexTile].getColor()))
+        if (board1[(i-1)/ SIZECELL +indexTile].getColor().equals((board1[i/ SIZECELL +indexTile].getColor())))
             line.append(sameRoom(i, j, board1[i/ SIZECELL +indexTile].getColor(),indexTile));
         else {
             if (board1[(i-1)/ SIZECELL +indexTile].getDoors()[2])
@@ -255,7 +253,7 @@ public class BoardCLI {
     }
 
 
-    public static StringBuilder sameRoom(int i,int j,StringBuilder color,int indexTile){
+    public static StringBuilder sameRoom(int i,int j,String color,int indexTile){
         StringBuilder line = new StringBuilder();
         line.append(getColorTile(color));
         if(j% HIGHCELL ==0){
@@ -279,7 +277,7 @@ public class BoardCLI {
         return line;
     }
 
-    public static StringBuilder makeDoor(int i,int j, StringBuilder color){
+    public static StringBuilder makeDoor(int i,int j, String color){
         StringBuilder line = new StringBuilder();
         line.append(getColorTile(color));
         if(j!= HIGHCELL /2 && j!= HIGHCELL /2+1 && i% SIZECELL ==0)
@@ -291,7 +289,7 @@ public class BoardCLI {
         return line;
     }
 
-    public static StringBuilder makeWall(int i, StringBuilder color){
+    public static StringBuilder makeWall(int i, String color){
         StringBuilder line = new StringBuilder();
         line.append(getColorTile(color));
         if(i== SIZECELL * LENGTH)

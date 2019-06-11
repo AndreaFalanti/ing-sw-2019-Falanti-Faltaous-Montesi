@@ -49,6 +49,9 @@ public class Main {
         owner.addPowerUp(card1);
         owner.addPowerUp(card2);
         owner.addPowerUp(card3);
+        player1.addPowerUp(card1);
+        player1.addPowerUp(card2);
+        player2.addPowerUp(card3);
         mPlayers.add(owner);
         mPlayers.add(player1);
         mPlayers.add(player2);

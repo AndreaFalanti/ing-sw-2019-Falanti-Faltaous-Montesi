@@ -256,21 +256,42 @@ public class CLIView extends View {
 
     public void ownerInfo(){
 
-        System.out.print(mCLIInfo.getOwner().getPlayerName()+
+    /*    System.out.print(mCLIInfo.getOwner().getPlayerName()+
                 SPACE + "Your color is " + mCLIInfo.getOwnerColor() +SPACE);
         powerPlayer();
         System.out.print(SPACE);
         weaponPlayer();
         System.out.println(SPACE + mCLIInfo.getOwner().getPlayerAmmo() +
                 SPACE + mCLIInfo.getOwner().getPlayerMarks() +//to add score and position
-                SPACE + "Damage: "+ mCLIInfo.getOwner().getPlayerDamage());
+                SPACE + "Damage: "+ mCLIInfo.getOwner().getPlayerDamage());*/
+
+        System.out.print(Colors.getColorTile(mCLIInfo.getOwner().getPlayerColor())+
+                mCLIInfo.getOwner().getPlayerName() +
+                Colors.ANSI_RESET + ":" + SPACE+
+                "Color : "+mCLIInfo.getOwner().getPlayerColor() + SPACE +
+                "Number of deaths: " + mCLIInfo.getOwner().getPlayerDeaths() + SPACE +
+                "Marks: " + mCLIInfo.getOwner().getPlayerMarks() + SPACE+
+                "Is Dead ? " + mCLIInfo.getOwner().playerIsDead() + SPACE +
+                "Scores: " + mCLIInfo.getOwner().getPlayerScore() + SPACE +
+                "Position: " + mCLIInfo.getOwner().getPlayerPosition() + SPACE +
+                mCLIInfo.getOwner().getPlayerPowerUps() + SPACE +
+                "Number of deaths: " + mCLIInfo.getOwner().getPlayerDeaths() + SPACE +
+                "Is overkilled ? " + mCLIInfo.getOwner().playerIsOverkilled()+SPACE +
+                "Weapons : ");
+        weaponPlayer();
+        System.out.println(SPACE + "Damage: " + mCLIInfo.getOwner().getPlayerDamage() + SPACE);
+
+
     }
 
     public void infoPlayers(){
         ownerInfo();
         for(CLIPlayer player: mCLIInfo.getPlayersInfo().values()) {
             if(!player.getPlayerName().equals(mCLIInfo.getOwner().getPlayerName())){
-            System.out.print(player.getPlayerName() + ":" + SPACE+
+            System.out.print(Colors.getColorTile(player.getPlayerColor())+
+                            player.getPlayerName() +
+                            Colors.ANSI_RESET+
+                            ":" + SPACE+
                             "Color : "+player.getPlayerColor() + SPACE +
                             "Number of deaths: " + player.getPlayerDeaths() + SPACE +
                             "Marks: " + player.getPlayerMarks() + SPACE+

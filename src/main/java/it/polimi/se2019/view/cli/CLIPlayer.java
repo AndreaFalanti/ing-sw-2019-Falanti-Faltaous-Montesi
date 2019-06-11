@@ -20,10 +20,10 @@ public class CLIPlayer {
     private String mPlayerPowerUps;
     private String mDeathNum;
     private String mPlayerAmmo;
-  // TO ADd boardflipped
+    private String mBoardFlipped;
 
-    public CLIPlayer(Player player){
-
+    public CLIPlayer(Player player,PlayerColor playerColor){
+    int count=0;
             mPlayerName = player.getName();
             mPlayerColor = player.getColor().getPascalName();
             setScore(player.getScore());
@@ -31,14 +31,24 @@ public class CLIPlayer {
             setDead(player.isDead());
             setOverkilled(player.isOverkilled());
             mDeathNum = String.valueOf(player.getDeathsNum());
-            setWeaponOtherPlayer(player.getWeapons());
             setPosition(player.getPos());
             setScore(player.getScore());
-            setWeaponOwner(player.getWeapons());
+            if(player.getColor().getPascalName().equals(playerColor.getPascalName())){
+                setWeaponOwner(player.getWeapons());
+                setPowerUpsOwnerPlayer(player.getPowerUps());
+            }
+            else{
+                setWeaponOtherPlayer(player.getWeapons());
+                for(int i = 0;i<player.getPowerUps().length;i++)
+                    if(player.getPowerUps()[i]!=null)
+                        count+=1;
+                setPowerUpsOtherPlayers(count);
+            }
             for(Map.Entry<PlayerColor,Integer> entry: player.getMarks().entrySet()){
                 setMarks(entry.getValue(),entry.getKey());
             }
             setAllDamageTaken(player.getDamageTaken());
+            setBoardFlipped(player.isBoardFlipped());
 
     }
 
@@ -66,7 +76,7 @@ public class CLIPlayer {
 
     public String getPlayerScore(){return mPlayerScore;}
 
-
+    public String getBoardFlipped(){return mBoardFlipped;}
 
 
     public void setScore(int i){
@@ -75,6 +85,17 @@ public class CLIPlayer {
 
     public void setDeathNums(){
         mDeathNum = String.valueOf(Integer.parseInt(mDeathNum) + 1);
+    }
+
+    public void setBoardFlipped(boolean flipped){
+        if(flipped)
+            mBoardFlipped = "Is flipped";
+        else
+            mBoardFlipped = "Is not flipped";
+    }
+
+    public void setmBoardFlipped(){
+        mBoardFlipped = "Is flipped";
     }
 
     public void setAmmo(AmmoValue ammo){
@@ -99,7 +120,9 @@ public class CLIPlayer {
                 power.append(powerUpCard.getName());
                 power.append(" ");
                 power.append("Color: ");
+                power.append(Colors.getColorTile(powerUpCard.getColor().getPascalName()));
                 power.append(powerUpCard.getColor().getPascalName());
+                power.append(Colors.ANSI_RESET);
                 power.append("\n\t\t\t\t\t\t ");
             }
         }
@@ -123,7 +146,8 @@ public class CLIPlayer {
 
     public void setMarks(int marks,PlayerColor shooterPlayerColor){
 
-        mPlayerMarks.put(shooterPlayerColor.getPascalName(),marks);
+        mPlayerMarks.put(Colors.getColorTile(shooterPlayerColor.getPascalName())+
+                shooterPlayerColor.getPascalName()+Colors.ANSI_RESET,marks);
     }
 
     public void setDamageTakenToZero(){
@@ -143,29 +167,38 @@ public class CLIPlayer {
                     .distinct()
                     .collect(Collectors.toList());
             shooter.append("First damage from ->");
+            shooter.append(Colors.getColorTile(damage[0].getPascalName()));
             shooter.append(damage[0].getPascalName());
+            shooter.append(Colors.ANSI_RESET);
             shooter.append("\n\t\t\t\t\t ");
-            for (PlayerColor color : colorPlayerThatDamage) {
-                count = 0;
-                if (color != null) {
-                    for (int i = 0; i < size; i++) {
-                        if (damage[i] != null && color.equals(damage[i])) {
-                            count += 1;
-                        }
-                    }
-
-                }
-
-                if(color !=null){
-                    shooter.append(count);
-                    shooter.append("<-");
-                    shooter.append(color.getPascalName());
-                    shooter.append(" ");
-                }
-            }
-            mDamageTaken = shooter.toString();
+            mDamageTaken = shooter.append(countDamage(colorPlayerThatDamage,size,damage))
+                    .toString();
         }
+    }
 
+    public StringBuilder countDamage(List<PlayerColor> colorPlayerThatDamage,int size,PlayerColor[] damage){
+        StringBuilder shooter = new StringBuilder();
+        int count;
+        for (PlayerColor color : colorPlayerThatDamage) {
+            count = 0;
+            if (color != null) {
+                for (int i = 0; i < size; i++) {
+                    if (damage[i] != null && color.equals(damage[i])) {
+                        count += 1;
+                    }
+                }
+
+            }
+            if(color !=null){
+                shooter.append(count);
+                shooter.append("<-");
+                shooter.append(Colors.getColorTile(color.getPascalName()));
+                shooter.append(color.getPascalName());
+                shooter.append(Colors.ANSI_RESET);
+                shooter.append(" ");
+            }
+        }
+        return shooter;
     }
 
     public void setDamageTaken(int damageTaken, PlayerColor shooterPlayerColor){
