@@ -29,6 +29,7 @@ public class ExpressionFactory {
                 .registerSubtype(PickEffect.class, "PickEffect")
                 .registerSubtype(Move.class, "Move")
                 .registerSubtype(DistanceRange.class, "DistanceRange")
+                .registerSubtype(SetExpression.class, "SetExpression")
                 .registerSubtype(Load.class, "Load")
                 .registerSubtype(Pos.class, "Pos")
                 .registerSubtype(XorEffect.class, "XorEffect")

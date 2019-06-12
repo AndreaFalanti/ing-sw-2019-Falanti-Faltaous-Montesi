@@ -22,12 +22,10 @@ public class All extends Behaviour {
         Set<Player> players = context.getPlayers();
         Set<Position> range = getSub("from").asRange();
 
-        SetExpression result = SetExpression.from(players.stream()
+        return SetExpression.from(players.stream()
                 .filter(pl -> range.contains(pl.getPos()))
                 .map(Player::getColor)
                 .map(TargetLiteral::new)
                 .collect(Collectors.toSet()));
-
-        return result;
     }
 }

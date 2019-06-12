@@ -5,6 +5,7 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,6 +13,14 @@ import java.util.stream.Stream;
 public class SetExpression extends Expression {
     @SerializedName("subs")
     private Set<Expression> mSubexpressions;
+
+    /**
+     * Constructs SetExpression from list of subexpressions
+     * @param subs subexpressions of constructed SetExpression
+     */
+    public SetExpression(Expression... subs) {
+        mSubexpressions = Arrays.stream(subs).collect(Collectors.toSet());
+    }
 
     /**
      * Trivial constructor
