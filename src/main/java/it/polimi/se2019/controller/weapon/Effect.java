@@ -2,6 +2,7 @@ package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.AmmoValue;
+import it.polimi.se2019.util.StringUtils;
 
 /**
  * Used for storing information about effect priorities and costs
@@ -21,7 +22,7 @@ public class Effect {
 
     // trivial getters
     public String getId() {
-        return mId;
+        return mId != null ? mId : StringUtils.toSnakeCase(mName);
     }
 
     public String getName() {

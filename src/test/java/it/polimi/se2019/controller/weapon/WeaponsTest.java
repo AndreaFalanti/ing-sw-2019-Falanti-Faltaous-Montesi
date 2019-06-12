@@ -25,22 +25,64 @@ public class WeaponsTest {
     private Game mAllInOriginGame;
     private Game mLuigiHidesFromYellowParty;
 
+    private PlayerColor mCurrentShooter;
+
     /**
      * Utility to assert that a player has been damaged correctly
      */
-    private void assertPlayerDamage(Player damagedPlayer, List<PlayerColor> damage, Map<PlayerColor, Integer> marks) {
+    private void assertPlayerDamage(Player damagedPlayer,
+                                    List<PlayerColor> damage,
+                                    List<Pair<PlayerColor, Integer>> inflictedMarks) {
+        Map<PlayerColor, Integer> inflictedMarksMap =  inflictedMarks.stream()
+                .collect(Collectors.toMap(
+                        Pair::getFirst,
+                        Pair::getSecond
+                ));
+        Map<PlayerColor, Integer> marks = Arrays.stream(PlayerColor.values())
+                .collect(Collectors.toMap(
+                        clr -> clr,
+                        clr -> inflictedMarksMap.getOrDefault(clr, 0)
+                ));
+
         assertArrayEquals(
                 damage.toArray(new PlayerColor[12]),
                 damagedPlayer.getDamageTaken()
         );
         assertEquals(
-                Arrays.stream(PlayerColor.values())
-                        .collect(Collectors.toMap(
-                                clr -> clr,
-                                clr -> marks.getOrDefault(clr, 0)
-                        )),
+                marks,
                 damagedPlayer.getMarks()
         );
+    }
+
+    /**
+     * Utility function to quickly construct target sets
+     */
+    private void setShooter(PlayerColor shooter) {
+        mCurrentShooter = shooter;
+    }
+    private Set<PlayerColor> targets(PlayerColor... colors) {
+        Set<PlayerColor> targets = Arrays.stream(colors)
+                .collect(Collectors.toSet());
+
+        if (targets.contains(mCurrentShooter))
+            throw new IllegalArgumentException("Cannot consider the shooter a target!");
+
+        return targets;
+    }
+    private Set<PlayerColor> allTargets() {
+        return Arrays.stream(PlayerColor.values())
+                .filter(clr -> !clr.equals(mCurrentShooter))
+                .collect(Collectors.toSet());
+    }
+    private Set<PlayerColor> thisTarget(PlayerColor target) {
+        return targets(target);
+    }
+    private Set<PlayerColor> allTargetsExcept(PlayerColor... colors) {
+        Set<PlayerColor> excludedTargets = targets(colors);
+
+        return Arrays.stream(PlayerColor.values())
+                .filter(clr -> !excludedTargets.contains(clr))
+                .collect(Collectors.toSet());
     }
 
     @Before
@@ -52,7 +94,7 @@ public class WeaponsTest {
                         new Player("Luigi", PlayerColor.GREEN, new Position(0, 0)),
                         new Player("Dorian", PlayerColor.GREY, new Position(0, 0)),
                         new Player("Smurfette", PlayerColor.BLUE, new Position(0, 0)),
-                        new Player("Banano", PlayerColor.YELLOW, new Position(0, 0))
+                        new Player("Stones", PlayerColor.YELLOW, new Position(0, 0))
                 )),
                 1
         );
@@ -64,7 +106,7 @@ public class WeaponsTest {
                         new Player("Luigi", PlayerColor.GREEN, new Position(2, 0)),
                         new Player("Dorian", PlayerColor.GREY, new Position(3, 2)),
                         new Player("Smurfette", PlayerColor.BLUE, new Position(3, 1)),
-                        new Player("Banano", PlayerColor.YELLOW, new Position(2, 2))
+                        new Player("Stones", PlayerColor.YELLOW, new Position(2, 1))
                 )),
                 1
         );
@@ -107,52 +149,65 @@ public class WeaponsTest {
                         PlayerColor.PURPLE,
                         PlayerColor.PURPLE
                 ),
-                Collections.emptyMap()
+                Collections.emptyList()
         );
     }
 
     @Test
-    public void testLockRifleMarioShootsLuigiAndThenDorian() {
-        /*****************************************************************************/
-        /* // instantiate controller                                                 */
-        /* Controller testController = new Controller(mAllInOriginGame);             */
-        /*                                                                           */
-        /* // mock view                                                              */
-        /* View view = mock(View.class);                                             */
-        /*                                                                           */
-        /* // instantiate weapon                                                     */
-        /* Weapon lockrifle = Weapons.get("lock_rifle");                             */
-        /*                                                                           */
-        /* // provide needed information to shoot                                    */
-        /* // TODO: use mock view for these                                          */
-        /* // mAllInOriginGame.provideInfo(Arrays.asList(                            */
-        /*         // new TargetsLiteral(Collections.singleton(PlayerColor.GREEN)),  */
-        /*         // new TargetsLiteral(Collections.singleton(PlayerColor.GREY))    */
-        /* // ));                                                                    */
-        /*                                                                           */
-        /* // produce result with complete context                                   */
-        /* testController.shoot(view, PlayerColor.PURPLE, lockrifle.getBehaviour()); */
-        /*                                                                           */
-        /* // assert that luigi is hurt                                              */
-        /* assertPlayerDamage(                                                       */
-        /*         mAllInOriginGame.getPlayerFromColor(PlayerColor.GREEN),           */
-        /*         Arrays.asList(                                                    */
-        /*                 PlayerColor.PURPLE,                                       */
-        /*                 PlayerColor.PURPLE                                        */
-        /*         ),                                                                */
-        /*         Arrays.asList(                                                    */
-        /*                 new Pair(PlayerColor.PURPLE, 1)                           */
-        /*         )                                                                 */
-        /* );                                                                        */
-        /*                                                                           */
-        /* // assert that Dorian is hurt                                             */
-        /* assertPlayerDamage(                                                       */
-        /*         mAllInOriginGame.getPlayerFromColor(PlayerColor.GREY),            */
-        /*         Arrays.asList(),                                                  */
-        /*         Arrays.asList(                                                    */
-        /*                 new Pair(PlayerColor.PURPLE, 1)                           */
-        /*         )                                                                 */
-        /* );                                                                        */
-        /*****************************************************************************/
+    public void testLockRifleStonesShootsLuigiAndThenSmurfette() {
+        // instantiate controller
+        Controller testController = new Controller(mAllInOriginGame);
+
+        // instantiate weapon
+        Weapon lockrifle = Weapons.get("lock_rifle");
+
+        /***************************************/
+        /* instantiate and customize mock view */
+        /***************************************/
+        View viewMock = mock(View.class);
+        // choose to use "Basic effect" effect
+        given(viewMock
+                .selectEffects(any(), eq(0)))
+                .willAnswer(thing -> {
+                    return Collections.singleton("basic_effect");
+                });
+        // choose to use additional "With second lock" effect
+        given(viewMock
+                .selectEffects(any(), eq(1)))
+                .willAnswer(thing -> {
+                    return Collections.singleton("with_second_lock");
+                });
+        // choose Luigi
+        given(viewMock
+                .selectTargets(1, 1, allTargets()))
+                .willReturn(thisTarget(PlayerColor.GREEN));
+        // choose Dorian
+        //   N.B. Luigi cannot be picked here
+        given(viewMock
+                .selectTargets(1, 1, allTargetsExcept(PlayerColor.GREEN)))
+                .willReturn(thisTarget(PlayerColor.GREY));
+
+        // produce result with complete context
+        testController.shoot(viewMock, PlayerColor.YELLOW, lockrifle.getBehaviour());
+
+        // assert that luigi is hurt
+        assertPlayerDamage(
+                mAllInOriginGame.getPlayerFromColor(PlayerColor.GREEN),
+                Arrays.asList(
+                        PlayerColor.YELLOW,
+                        PlayerColor.YELLOW
+                ),
+                Arrays.asList(
+                        new Pair(PlayerColor.YELLOW, 1)
+                )
+        );
+        // assert that Dorian is hurt
+        assertPlayerDamage(
+                mAllInOriginGame.getPlayerFromColor(PlayerColor.GREY),
+                Collections.emptyList(),
+                Arrays.asList(
+                        new Pair(PlayerColor.PURPLE, 1)
+                )
+        );
     }
 }

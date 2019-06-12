@@ -34,6 +34,7 @@ public class ShootContext {
         mGame = game;
         mView = view;
         mShooterColor = shooterColor;
+        mScope = new HashMap<>();
     }
 
     // trivial getters

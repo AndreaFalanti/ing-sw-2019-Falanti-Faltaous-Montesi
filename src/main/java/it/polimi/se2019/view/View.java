@@ -80,7 +80,7 @@ public abstract class View extends Observable<Request> implements Observer<Eithe
      *                    controller should consider the call an input error.
      * @param currentPriority The required priority of the picked effect. If an effect is returned that does not have
      *                        this priority, then the controller should consider the call an input error.
-     * @return The selected effect
+     * @return The id of the selected effect
      */
     public abstract Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority);
 

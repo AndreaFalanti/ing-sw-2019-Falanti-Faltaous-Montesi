@@ -14,7 +14,6 @@ public class Intersect extends Behaviour {
 
     @Override
     protected Expression continueEval(ShootContext context) {
-        // TODO: implement
-        return null;
+        throw new UnsupportedOperationException("WIP");
     }
 }

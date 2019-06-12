@@ -72,6 +72,11 @@ public class ExpressionFactory {
     }
 
     // TODO: add doc
+    public static Expression fromRawJson(JsonElement toDeserialize) {
+        return makeGsonSerializer().fromJson(toDeserialize, Expression.class);
+    }
+
+    // TODO: add doc
     public static Expression fromJson(String toDeserialize) {
         return makeGsonDeserializer().fromJson(new Gson().fromJson(toDeserialize, JsonElement.class), Expression.class);
     }

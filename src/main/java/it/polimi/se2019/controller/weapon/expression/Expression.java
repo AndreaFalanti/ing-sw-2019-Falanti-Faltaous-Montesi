@@ -47,7 +47,7 @@ public abstract class Expression {
     // TODO: add doc
     // TODO: maybe make faster
     public Expression deepCopy() {
-        return ExpressionFactory.fromJson(ExpressionFactory.toJsonTree(this));
+        return ExpressionFactory.fromRawJson(ExpressionFactory.toJsonTree(this));
     }
 
     // inflict damage
