@@ -20,6 +20,13 @@ public class Effect {
     // expression
     private Expression mBehaviour;
 
+    public Effect(String name, int priority, boolean optional, AmmoValue cost) {
+        mName = name;
+        mPriority = priority;
+        mOptional = optional;
+        mCost = cost;
+    }
+
     // trivial getters
     public String getId() {
         return mId != null ? mId : StringUtils.toSnakeCase(mName);

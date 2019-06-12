@@ -146,7 +146,7 @@ public class MainScreen extends Observable<Request> {
             newLoadedPane =  loader.load();
 
             PlayerPane otherPlayerController = loader.getController();
-            mPlayerControllers.put(color, otherPlayerController);
+            mPlayerControllers.put(player.getColor(), otherPlayerController);
 
             otherPlayerController.setMainScreen(this);
             otherPlayerController.setupBoardImage(player.getColor());
@@ -547,14 +547,16 @@ public class MainScreen extends Observable<Request> {
             title = new Label("Select from " + minTargets + " to " + maxTargets + " targets");
         }
         title.setTextFill(Paint.valueOf("white"));
-        title.setStyle("-fx-font: 20; -fx-font-weight: bold");
+        title.setStyle("-fx-font: 20 segoe; -fx-font-weight: bold");
         targetsBox.getChildren().add(title);
 
 
         for (PlayerColor color : possibleTargets) {
             RadioButton radioButton = new RadioButton(
                     getPlayerControllerFromColor(color).getPlayerUsername() + " [" + color.getPascalName() + "]");
-            // TODO: add onClick
+            radioButton.setTextFill(Paint.valueOf("white"));
+            radioButton.setOnMouseClicked(event -> logToChat("Selected: " + radioButton.getText()));
+            // TODO: how to do a toggle group with multiple toggles?
 
             targetsBox.getChildren().add(radioButton);
         }
@@ -565,17 +567,22 @@ public class MainScreen extends Observable<Request> {
         effectsBox.getChildren().clear();
 
         for (Map.Entry<Integer, Set<Effect>> entry : priorityMap.entrySet()) {
-            if (entry.getKey() == currentPriority) {
-                for (Effect effect : entry.getValue()) {
-                    effectsBox.getChildren().add(createEffectPane(effect));
-                }
+            boolean enableEffectPane = entry.getKey() == currentPriority;
+
+            for (Effect effect : entry.getValue()) {
+                AnchorPane child = createEffectPane(effect, enableEffectPane);
+                effectsBox.getChildren().add(child);
+                VBox.setVgrow(child, Priority.ALWAYS);
             }
         }
     }
 
-    private AnchorPane createEffectPane (Effect effect) {
+    private AnchorPane createEffectPane (Effect effect, boolean enabled) {
         AnchorPane anchorPane = new AnchorPane();
+
         Label nameLabel = new Label(effect.getName());
+        nameLabel.setStyle("-fx-font: 16 segoe; -fx-font-weight: bold; -fx-font-style: italic");
+
         Label costLabel = new Label("(1, 2, 3)");
 
         anchorPane.getChildren().add(nameLabel);
@@ -584,6 +591,13 @@ public class MainScreen extends Observable<Request> {
         AnchorPane.setTopAnchor(costLabel, 5d);
         AnchorPane.setLeftAnchor(nameLabel, 5d);
         AnchorPane.setRightAnchor(costLabel, 5d);
+
+        anchorPane.setStyle("-fx-background-color: #eeeeee");
+
+        if (!enabled) {
+            anchorPane.setDisable(true);
+            anchorPane.setOpacity(0.4);
+        }
 
         return anchorPane;
     }
