@@ -7,6 +7,9 @@ import it.polimi.se2019.controller.weapon.expression.Do;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.controller.weapon.expression.PickEffect;
 import it.polimi.se2019.controller.weapon.expression.*;
+import it.polimi.se2019.model.AmmoValue;
+import it.polimi.se2019.model.Damage;
+import it.polimi.se2019.model.serialization.AmmoValueDeserializer;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
@@ -47,6 +50,7 @@ public class ExpressionFactory {
     static Gson makeGsonDeserializer() {
         return new GsonBuilder()
                 .registerTypeAdapter(Expression.class, new ExpressionParser())
+                .registerTypeAdapter(AmmoValue.class, new AmmoValueDeserializer())
                 .setPrettyPrinting()
                 .setFieldNamingStrategy(new CustomFieldNamingStrategy())
                 .addSerializationExclusionStrategy(new AnnotationExclusionStrategy())

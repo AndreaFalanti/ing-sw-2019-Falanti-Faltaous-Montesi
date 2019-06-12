@@ -5,6 +5,7 @@ import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
 
 import java.util.Objects;
@@ -56,8 +57,6 @@ public abstract class Expression {
         inflicted.forEach(
                 singularInflicted -> game.handleDamageInteraction(inflicter, singularInflicted, amount)
         );
-
-        System.out.println("ouchy");
     }
 
     // move player around
@@ -105,6 +104,9 @@ public abstract class Expression {
     }
     public String asString() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "String");
+    }
+    public Direction asDirection() {
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Direction");
     }
 }
 
