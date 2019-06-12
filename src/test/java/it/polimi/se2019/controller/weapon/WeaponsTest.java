@@ -12,13 +12,13 @@ import it.polimi.se2019.view.View;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 public class WeaponsTest {
@@ -28,16 +28,16 @@ public class WeaponsTest {
     /**
      * Utility to assert that a player has been damaged correctly
      */
-    private void assertPlayerDamage(Player damagedPlayer, List<PlayerColor> damage, List<Pair<PlayerColor, Integer>> marks) {
+    private void assertPlayerDamage(Player damagedPlayer, List<PlayerColor> damage, Map<PlayerColor, Integer> marks) {
         assertArrayEquals(
-                damage.toArray(),
+                damage.toArray(new PlayerColor[12]),
                 damagedPlayer.getDamageTaken()
         );
         assertEquals(
-                marks.stream()
+                Arrays.stream(PlayerColor.values())
                         .collect(Collectors.toMap(
-                                Pair::getFirst,
-                                Pair::getSecond
+                                clr -> clr,
+                                clr -> marks.getOrDefault(clr, 0)
                         )),
                 damagedPlayer.getMarks()
         );
@@ -81,10 +81,16 @@ public class WeaponsTest {
     @Test
     public void testHeatseekerMarioShootsHiddenLuigi() {
         // instantiate controller
-        Controller testController = new Controller(mAllInOriginGame);
+        Controller testController = new Controller(mLuigiHidesFromYellowParty);
 
-        // instantiate and customize mock view
-        View viewMock = mock(View.class);
+        /***************************************/
+        /* instantiate and customize mock view */
+        /***************************************/
+        View viewMock = mock(View.class, withSettings().verboseLogging());
+        // choose Luigi
+        given(viewMock
+                .selectTargets(1, 1, Collections.singleton(PlayerColor.GREEN)))
+                .willReturn(Collections.singleton(PlayerColor.GREEN));
 
         // instantiate weapon
         Weapon heatseeker = Weapons.get("heatseeker");
@@ -95,13 +101,13 @@ public class WeaponsTest {
 
         // assert that Luigi was hurt
         assertPlayerDamage(
-                mAllInOriginGame.getPlayerFromColor(PlayerColor.GREEN),
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN),
                 Arrays.asList(
                         PlayerColor.PURPLE,
                         PlayerColor.PURPLE,
                         PlayerColor.PURPLE
                 ),
-                Arrays.asList()
+                Collections.emptyMap()
         );
     }
 
