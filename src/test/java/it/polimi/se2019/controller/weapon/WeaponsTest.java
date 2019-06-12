@@ -13,10 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
 
-import java.net.CookieHandler;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -171,7 +169,7 @@ public class WeaponsTest {
                 .willReturn(Collections.singleton(PlayerColor.BLUE));
 
 
-        // produce result with complete context
+        // shoot through controller
         testController.shoot(viewMock, PlayerColor.YELLOW, lockrifle.getBehaviour());
 
         // verify order of method calls
@@ -190,16 +188,16 @@ public class WeaponsTest {
                         PlayerColor.YELLOW,
                         PlayerColor.YELLOW
                 ),
-                Arrays.asList(
-                        new Pair(PlayerColor.YELLOW, 1)
+                Collections.singletonList(
+                        new Pair<>(PlayerColor.YELLOW, 1)
                 )
         );
         // assert that Smurfette is hurt
         assertPlayerDamage(
                 mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.BLUE),
                 Collections.emptyList(),
-                Arrays.asList(
-                        new Pair(PlayerColor.YELLOW, 1)
+                Collections.singletonList(
+                        new Pair<>(PlayerColor.YELLOW, 1)
                 )
         );
     }
