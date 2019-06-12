@@ -11,7 +11,9 @@ import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 
+import java.net.CookieHandler;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,8 +26,6 @@ import static org.mockito.Mockito.*;
 public class WeaponsTest {
     private Game mAllInOriginGame;
     private Game mLuigiHidesFromYellowParty;
-
-    private PlayerColor mCurrentShooter;
 
     /**
      * Utility to assert that a player has been damaged correctly
@@ -57,31 +57,25 @@ public class WeaponsTest {
     /**
      * Utility function to quickly construct target sets
      */
-    private void setShooter(PlayerColor shooter) {
-        mCurrentShooter = shooter;
-    }
-    private Set<PlayerColor> targets(PlayerColor... colors) {
+    private Set<PlayerColor> targets(PlayerColor shooter, PlayerColor... colors) {
         Set<PlayerColor> targets = Arrays.stream(colors)
                 .collect(Collectors.toSet());
 
-        if (targets.contains(mCurrentShooter))
+        if (targets.contains(shooter))
             throw new IllegalArgumentException("Cannot consider the shooter a target!");
 
         return targets;
     }
-    private Set<PlayerColor> allTargets() {
+    private Set<PlayerColor> allTargets(PlayerColor shooter) {
         return Arrays.stream(PlayerColor.values())
-                .filter(clr -> !clr.equals(mCurrentShooter))
+                .filter(clr -> !clr.equals(shooter))
                 .collect(Collectors.toSet());
     }
-    private Set<PlayerColor> thisTarget(PlayerColor target) {
-        return targets(target);
-    }
-    private Set<PlayerColor> allTargetsExcept(PlayerColor... colors) {
-        Set<PlayerColor> excludedTargets = targets(colors);
+    private Set<PlayerColor> allTargetsExcept(PlayerColor shooter, PlayerColor... colors) {
+        Set<PlayerColor> excludedTargets = targets(shooter, colors);
 
         return Arrays.stream(PlayerColor.values())
-                .filter(clr -> !excludedTargets.contains(clr))
+                .filter(clr -> !excludedTargets.contains(clr) && !shooter.equals(clr))
                 .collect(Collectors.toSet());
     }
 
@@ -156,7 +150,7 @@ public class WeaponsTest {
     @Test
     public void testLockRifleStonesShootsLuigiAndThenSmurfette() {
         // instantiate controller
-        Controller testController = new Controller(mAllInOriginGame);
+        Controller testController = new Controller(mLuigiHidesFromYellowParty);
 
         // instantiate weapon
         Weapon lockrifle = Weapons.get("lock_rifle");
@@ -165,34 +159,33 @@ public class WeaponsTest {
         /* instantiate and customize mock view */
         /***************************************/
         View viewMock = mock(View.class);
-        // choose to use "Basic effect" effect
-        given(viewMock
-                .selectEffects(any(), eq(0)))
-                .willAnswer(thing -> {
-                    return Collections.singleton("basic_effect");
-                });
-        // choose to use additional "With second lock" effect
-        given(viewMock
-                .selectEffects(any(), eq(1)))
-                .willAnswer(thing -> {
-                    return Collections.singleton("with_second_lock");
-                });
-        // choose Luigi
-        given(viewMock
-                .selectTargets(1, 1, allTargets()))
-                .willReturn(thisTarget(PlayerColor.GREEN));
-        // choose Dorian
-        //   N.B. Luigi cannot be picked here
-        given(viewMock
-                .selectTargets(1, 1, allTargetsExcept(PlayerColor.GREEN)))
-                .willReturn(thisTarget(PlayerColor.GREY));
+
+        // choose effects
+        given(viewMock.selectEffects(any(), anyInt()))
+                .willReturn(Collections.singleton("basic_effect"))
+                .willReturn(Collections.singleton("with_second_lock"));
+
+        // choose targets (first Luigi, then Smurfette)
+        given(viewMock.selectTargets(anyInt(), anyInt(), any()))
+                .willReturn(Collections.singleton(PlayerColor.GREEN))
+                .willReturn(Collections.singleton(PlayerColor.BLUE));
+
 
         // produce result with complete context
         testController.shoot(viewMock, PlayerColor.YELLOW, lockrifle.getBehaviour());
 
-        // assert that luigi is hurt
+        // verify order of method calls
+        InOrder inOrder = inOrder(viewMock);
+        inOrder.verify(viewMock).selectEffects(any(), eq(0));
+        inOrder.verify(viewMock).selectTargets(1, 1, allTargets(PlayerColor.YELLOW));
+        inOrder.verify(viewMock).selectEffects(any(), eq(1));
+        inOrder.verify(viewMock).selectTargets(1, 1, allTargetsExcept(
+                PlayerColor.YELLOW, PlayerColor.GREEN
+        ));
+
+        // assert that Luigi is hurt
         assertPlayerDamage(
-                mAllInOriginGame.getPlayerFromColor(PlayerColor.GREEN),
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN),
                 Arrays.asList(
                         PlayerColor.YELLOW,
                         PlayerColor.YELLOW
@@ -201,12 +194,12 @@ public class WeaponsTest {
                         new Pair(PlayerColor.YELLOW, 1)
                 )
         );
-        // assert that Dorian is hurt
+        // assert that Smurfette is hurt
         assertPlayerDamage(
-                mAllInOriginGame.getPlayerFromColor(PlayerColor.GREY),
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.BLUE),
                 Collections.emptyList(),
                 Arrays.asList(
-                        new Pair(PlayerColor.PURPLE, 1)
+                        new Pair(PlayerColor.YELLOW, 1)
                 )
         );
     }

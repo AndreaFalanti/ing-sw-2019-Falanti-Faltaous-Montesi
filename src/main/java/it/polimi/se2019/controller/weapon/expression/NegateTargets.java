@@ -7,12 +7,12 @@ import it.polimi.se2019.model.PlayerColor;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class NegateSelection extends Behaviour {
-    public NegateSelection() {
+public class NegateTargets extends Behaviour {
+    public NegateTargets() {
 
     }
 
-    public NegateSelection(Expression selection) {
+    public NegateTargets(Expression selection) {
         putSub("selection", selection);
     }
 

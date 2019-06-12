@@ -24,7 +24,7 @@ public class WeaponFactoryTest {
                                 new Damage(3, 0)
                         ),
                         new SelectOneTarget(
-                                new NegateSelection(
+                                new NegateTargets(
                                         new CanSee()
                                 )
                         )

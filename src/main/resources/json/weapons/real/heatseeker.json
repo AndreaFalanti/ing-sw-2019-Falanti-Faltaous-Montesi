@@ -8,7 +8,7 @@
     "to" : {
       "expr" : "SelectOneTarget",
       "from" : {
-        "expr" : "NegateSelection",
+        "expr" : "NegateTargets",
         "selection" : {
           "expr" : "CanSee"
         }
@@ -16,4 +16,3 @@
     }
   }
 }
-

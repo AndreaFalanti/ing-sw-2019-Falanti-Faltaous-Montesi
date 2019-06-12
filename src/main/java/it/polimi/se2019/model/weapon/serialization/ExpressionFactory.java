@@ -8,7 +8,6 @@ import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.controller.weapon.expression.PickEffect;
 import it.polimi.se2019.controller.weapon.expression.*;
 import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.serialization.AmmoValueDeserializer;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
@@ -42,7 +41,7 @@ public class ExpressionFactory {
                 .registerSubtype(Do.class, "Do")
                 .registerSubtype(You.class, "You")
                 .registerSubtype(IntLiteral.class, "IntLiteral")
-                .registerSubtype(NegateSelection.class, "NegateSelection")
+                .registerSubtype(NegateTargets.class, "NegateSelection")
                 .registerSubtype(Store.class, "Store")
                 .registerSubtype(StringLiteral.class, "StringLiteral")
                 .registerSubtype(Done.class, "Done")

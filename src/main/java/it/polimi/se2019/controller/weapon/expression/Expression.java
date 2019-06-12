@@ -54,6 +54,8 @@ public abstract class Expression {
     protected static void inflictDamage(ShootContext context, PlayerColor inflicter, Set<PlayerColor> inflicted, Damage amount) {
         Game game = context.getGame();
 
+        System.out.println(inflicter + " inflicting " + amount + " damage to " + inflicted);
+
         inflicted.forEach(
                 singularInflicted -> game.handleDamageInteraction(inflicter, singularInflicted, amount)
         );
@@ -107,6 +109,9 @@ public abstract class Expression {
     }
     public Direction asDirection() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "Direction");
+    }
+    public SetExpression asSetExpr() {
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "SetExpression");
     }
 }
 

@@ -15,11 +15,19 @@ public class SetExpression extends Expression {
     private Set<Expression> mSubexpressions;
 
     /**
+     * Constructs SetExpression from set of subexpressions
+     * @param subs subexpressions of constructed SetExpression
+     */
+    public SetExpression(Set<Expression> subs) {
+        mSubexpressions = subs;
+    }
+
+    /**
      * Constructs SetExpression from list of subexpressions
      * @param subs subexpressions of constructed SetExpression
      */
     public SetExpression(Expression... subs) {
-        mSubexpressions = Arrays.stream(subs).collect(Collectors.toSet());
+        this(Arrays.stream(subs).collect(Collectors.toSet()));
     }
 
     /**
@@ -72,5 +80,10 @@ public class SetExpression extends Expression {
         return stream()
                 .map(Expression::asPosition)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public SetExpression asSetExpr() {
+        return this;
     }
 }

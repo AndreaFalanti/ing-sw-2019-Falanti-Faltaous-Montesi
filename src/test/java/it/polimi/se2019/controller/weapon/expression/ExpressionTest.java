@@ -10,7 +10,7 @@ public class ExpressionTest {
     private Expression makeDummyExpression() {
         return new InflictDamage(
                 new DamageLiteral(new Damage(1, 2)),
-                new NegateSelection(
+                new NegateTargets(
                         new SetExpression(
                                 new TargetLiteral(PlayerColor.GREEN),
                                 new TargetLiteral(PlayerColor.YELLOW)

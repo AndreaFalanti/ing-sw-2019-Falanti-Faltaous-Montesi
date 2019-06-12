@@ -36,6 +36,9 @@ public class SelectTargets extends Behaviour {
                 getSub("max").asInt(),
                 targets
         );
+
+        System.out.println(context.getShooterColor() + " selected " + selectedTargets + " among " + targets);
+
         Expression result = SetExpression.from(selectedTargets.stream()
                 .map(TargetLiteral::new)
                 .collect(Collectors.toSet())
