@@ -7,8 +7,6 @@ import java.util.Collections;
 public class YourPosition extends Behaviour {
     @Override
     protected Expression continueEval(ShootContext context) {
-        return new RangeLiteral(
-                Collections.singleton(context.getShooterPosition())
-        );
+        return new PositionLiteral(context.getShooterPosition());
     }
 }

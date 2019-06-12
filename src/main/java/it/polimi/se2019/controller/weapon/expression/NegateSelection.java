@@ -25,6 +25,9 @@ public class NegateSelection extends Behaviour {
                 .filter(plColor -> !targets.contains(plColor))
                 .collect(Collectors.toSet());
 
-        return new TargetsLiteral(negatedTargets);
+        return SetExpression.from(negatedTargets.stream()
+                .map(TargetLiteral::new)
+                .collect(Collectors.toSet())
+        );
     }
 }

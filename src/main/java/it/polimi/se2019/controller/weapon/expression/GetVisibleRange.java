@@ -3,6 +3,8 @@ package it.polimi.se2019.controller.weapon.expression;
 import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.model.Position;
 
+import java.util.stream.Collectors;
+
 public class GetVisibleRange extends Behaviour {
     public GetVisibleRange() {
         putSub("observer", new Pos(new You()));
@@ -24,10 +26,12 @@ public class GetVisibleRange extends Behaviour {
     @Override
     protected Expression continueEval(ShootContext context) {
         // TODO: make this better by streamlining selections (todo file)
-        Position observerPos = getSub("observer").asRange().iterator().next();
+        Position observerPos = getSub("observer").asPosition();
 
-        return new RangeLiteral(
-                context.getBoard().getAllSeenBy(observerPos)
+        return SetExpression.from(
+                context.getBoard().getAllSeenBy(observerPos).stream()
+                        .map(PositionLiteral::new)
+                        .collect(Collectors.toSet())
         );
     }
 }

@@ -20,7 +20,7 @@ public class ExpressionFactoryTest {
     public void instantiate() {
         mSimpleBehaviour = new InflictDamage(
                 new DamageLiteral(new Damage(1, 0)),
-                new TargetsLiteral(Collections.singleton(PlayerColor.GREEN))
+                new TargetLiteral(PlayerColor.GREEN)
         );
     }
 

@@ -24,10 +24,10 @@ public class CanSee extends Behaviour {
         ).eval(context).asRange();
         Set<Player> allPlayers = context.getPlayers();
 
-        return new TargetsLiteral(allPlayers.stream()
+        return SetExpression.from(allPlayers.stream()
                 .filter(pl -> visibleRange.contains(pl.getPos()))
                 .map(Player::getColor)
-                .collect(Collectors.toSet())
-        );
+                .map(TargetLiteral::new)
+                .collect(Collectors.toSet()));
     }
 }

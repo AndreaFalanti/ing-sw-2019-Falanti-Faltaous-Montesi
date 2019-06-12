@@ -1,7 +1,11 @@
 package it.polimi.se2019.controller.weapon.expression;
 
 import it.polimi.se2019.controller.weapon.ShootContext;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DistanceRange extends Behaviour {
     public DistanceRange() {
@@ -32,10 +36,14 @@ public class DistanceRange extends Behaviour {
     protected final Expression continueEval(ShootContext context) {
         Board board = context.getBoard();
 
-        return new RangeLiteral(board.getReachablePositions(
+        Set<Position> reachablePositions = board.getReachablePositions(
                 getSub("origin").asPosition(),
                 getSub("min").asInt(),
                 getSub("max").asInt()
-        ));
+        );
+
+        return SetExpression.from(reachablePositions.stream()
+                .map(PositionLiteral::new)
+                .collect(Collectors.toSet()));
     }
 }

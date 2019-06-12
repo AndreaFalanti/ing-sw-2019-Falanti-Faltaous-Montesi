@@ -31,16 +31,20 @@ public class SelectTargets extends Behaviour {
                 .collect(Collectors.toSet());
 
         // select targets
-        Expression selectedTargets = new TargetsLiteral(view.selectTargets(
+        Set<PlayerColor> selectedTargets = view.selectTargets(
                 getSub("min").asInt(),
                 getSub("max").asInt(),
                 targets
-        ));
+        );
+        Expression result = SetExpression.from(selectedTargets.stream()
+                .map(TargetLiteral::new)
+                .collect(Collectors.toSet())
+        );
 
         // save them into a variable
         // TODO: add this back
-        context.setVar(SPECIAL_VAR_LAST_SELECTED, selectedTargets.deepCopy());
+        // context.setVar(SPECIAL_VAR_LAST_SELECTED, result.deepCopy());
 
-        return selectedTargets;
+        return result;
     }
 }

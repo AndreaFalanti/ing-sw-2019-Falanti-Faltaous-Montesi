@@ -21,12 +21,11 @@ public class GetTargets extends Behaviour {
         Set<Position> positions = getSub("from").asRange();
 
         // get all players standing in provided range and are not the shooter
-        Set<PlayerColor> selectedPlayers = players.stream()
+        return SetExpression.from(players.stream()
                 .filter(pl -> positions.contains(pl.getPos()))
                 .filter(pl -> pl.getColor() != context.getShooterColor())
                 .map(Player::getColor)
-                .collect(Collectors.toSet());
-
-        return new TargetsLiteral(selectedPlayers);
+                .map(TargetLiteral::new)
+                .collect(Collectors.toSet()));
     }
 }

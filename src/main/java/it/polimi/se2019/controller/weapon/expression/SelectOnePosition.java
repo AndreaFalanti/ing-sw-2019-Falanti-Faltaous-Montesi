@@ -23,6 +23,6 @@ public class SelectOnePosition extends Behaviour {
 
         Position selectedPosition = view.selectPosition(getSub("from").asRange());
 
-        return new RangeLiteral(Collections.singleton(selectedPosition));
+        return new PositionLiteral(selectedPosition);
     }
 }

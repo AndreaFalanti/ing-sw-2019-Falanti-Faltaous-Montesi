@@ -51,7 +51,7 @@ public abstract class Expression {
     }
 
     // inflict damage
-    protected void inflictDamage(ShootContext context, PlayerColor inflicter, Set<PlayerColor> inflicted, Damage amount) {
+    protected static void inflictDamage(ShootContext context, PlayerColor inflicter, Set<PlayerColor> inflicted, Damage amount) {
         Game game = context.getGame();
 
         inflicted.forEach(
@@ -60,7 +60,7 @@ public abstract class Expression {
     }
 
     // move player around
-    protected void move(ShootContext context, Set<PlayerColor> who, Position where) {
+    protected static void move(ShootContext context, Set<PlayerColor> who, Position where) {
         Game game = context.getGame();
 
         who

@@ -21,8 +21,8 @@ public class Pos extends Behaviour {
     protected Expression continueEval(ShootContext context) {
         Game game = context.getGame();
 
-        return new RangeLiteral(Collections.singleton(
+        return new PositionLiteral(
                 game.getPlayerFromColor(getSub("who").asTarget()).getPos()
-        ));
+        );
     }
 }
