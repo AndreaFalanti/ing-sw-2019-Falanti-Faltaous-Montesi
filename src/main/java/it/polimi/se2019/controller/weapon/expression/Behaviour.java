@@ -5,6 +5,7 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class Behaviour extends Expression {
     // subexpressions evaluated before their parent expression and used in its evaluation
@@ -47,11 +48,14 @@ public abstract class Behaviour extends Expression {
 
     // TODO: add doc
     @Override
-    public final Expression eval(ShootContext shootContext) {
-        mSubexpressions.values()
-                .forEach(sub -> sub.eval(shootContext));
+    public final Expression eval(ShootContext context) {
+        mSubexpressions = mSubexpressions.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().eval(context)
+                ));
 
-        return continueEval(shootContext);
+        return continueEval(context);
     }
 
     // TODO: add doc

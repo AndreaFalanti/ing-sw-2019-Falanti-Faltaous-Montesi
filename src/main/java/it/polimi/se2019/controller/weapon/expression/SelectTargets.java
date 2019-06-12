@@ -29,7 +29,8 @@ public class SelectTargets extends Behaviour {
         ));
 
         // save them into a variable
-        context.setVar(SPECIAL_VAR_LAST_SELECTED, selectedTargets.deepCopy());
+        // TODO: add this back
+        // context.setVar(SPECIAL_VAR_LAST_SELECTED, selectedTargets.deepCopy());
 
         return selectedTargets;
     }
