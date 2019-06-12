@@ -153,26 +153,23 @@ public class WeaponsTest {
         // instantiate weapon
         Weapon lockrifle = Weapons.get("lock_rifle");
 
-        /***************************************/
-        /* instantiate and customize mock view */
-        /***************************************/
+        // create mock view
         View viewMock = mock(View.class);
 
-        // choose effects
+        // mock effect selection
         given(viewMock.selectEffects(any(), anyInt()))
                 .willReturn(Collections.singleton("basic_effect"))
                 .willReturn(Collections.singleton("with_second_lock"));
 
-        // choose targets (first Luigi, then Smurfette)
+        // mock target selection (first Luigi, then Smurfette)
         given(viewMock.selectTargets(anyInt(), anyInt(), any()))
                 .willReturn(Collections.singleton(PlayerColor.GREEN))
                 .willReturn(Collections.singleton(PlayerColor.BLUE));
 
-
         // shoot through controller
         testController.shoot(viewMock, PlayerColor.YELLOW, lockrifle.getBehaviour());
 
-        // verify order of method calls
+        // verify order of mock method calls
         InOrder inOrder = inOrder(viewMock);
         inOrder.verify(viewMock).selectEffects(any(), eq(0));
         inOrder.verify(viewMock).selectTargets(1, 1, allTargets(PlayerColor.YELLOW));
@@ -192,6 +189,7 @@ public class WeaponsTest {
                         new Pair<>(PlayerColor.YELLOW, 1)
                 )
         );
+
         // assert that Smurfette is hurt
         assertPlayerDamage(
                 mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.BLUE),
@@ -200,5 +198,40 @@ public class WeaponsTest {
                         new Pair<>(PlayerColor.YELLOW, 1)
                 )
         );
+    }
+
+    @Test
+    public void testElectroscytheMarioScythesEveryone() {
+        // instantiate controller
+        Controller testController = new Controller(mAllInOriginGame);
+
+        // instantiate weapon
+        Weapon lockrifle = Weapons.get("electroscythe");
+
+        // create mock view
+        View viewMock = mock(View.class);
+
+        // mock effect selection
+        given(viewMock.selectEffects(any(), anyInt()))
+                .willReturn(Collections.singleton("in_reaper_mode"));
+
+        // shoot through controller
+        testController.shoot(viewMock, PlayerColor.PURPLE, lockrifle.getBehaviour());
+
+        // verify order of mock method calls
+        InOrder inOrder = inOrder(viewMock);
+        inOrder.verify(viewMock).selectEffects(any(), eq(0));
+
+        // assert that everyone except Mario is hurt
+        for (PlayerColor target : allTargets(PlayerColor.PURPLE)) {
+            assertPlayerDamage(
+                    mAllInOriginGame.getPlayerFromColor(target),
+                    Arrays.asList(
+                            PlayerColor.PURPLE,
+                            PlayerColor.PURPLE
+                    ),
+                    Collections.emptyList()
+            );
+        }
     }
 }

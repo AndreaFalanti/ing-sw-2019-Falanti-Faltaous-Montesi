@@ -16,6 +16,9 @@ public class StringUtils {
     }
 
     public static String toSnakeCase(String toModify) {
+        if (toModify == null)
+            throw new NullPointerException();
+
         Matcher matcher = Pattern.compile("\\w+").matcher(toModify);
 
         StringBuilder builder = new StringBuilder();

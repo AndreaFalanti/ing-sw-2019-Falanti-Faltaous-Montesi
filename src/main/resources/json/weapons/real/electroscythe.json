@@ -6,27 +6,34 @@
   "behaviour": {
     "expr": "XorEffect",
     "lhs": {
-      "expr": "InflictDamage",
-      "amount": "1d",
-      "to": {
-        "expr": "All",
-        "from": {
-          "expr": "Pos",
-          "who": {
-            "expr": "You"
+      "name": "basic_mode",
+      "behaviour": {
+        "expr": "InflictDamage",
+        "amount": "1d",
+        "to": {
+          "expr": "All",
+          "from": {
+            "expr": "Pos",
+            "who": {
+              "expr": "You"
+            }
           }
         }
       }
     },
     "rhs": {
-      "expr": "InflictDamage",
-      "amount": "2d",
-      "to": {
-        "expr": "All",
-        "from": {
-          "expr": "Pos",
-          "who": {
-            "expr": "You"
+      "name": "in_reaper_mode",
+      "cost": "1r1b",
+      "behaviour": {
+        "expr": "InflictDamage",
+        "amount": "2d",
+        "to": {
+          "expr": "All",
+          "from": {
+            "expr": "Pos",
+            "who": {
+              "expr": "You"
+            }
           }
         }
       }
