@@ -196,6 +196,16 @@ public class CLIView extends View {
         return index;
     }
 
+    @Override
+    public void showPowerUpsDiscardView() {
+
+    }
+
+    @Override
+    public void showDirectionSelectionView() {
+
+    }
+
     public int parseInteger(){
         Integer index = null;
         boolean isValid = false;
@@ -387,7 +397,6 @@ public class CLIView extends View {
         return choosen;
     }
 
-    @Override
     public  boolean[] discardPowerUps () {
         boolean[] discarded={false,false,false,false};
         System.out.println("Choose one or more power ups to discard:\n" +

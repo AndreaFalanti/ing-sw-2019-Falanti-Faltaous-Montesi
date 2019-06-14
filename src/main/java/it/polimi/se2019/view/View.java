@@ -47,7 +47,9 @@ public abstract class View extends Observable<Request> implements Observer<Eithe
     public abstract int parseWeaponInformation();// the weapon index of the weapon that you want exchange<to change a parse
 
 
-    public abstract boolean[] discardPowerUps ();
+    public abstract void showPowerUpsDiscardView();
+
+    public abstract void showDirectionSelectionView();
 
     /**
      * Ask player a cardinal direction

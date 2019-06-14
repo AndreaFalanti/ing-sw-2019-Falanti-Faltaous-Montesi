@@ -54,6 +54,7 @@ public class Main extends Application {
         Set<PlayerColor> set = new HashSet<>();
         set.add(PlayerColor.YELLOW);
         set.add(PlayerColor.GREY);
+        set.add(PlayerColor.BLUE);
         controller.activateTargetsTab(set, 1, 2);
 
         SortedMap<Integer, Set<Effect>> sortedMap = new TreeMap<>();

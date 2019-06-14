@@ -40,8 +40,13 @@ public class GraphicView extends View {
     }
 
     @Override
-    public boolean[] discardPowerUps() {
-        return new boolean[0];
+    public void showPowerUpsDiscardView() {
+        mMainFrameController.activateDirectionTab();
+    }
+
+    @Override
+    public void showDirectionSelectionView() {
+
     }
 
     @Override

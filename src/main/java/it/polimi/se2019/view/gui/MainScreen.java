@@ -11,10 +11,7 @@ import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
-import it.polimi.se2019.view.request.ActionRequest;
-import it.polimi.se2019.view.request.PowerUpDiscardedRequest;
-import it.polimi.se2019.view.request.Request;
-import it.polimi.se2019.view.request.WeaponSelectedRequest;
+import it.polimi.se2019.view.request.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -58,6 +55,17 @@ public class MainScreen extends Observable<Request> {
     private VBox effectsBox;
     @FXML
     private VBox targetsBox;
+    @FXML
+    private Button targetsOkButton;
+    @FXML
+    private Button effectsOkButton;
+    @FXML
+    private Button effectsUndoButton;
+    @FXML
+    private Button directionsUndoButton;
+    @FXML
+    private Button targetsUndoButton;
+
 
 
     private static final Logger logger = Logger.getLogger(MainScreen.class.getName());
@@ -77,8 +85,9 @@ public class MainScreen extends Observable<Request> {
 
     private BoardPane mBoardController;
     private EnumMap<PlayerColor, PlayerPane> mPlayerControllers = new EnumMap<>(PlayerColor.class);
+
     private boolean[] mDiscardedPowerUpsCache = new boolean[3];
-    private Direction mSelectedDirection;
+    private boolean[] mTargetSelectedCache;
 
 
     public BoardPane getBoardController() {
@@ -140,6 +149,7 @@ public class MainScreen extends Observable<Request> {
         List<Player> players = new ArrayList<>();
         players.add(new Player("aaa", PlayerColor.YELLOW));
         players.add(new Player("bbb", PlayerColor.GREY));
+        players.add(new Player("ccc", PlayerColor.BLUE));
 
         for (Player player : players) {
             loader = new FXMLLoader(getClass().getResource("/fxml/otherPlayerPane.fxml"));
@@ -217,6 +227,7 @@ public class MainScreen extends Observable<Request> {
 
         // TODO: move in a proper setup method someday
         setupDirectionButtonsBehaviour();
+        setWeaponTabsUndoButtonsBehaviour();
     }
 
 
@@ -519,25 +530,31 @@ public class MainScreen extends Observable<Request> {
         );
     }
 
+    /**
+     * Setup directions tab button behaviours. When clicked they will notify controller with selected direction.
+     */
     private void setupDirectionButtonsBehaviour () {
         Direction[] directions = Direction.values();
         for (int i = 0; i < directions.length; i++) {
             final int index = i;
             directionButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
-                mSelectedDirection = directions[index];
                 logToChat("Selected direction: " + directions[index].toString());
+                notify(new DirectionSelectedRequest(directions[index], mView));
             });
         }
     }
 
     public void activateDirectionTab () {
         tabPane.getSelectionModel().select(DIRECTION_TAB);
-        mSelectedDirection = null;
     }
 
     public void activateTargetsTab (Set<PlayerColor> possibleTargets, int minTargets, int maxTargets) {
         tabPane.getSelectionModel().select(TARGETS_TAB);
         targetsBox.getChildren().clear();
+        List<PlayerColor> playerTargets = new ArrayList<>(possibleTargets);
+        // all false by default value
+        mTargetSelectedCache = new boolean[possibleTargets.size()];
+        targetsOkButton.setDisable(true);
 
         Label title;
         if (minTargets == maxTargets) {
@@ -550,16 +567,45 @@ public class MainScreen extends Observable<Request> {
         title.setStyle("-fx-font: 20 segoe; -fx-font-weight: bold");
         targetsBox.getChildren().add(title);
 
+        for (int i = 0; i < playerTargets.size(); i++) {
+            PlayerColor color = playerTargets.get(i);
 
-        for (PlayerColor color : possibleTargets) {
             RadioButton radioButton = new RadioButton(
                     getPlayerControllerFromColor(color).getPlayerUsername() + " [" + color.getPascalName() + "]");
             radioButton.setTextFill(Paint.valueOf("white"));
-            radioButton.setOnMouseClicked(event -> logToChat("Selected: " + radioButton.getText()));
-            // TODO: how to do a toggle group with multiple toggles?
+
+            final int index = i;
+            radioButton.setOnMouseClicked(event -> {
+                // javafx is stupid and switch selected status before calling this, so logic is actually inverted
+                if (radioButton.isSelected()) {
+                    boolean select = canSelectAnotherTarget(maxTargets);
+                    radioButton.setSelected(select);
+                    mTargetSelectedCache[index] = select;
+                    String text = select ? "Selected: " : "Deselected: ";
+                    logToChat(text + radioButton.getText());
+                }
+                else {
+                    mTargetSelectedCache[index] = false;
+                    logToChat("Deselected: " + radioButton.getText());
+                }
+
+                targetsOkButton.setDisable(!checkTargetSelectionRestriction(minTargets, maxTargets));
+            });
 
             targetsBox.getChildren().add(radioButton);
         }
+
+        targetsOkButton.setOnMouseClicked(event -> {
+            Set<PlayerColor> set = new HashSet<>();
+            for (int i = 0; i < mTargetSelectedCache.length; i++) {
+                if (mTargetSelectedCache[i]) {
+                    set.add(playerTargets.get(i));
+                }
+            }
+
+            notify(new TargetsSelectedRequest(set, mView));
+            returnToActionTab();
+        });
     }
 
     public void activateEffectsTab (SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
@@ -600,5 +646,38 @@ public class MainScreen extends Observable<Request> {
         }
 
         return anchorPane;
+    }
+
+    private boolean canSelectAnotherTarget (int max) {
+        return getCurrentTargetCount() < max;
+    }
+
+    private boolean checkTargetSelectionRestriction (int min, int max) {
+        int count = getCurrentTargetCount();
+
+        return count >= min && count <= max;
+    }
+
+    private int getCurrentTargetCount() {
+        int count = 0;
+        for (int i = 0; i < mTargetSelectedCache.length; i++) {
+            if (mTargetSelectedCache[i]) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private void setWeaponTabsUndoButtonsBehaviour () {
+        targetsUndoButton.setOnMouseClicked(event -> returnToActionTab());
+        directionsUndoButton.setOnMouseClicked(event -> returnToActionTab());
+        effectsUndoButton.setOnMouseClicked(event -> returnToActionTab());
+    }
+
+    private void returnToActionTab() {
+        for (int i = 0; i < tabPane.getTabs().size(); i++) {
+            tabPane.getTabs().get(i).setDisable(i != ACTIONS_TAB && i != PLAYERS_TAB);
+        }
+        tabPane.getSelectionModel().selectFirst();
     }
 }

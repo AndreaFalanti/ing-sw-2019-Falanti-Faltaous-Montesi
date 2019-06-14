@@ -51,8 +51,13 @@ public class RmiVirtualView extends View {
     }
 
     @Override
-    public boolean[] discardPowerUps() {
-        return new boolean[0];
+    public void showPowerUpsDiscardView() {
+
+    }
+
+    @Override
+    public void showDirectionSelectionView() {
+
     }
 
     @Override

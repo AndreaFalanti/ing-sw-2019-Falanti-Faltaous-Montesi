@@ -49,8 +49,13 @@ public class SocketVirtualView extends View {
     public int parseWeaponInformation() {return 0;    }
 
     @Override
-    public boolean[] discardPowerUps() {
-        return new boolean[0];
+    public void showPowerUpsDiscardView() {
+
+    }
+
+    @Override
+    public void showDirectionSelectionView() {
+
     }
 
     @Override

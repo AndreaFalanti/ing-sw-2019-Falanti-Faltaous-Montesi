@@ -57,7 +57,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
             return false;
         }
         for (PlayerConnection playerConnection : mPlayersOnline) {
-            if (playerConnection.getUsername().equals(username)) {
+            if (playerConnection.getUsername().equalsIgnoreCase(username)) {
                 logger.log(Level.WARNING, "Username: {0} is already used", username);
                 return false;
             }

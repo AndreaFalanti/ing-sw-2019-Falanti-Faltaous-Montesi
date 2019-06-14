@@ -1,17 +1,14 @@
 package it.polimi.se2019.controller;
 
 
-import it.polimi.se2019.controller.weapon.Weapons;
-import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.controller.weapon.ShootContext;
+import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
-
-import java.util.HashSet;
 
 
 public class Controller implements AbstractController {
@@ -79,6 +76,11 @@ public class Controller implements AbstractController {
                 // TODO: substitute with Weapons.get() call
                 WeaponFactory.fromJson(Jsons.get("weapons/real/" + request.getWeaponID())).getBehaviour()
         );
+    }
+
+    @Override
+    public void handle(DirectionSelectedRequest request) {
+
     }
 
     /*****************************************/
