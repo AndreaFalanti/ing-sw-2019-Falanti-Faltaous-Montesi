@@ -11,6 +11,8 @@ import java.util.Map;
 
 public class CLIInfo {
 
+    private static int BOARD_COLUMNS =4;
+    private static int BOARD_ROWS=3;
     private String mActivePlayer;
     private PlayerColor mOwnerColorf;
     private String mOwnerColor;
@@ -28,19 +30,24 @@ public class CLIInfo {
     }
 
     public CLIInfo (List<Player> players, Player owner, PlayerColor ownerColor, PlayerColor activePlayer, Board board){
+        Tile tile;
         initialization(players, owner,ownerColor, activePlayer);
         mOwnerColorf=ownerColor;
 
-        for(Tile tile :board.getTiles()){
-            if(tile.getTileType().equalsIgnoreCase("spawn")){
-                SpawnTile spawn = (SpawnTile)tile;
-                spawnTiles.put(tile.getColor(),weaponToSting(spawn.getWeapons()));
-            } else{
-                NormalTile normal = (NormalTile)tile;
-         //       normalTiles.put();
+        for (int x = 0; x < BOARD_COLUMNS; x++) {
+            for (int y = 0; y < BOARD_ROWS; y++) {
+                if (board.getTileAt(new Position(x, y)) != null) {
+                    tile=board.getTileAt(new Position(x, y));
+                    if(tile.getTileType().equalsIgnoreCase("spawn")){
+                        SpawnTile spawn = (SpawnTile)tile;
+                        spawnTiles.put(tile.getColor(),weaponToSting(spawn.getWeapons()));
+                    } else{
+                        NormalTile normal = (NormalTile)tile;
+                        normalTiles.put((new Position(x,y)),normal.getAmmoCard().toString());
+                    }
+                }
             }
         }
-
     }
 
     public void initialization(List<Player> players,Player owner,PlayerColor ownerColor,PlayerColor activePlayerColor){
@@ -66,6 +73,11 @@ public class CLIInfo {
     public void setSpawnTiles(Tile tile){
         SpawnTile spawn = (SpawnTile)tile;
         spawnTiles.put(spawn.getColor(),weaponToSting(spawn.getWeapons()));
+    }
+
+    public void setNormalTiles(Tile tile,Position pos){
+        NormalTile normal = (NormalTile)tile;
+        normalTiles.put(pos,normal.getAmmoCard().toString());
     }
 
     public void updatePowerUps(PlayerColor playerColor, PowerUpCard[] powerUpCards){
@@ -160,5 +172,8 @@ public class CLIInfo {
 
     public Map<PlayerColor, CLIPlayer> getPlayersInfo() {
         return mPlayersInfo;
+    }
+    public Map<Position, String> getNormalTiles(){
+        return normalTiles;
     }
 }

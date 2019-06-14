@@ -36,7 +36,8 @@ public class CLIUpdateHandler implements UpdateHandler {
     public void handle(BoardTileUpdate update) {
         if(update.getTile().getTileType().equalsIgnoreCase("spawn"))
             mCLIInfo.setSpawnTiles(update.getTile());
-        //need normal tile
+        else
+            mCLIInfo.setNormalTiles(update.getTile(),update.getTilePos());
     }
     @Override
     public void handle(KillScoredUpdate update) {

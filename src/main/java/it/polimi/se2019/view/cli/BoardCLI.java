@@ -39,13 +39,13 @@ public class BoardCLI {
     public static final String color5 = "WHITE";
     public static final testTile tile0 = new testTile(color3, false, true, true, true);
     public static final testTile tile1 = new testTile(color3, false, false, false, true);
-    public static final testTile tile2 = new testTile(color3, false, true, true, true);
+    public static final testTile tile2 = new testTile(color5, false, false, true, true);
     public static final testTile tile3 =null;
     public static final testTile tile4 = new testTile(color1, false, false, false, true);
     public static final testTile tile5 = new testTile(color1, false, true, false, true);
     public static final testTile tile6 = new testTile(color1, false, false, true, true);
     public static final testTile tile7 = new testTile(color4, false, true, true, true);
-    public static final testTile tile8 =  new testTile(color5, false, false, false, true);
+    public static final testTile tile8 =null;
     public static final testTile tile9 = new testTile(color5, false, false, false, true);
     public static final testTile tile10 = new testTile(color5, false, false, true, true);
     public static final testTile tile11 = new testTile(color4, false, false, false, true);
@@ -151,13 +151,13 @@ public class BoardCLI {
     public static String getColorTile(String color){
 
         if(color.equals(color1) )
-            return ANSI_BRED_BACKGROUND;
+            return ANSI_RED_BACKGROUND;
         if(color.equals(color2))
-            return ANSI_BGREEN_BACKGROUND;
+            return ANSI_GREEN_BACKGROUND;
         if(color.equals(color3))
-            return ANSI_BBLUE_BACKGROUND;
+            return ANSI_BLUE_BACKGROUND;
         if(color.equals(color4))
-            return ANSI_BYELLOW_BACKGROUND;
+            return ANSI_YELLOW_BACKGROUND;
         else
             return ANSI_WHITE_BACKGROUND;
 
@@ -336,8 +336,12 @@ public class BoardCLI {
              else{
                if(coord[0].equals("1"))
                 addPlayer(line2,coord[1],player.getPlayerColor(),numberPlayer);
-                else
-                   addPlayer(line3,coord[1],player.getPlayerColor(),numberPlayer);
+                else{
+                    if(board1[LENGTH*2]!=null)
+                        addPlayer(line3,coord[1],player.getPlayerColor(),numberPlayer);
+                    else
+                        addPlayer1(line3,coord[1],player.getPlayerColor(),numberPlayer);
+                }
            }
         }
     }
@@ -349,14 +353,33 @@ public class BoardCLI {
             index = line.indexOf("|\n",line.indexOf("|\n")+index);
         }
         index+=1;
-        for(int i=0;i<(SIZECELL*coordy)/2 + numberPlayer;i++){
+        for(int i=0;i<(SIZECELL*coordy)/2 + numberPlayer+1;i++){
             index = line.indexOf(" ",line.indexOf(" ")+index);
         }
 
-        line.replace(index-7,index+1,ANSI_BLACK_BACKGROUND+Colors.getColorTile(color)+"P"+ANSI_RESET);
+        line.replace(index-5,index+1,ANSI_BLACK_BACKGROUND+Colors.getColorTile(color)+"P"+ANSI_RESET);
 
         System.out.print(line);
     }
+
+    public static void addPlayer1(StringBuilder line , String vertical,String color,int numberPlayer){
+        int index=0;
+        int coordy=Integer.parseInt(vertical);
+        for(int i=0;i<HIGHCELL/2;i++){
+            index = line.indexOf("|\n",line.indexOf("|\n")+index);
+        }
+        index +=4;
+        index = line.indexOf("|",index);
+
+        for(int i=0;i<(SIZECELL*coordy)/2 + numberPlayer ;i++){
+            index = line.indexOf(" ",line.indexOf(" ") + index);
+        }
+
+        line.replace(index-5,index+1,ANSI_BLACK_BACKGROUND+Colors.getColorTile(color)+"P"+ANSI_RESET);
+
+        System.out.print(line);
+    }
+
 
 
     public static void main(String[] arg) {
@@ -366,11 +389,11 @@ public class BoardCLI {
 
         List<Player> mPlayers = new ArrayList<>() ;
         PlayerColor activePlayer = PlayerColor.BLUE;
-        Player owner = new Player("Owner",PlayerColor.GREEN,new Position(1,0));
-        Player player1 = new Player("Player1",PlayerColor.BLUE,new Position(0,1));
+        Player owner = new Player("Owner",PlayerColor.GREEN,new Position(2,3));
+        Player player1 = new Player("Player1",PlayerColor.BLUE,new Position(1,3));
         Player player2 = new Player("Player2",PlayerColor.GREY,new Position(1,3));
-        Player player3 = new Player("Player3",PlayerColor.YELLOW,new Position(1,2));
-        Player player4 = new Player("Player4",PlayerColor.PURPLE,new Position(0,0));
+        Player player3 = new Player("Player3",PlayerColor.YELLOW,new Position(1,3));
+        Player player4 = new Player("Player4",PlayerColor.PURPLE,new Position(1,3));
         owner.onDamageTaken(new Damage(3,0), PlayerColor.YELLOW);
         owner.onDamageTaken(new Damage(3,1), PlayerColor.BLUE);
         owner.onDamageTaken(new Damage(3,0), PlayerColor.YELLOW);
