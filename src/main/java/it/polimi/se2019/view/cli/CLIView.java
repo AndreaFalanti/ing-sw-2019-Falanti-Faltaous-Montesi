@@ -10,10 +10,7 @@ import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.ActionRequest;
 
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.SortedMap;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -170,7 +167,6 @@ public class CLIView extends View {
         return pos;
     }
 
-    @Override
     public int parseWeaponInformation(TileColor tileColor){
         Integer index = null;
         boolean isValid = false;
@@ -183,7 +179,6 @@ public class CLIView extends View {
         return index;
     }
 
-    @Override
     public int parseWeaponInformation(){
         Integer index = null;
         boolean isValid = false;
@@ -202,7 +197,32 @@ public class CLIView extends View {
     }
 
     @Override
+    public void showWeaponSelectionView(TileColor spawnColor) {
+
+    }
+
+    @Override
+    public void showValidPositions(List<Position> positions) {
+
+    }
+
+    @Override
     public void showDirectionSelectionView() {
+
+    }
+
+    @Override
+    public void showPositionSelectionView(Set<Position> possiblePositions) {
+
+    }
+
+    @Override
+    public void showTargetsSelectionView(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets) {
+
+    }
+
+    @Override
+    public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
 
     }
 

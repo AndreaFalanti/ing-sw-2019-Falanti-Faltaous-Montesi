@@ -7,6 +7,7 @@ import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.view.View;
 
+import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
@@ -30,22 +31,37 @@ public class GraphicView extends View {
     }
 
     @Override
-    public int parseWeaponInformation(TileColor tileColor) {
-        return 0;
-    }
-
-    @Override
-    public int parseWeaponInformation() {
-        return 0;
-    }
-
-    @Override
     public void showPowerUpsDiscardView() {
         mMainFrameController.activateDirectionTab();
     }
 
     @Override
+    public void showWeaponSelectionView(TileColor spawnColor) {
+        
+    }
+
+    @Override
+    public void showValidPositions(List<Position> positions) {
+
+    }
+
+    @Override
     public void showDirectionSelectionView() {
+
+    }
+
+    @Override
+    public void showPositionSelectionView(Set<Position> possiblePositions) {
+
+    }
+
+    @Override
+    public void showTargetsSelectionView(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets) {
+
+    }
+
+    @Override
+    public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
 
     }
 
