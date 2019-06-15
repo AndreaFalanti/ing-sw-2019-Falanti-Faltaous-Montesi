@@ -275,7 +275,7 @@ public class CLIView extends View {
             case "showg"      : showGrabbable();break;
             case "weapons"    : System.out.println(mCLIInfo.getOwner().getPlayerWeapons());availableCommands(); break;
             case "myinfo"     : ownerInfo();availableCommands();break;
-            case "board"      : availableCommands(); break;
+            case "board"      : mCLIInfo.getBoard().addPlayers(mCLIInfo.getBoard().getBoardCLI(),mCLIInfo.getPlayersInfo());availableCommands(); break;
             case "undo"       : deleteRequest(); availableCommands(); break;
             case "help"       : availableCommands(); break;
             case "break"      : availableCommands();break;

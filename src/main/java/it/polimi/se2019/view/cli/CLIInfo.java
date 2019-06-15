@@ -21,8 +21,8 @@ public class CLIInfo {
     private String mKillTrack;
     private EnumMap<TileColor,String> spawnTiles = new EnumMap<>(TileColor.class);
     private Map<Position,String> normalTiles = new HashMap<>();
+    private BoardCLI mBoard ;
 
-    private BoardCLI board;
 
     public CLIInfo (List<Player> players, Player owner,PlayerColor ownerColor,PlayerColor activePlayer){
         initialization(players, owner,ownerColor, activePlayer);
@@ -34,6 +34,7 @@ public class CLIInfo {
         initialization(players, owner,ownerColor, activePlayer);
         mOwnerColorf=ownerColor;
 
+        mBoard = new BoardCLI(board);
         for (int x = 0; x < BOARD_COLUMNS; x++) {
             for (int y = 0; y < BOARD_ROWS; y++) {
                 if (board.getTileAt(new Position(x, y)) != null) {
@@ -175,5 +176,8 @@ public class CLIInfo {
     }
     public Map<Position, String> getNormalTiles(){
         return normalTiles;
+    }
+    public BoardCLI getBoard(){
+        return mBoard;
     }
 }
