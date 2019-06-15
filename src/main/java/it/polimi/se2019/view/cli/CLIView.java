@@ -48,7 +48,7 @@ public class CLIView extends View {
 
 
     public CLIView(CLIInfo cLIInfo) {
-        super(new CLIResponseHandler(), new CLIUpdateHandler(cLIInfo));
+        super(new CLIUpdateHandler(cLIInfo));
         mCLIInfo = cLIInfo;
     }
 

@@ -1,6 +1,5 @@
 package it.polimi.se2019.view;
 
-import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
@@ -16,12 +15,6 @@ import java.util.SortedMap;
 public class SocketVirtualView extends View {
     public SocketVirtualView() {
         super(
-                new ResponseHandler() {
-                    @Override
-                    public void fallbackHandle(Response response) {
-                        // TODO: serialize and send
-                    }
-                },
                 new UpdateHandler() {
                     @Override
                     public void fallbackHandle(Update update) {
