@@ -31,7 +31,7 @@ public class ShootContext {
     public ShootContext(Game game, View view, PlayerColor shooterColor, ShootInteraction shootInteraction) {
         // safety check to assure that shooter is present among provided players
         List<Player> players = game.getPlayers();
-        if (!players.stream().anyMatch(pl -> pl.getColor() == shooterColor))
+        if (players.stream().noneMatch(pl -> pl.getColor() == shooterColor))
             throw new IllegalArgumentException(MISSING_PLAYER_MSG);
 
         // initialize fields

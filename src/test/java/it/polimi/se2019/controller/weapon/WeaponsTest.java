@@ -9,11 +9,15 @@ import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
+import it.polimi.se2019.view.request.EffectsSelectedRequest;
+import it.polimi.se2019.view.request.TargetsSelectedRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
+import org.mockito.stubbing.Stubber;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -77,6 +81,47 @@ public class WeaponsTest {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Utility functions for providing fake requests to a shoot interaction (used in mocking)
+     */
+    private void mockTargetSelections(View mockView, Controller controller, List<Set<PlayerColor>> targetSelections) {
+        if (targetSelections.isEmpty())
+            throw new IllegalArgumentException();
+
+        Function<Set<PlayerColor>, Object> requestProvider = targetSelection -> {
+            controller.getShootInteraction().putRequest(new TargetsSelectedRequest(targetSelection, mockView));
+            return null;
+        };
+
+        Iterator<Set<PlayerColor>> itr = targetSelections.listIterator();
+        int index = 0;
+        Stubber stubber = doAnswer(mock -> requestProvider.apply(itr.next()));
+        while (itr.hasNext()) {
+            Set<PlayerColor> ele = itr.next();
+            stubber = stubber.doAnswer(mock -> requestProvider.apply(ele));
+        }
+
+        stubber.when(mockView).selectTargets(anyInt(), anyInt(), anySet());
+    }
+    private void mockEffectSelections(View mockView, Controller controller, List<Set<String>> selectedEffects) {
+        if (selectedEffects.isEmpty())
+            throw new IllegalArgumentException();
+
+        Function<Set<String>, Object> requestProvider = effectSelection -> {
+            controller.getShootInteraction().putRequest(new EffectsSelectedRequest(effectSelection, mockView));
+            return null;
+        };
+
+        Iterator<Set<String>> itr = selectedEffects.iterator();
+        Stubber stubber = doAnswer(mock -> requestProvider.apply(itr.next()));
+        while (itr.hasNext()) {
+            Set<String> ele = itr.next();
+            stubber = stubber.doAnswer(mock -> requestProvider.apply(ele));
+        }
+
+        stubber.when(mockView.selectEffects(any(), anyInt()));
+    }
+
     @Before
     public void instantiate() {
         mAllInOriginGame = new Game(
@@ -117,21 +162,21 @@ public class WeaponsTest {
         // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty);
 
-        /***************************************/
-        /* instantiate and customize mock view */
-        /***************************************/
-        View viewMock = mock(View.class, withSettings().verboseLogging());
-        // choose Luigi
-        given(viewMock
-                .selectTargets(1, 1, Collections.singleton(PlayerColor.GREEN)))
-                .willReturn(Collections.singleton(PlayerColor.GREEN));
+        // create mock view
+        View viewMock = mock(View.class);
 
-        // instantiate weapon
+        // mock target selection (pick poor hidden luigi)
+        mockTargetSelections(viewMock, testController, Collections.singletonList(
+                Collections.singleton(PlayerColor.GREEN)
+        ));
+
+        // initiate shoot interaction
         Weapon heatseeker = Weapons.get("heatseeker");
-
-        // produce result with complete context
-        // TODO: wire to mock view
         testController.startShootInteraction(viewMock, PlayerColor.PURPLE, heatseeker.getBehaviour());
+
+        // verify order of mock view method calls
+        InOrder inOrder = inOrder(viewMock);
+        inOrder.verify(viewMock).selectTargets(1, 1, Collections.singleton(PlayerColor.GREEN));
 
         // assert that Luigi was hurt
         assertPlayerDamage(
@@ -157,9 +202,10 @@ public class WeaponsTest {
         View viewMock = mock(View.class);
 
         // mock effect selection
-        given(viewMock.selectEffects(any(), anyInt()))
-                .willReturn(Collections.singleton("basic_effect"))
-                .willReturn(Collections.singleton("with_second_lock"));
+        // doAnswer(mock -> ,
+                // Collections.singleton("basic_effect"),
+                // Collections.singleton("with_second_lock")
+        // )));
 
         // mock target selection (first Luigi, then Smurfette)
         given(viewMock.selectTargets(anyInt(), anyInt(), any()))
@@ -212,8 +258,9 @@ public class WeaponsTest {
         View viewMock = mock(View.class);
 
         // mock effect selection
-        given(viewMock.selectEffects(any(), anyInt()))
-                .willReturn(Collections.singleton("in_reaper_mode"));
+        mockEffectSelections(viewMock, testController,  Collections.singletonList(
+                Collections.singleton("in_reaper_mode")
+        ));
 
         // shoot through controller
         testController.startShootInteraction(viewMock, PlayerColor.PURPLE, lockrifle.getBehaviour());

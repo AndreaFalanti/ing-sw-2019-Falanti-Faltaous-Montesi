@@ -38,8 +38,11 @@ public class Controller implements AbstractController {
     public Game getGame() {
         return mGame;
     }
+    public ShootInteraction getShootInteraction() {
+        return mShootInteraction;
+    }
     public boolean isHandlingShootInteraction() {
-        return mShootInteraction != null;
+        return mShootInteraction.isOccupied();
     }
 
     /*******************/
