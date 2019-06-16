@@ -17,6 +17,7 @@ public class ActionRequest implements Request {
         return mAction;
     }
 
+    @Override
     public View getView() {
         return mView;
     }

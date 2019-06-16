@@ -18,6 +18,7 @@ public class EffectsSelectedRequest implements Request {
         return mEffects;
     }
 
+    @Override
     public View getView() {
         return mView;
     }

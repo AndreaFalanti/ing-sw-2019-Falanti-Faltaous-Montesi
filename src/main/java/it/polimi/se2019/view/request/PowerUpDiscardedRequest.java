@@ -16,6 +16,7 @@ public class PowerUpDiscardedRequest implements Request {
         return mDiscarded;
     }
 
+    @Override
     public View getView() {
         return mView;
     }

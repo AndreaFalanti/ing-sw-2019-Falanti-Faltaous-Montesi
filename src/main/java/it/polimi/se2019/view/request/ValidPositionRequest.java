@@ -10,6 +10,7 @@ public class ValidPositionRequest implements Request {
         mView = view;
     }
 
+    @Override
     public View getView() {
         return mView;
     }

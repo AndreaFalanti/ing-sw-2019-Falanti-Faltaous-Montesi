@@ -17,6 +17,7 @@ public class PositionSelectedRequest implements Request {
         return mPosition;
     }
 
+    @Override
     public View getView() {
         return mView;
     }
