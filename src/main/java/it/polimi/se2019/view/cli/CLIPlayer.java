@@ -157,7 +157,7 @@ public class CLIPlayer {
 
     public void setAllDamageTaken(PlayerColor[] damage){
         StringBuilder shooter = new StringBuilder();
-        int count=0;
+
         int size = Arrays.asList(damage).size();
         if(damage[0]==null) {
             setDamageTakenToZero();

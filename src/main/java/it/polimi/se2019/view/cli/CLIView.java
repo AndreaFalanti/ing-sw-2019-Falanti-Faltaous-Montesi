@@ -110,15 +110,11 @@ public class CLIView extends View {
                 break;
             case "teleport":
                 pos=parseDestination(otherCommandPart);
-                mCLIInfo.getOwner().getPlayerPowerUps();
+                System.out.println(mCLIInfo.getOwner().getPlayerPowerUps());
                // index = ();<--- to complete
                 action = new TeleportAction(pos,0);//<--to change
                 logger.log(Level.INFO,"Action: SHOOT  Pos: {0}",pos);
                 break;
-            //case "newtown":
-            //    pos=parseDestination(otherCommandPart);
-            //    action = new NewtoAction();
-            //    break;
             case "reloadshoot":
                 pos=parseDestination(otherCommandPart);
                 index = reloadInteraction();
@@ -168,7 +164,6 @@ public class CLIView extends View {
 
     public int parseWeaponInformation(TileColor tileColor){
         int index = 3;
-        boolean isValid = false;
 
         System.out.print("Type the index of the weapon you want between 0 and 2" +
                 mCLIInfo.getSpawnTiles().get(tileColor));
@@ -182,7 +177,6 @@ public class CLIView extends View {
 
     public int parseWeaponInformation(){
         int index = 4;
-        boolean isValid = false;
 
         System.out.print("Type the index of the weapon you want exchange");
         System.out.println(mCLIInfo.getOwner().getPlayerWeapons());
@@ -215,7 +209,6 @@ public class CLIView extends View {
 
     @Override
     public void showWeaponSelectionView(TileColor spawnColor) {
-        int index;
         if(spawnColor!=null)
             notify(new WeaponSelectedRequest(parseWeaponInformation(spawnColor),this));
         else
@@ -236,7 +229,7 @@ public class CLIView extends View {
 
     @Override
     public void showPositionSelectionView(Set<Position> possiblePositions) {
-      //  notify(new);
+        notify(new PositionSelectedRequest(selectPosition(possiblePositions),this));
     }
 
     @Override
@@ -308,7 +301,6 @@ public class CLIView extends View {
                 mCLIInfo.getOwner().getPlayerName() +
                 Colors.ANSI_RESET + ":" + SPACE+
                 "Color : "+mCLIInfo.getOwner().getPlayerColor() + SPACE +
-                "Number of deaths: " + mCLIInfo.getOwner().getPlayerDeaths() + SPACE +
                 "Marks: " + mCLIInfo.getOwner().getPlayerMarks() + SPACE+
                 "Is Dead ? " + mCLIInfo.getOwner().playerIsDead() + SPACE +
                 "Scores: " + mCLIInfo.getOwner().getPlayerScore() + SPACE +
@@ -431,7 +423,7 @@ public class CLIView extends View {
             targets = target.split("\\s+");
         }
         for (String s : targets) {
-            if(mCLIInfo.colorFromName(s).equals(null)){
+            if(mCLIInfo.colorFromName(s)== null){
                 System.out.println("Please insert correctly the names");
                 return selectTargets(minToSelect,maxToSelect,possibleTargets);
             }

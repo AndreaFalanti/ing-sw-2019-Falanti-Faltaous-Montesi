@@ -58,6 +58,7 @@ public class Main {
         mPlayers.add(player3);
         mPlayers.add(player4);
         PlayerColor ownerColor = PlayerColor.GREEN;
+      //  Board board= new Board();
         //end test
 
         CLIInfo cLIInfo = new CLIInfo(mPlayers,owner,ownerColor,activePlayer);
