@@ -15,10 +15,7 @@ import it.polimi.se2019.view.request.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -88,6 +85,9 @@ public class MainScreen extends Observable<Request> {
 
     private boolean[] mDiscardedPowerUpsCache = new boolean[3];
     private boolean[] mTargetSelectedCache;
+    private int mActualEffectIndex;
+    private List<Effect> mEffectsCache;
+    private List<Effect> mMandatoryEffectsCache;
 
 
     public BoardPane getBoardController() {
@@ -608,28 +608,70 @@ public class MainScreen extends Observable<Request> {
         });
     }
 
-    public void activateEffectsTab (SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
+    public void activateEffectsTabForEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
         tabPane.getSelectionModel().select(EFFECTS_TAB);
         effectsBox.getChildren().clear();
+        effectsOkButton.setDisable(true);
+
+        mActualEffectIndex = 0;
+        mEffectsCache = new ArrayList<>();
+        mMandatoryEffectsCache = new ArrayList<>();
 
         for (Map.Entry<Integer, Set<Effect>> entry : priorityMap.entrySet()) {
             boolean enableEffectPane = entry.getKey() == currentPriority;
 
             for (Effect effect : entry.getValue()) {
+                if (!effect.isOptional()) {
+                    mMandatoryEffectsCache.add(effect);
+                }
+
                 AnchorPane child = createEffectPane(effect, enableEffectPane);
+
+                CheckBox checkBox = new CheckBox();
+                checkBox.setOnAction(event -> {
+                    if (checkBox.isSelected()) {
+                        checkBox.setText(Integer.toString(mActualEffectIndex));
+                        mEffectsCache.add(effect);
+                        mActualEffectIndex++;
+                    }
+                    else {
+                        checkBox.setText("");
+                        mEffectsCache.remove(effect);
+                    }
+
+                    effectsOkButton.setDisable(!checkMandatoryEffectsAreSelected());
+                });
+
+                child.getChildren().add(checkBox);
+                AnchorPane.setBottomAnchor(checkBox, 5d);
+                AnchorPane.setRightAnchor(checkBox, 5d);
+
                 effectsBox.getChildren().add(child);
                 VBox.setVgrow(child, Priority.ALWAYS);
             }
         }
+
+        effectsOkButton.setOnMouseClicked(event -> {
+            List<String> ids = new ArrayList<>();
+            for (Effect effect : mEffectsCache) {
+                ids.add(effect.getId());
+            }
+
+            notify(new EffectsSelectedRequest(ids, mView));
+            returnToActionTab();
+        });
     }
 
     private AnchorPane createEffectPane (Effect effect, boolean enabled) {
         AnchorPane anchorPane = new AnchorPane();
 
-        Label nameLabel = new Label(effect.getName());
+        String name = effect.isOptional() ? effect.getName() : effect.getName() + " [MANDATORY]";
+        Label nameLabel = new Label(name);
+
         nameLabel.setStyle("-fx-font: 16 segoe; -fx-font-weight: bold; -fx-font-style: italic");
 
-        Label costLabel = new Label("(1, 2, 3)");
+        Label costLabel = new Label(String.format("(%d, %d, %d)", effect.getCost().getRed(),
+                effect.getCost().getYellow(), effect.getCost().getBlue()));
 
         anchorPane.getChildren().add(nameLabel);
         anchorPane.getChildren().add(costLabel);
@@ -669,9 +711,20 @@ public class MainScreen extends Observable<Request> {
     }
 
     private void setWeaponTabsUndoButtonsBehaviour () {
-        targetsUndoButton.setOnMouseClicked(event -> returnToActionTab());
-        directionsUndoButton.setOnMouseClicked(event -> returnToActionTab());
-        effectsUndoButton.setOnMouseClicked(event -> returnToActionTab());
+        targetsUndoButton.setOnMouseClicked(event -> {
+            returnToActionTab();
+            notify(new UndoWeaponInteractionRequest(mView));
+        });
+
+        directionsUndoButton.setOnMouseClicked(event -> {
+            returnToActionTab();
+            notify(new UndoWeaponInteractionRequest(mView));
+        });
+
+        effectsUndoButton.setOnMouseClicked(event -> {
+            returnToActionTab();
+            notify(new UndoWeaponInteractionRequest(mView));
+        });
     }
 
     private void returnToActionTab() {
@@ -679,5 +732,17 @@ public class MainScreen extends Observable<Request> {
             tabPane.getTabs().get(i).setDisable(i != ACTIONS_TAB && i != PLAYERS_TAB);
         }
         tabPane.getSelectionModel().selectFirst();
+    }
+
+    // TODO: use this in weapon tabs activation after testing is over
+    private void activateWeaponRelatedTab (int index) {
+        for (int i = 0; i < tabPane.getTabs().size(); i++) {
+            tabPane.getTabs().get(i).setDisable(i != index);
+        }
+        tabPane.getSelectionModel().select(index);
+    }
+
+    private boolean checkMandatoryEffectsAreSelected () {
+        return mEffectsCache.containsAll(mMandatoryEffectsCache);
     }
 }

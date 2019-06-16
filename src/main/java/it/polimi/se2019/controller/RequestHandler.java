@@ -20,4 +20,8 @@ public interface RequestHandler {
     void handle(PositionSelectedRequest request);
 
     void handle(EffectsSelectedRequest request);
+
+    void handle(UndoWeaponInteractionRequest request);
+
+    void handle(WeaponModeSelectedRequest request);
 }

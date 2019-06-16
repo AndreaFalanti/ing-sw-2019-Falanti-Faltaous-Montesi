@@ -242,6 +242,11 @@ public class CLIView extends View {
 
     }
 
+    @Override
+    public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
+
+    }
+
     public int parseInteger(){
         Integer index = null;
         boolean isValid = false;

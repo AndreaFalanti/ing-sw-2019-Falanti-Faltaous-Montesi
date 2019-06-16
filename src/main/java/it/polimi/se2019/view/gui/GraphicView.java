@@ -72,6 +72,11 @@ public class GraphicView extends View {
     }
 
     @Override
+    public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
+
+    }
+
+    @Override
     public Direction pickDirection() {
         return null;
     }

@@ -83,6 +83,13 @@ public abstract class View extends Observable<Request> implements Observer<Updat
      */
     public abstract void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority);
 
+    /**
+     * Ask player to select which weapon mode to use
+     * @param effect1 First effect
+     * @param effect2 Second effect
+     */
+    public abstract void showWeaponModeSelectionView(Effect effect1, Effect effect2);
+
     //region old responses
     /**
      * Ask player a cardinal direction

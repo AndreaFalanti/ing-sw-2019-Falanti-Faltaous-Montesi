@@ -93,6 +93,16 @@ public class Controller implements AbstractController {
 
     }
 
+    @Override
+    public void handle(UndoWeaponInteractionRequest request) {
+
+    }
+
+    @Override
+    public void handle(WeaponModeSelectedRequest request) {
+
+    }
+
     /*****************************************/
     /* update method from observer interface */
     /*****************************************/
