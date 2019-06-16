@@ -149,7 +149,7 @@ public class CLIInfo {
     public PlayerColor colorFromName(String name) {
         PlayerColor target = null;
         for (Map.Entry<PlayerColor,CLIPlayer> player: mPlayersInfo.entrySet()) {
-            if (player.getValue().getPlayerName().equals(name))
+            if (player.getValue().getPlayerName().equalsIgnoreCase(name))
                 target = player.getKey();
         }
         return target;

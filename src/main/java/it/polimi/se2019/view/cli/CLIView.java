@@ -8,7 +8,7 @@ import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.view.View;
-import it.polimi.se2019.view.request.ActionRequest;
+import it.polimi.se2019.view.request.*;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -92,7 +92,6 @@ public class CLIView extends View {
         int index;
         Position pos;
 
-//        PlayerColor ownerColor = owner.getColor();//<-- to add
         switch (command) {
             case "move":
                 pos=parseDestination(otherCommandPart);
@@ -137,7 +136,7 @@ public class CLIView extends View {
         }
 
 
-        new ActionRequest(action,this);
+        notify(new ActionRequest(action,this));
         availableCommands();
     }
 
@@ -168,57 +167,81 @@ public class CLIView extends View {
     }
 
     public int parseWeaponInformation(TileColor tileColor){
-        Integer index = null;
+        int index = 3;
         boolean isValid = false;
 
-        System.out.print("Type the index of the weapon you want " +
+        System.out.print("Type the index of the weapon you want between 0 and 2" +
                 mCLIInfo.getSpawnTiles().get(tileColor));
-
-        index=parseInteger();
-
+        while(index >=3 || index<0) {
+            index = parseInteger();
+            if(index >=3 || index<0)
+                System.out.println("Invalid index please insert a correct index: ");
+        }
         return index;
     }
 
     public int parseWeaponInformation(){
-        Integer index = null;
+        int index = 4;
         boolean isValid = false;
 
         System.out.print("Type the index of the weapon you want exchange");
         System.out.println(mCLIInfo.getOwner().getPlayerWeapons());
-
-        index=parseInteger();
+        String[] weapons =  mCLIInfo.getOwner().getPlayerWeapons().split(",");
+        while(index >=weapons.length || index<0) {
+            index = parseInteger();
+            if(index >=weapons.length || index<0)
+                System.out.println("Invalid index please insert a correct index: ");
+        }
 
         return index;
     }
 
     @Override
     public void showPowerUpsDiscardView() {
+        boolean[] discarded={false,false,false,false};
+        System.out.println("Choose one or more power ups to discard:\n" +
+                "(example 1 0 1 to discard first and third.\n" +
+                " Pay attention every number different from 1 is considered as 0) \n" +
+                mCLIInfo.getOwner().getPlayerPowerUps());
+        String[] index = (String.valueOf(parseInteger())).split("");
 
+        for (int i = 0; i < index.length; i++){
+            if (index[i] != null && index[i].equals("1")) {
+                discarded[i]=true;
+            }
+        }
+        notify(new PowerUpDiscardedRequest(discarded,this));
     }
 
     @Override
     public void showWeaponSelectionView(TileColor spawnColor) {
-
+        int index;
+        if(spawnColor!=null)
+            notify(new WeaponSelectedRequest(parseWeaponInformation(spawnColor),this));
+        else
+            notify(new WeaponSelectedRequest(parseWeaponInformation(),this));
     }
 
     @Override
     public void showValidPositions(List<Position> positions) {
-
+        System.out.println("These are possible positions: ");
+        for (Position pos : positions)
+            System.out.println(pos.toString());
     }
 
     @Override
     public void showDirectionSelectionView() {
-
+        notify(new DirectionSelectedRequest(pickDirection(),this));
     }
 
     @Override
     public void showPositionSelectionView(Set<Position> possiblePositions) {
-
+      //  notify(new);
     }
 
     @Override
     public void showTargetsSelectionView(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets) {
-
+        notify(new TargetsSelectedRequest(selectTargets(minToSelect,maxToSelect,possibleTargets),this) );
     }
 
     @Override
@@ -235,15 +258,12 @@ public class CLIView extends View {
                 index = Integer.parseInt(requestAdditionalInfo());
                 isValid = true;
             }catch(NumberFormatException e){
-                System.err.println("Is not a number. Please type the index of the weapon that you want exchange");
+                System.err.println("Is not a number. Please type correctly:");
             }
         }while(!isValid);
 
         return index;
     }
-
-
-
 
     public int reloadInteraction(){//Weapon[] weapon
         int index= -1;
@@ -266,7 +286,6 @@ public class CLIView extends View {
 
         return index;
     }
-
 
     public void easyCommand(String command){
 
@@ -326,11 +345,11 @@ public class CLIView extends View {
 
     public void showGrabbable(){
         for(Position pos: mCLIInfo.getNormalTiles().keySet()){
-            System.out.println(pos.toString() + mCLIInfo.getNormalTiles().get(pos));
+            System.out.println(pos.toString() + " " + mCLIInfo.getNormalTiles().get(pos));
         }
         System.out.println("Spawn rooms grabbable:");
         for(TileColor color: mCLIInfo.getSpawnTiles().keySet()){
-            System.out.println(color.getPascalName()+mCLIInfo.getSpawnTiles().get(color));
+            System.out.println(color.getPascalName()+" " +mCLIInfo.getSpawnTiles().get(color));
         }
     }
 
@@ -364,9 +383,6 @@ public class CLIView extends View {
         interact();
     }
 
-
-
-    @Override
     public Direction pickDirection() {
         System.out.println("Choose a direction: north, sud, est, ovest.");
         String direciton= "";
@@ -387,7 +403,7 @@ public class CLIView extends View {
         }
     }
 
-    @Override
+
     public Position selectPosition(Set<Position> possiblePositions) {
         Position[] positions = possiblePositions.toArray(new Position[0]);
 
@@ -399,51 +415,40 @@ public class CLIView extends View {
         return  parseDestination(destination);
     }
 
-    @Override
-    public Set<PlayerColor> selectTargets(int maxToSelect, int minToSelect, Set<PlayerColor> possibleTargets) {
+
+    public Set<PlayerColor> selectTargets(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets) {
         Set<PlayerColor> choosen = new HashSet<>();
-        System.out.println("Choose " + minToSelect + " to a max of " + maxToSelect + " targets from: ");
+        System.out.println("Choose " + minToSelect + " to a max of " + maxToSelect + " targets from:\n" +
+                "Pay attention will be considered only the name in the limits\n");
         for (PlayerColor possibleTarget : possibleTargets) {
            System.out.println(mCLIInfo.getPlayersInfo().get(possibleTarget).getPlayerName() + " ");
         }
         System.out.println(" then press enter");
         String target = requestAdditionalInfo();
-        String[] targets = target.split(" ");
+        String[] targets = target.split("\\s+");
+        while(targets.length<=minToSelect){
+            target = requestAdditionalInfo();
+            targets = target.split("\\s+");
+        }
         for (String s : targets) {
-                s.replace("\\s","");
+            if(mCLIInfo.colorFromName(s).equals(null)){
+                System.out.println("Please insert correctly the names");
+                return selectTargets(minToSelect,maxToSelect,possibleTargets);
+            }
+            else
                 choosen.add(mCLIInfo.colorFromName(s));
-        }// to add a check
+        }
 
         return choosen;
     }
 
-    public  boolean[] discardPowerUps () {
-        boolean[] discarded={false,false,false,false};
-        System.out.println("Choose one or more power ups to discard:\n" +
-                "(example 1 0 1 to discard first and third.\n" +
-                " Pay attention every number different from 1 is considered as 0) \n" +
-                mCLIInfo.getOwner().getPlayerPowerUps());
-        String[] index = (String.valueOf(parseInteger())).split("");
 
-        for (int i = 0; i < index.length; i++){
-            if (index[i] != null && index[i].equals("1")) {
-                    discarded[i]=true;
-            }
-        }
-        return discarded;
-    }
-
-    @Override
     public Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
         return null;
     }
 
 
     public void deleteRequest(){
-
-    }
-
-    public void ownerCLI(){
 
     }
 
