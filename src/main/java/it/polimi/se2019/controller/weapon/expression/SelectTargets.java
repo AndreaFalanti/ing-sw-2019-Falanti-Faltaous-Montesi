@@ -31,7 +31,8 @@ public class SelectTargets extends Behaviour {
                 .collect(Collectors.toSet());
 
         // select targets
-        Set<PlayerColor> selectedTargets = view.selectTargets(
+        Set<PlayerColor> selectedTargets = selectTargets(
+                context,
                 getSub("min").asInt(),
                 getSub("max").asInt(),
                 targets

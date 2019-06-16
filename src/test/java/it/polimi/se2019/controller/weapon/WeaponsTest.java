@@ -131,7 +131,7 @@ public class WeaponsTest {
 
         // produce result with complete context
         // TODO: wire to mock view
-        testController.shoot(viewMock, PlayerColor.PURPLE, heatseeker.getBehaviour());
+        testController.startShootInteraction(viewMock, PlayerColor.PURPLE, heatseeker.getBehaviour());
 
         // assert that Luigi was hurt
         assertPlayerDamage(
@@ -167,7 +167,7 @@ public class WeaponsTest {
                 .willReturn(Collections.singleton(PlayerColor.BLUE));
 
         // shoot through controller
-        testController.shoot(viewMock, PlayerColor.YELLOW, lockrifle.getBehaviour());
+        testController.startShootInteraction(viewMock, PlayerColor.YELLOW, lockrifle.getBehaviour());
 
         // verify order of mock method calls
         InOrder inOrder = inOrder(viewMock);
@@ -216,7 +216,7 @@ public class WeaponsTest {
                 .willReturn(Collections.singleton("in_reaper_mode"));
 
         // shoot through controller
-        testController.shoot(viewMock, PlayerColor.PURPLE, lockrifle.getBehaviour());
+        testController.startShootInteraction(viewMock, PlayerColor.PURPLE, lockrifle.getBehaviour());
 
         // verify order of mock method calls
         InOrder inOrder = inOrder(viewMock);

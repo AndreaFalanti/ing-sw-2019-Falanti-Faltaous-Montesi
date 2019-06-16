@@ -7,8 +7,11 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.view.View;
+import it.polimi.se2019.view.request.Request;
 
 import java.util.*;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
 
 public class ShootContext {
     // statics
@@ -22,9 +25,10 @@ public class ShootContext {
     private View mView;
     private PlayerColor mShooterColor;
     private Map<String, Expression> mScope;
+    private ShootInteraction mShootInteraction;
 
     // trivial constructor
-    public ShootContext(Game game, View view, PlayerColor shooterColor) {
+    public ShootContext(Game game, View view, PlayerColor shooterColor, ShootInteraction shootInteraction) {
         // safety check to assure that shooter is present among provided players
         List<Player> players = game.getPlayers();
         if (!players.stream().anyMatch(pl -> pl.getColor() == shooterColor))
@@ -35,6 +39,7 @@ public class ShootContext {
         mView = view;
         mShooterColor = shooterColor;
         mScope = new HashMap<>();
+        mShootInteraction = shootInteraction;
     }
 
     // trivial getters
@@ -80,6 +85,10 @@ public class ShootContext {
 
     public Game getGame() {
         return mGame;
+    }
+
+    public BlockingQueue<Request> getRequestQueue() {
+        return mShootInteraction.getRequestQueue();
     }
 }
 

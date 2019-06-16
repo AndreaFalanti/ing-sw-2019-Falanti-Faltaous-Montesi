@@ -78,22 +78,22 @@ public class GraphicView extends View {
 
     @Override
     public Direction pickDirection() {
-        return null;
+        throw new UnsupportedOperationException("WIP");
     }
 
     @Override
     public Position selectPosition(Set<Position> possiblePositions) {
-        return null;
+        throw new UnsupportedOperationException("WIP");
     }
 
     @Override
     public Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect) {
-        return null;
+        throw new UnsupportedOperationException("WIP");
     }
 
     @Override
     public Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
-        return null;
+        throw new UnsupportedOperationException("WIP");
     }
 
 }
