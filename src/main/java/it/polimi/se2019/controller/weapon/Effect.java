@@ -1,6 +1,8 @@
 package it.polimi.se2019.controller.weapon;
 
+import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.AmmoValue;
+import it.polimi.se2019.util.StringUtils;
 
 /**
  * Used for storing information about effect priorities and costs
@@ -15,12 +17,19 @@ public class Effect {
     private boolean mOptional;
     private AmmoValue mCost;
 
-    // behaviour
+    // expression
     private Expression mBehaviour;
+
+    public Effect(String name, int priority, boolean optional, AmmoValue cost) {
+        mName = name;
+        mPriority = priority;
+        mOptional = optional;
+        mCost = cost;
+    }
 
     // trivial getters
     public String getId() {
-        return mId;
+        return mId != null ? mId : StringUtils.toSnakeCase(mName);
     }
 
     public String getName() {

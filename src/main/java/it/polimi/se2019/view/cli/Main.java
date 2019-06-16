@@ -49,12 +49,16 @@ public class Main {
         owner.addPowerUp(card1);
         owner.addPowerUp(card2);
         owner.addPowerUp(card3);
+        player1.addPowerUp(card1);
+        player1.addPowerUp(card2);
+        player2.addPowerUp(card3);
         mPlayers.add(owner);
         mPlayers.add(player1);
         mPlayers.add(player2);
         mPlayers.add(player3);
         mPlayers.add(player4);
         PlayerColor ownerColor = PlayerColor.GREEN;
+      //  Board board= new Board();
         //end test
 
         CLIInfo cLIInfo = new CLIInfo(mPlayers,owner,ownerColor,activePlayer);

@@ -12,4 +12,12 @@ public interface RequestHandler {
     void handle(PowerUpDiscardedRequest request);
 
     void handle(WeaponSelectedRequest request);
+
+    void handle(ShootRequest request);
+
+    void handle(DirectionSelectedRequest request);
+
+    void handle(PositionSelectedRequest request);
+
+    void handle(EffectsSelectedRequest request);
 }

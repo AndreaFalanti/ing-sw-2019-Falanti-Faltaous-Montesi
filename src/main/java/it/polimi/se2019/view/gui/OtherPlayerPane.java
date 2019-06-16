@@ -29,6 +29,9 @@ public class OtherPlayerPane extends PlayerPane {
         mAmmoSquareSide = 16;
     }
 
+    /**
+     * Switch visible pane between player board and card detail box
+     */
     public void switchDetailPane () {
         if (boardPane.isVisible()) {
             boardPane.setVisible(false);
@@ -42,6 +45,10 @@ public class OtherPlayerPane extends PlayerPane {
         }
     }
 
+    /**
+     * Update player weapons with the ones passed as parameters
+     * @param weapons Current weapons
+     */
     public void updatePlayerWeapons (Weapon[] weapons) {
         for (int i = 0; i < weapons.length; i++ ) {
             ImageView weaponView = (ImageView) cardDetailBox.getChildren().get(i);
@@ -61,6 +68,10 @@ public class OtherPlayerPane extends PlayerPane {
         }
     }
 
+    /**
+     * Update powerUp cards number displayed
+     * @param num Actual num of powerUps
+     */
     public void updatePowerUpNum (int num) {
         powerUpNumLabel.setText(Integer.toString(num));
     }

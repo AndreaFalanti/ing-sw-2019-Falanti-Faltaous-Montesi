@@ -3,10 +3,8 @@ package it.polimi.se2019.view.cli;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CLIPlayer {
 
@@ -22,10 +20,10 @@ public class CLIPlayer {
     private String mPlayerPowerUps;
     private String mDeathNum;
     private String mPlayerAmmo;
-  // TO ADd boardflipped
+    private String mBoardFlipped;
 
-    public CLIPlayer(Player player){
-
+    public CLIPlayer(Player player,PlayerColor playerColor){
+    int count=0;
             mPlayerName = player.getName();
             mPlayerColor = player.getColor().getPascalName();
             setScore(player.getScore());
@@ -33,14 +31,24 @@ public class CLIPlayer {
             setDead(player.isDead());
             setOverkilled(player.isOverkilled());
             mDeathNum = String.valueOf(player.getDeathsNum());
-            setWeaponOtherPlayer(player.getWeapons());
             setPosition(player.getPos());
             setScore(player.getScore());
-            setWeaponOwner(player.getWeapons());
+            if(player.getColor().getPascalName().equals(playerColor.getPascalName())){
+                setWeaponOwner(player.getWeapons());
+                setPowerUpsOwnerPlayer(player.getPowerUps());
+            }
+            else{
+                setWeaponOtherPlayer(player.getWeapons());
+                for(int i = 0;i<player.getPowerUps().length;i++)
+                    if(player.getPowerUps()[i]!=null)
+                        count+=1;
+                setPowerUpsOtherPlayers(count);
+            }
             for(Map.Entry<PlayerColor,Integer> entry: player.getMarks().entrySet()){
                 setMarks(entry.getValue(),entry.getKey());
             }
             setAllDamageTaken(player.getDamageTaken());
+            setBoardFlipped(player.isBoardFlipped());
 
     }
 
@@ -68,7 +76,7 @@ public class CLIPlayer {
 
     public String getPlayerScore(){return mPlayerScore;}
 
-
+    public String getBoardFlipped(){return mBoardFlipped;}
 
 
     public void setScore(int i){
@@ -77,6 +85,17 @@ public class CLIPlayer {
 
     public void setDeathNums(){
         mDeathNum = String.valueOf(Integer.parseInt(mDeathNum) + 1);
+    }
+
+    public void setBoardFlipped(boolean flipped){
+        if(flipped)
+            mBoardFlipped = "Is flipped";
+        else
+            mBoardFlipped = "Is not flipped";
+    }
+
+    public void setmBoardFlipped(){
+        mBoardFlipped = "Is flipped";
     }
 
     public void setAmmo(AmmoValue ammo){
@@ -94,16 +113,17 @@ public class CLIPlayer {
             mPlayerPowerUps = "not have power up card !";
             return;
         }
-
+        power.append("PowerUpCard: ");
         for (PowerUpCard powerUpCard : powerUpCards) {
             if(powerUpCard != null){
-                power.append("PowerUpCard{ ");
-                power.append("Name= ");
+                power.append("Name : ");
                 power.append(powerUpCard.getName());
                 power.append(" ");
-                power.append("AmmoValue= ");
-                power.append(powerUpCard.getAmmoValue().toString());
-                power.append("}");
+                power.append("Color: ");
+                power.append(Colors.getColorTile(powerUpCard.getColor().getPascalName()));
+                power.append(powerUpCard.getColor().getPascalName());
+                power.append(Colors.ANSI_RESET);
+                power.append("\n\t\t\t\t\t\t ");
             }
         }
 
@@ -126,7 +146,8 @@ public class CLIPlayer {
 
     public void setMarks(int marks,PlayerColor shooterPlayerColor){
 
-        mPlayerMarks.put(shooterPlayerColor.getPascalName(),marks);
+        mPlayerMarks.put(Colors.getColorTile(shooterPlayerColor.getPascalName())+
+                shooterPlayerColor.getPascalName()+Colors.ANSI_RESET,marks);
     }
 
     public void setDamageTakenToZero(){
@@ -136,16 +157,48 @@ public class CLIPlayer {
 
     public void setAllDamageTaken(PlayerColor[] damage){
         StringBuilder shooter = new StringBuilder();
+
+        int size = Arrays.asList(damage).size();
         if(damage[0]==null) {
             setDamageTakenToZero();
         }
-        else{
-            for(PlayerColor color: damage)
-                if(color != null)
-                    shooter.append(color.getPascalName());
-            mDamageTaken = shooter.toString();
+        else {
+            List<PlayerColor> colorPlayerThatDamage = Arrays.stream(damage)
+                    .distinct()
+                    .collect(Collectors.toList());
+            shooter.append("First damage from ->");
+            shooter.append(Colors.getColorTile(damage[0].getPascalName()));
+            shooter.append(damage[0].getPascalName());
+            shooter.append(Colors.ANSI_RESET);
+            shooter.append("\n\t\t\t\t\t ");
+            mDamageTaken = shooter.append(countDamage(colorPlayerThatDamage,size,damage))
+                    .toString();
         }
+    }
 
+    public StringBuilder countDamage(List<PlayerColor> colorPlayerThatDamage,int size,PlayerColor[] damage){
+        StringBuilder shooter = new StringBuilder();
+        int count;
+        for (PlayerColor color : colorPlayerThatDamage) {
+            count = 0;
+            if (color != null) {
+                for (int i = 0; i < size; i++) {
+                    if (damage[i] != null && color.equals(damage[i])) {
+                        count += 1;
+                    }
+                }
+
+            }
+            if(color !=null){
+                shooter.append(count);
+                shooter.append("<-");
+                shooter.append(Colors.getColorTile(color.getPascalName()));
+                shooter.append(color.getPascalName());
+                shooter.append(Colors.ANSI_RESET);
+                shooter.append(" ");
+            }
+        }
+        return shooter;
     }
 
     public void setDamageTaken(int damageTaken, PlayerColor shooterPlayerColor){

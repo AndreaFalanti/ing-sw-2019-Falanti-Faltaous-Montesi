@@ -33,7 +33,7 @@
             "from": {
               "expr": "Intersect",
               "lhs": {
-                "expr": "Difference"
+                "expr": "Others"
               },
               "rhs": {
                 "expr": "CanSee"

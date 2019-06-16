@@ -1,30 +1,28 @@
 package it.polimi.se2019.view.cli;
 
 import it.polimi.se2019.controller.weapon.Weapon;
-import it.polimi.se2019.model.Player;
-import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.PowerUpCard;
-import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.board.SpawnTile;
-import it.polimi.se2019.model.board.Tile;
+import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.board.*;
 
-import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CLIInfo {
 
+    private static int BOARD_COLUMNS =4;
+    private static int BOARD_ROWS=3;
     private String mActivePlayer;
     private PlayerColor mOwnerColorf;
     private String mOwnerColor;
     private CLIPlayer mOwner;
-    private List<CLIPlayer> mPlayersInfo = new ArrayList<>();
+    private EnumMap<PlayerColor,CLIPlayer> mPlayersInfo = new EnumMap<>(PlayerColor.class);
     private String mKillTrack;
-    private Map<String,String> spawnTiles = new HashMap<>();
-    // to add ammotile
-    private BoardCLI board;
+    private EnumMap<TileColor,String> spawnTiles = new EnumMap<>(TileColor.class);
+    private Map<Position,String> normalTiles = new HashMap<>();
+    private BoardCLI mBoard ;
+
 
     public CLIInfo (List<Player> players, Player owner,PlayerColor ownerColor,PlayerColor activePlayer){
         initialization(players, owner,ownerColor, activePlayer);
@@ -32,18 +30,26 @@ public class CLIInfo {
     }
 
     public CLIInfo (List<Player> players, Player owner, PlayerColor ownerColor, PlayerColor activePlayer, Board board){
+        Tile tile;
         initialization(players, owner,ownerColor, activePlayer);
         mOwnerColorf=ownerColor;
 
-        for(Tile tile :board.getTiles()){
-            if(tile.getTileType().equalsIgnoreCase("spawn")){
-                SpawnTile spawn = (SpawnTile)tile;
-                spawnTiles.put(tile.getColor().getPascalName(),weaponToSting(spawn.getWeapons()));
+        mBoard = new BoardCLI(board);
+        for (int x = 0; x < BOARD_COLUMNS; x++) {
+            for (int y = 0; y < BOARD_ROWS; y++) {
+                if (board.getTileAt(new Position(x, y)) != null) {
+                    tile=board.getTileAt(new Position(x, y));
+                    if(tile.getTileType().equalsIgnoreCase("spawn")){
+                        SpawnTile spawn = (SpawnTile)tile;
+                        spawnTiles.put(tile.getColor(),weaponToSting(spawn.getWeapons()));
+                    } else{
+                        NormalTile normal = (NormalTile)tile;
+                        normalTiles.put((new Position(x,y)),normal.getAmmoCard().toString());
+                    }
+                }
             }
         }
-
     }
-
 
     public void initialization(List<Player> players,Player owner,PlayerColor ownerColor,PlayerColor activePlayerColor){
         CLIPlayer playerInfo;
@@ -51,13 +57,11 @@ public class CLIInfo {
         mOwnerColor = ownerColor.getPascalName();
         for (Player player : players) {
             if(player!=null){
-                playerInfo = new CLIPlayer(player);
+                playerInfo = new CLIPlayer(player,ownerColor);
                 if(player.getColor().getPascalName().equals(mOwnerColor)){
-                   playerInfo.setWeaponOwner(player.getWeapons());
-                   playerInfo.setPowerUpsOwnerPlayer(player.getPowerUps());
                    mOwner = playerInfo;
                 }
-                mPlayersInfo.add(playerInfo);
+                mPlayersInfo.put(player.getColor(),playerInfo);
             }
         }
 
@@ -67,73 +71,86 @@ public class CLIInfo {
         mActivePlayer = playerColor.getPascalName();
     }
 
+    public void setSpawnTiles(Tile tile){
+        SpawnTile spawn = (SpawnTile)tile;
+        spawnTiles.put(spawn.getColor(),weaponToSting(spawn.getWeapons()));
+    }
+
+    public void setNormalTiles(Tile tile,Position pos){
+        NormalTile normal = (NormalTile)tile;
+        normalTiles.put(pos,normal.getAmmoCard().toString());
+    }
+
     public void updatePowerUps(PlayerColor playerColor, PowerUpCard[] powerUpCards){
         if(playerColor.getPascalName().equals(mOwnerColor)){
             mOwner.setPowerUpsOwnerPlayer(powerUpCards);
             return;
         }
         if(powerUpCards == null)
-            playerFromColor(playerColor).setPowerUpsOtherPlayers(0);
+            mPlayersInfo.get(playerColor).setPowerUpsOtherPlayers(0);
         else
-            playerFromColor(playerColor).setPowerUpsOtherPlayers(powerUpCards.length);
+            mPlayersInfo.get(playerColor).setPowerUpsOtherPlayers(powerUpCards.length);
     }
-
 
     public void updateMarks(PlayerColor targetColor, int marks, PlayerColor shooterColor){
-        playerFromColor(targetColor).setMarks(marks,shooterColor);
+        mPlayersInfo.get(targetColor).setMarks(marks,shooterColor);
     }
-
 
     public void updateWeapon(PlayerColor playerColor, Weapon[] weapons){
         if(playerColor.getPascalName().equals(mOwnerColor)) {
             mOwner.setWeaponOwner(weapons);
             return;
         }
-        playerFromColor(playerColor).setWeaponOtherPlayer(weapons);
+        mPlayersInfo.get(playerColor).setWeaponOtherPlayer(weapons);
     }
 
     public void updatePosition(PlayerColor playerColor, Position pos){
-        playerFromColor(playerColor).setPosition(pos);
+        mPlayersInfo.get(playerColor).setPosition(pos);
     }
 
     public void updateDamage(PlayerColor damagedPlayerColor,int damageTaken,PlayerColor shooterPlayerColor){
-        playerFromColor(damagedPlayerColor).setDamageTaken(damageTaken,shooterPlayerColor);
+        mPlayersInfo.get(damagedPlayerColor).setDamageTaken(damageTaken,shooterPlayerColor);
     }
 
- //   public void updateBoardFlip(PlayerColor playerColor){
- //        playerFromColor(playerColor).flipBoard(playerFromColor(playerColor).;);
-//    }
+    public void updateBoardFlip(PlayerColor playerColor){
+        mPlayersInfo.get(playerColor).setmBoardFlipped();
+    }
 
-    public void updateOnRespan(PlayerColor playerColor){
-        playerFromColor(playerColor).setOverkilled(false);
-        playerFromColor(playerColor).setDead(false);
-        playerFromColor(playerColor).setDamageTakenToZero();
+    public void updateAmmo(PlayerColor playerColor, AmmoValue ammo){
+        mPlayersInfo.get(playerColor).setAmmo(ammo);
+    }
+
+    public void updateOnRespawn(PlayerColor playerColor){
+        mPlayersInfo.get(playerColor).setOverkilled(false);
+        mPlayersInfo.get(playerColor).setDead(false);
+        mPlayersInfo.get(playerColor).setDamageTakenToZero();
     }
 
     public void updateKillTrak(PlayerColor killedColor,PlayerColor killerColor,
                                 boolean overkill, Map<PlayerColor,Integer> scores){
         StringBuilder killTrack = new StringBuilder();
         killTrack.append(mKillTrack);
-        playerFromColor(killedColor).setDeathNums();
-        playerFromColor(killedColor).setDead(true);
+        mPlayersInfo.get(killedColor).setDeathNums();
+        mPlayersInfo.get(killedColor).setDead(true);
         for(Map.Entry<PlayerColor,Integer> entry: scores.entrySet()){
-            playerFromColor(entry.getKey()).setScore(scores.get(entry.getKey()));
+            mPlayersInfo.get(entry.getKey()).setScore(scores.get(entry.getKey()));
         }
 
-        killTrack.append(playerFromColor(killerColor).getPlayerName());
+        killTrack.append(mPlayersInfo.get(killerColor).getPlayerName());
         if(overkill){
-            playerFromColor(killedColor).setOverkilled(true);
+            mPlayersInfo.get(killedColor).setOverkilled(true);
             killTrack.append(" with overkill");
         }
         killTrack.append("\n");
         mKillTrack=killTrack.toString();
     }
 
-    public CLIPlayer playerFromColor(PlayerColor color) {
-        CLIPlayer target = null;
-        for (CLIPlayer player : mPlayersInfo) {
-        if (player.getPlayerColor().equals(color.getPascalName()))
-            target = player;
+
+    public PlayerColor colorFromName(String name) {
+        PlayerColor target = null;
+        for (Map.Entry<PlayerColor,CLIPlayer> player: mPlayersInfo.entrySet()) {
+            if (player.getValue().getPlayerName().equalsIgnoreCase(name))
+                target = player.getKey();
         }
         return target;
     }
@@ -149,9 +166,18 @@ public class CLIInfo {
     }
 
       public String getActivePlayer(){return mActivePlayer;}
-      public Map<String,String> getSpawnTiles(){return spawnTiles;}
+      public Map<TileColor,String> getSpawnTiles(){return spawnTiles;}
       public CLIPlayer getOwner(){return mOwner;}
       public String getOwnerColor(){return mOwnerColor;}
       public PlayerColor getOwnerColorf(){return mOwnerColorf;}
-      public List<CLIPlayer> getPlayers(){return mPlayersInfo;}
+
+    public Map<PlayerColor, CLIPlayer> getPlayersInfo() {
+        return mPlayersInfo;
+    }
+    public Map<Position, String> getNormalTiles(){
+        return normalTiles;
+    }
+    public BoardCLI getBoard(){
+        return mBoard;
+    }
 }

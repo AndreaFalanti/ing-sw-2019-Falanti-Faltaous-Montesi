@@ -1,8 +1,10 @@
-1. Check if Gson actually cares about default constructors
-2. Try to streamline selections in weapon behaviour
-3. Create EffectInfo class to separate model from controller
-4. Use logging inside PickExpression class
-5. Implement better version of XorEffect that does not use EffectInfo
+1. Learn to use loggers and use them inside Expression hierarchy
+2. Move trivial type parsing into separate function
+3. Check if Gson actually cares about default constructors
+4. Try to streamline selections in weapon behaviour
+5. Create EffectInfo class to separate model from controller
+6. Use logging inside PickExpression class
+7. Implement better version of XorEffect that does not use EffectInfo
     NB. this is because EffectInfo has additional information that are useless to
         XorEffect (priority and optionality)
-6. Build the MWEL
+8. Build the MWEL

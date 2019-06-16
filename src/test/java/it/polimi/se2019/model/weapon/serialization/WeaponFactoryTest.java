@@ -1,7 +1,7 @@
 package it.polimi.se2019.model.weapon.serialization;
 
 import it.polimi.se2019.controller.weapon.Weapon;
-import it.polimi.se2019.controller.weapon.behaviour.*;
+import it.polimi.se2019.controller.weapon.expression.*;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.util.Jsons;
@@ -24,7 +24,7 @@ public class WeaponFactoryTest {
                                 new Damage(3, 0)
                         ),
                         new SelectOneTarget(
-                                new NegateSelection(
+                                new NegateTargets(
                                         new CanSee()
                                 )
                         )

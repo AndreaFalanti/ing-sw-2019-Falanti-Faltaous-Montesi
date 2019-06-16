@@ -61,7 +61,7 @@
             <Button fx:id="powerUpDiscardButton" disable="true" mnemonicParsing="false" text="Discard" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <TabPane layoutX="793.0" layoutY="5.0" prefHeight="500.0" prefWidth="546.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+      <TabPane fx:id="tabPane" layoutX="793.0" layoutY="5.0" prefHeight="500.0" prefWidth="546.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
         <tabs>
           <Tab text="Actions">
                <content>
@@ -94,7 +94,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <VBox prefHeight="414.0" prefWidth="428.0" spacing="6.0">
+                        <VBox fx:id="effectsBox" prefHeight="414.0" prefWidth="428.0" spacing="6.0">
                            <children>
                               <AnchorPane prefHeight="134.0" prefWidth="458.0" style="-fx-background-color: #eeeeee;">
                                  <children>
@@ -143,7 +143,8 @@
                               </AnchorPane>
                            </children>
                         </VBox>
-                        <Button layoutX="447.0" layoutY="383.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="OK" />
+                        <Button fx:id="effectsOkButton" layoutX="447.0" layoutY="383.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="85.0" text="OK" AnchorPane.bottomAnchor="95.0" AnchorPane.rightAnchor="14.0" />
+                        <Button fx:id="effectsUndoButton" layoutX="457.0" layoutY="393.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="85.0" text="UNDO" AnchorPane.bottomAnchor="57.0" AnchorPane.rightAnchor="14.0" />
                      </children>
                   </AnchorPane>
               </content>
@@ -157,10 +158,15 @@
                               <Font name="System Bold Italic" size="18.0" />
                            </font>
                         </Label>
-                        <Button layoutX="209.0" layoutY="92.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" text="NORD" />
-                        <Button layoutX="209.0" layoutY="267.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" text="SUD" />
-                        <Button layoutX="77.0" layoutY="180.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" text="OVEST" />
-                        <Button layoutX="339.0" layoutY="180.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" text="EST" />
+                        <Pane fx:id="directionButtonsPane" layoutX="77.0" layoutY="92.0">
+                           <children>
+                              <Button layoutX="132.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" text="NORTH" />
+                              <Button layoutX="262.0" layoutY="88.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" text="EST" />
+                              <Button layoutX="132.0" layoutY="175.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" text="SOUTH" />
+                              <Button layoutY="88.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" text="WEST" />
+                           </children>
+                        </Pane>
+                        <Button fx:id="directionsUndoButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="85.0" text="UNDO" AnchorPane.bottomAnchor="57.0" AnchorPane.rightAnchor="14.0" />
                      </children>
                   </AnchorPane>
               </content>
@@ -169,7 +175,7 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <VBox prefHeight="414.0" prefWidth="428.0" spacing="12.0">
+                        <VBox fx:id="targetsBox" prefHeight="414.0" prefWidth="428.0" spacing="12.0">
                            <children>
                               <Label text="Select targets" textFill="WHITE">
                                  <font>
@@ -182,7 +188,8 @@
                               <RadioButton layoutX="10.0" layoutY="110.0" mnemonicParsing="false" text="Player4 [PURPLE]" textFill="WHITE" />
                            </children>
                         </VBox>
-                        <Button layoutX="447.0" layoutY="383.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="OK" />
+                        <Button fx:id="targetsOkButton" layoutX="447.0" layoutY="383.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="85.0" text="OK" AnchorPane.bottomAnchor="95.0" AnchorPane.rightAnchor="14.0" />
+                        <Button fx:id="targetsUndoButton" layoutX="457.0" layoutY="393.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="85.0" text="UNDO" AnchorPane.bottomAnchor="57.0" AnchorPane.rightAnchor="14.0" />
                      </children>
                   </AnchorPane>
                </content>

@@ -55,6 +55,10 @@ public class PlayerPane {
         return mMainScreen;
     }
 
+    public String getPlayerUsername () {
+        return nameLabel.getText();
+    }
+
     /**
      * Set reference to main controller
      * @param mainScreen Main controller reference
@@ -74,6 +78,10 @@ public class PlayerPane {
         actionTile.setImage(actionImage);
     }
 
+    /**
+     * Setup a board of given player color
+     * @param color Color of the board
+     */
     public void setupBoardImage(PlayerColor color) {
         mPlayerBoardColor = color;
 
@@ -103,6 +111,9 @@ public class PlayerPane {
         }
     }
 
+    /**
+     * Reset all damage visible on this board
+     */
     public void eraseDamage () {
         damageTokensBox.getChildren().clear();
     }

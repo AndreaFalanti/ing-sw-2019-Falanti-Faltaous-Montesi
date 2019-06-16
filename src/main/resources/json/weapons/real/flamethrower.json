@@ -1,0 +1,86 @@
+{
+  "name": "Flame Thrower",
+  "guiID": "0213",
+  "grabCost": "1r",
+  "reloadCost": "1r",
+  "behaviour": {
+    "expr": "XorEffect",
+    "lhs": {
+      "name": "Basic mode",
+      "behaviour": {
+        "expr": "Do",
+        "list": [
+          {
+            "expr": "InflictDamage",
+            "amount": "1d",
+            "to": {
+              "expr": "SelectOneTarget",
+              "from": {
+                "expr": "Line",
+                "direction": {
+                  "store": "jet_dir",
+                  "expr": "SelectOneDirection"
+                },
+                "length": 1
+              }
+            }
+          },
+          {
+            "expr": "InflictDamage",
+            "amount": "1d",
+            "to": {
+              "expr": "SelectOneTarget",
+              "from": {
+                "expr": "Line",
+                "direction": {
+                  "expr": "Load",
+                  "name": "jet_dir"
+                },
+                "length": 2
+              }
+            }
+          }
+        ]
+      }
+    },
+    "rhs": {
+      "name": "In barebecue mode",
+      "cost": "2y",
+      "behaviour": {
+        "expr": "Do",
+        "list": [
+          {
+            "expr": "InflictDamage",
+            "amount": "2d",
+            "to": {
+              "expr": "SelectOneTarget",
+              "from": {
+                "expr": "Line",
+                "direction": {
+                  "store": "jet_dir",
+                  "expr": "SelectOneDirection"
+                },
+                "length": 1
+              }
+            }
+          },
+          {
+            "expr": "InflictDamage",
+            "amount": "1d",
+            "to": {
+              "expr": "SelectOneTarget",
+              "from": {
+                "expr": "Line",
+                "direction": {
+                  "expr": "Load",
+                  "name": "jet_dir"
+                },
+                "length": 2
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

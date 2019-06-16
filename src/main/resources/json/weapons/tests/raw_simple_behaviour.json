@@ -9,10 +9,8 @@
       }
     },
     "to" : {
-      "expr" : "TargetsLiteral",
-      "contents" : [
-        "GREEN"
-      ]
+      "expr" : "TargetLiteral",
+      "contents" : "GREEN"
     }
   }
 }

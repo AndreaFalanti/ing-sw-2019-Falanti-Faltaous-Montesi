@@ -1,0 +1,112 @@
+{
+  "name": "Rocket Launcher",
+  "guiID": "0211",
+  "grabCost": "1r",
+  "reloadCost": "2r",
+  "behaviour": {
+    "expr": "PickEffect",
+    "effects": [
+      {
+        "name": "Basic Effect",
+        "priority": 0,
+        "behaviour": {
+          "expr": "Do",
+          "list": [
+            {
+              "expr": "Pos",
+              "store": "explosion_position",
+              "who": {
+                "expr": "SelectOneTarget",
+                "store": "first_target",
+                "from": {
+                  "expr": "Difference",
+                  "lhs": {
+                    "expr": "CanSee"
+                  },
+                  "rhs": {
+                    "expr": "All",
+                    "from": {
+                      "expr": "Pos",
+                      "who": {
+                        "expr": "You"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "expr": "InflictDamage",
+              "amount": "2d",
+              "to": {
+                "expr": "Load",
+                "name": "first_target"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "Basic effect move",
+        "priority": 0,
+        "optional": true,
+        "behaviour": {
+          "expr": "Move",
+          "from": {
+            "expr": "Load",
+            "name": "first_target"
+          },
+          "to": {
+            "expr": "Distance",
+            "origin": {
+              "expr": "Load",
+              "name": "first_target"
+            },
+            "amount": 1
+          }
+        }
+      },
+      {
+        "name": "With rocket jump",
+        "cost": "1b",
+        "priority": 0,
+        "optional": true,
+        "behaviour": {
+          "expr": "Move",
+          "from": {
+            "expr": "You"
+          },
+          "to": {
+            "expr": "DistanceRange",
+            "min": 1,
+            "max": 2
+          }
+        }
+      },
+      {
+        "name": "With fragmenting warhead",
+        "cost": "1y",
+        "priority": 0,
+        "optional": true,
+        "behaviour": {
+          "expr": "InflictDamage",
+          "amount": "1d",
+          "to": {
+            "expr": "Union",
+            "lhs": {
+              "expr": "All",
+              "from": {
+                "expr": "Load",
+                "name": "explosion_position"
+              }
+            },
+            "rhs": {
+              "expr": "Load",
+              "name": "first_target"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

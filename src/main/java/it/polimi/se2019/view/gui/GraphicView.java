@@ -7,6 +7,7 @@ import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.view.View;
 
+import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
@@ -15,7 +16,7 @@ public class GraphicView extends View {
 
 
     public GraphicView(MainScreen mainFrameController) {
-        super(new GraphicResponseHandler(mainFrameController), new GraphicUpdateHandler(mainFrameController));
+        super(new GraphicUpdateHandler(mainFrameController));
         mMainFrameController = mainFrameController;
     }
 
@@ -30,18 +31,44 @@ public class GraphicView extends View {
     }
 
     @Override
-    public int parseWeaponInformation(TileColor tileColor) {
-        return 0;
+    public void showPowerUpsDiscardView() {
+        mMainFrameController.enablePowerUpBoxForSendingDiscardedIndex();
+
     }
 
     @Override
-    public int parseWeaponInformation() {
-        return 0;
+    public void showWeaponSelectionView(TileColor spawnColor) {
+        if (spawnColor == null) {
+            mMainFrameController.enableWeaponBoxForSendingIndex();
+        }
+        else {
+            mMainFrameController.getBoardController().enableSpawnWeaponBoxForSendingIndex(spawnColor);
+        }
     }
 
     @Override
-    public boolean[] discardPowerUps() {
-        return new boolean[0];
+    public void showValidPositions(List<Position> positions) {
+
+    }
+
+    @Override
+    public void showDirectionSelectionView() {
+        mMainFrameController.activateDirectionTab();
+    }
+
+    @Override
+    public void showPositionSelectionView(Set<Position> possiblePositions) {
+
+    }
+
+    @Override
+    public void showTargetsSelectionView(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets) {
+
+    }
+
+    @Override
+    public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
+
     }
 
     @Override

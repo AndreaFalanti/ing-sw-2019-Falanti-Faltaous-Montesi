@@ -1,5 +1,6 @@
 package it.polimi.se2019.controller.weapon;
 
+import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
@@ -33,16 +34,9 @@ public class ShootContext {
         mGame = game;
         mView = view;
         mShooterColor = shooterColor;
+        mScope = new HashMap<>();
     }
 
-    // construct from board and players
-    public ShootContext(View view, Board board, Set<Player> players, PlayerColor shooterColor) {
-        this(
-                new Game(board, new ArrayList<>(players), 0),
-                view,
-                shooterColor
-        );
-    }
     // trivial getters
     public Board getBoard() {
         return mGame.getBoard();
