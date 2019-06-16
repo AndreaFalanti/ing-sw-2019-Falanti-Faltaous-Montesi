@@ -1,6 +1,5 @@
 package it.polimi.se2019.view;
 
-import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
@@ -8,7 +7,6 @@ import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
-import it.polimi.se2019.util.Either;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.request.Request;
@@ -17,21 +15,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
-public abstract class View extends Observable<Request> implements Observer<Either<Response, Update>> {
+public abstract class View extends Observable<Request> implements Observer<Update> {
     // fields
     protected PlayerColor ownerColor;
     protected UpdateHandler mUpdateHandler;
-    protected ResponseHandler mResponseHandler;
 
     // constructor
-    public View(ResponseHandler responseHandler, UpdateHandler updateHandler) {
-        mResponseHandler = responseHandler;
+    public View(UpdateHandler updateHandler) {
         mUpdateHandler = updateHandler;
-    }
-
-    // trivial getters
-    public ResponseHandler getResponseHandler() {
-        return mResponseHandler;
     }
 
     public UpdateHandler getUpdateHandler() {
@@ -130,11 +121,7 @@ public abstract class View extends Observable<Request> implements Observer<Eithe
 //endregion
 
     @Override
-    public final void update(Either<Response, Update> message) {
-        message.apply(
-                response -> response.handleMe(mResponseHandler),
-                update -> update.handleMe(mUpdateHandler)
-        );
+    public void update(Update update) {
+        update.handleMe(mUpdateHandler);
     }
-
 }

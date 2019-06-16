@@ -83,6 +83,16 @@ public class Controller implements AbstractController {
 
     }
 
+    @Override
+    public void handle(PositionSelectedRequest request) {
+
+    }
+
+    @Override
+    public void handle(EffectsSelectedRequest request) {
+
+    }
+
     /*****************************************/
     /* update method from observer interface */
     /*****************************************/

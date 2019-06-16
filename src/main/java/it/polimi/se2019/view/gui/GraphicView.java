@@ -16,7 +16,7 @@ public class GraphicView extends View {
 
 
     public GraphicView(MainScreen mainFrameController) {
-        super(new GraphicResponseHandler(mainFrameController), new GraphicUpdateHandler(mainFrameController));
+        super(new GraphicUpdateHandler(mainFrameController));
         mMainFrameController = mainFrameController;
     }
 
@@ -32,12 +32,18 @@ public class GraphicView extends View {
 
     @Override
     public void showPowerUpsDiscardView() {
-        mMainFrameController.activateDirectionTab();
+        mMainFrameController.enablePowerUpBoxForSendingDiscardedIndex();
+
     }
 
     @Override
     public void showWeaponSelectionView(TileColor spawnColor) {
-        
+        if (spawnColor == null) {
+            mMainFrameController.enableWeaponBoxForSendingIndex();
+        }
+        else {
+            mMainFrameController.getBoardController().enableSpawnWeaponBoxForSendingIndex(spawnColor);
+        }
     }
 
     @Override
@@ -47,7 +53,7 @@ public class GraphicView extends View {
 
     @Override
     public void showDirectionSelectionView() {
-
+        mMainFrameController.activateDirectionTab();
     }
 
     @Override
