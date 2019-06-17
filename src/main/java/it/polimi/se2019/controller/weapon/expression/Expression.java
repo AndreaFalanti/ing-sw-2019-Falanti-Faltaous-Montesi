@@ -8,6 +8,7 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
+import it.polimi.se2019.util.Exclude;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.TargetsSelectedRequest;
 
@@ -15,9 +16,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 // TODO: refine doc
 public abstract class Expression {
+    @Exclude
+    public Logger logger = Logger.getLogger(getClass().getName());
+
     public Expression() {
 
     }
@@ -94,14 +99,16 @@ public abstract class Expression {
         // NB: treat this as an exception since player timeout should be handled by the main RequestHandler
         TargetsSelectedRequest request;
         try {
+            logger.info("Weapon interaction waiting for target selection...");
             request = (TargetsSelectedRequest) context.getRequestQueue().take();
         } catch (InterruptedException e) {
+            logger.warning("Weapon interaction interrupted while waiting for target selection!");
             // TODO: find out why this is necessary for sonar lint
             Thread.currentThread().interrupt();
-
             throw new EvaluationInterruptedException("selectTargets");
         }
 
+        logger.info("Weapon interaction received target selection: [" + request.getSelectedTargets() + "]");
         return request.getSelectedTargets();
     }
 

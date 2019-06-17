@@ -9,14 +9,18 @@ import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ShootInteraction {
+    private Logger mLogger = Logger.getLogger(getClass().getName()) ;
+
     private Thread mThread = null;
     private boolean mOccupied = false;
-    private BlockingQueue<Request> mRequests = new LinkedBlockingQueue<>();
-    private Logger mLogger = Logger.getLogger(getClass().getName());
+    private final BlockingQueue<Request> mRequests = new LinkedBlockingQueue<>();
+    private final Lock mLock = new ReentrantLock();
 
     public boolean isOccupied() {
         return mOccupied;
@@ -24,6 +28,10 @@ public class ShootInteraction {
 
     public BlockingQueue<Request> getRequestQueue() {
         return mRequests;
+    }
+
+    public Lock getLock() {
+        return mLock;
     }
 
     public void putRequest(Request request) {
@@ -34,10 +42,20 @@ public class ShootInteraction {
     }
 
     public void exec(Game game, View view, PlayerColor shooter, Expression weaponBehaviour) {
-        mThread = new Thread(() -> {
-            ShootContext initialContext = new ShootContext(game, view, shooter, this);
+        // announce that thread is occupied
+        mOccupied = true;
 
+        mThread = new Thread(() -> {
+            // evaluate shoot expression
+            ShootContext initialContext = new ShootContext(game, view, shooter, this);
             weaponBehaviour.eval(initialContext);
+
+            // announce end of shoot interaction
+            synchronized (this) {
+                mLogger.info("Shutting down shoot interaction thread...");
+                mOccupied = false;
+                notifyAll();
+            }
         });
 
         mThread.start();
