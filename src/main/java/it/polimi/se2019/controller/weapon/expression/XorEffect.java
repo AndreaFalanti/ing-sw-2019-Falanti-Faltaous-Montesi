@@ -18,16 +18,10 @@ public class XorEffect extends Expression {
     public Expression eval(ShootContext context) {
         View view = context.getView();
 
-        Set<String> selectedEffectIDs = view.selectEffects(
-                new TreeMap<>(Collections.singletonMap(
-                        0, new HashSet<>(Arrays.asList(mLhs, mRhs))
-                )),
-                0
-        );
+        String selectedEffectID = selectWeaponMode(context, mLhs, mRhs);
 
         // TODO: verify input
 
-        String selectedEffectID = selectedEffectIDs.iterator().next();
         if (mLhs.getId().equals(selectedEffectID))
             discardEvalResult(mLhs.getBehaviour().eval(context));
         else

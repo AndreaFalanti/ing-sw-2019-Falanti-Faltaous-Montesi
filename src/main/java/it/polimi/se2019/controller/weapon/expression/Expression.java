@@ -11,11 +11,13 @@ import it.polimi.se2019.util.Exclude;
 import it.polimi.se2019.view.request.EffectsSelectedRequest;
 import it.polimi.se2019.view.request.Request;
 import it.polimi.se2019.view.request.TargetsSelectedRequest;
+import it.polimi.se2019.view.request.WeaponModeSelectedRequest;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -92,7 +94,8 @@ public abstract class Expression {
     }
 
     // wait for a particular request
-    private Request waitForSelectionRequest(ShootInteraction interaction, String selectionDescriptor) {
+    private Request waitForSelectionRequest(ShootInteraction interaction, Function<Request, Object> selectionGetter,
+                                            String selectionDescriptor) {
         // TODO: use poll instead of take in case nothing is ever returned by anyone...
         // NB: treat this as an exception since player timeout should be handled by the main RequestHandler
         try {
@@ -100,7 +103,7 @@ public abstract class Expression {
             Request request = interaction.getRequestQueue().take();
             // TODO: check that request type is sound
             logger.log(Level.INFO, "Shoot interaction received {0} selection: [{1}]",
-                    new Object[]{selectionDescriptor, request});
+                    new Object[]{selectionDescriptor, selectionGetter.apply(request)});
             return request;
         } catch (InterruptedException e) {
             logger.log(Level.WARNING, "Shoot interaction interrupted while waiting for {0} selection!", selectionDescriptor);
@@ -113,9 +116,11 @@ public abstract class Expression {
                                              Set<PlayerColor> possibleTargets) {
         context.getView().showTargetsSelectionView(min, max, possibleTargets);
 
-        TargetsSelectedRequest request =
-                (TargetsSelectedRequest) waitForSelectionRequest(context.getShootInteraction(),
-                        "target");
+        TargetsSelectedRequest request = (TargetsSelectedRequest) waitForSelectionRequest(
+                context.getShootInteraction(),
+                req -> ((TargetsSelectedRequest) req).getSelectedTargets(),
+                "target"
+        );
 
         return request.getSelectedTargets();
     }
@@ -126,11 +131,27 @@ public abstract class Expression {
         // select effects through view
         context.getView().showEffectsSelectionView(priorityMap, currentPriority);
 
-        EffectsSelectedRequest request =
-                (EffectsSelectedRequest) waitForSelectionRequest(context.getShootInteraction(),
-                        "effect");
+        EffectsSelectedRequest request = (EffectsSelectedRequest) waitForSelectionRequest(
+                context.getShootInteraction(),
+                req -> ((EffectsSelectedRequest) req).getSelectedEffects(),
+                "effect"
+        );
 
         return request.getSelectedEffects();
+    }
+
+    // select modes
+    protected String selectWeaponMode(ShootContext context, Effect mode1, Effect mode2) {
+        // select effects through view
+        context.getView().showWeaponModeSelectionView(mode1, mode2);
+
+        WeaponModeSelectedRequest request = (WeaponModeSelectedRequest) waitForSelectionRequest(
+                context.getShootInteraction(),
+                req -> ((WeaponModeSelectedRequest) req).getId(),
+                "mode"
+        );
+
+        return request.getId();
     }
 
     /**

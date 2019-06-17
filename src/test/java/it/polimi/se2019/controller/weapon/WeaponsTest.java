@@ -11,6 +11,7 @@ import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.EffectsSelectedRequest;
 import it.polimi.se2019.view.request.TargetsSelectedRequest;
+import it.polimi.se2019.view.request.WeaponModeSelectedRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -138,6 +139,31 @@ public class WeaponsTest {
         }
 
         stubber.when(viewMock).showEffectsSelectionView(any(), anyInt());
+    }
+    private void mockModeSelections(View viewMock, Controller controller, List<String> modeSelections) {
+        if (modeSelections.isEmpty())
+            throw new IllegalArgumentException();
+
+        BiFunction<View, String, Object> requestProvider = (mock, modeSelection) -> {
+            controller.getShootInteraction().putRequest(new WeaponModeSelectedRequest(modeSelection, viewMock));
+            return null;
+        };
+
+        Iterator<String> itr = modeSelections.listIterator();
+        String firstEle = itr.next();
+        Stubber stubber = doAnswer(invocationOnMock -> requestProvider.apply(
+                (View) invocationOnMock.getMock(),
+                firstEle
+        ));
+        while (itr.hasNext()) {
+            String ele = itr.next();
+            stubber = stubber.doAnswer(invocationOnMock -> requestProvider.apply(
+                    (View) invocationOnMock.getMock(),
+                    ele
+            ));
+        }
+
+        stubber.when(viewMock).showWeaponModeSelectionView(any(Effect.class), any(Effect.class));
     }
 
     private void waitForShootInteractionToEnd(ShootInteraction interaction) {
@@ -289,16 +315,17 @@ public class WeaponsTest {
         View viewMock = mock(View.class);
 
         // mock effect selection
-        mockEffectSelections(viewMock, testController,  Collections.singletonList(
-                Collections.singletonList("in_reaper_mode")
+        mockModeSelections(viewMock, testController,  Collections.singletonList(
+                "in_reaper_mode"
         ));
 
         // shoot through controller
         testController.startShootInteraction(viewMock, PlayerColor.PURPLE, lockrifle.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // verify order of mock method calls
         InOrder inOrder = inOrder(viewMock);
-        inOrder.verify(viewMock).selectEffects(any(), eq(0));
+        inOrder.verify(viewMock).showWeaponModeSelectionView(any(Effect.class), any(Effect.class));
 
         // assert that everyone except Mario is hurt
         for (PlayerColor target : allTargets(PlayerColor.PURPLE)) {
