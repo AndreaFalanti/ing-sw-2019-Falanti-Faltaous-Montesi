@@ -112,7 +112,7 @@ public class WeaponsTest {
             ));
         }
 
-        stubber.when(viewMock).selectTargets(anyInt(), anyInt(), anySet());
+        stubber.when(viewMock).showTargetsSelectionView(anyInt(), anyInt(), anySet());
     }
     private void mockEffectSelections(View viewMock, Controller controller, List<List<String>> effectSelections) {
         if (effectSelections.isEmpty())
@@ -137,7 +137,7 @@ public class WeaponsTest {
             ));
         }
 
-        stubber.when(viewMock).selectEffects(any(), anyInt());
+        stubber.when(viewMock).showEffectsSelectionView(any(), anyInt());
     }
 
     private void waitForShootInteractionToEnd(ShootInteraction interaction) {
@@ -205,7 +205,7 @@ public class WeaponsTest {
 
         // verify order of mock view method calls
         InOrder inOrder = inOrder(viewMock);
-        inOrder.verify(viewMock).selectTargets(1, 1, Collections.singleton(PlayerColor.GREEN));
+        inOrder.verify(viewMock).showTargetsSelectionView(1, 1, Collections.singleton(PlayerColor.GREEN));
 
         // assert that Luigi was hurt
         assertPlayerDamage(
@@ -248,10 +248,10 @@ public class WeaponsTest {
 
         // verify order of mock method calls
         InOrder inOrder = inOrder(viewMock);
-        inOrder.verify(viewMock).selectEffects(any(), eq(0));
-        inOrder.verify(viewMock).selectTargets(1, 1, allTargets(PlayerColor.YELLOW));
-        inOrder.verify(viewMock).selectEffects(any(), eq(1));
-        inOrder.verify(viewMock).selectTargets(1, 1, allTargetsExcept(
+        inOrder.verify(viewMock).showEffectsSelectionView(any(), eq(0));
+        inOrder.verify(viewMock).showTargetsSelectionView(1, 1, allTargets(PlayerColor.YELLOW));
+        inOrder.verify(viewMock).showEffectsSelectionView(any(), eq(1));
+        inOrder.verify(viewMock).showTargetsSelectionView(1, 1, allTargetsExcept(
                 PlayerColor.YELLOW, PlayerColor.GREEN
         ));
 

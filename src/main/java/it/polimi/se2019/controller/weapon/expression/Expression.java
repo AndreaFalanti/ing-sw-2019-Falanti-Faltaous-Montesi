@@ -93,7 +93,7 @@ public abstract class Expression {
     // select targets
     protected Set<PlayerColor> selectTargets(ShootContext context, int min, int max,
                                              Set<PlayerColor> possibleTargets) {
-        context.getView().selectTargets(min, max, possibleTargets);
+        context.getView().showTargetsSelectionView(min, max, possibleTargets);
 
         // TODO: use poll instead of take in case nothing is ever returned by anyone...
         // NB: treat this as an exception since player timeout should be handled by the main RequestHandler
@@ -116,7 +116,7 @@ public abstract class Expression {
     protected List<String> selectEffects(ShootContext context,
                                          SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
         // select effects through view
-        context.getView().selectEffects(priorityMap, currentPriority);
+        context.getView().showEffectsSelectionView(priorityMap, currentPriority);
 
         // TODO: use poll instead of take in case nothing is ever returned by anyone...
         // NB: treat this as an exception since player timeout should be handled by the main RequestHandler
