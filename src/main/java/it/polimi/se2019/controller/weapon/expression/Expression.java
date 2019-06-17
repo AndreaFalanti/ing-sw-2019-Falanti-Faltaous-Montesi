@@ -9,6 +9,7 @@ import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
 import it.polimi.se2019.util.Exclude;
 import it.polimi.se2019.view.request.EffectsSelectedRequest;
+import it.polimi.se2019.view.request.Request;
 import it.polimi.se2019.view.request.TargetsSelectedRequest;
 
 import java.util.List;
@@ -90,25 +91,32 @@ public abstract class Expression {
         return result;
     }
 
+    // wait for a particular request
+    private Request waitForSelectionRequest(ShootInteraction interaction, String selectionDescriptor) {
+        // TODO: use poll instead of take in case nothing is ever returned by anyone...
+        // NB: treat this as an exception since player timeout should be handled by the main RequestHandler
+        try {
+            logger.log(Level.INFO, "Shoot interaction waiting for {0} selection...", selectionDescriptor);
+            Request request = interaction.getRequestQueue().take();
+            // TODO: check that request type is sound
+            logger.log(Level.INFO, "Shoot interaction received {0} selection: [{1}]",
+                    new Object[]{selectionDescriptor, request});
+            return request;
+        } catch (InterruptedException e) {
+            logger.log(Level.WARNING, "Shoot interaction interrupted while waiting for {0} selection!", selectionDescriptor);
+            throw new EvaluationInterruptedException("selectTargets");
+        }
+    }
+
     // select targets
     protected Set<PlayerColor> selectTargets(ShootContext context, int min, int max,
                                              Set<PlayerColor> possibleTargets) {
         context.getView().showTargetsSelectionView(min, max, possibleTargets);
 
-        // TODO: use poll instead of take in case nothing is ever returned by anyone...
-        // NB: treat this as an exception since player timeout should be handled by the main RequestHandler
-        TargetsSelectedRequest request;
-        try {
-            logger.info("Shoot interaction waiting for target selection...");
-            request = (TargetsSelectedRequest) context.getRequestQueue().take();
-        } catch (InterruptedException e) {
-            logger.warning("Shoot interaction interrupted while waiting for target selection!");
-            // TODO: find out why this is necessary for sonar lint
-            Thread.currentThread().interrupt();
-            throw new EvaluationInterruptedException("selectTargets");
-        }
+        TargetsSelectedRequest request =
+                (TargetsSelectedRequest) waitForSelectionRequest(context.getShootInteraction(),
+                        "target");
 
-        logger.info("Shoot interaction received target selection: [" + request.getSelectedTargets() + "]");
         return request.getSelectedTargets();
     }
 
@@ -118,20 +126,10 @@ public abstract class Expression {
         // select effects through view
         context.getView().showEffectsSelectionView(priorityMap, currentPriority);
 
-        // TODO: use poll instead of take in case nothing is ever returned by anyone...
-        // NB: treat this as an exception since player timeout should be handled by the main RequestHandler
-        EffectsSelectedRequest request;
-        try {
-            logger.info("Shoot interaction waiting for effect selection...");
-            request = (EffectsSelectedRequest) context.getRequestQueue().take();
-        } catch (InterruptedException e) {
-            logger.warning("Shoot interaction interrupted while waiting for effect selection!");
-            // TODO: find out why this is necessary for sonar lint
-            Thread.currentThread().interrupt();
-            throw new EvaluationInterruptedException("selectEffects");
-        }
+        EffectsSelectedRequest request =
+                (EffectsSelectedRequest) waitForSelectionRequest(context.getShootInteraction(),
+                        "effect");
 
-        logger.log(Level.INFO, "Shoot interaction received effect selection: [{0}]", request.getSelectedEffects());
         return request.getSelectedEffects();
     }
 
