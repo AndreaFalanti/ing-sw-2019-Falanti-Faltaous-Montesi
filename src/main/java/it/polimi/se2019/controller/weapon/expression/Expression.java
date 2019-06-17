@@ -2,6 +2,7 @@ package it.polimi.se2019.controller.weapon.expression;
 
 import it.polimi.se2019.controller.weapon.EvaluationInterruptedException;
 import it.polimi.se2019.controller.weapon.ShootContext;
+import it.polimi.se2019.controller.weapon.UndoRequestedException;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
@@ -99,17 +100,25 @@ public abstract class Expression {
         // NB: treat this as an exception since player timeout should be handled by the main RequestHandler
         TargetsSelectedRequest request;
         try {
-            logger.info("Weapon interaction waiting for target selection...");
+            logger.info("Shoot interaction waiting for target selection...");
             request = (TargetsSelectedRequest) context.getRequestQueue().take();
         } catch (InterruptedException e) {
-            logger.warning("Weapon interaction interrupted while waiting for target selection!");
+            logger.warning("Shoot interaction interrupted while waiting for target selection!");
             // TODO: find out why this is necessary for sonar lint
             Thread.currentThread().interrupt();
             throw new EvaluationInterruptedException("selectTargets");
         }
 
-        logger.info("Weapon interaction received target selection: [" + request.getSelectedTargets() + "]");
+        logger.info("Shoot interaction received target selection: [" + request.getSelectedTargets() + "]");
         return request.getSelectedTargets();
+    }
+
+    /**
+     * Undoes the side effects that the evaluation of an expression had on a game object
+     * @param info an object containing the info needed to undo the partial effects of a shoot expression on a game
+     */
+    public static void undoShootInteraction(ShootUndoInfo info) {
+        throw new UnsupportedOperationException();
     }
 
     // evaluation is done (it's only done in Done expression)

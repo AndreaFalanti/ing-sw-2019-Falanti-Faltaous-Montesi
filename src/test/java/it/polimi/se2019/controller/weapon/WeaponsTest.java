@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 public class WeaponsTest {
@@ -114,22 +115,7 @@ public class WeaponsTest {
         stubber.when(viewMock).selectTargets(anyInt(), anyInt(), anySet());
     }
     private void mockEffectSelections(View mockView, Controller controller, List<Set<String>> selectedEffects) {
-        if (selectedEffects.isEmpty())
-            throw new IllegalArgumentException();
-
-        Function<Set<String>, Object> requestProvider = effectSelection -> {
-            controller.getShootInteraction().putRequest(new EffectsSelectedRequest(effectSelection, mockView));
-            return null;
-        };
-
-        Iterator<Set<String>> itr = selectedEffects.iterator();
-        Stubber stubber = doAnswer(mock -> requestProvider.apply(itr.next()));
-        while (itr.hasNext()) {
-            Set<String> ele = itr.next();
-            stubber = stubber.doAnswer(mock -> requestProvider.apply(ele));
-        }
-
-        stubber.when(mockView.selectEffects(any(), anyInt()));
+        throw new UnsupportedOperationException();
     }
 
     private void waitForShootInteractionToEnd(ShootInteraction interaction) {

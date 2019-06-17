@@ -3,6 +3,7 @@ package it.polimi.se2019.controller;
 
 import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.controller.weapon.ShootInteraction;
+import it.polimi.se2019.controller.weapon.UndoRequestedException;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
@@ -11,19 +12,8 @@ import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
-import sun.plugin.dom.exception.InvalidStateException;
-
-import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static sun.plugin.ClassLoaderInfo.reset;
 
 public class Controller implements AbstractController {
     // fields
@@ -58,15 +48,6 @@ public class Controller implements AbstractController {
     /* control methods */
     /*******************/
     public void startShootInteraction(View view, PlayerColor shooter, Expression weaponBehaviour) {
-        // no more than one player at a time can shoot
-        //  NB. this is a consequence of the fact that every game has its own controller
-        if (isHandlingShootInteraction()) {
-            view.reportError("Only one player might shoot at one time!");
-            return;
-        }
-
-        // a new thread is created for handling the shoot so that the view might continue to receive player
-        // input on its thread
         mShootInteraction.exec(mGame, view, shooter, weaponBehaviour);
     }
 
@@ -128,12 +109,12 @@ public class Controller implements AbstractController {
 
     @Override
     public void handle(PositionSelectedRequest request) {
-
+        continueShootInteraction(request);
     }
 
     @Override
     public void handle(EffectsSelectedRequest request) {
-
+        continueShootInteraction(request);
     }
 
     @Override

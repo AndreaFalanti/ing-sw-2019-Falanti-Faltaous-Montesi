@@ -59,6 +59,7 @@ public class ShootInteraction {
             }
         });
 
+        mLogger.info("Starting shoot interaction thread...");
         mThread.start();
     }
 
