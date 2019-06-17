@@ -17,6 +17,9 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,6 +43,12 @@ public class Controller implements AbstractController {
     }
     public ShootInteraction getShootInteraction() {
         return mShootInteraction;
+    }
+    public Object getShootInteractionLock() {
+        if (mShootInteraction.isOccupied())
+            return mShootInteraction.getLock();
+        else
+            throw new UnsupportedOperationException("Trying to get lock of a non occupied shoot interaction!");
     }
     public boolean isHandlingShootInteraction() {
         return mShootInteraction.isOccupied();

@@ -9,6 +9,7 @@ import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -17,10 +18,10 @@ import java.util.logging.Logger;
 public class ShootInteraction {
     private Logger mLogger = Logger.getLogger(getClass().getName()) ;
 
-    private Thread mThread = null;
     private boolean mOccupied = false;
+    private Thread mThread = null;
     private final BlockingQueue<Request> mRequests = new LinkedBlockingQueue<>();
-    private final Lock mLock = new ReentrantLock();
+    private final Object mLock = new Object();
 
     public boolean isOccupied() {
         return mOccupied;
@@ -30,7 +31,7 @@ public class ShootInteraction {
         return mRequests;
     }
 
-    public Lock getLock() {
+    public Object getLock() {
         return mLock;
     }
 
@@ -51,10 +52,10 @@ public class ShootInteraction {
             weaponBehaviour.eval(initialContext);
 
             // announce end of shoot interaction
-            synchronized (this) {
+            synchronized (mLock) {
                 mLogger.info("Shutting down shoot interaction thread...");
                 mOccupied = false;
-                notifyAll();
+                mLock.notifyAll();
             }
         });
 

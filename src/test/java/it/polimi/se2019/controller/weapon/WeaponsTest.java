@@ -19,6 +19,7 @@ import org.mockito.stubbing.Stubber;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -27,6 +28,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 public class WeaponsTest {
+    private Logger mLogger = Logger.getLogger(getClass().getName());
+
     private Game mAllInOriginGame;
     private Game mLuigiHidesFromYellowParty;
 
@@ -129,6 +132,16 @@ public class WeaponsTest {
         stubber.when(mockView.selectEffects(any(), anyInt()));
     }
 
+    private void waitForShootInteractionToEnd(ShootInteraction interaction) {
+        synchronized (interaction.getLock()) {
+            try {
+                interaction.getLock().wait();
+            } catch (InterruptedException e) {
+                mLogger.warning("Test thread interrupted while waiting for shoot interaction to finish...");
+            }
+        }
+    }
+
     @Before
     public void instantiate() {
         mAllInOriginGame = new Game(
@@ -173,15 +186,6 @@ public class WeaponsTest {
         View viewMock = mock(View.class);
 
         // mock target selection (pick poor hidden luigi)
-        //doAnswer(invocationOnMock -> {
-            //testController.getShootInteraction().putRequest(new TargetsSelectedRequest(
-                    //Collections.singleton(PlayerColor.GREEN),
-                    //(View) invocationOnMock.getMock()
-            //));
-            //return null;
-        //})
-                //.when(viewMock).selectTargets(anyInt(), anyInt(), anySet());
-
         mockTargetSelections(viewMock, testController, Collections.singletonList(
                 Collections.singleton(PlayerColor.GREEN)
         ));
@@ -189,6 +193,7 @@ public class WeaponsTest {
         // initiate shoot interaction and wait for it to end
         Weapon heatseeker = Weapons.get("heatseeker");
         testController.startShootInteraction(viewMock, PlayerColor.PURPLE, heatseeker.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // verify order of mock view method calls
         InOrder inOrder = inOrder(viewMock);
