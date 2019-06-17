@@ -114,8 +114,30 @@ public class WeaponsTest {
 
         stubber.when(viewMock).selectTargets(anyInt(), anyInt(), anySet());
     }
-    private void mockEffectSelections(View mockView, Controller controller, List<Set<String>> selectedEffects) {
-        throw new UnsupportedOperationException();
+    private void mockEffectSelections(View viewMock, Controller controller, List<List<String>> effectSelections) {
+        if (effectSelections.isEmpty())
+            throw new IllegalArgumentException();
+
+        BiFunction<View, List<String>, Object> requestProvider = (mock, effectSelection) -> {
+            controller.getShootInteraction().putRequest(new EffectsSelectedRequest(effectSelection, mock));
+            return null;
+        };
+
+        Iterator<List<String>> itr = effectSelections.listIterator();
+        List<String> firstEle = itr.next();
+        Stubber stubber = doAnswer(invocationOnMock -> requestProvider.apply(
+                (View) invocationOnMock.getMock(),
+                firstEle
+        ));
+        while (itr.hasNext()) {
+            List<String> ele = itr.next();
+            stubber = stubber.doAnswer(invocationOnMock -> requestProvider.apply(
+                    (View) invocationOnMock.getMock(),
+                    ele
+            ));
+        }
+
+        stubber.when(viewMock).selectEffects(any(), anyInt());
     }
 
     private void waitForShootInteractionToEnd(ShootInteraction interaction) {
@@ -209,18 +231,20 @@ public class WeaponsTest {
         View viewMock = mock(View.class);
 
         // mock effect selection
-        // doAnswer(mock -> ,
-                // Collections.singleton("basic_effect"),
-                // Collections.singleton("with_second_lock")
-        // )));
+        mockEffectSelections(viewMock, testController, Arrays.asList(
+                Collections.singletonList("basic_effect"),
+                Collections.singletonList("with_second_lock")
+        ));
 
         // mock target selection (first Luigi, then Smurfette)
-        given(viewMock.selectTargets(anyInt(), anyInt(), any()))
-                .willReturn(Collections.singleton(PlayerColor.GREEN))
-                .willReturn(Collections.singleton(PlayerColor.BLUE));
+        mockTargetSelections(viewMock, testController, Arrays.asList(
+                Collections.singleton(PlayerColor.GREEN),
+                Collections.singleton(PlayerColor.BLUE)
+        ));
 
         // shoot through controller
         testController.startShootInteraction(viewMock, PlayerColor.YELLOW, lockrifle.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // verify order of mock method calls
         InOrder inOrder = inOrder(viewMock);
@@ -266,7 +290,7 @@ public class WeaponsTest {
 
         // mock effect selection
         mockEffectSelections(viewMock, testController,  Collections.singletonList(
-                Collections.singleton("in_reaper_mode")
+                Collections.singletonList("in_reaper_mode")
         ));
 
         // shoot through controller

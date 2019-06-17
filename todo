@@ -1,4 +1,4 @@
-1. Learn to use loggers and use them inside Expression hierarchy
+1. Refactor Expression selection functions
 2. Move trivial type parsing into separate function
 3. Check if Gson actually cares about default constructors
 4. Try to streamline selections in weapon behaviour

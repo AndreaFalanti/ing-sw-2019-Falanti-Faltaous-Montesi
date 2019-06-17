@@ -14,7 +14,7 @@ public class EffectsSelectedRequest implements Request {
         mView = view;
     }
 
-    public List<String> getEffects() {
+    public List<String> getSelectedEffects() {
         return mEffects;
     }
 

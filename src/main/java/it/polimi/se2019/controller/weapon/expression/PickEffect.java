@@ -4,10 +4,7 @@ import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.view.View;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 public class PickEffect extends Expression {
     // subexpressions
@@ -49,8 +46,7 @@ public class PickEffect extends Expression {
     public Expression eval(ShootContext context) {
         for (int curPriority : mSubexpressions.keySet()) {
             // ask user which effect to pick
-            View view = context.getView();
-            Set<String> selectedEffects = view.selectEffects(mSubexpressions, curPriority);
+            List<String> selectedEffects = selectEffects(context, mSubexpressions, curPriority);
 
             // validate user input
             // TODO: actually do this
