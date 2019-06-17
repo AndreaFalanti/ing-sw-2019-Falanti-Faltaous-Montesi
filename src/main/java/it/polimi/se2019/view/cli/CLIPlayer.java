@@ -3,17 +3,21 @@ package it.polimi.se2019.view.cli;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.*;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CLIPlayer {
-
+    private static final String NOWEAPON = "not have weapon";
     private String mPlayerName ;
     private String mPlayerColor ;
     private String mPlayerScore;
     private String dead;
     private String overkilled;
-    private String mPlayerWeapons ;
+    private Map<String,Integer> mPlayerWeapons =new HashMap<>() ;
+    private Map<String,String> weaponsInfo =new HashMap<>();
     private String mPlayerPos;
     private Map<String,Integer> mPlayerMarks = new HashMap<>();
     private String mDamageTaken;
@@ -22,7 +26,7 @@ public class CLIPlayer {
     private String mPlayerAmmo;
     private String mBoardFlipped;
 
-    public CLIPlayer(Player player,PlayerColor playerColor){
+    public CLIPlayer(Player player,PlayerColor ownerColor){
     int count=0;
             mPlayerName = player.getName();
             mPlayerColor = player.getColor().getPascalName();
@@ -33,7 +37,7 @@ public class CLIPlayer {
             mDeathNum = String.valueOf(player.getDeathsNum());
             setPosition(player.getPos());
             setScore(player.getScore());
-            if(player.getColor().getPascalName().equals(playerColor.getPascalName())){
+            if(player.getColor().getPascalName().equals(ownerColor.getPascalName())){
                 setWeaponOwner(player.getWeapons());
                 setPowerUpsOwnerPlayer(player.getPowerUps());
             }
@@ -72,7 +76,9 @@ public class CLIPlayer {
 
     public String getPlayerPosition(){return mPlayerPos;}
 
-    public String getPlayerWeapons(){return mPlayerWeapons;}
+    public Map<String, Integer> getPlayerWeapons(){return mPlayerWeapons;}
+
+    public Map<String, String> getWeaponsInfo(){return weaponsInfo;}
 
     public String getPlayerScore(){return mPlayerScore;}
 
@@ -94,7 +100,7 @@ public class CLIPlayer {
             mBoardFlipped = "Is not flipped";
     }
 
-    public void setmBoardFlipped(){
+    public void setBoardFlipped(){
         mBoardFlipped = "Is flipped";
     }
 
@@ -210,33 +216,44 @@ public class CLIPlayer {
     }
 
     public void setWeaponOtherPlayer(Weapon[] weapons){
-        List<String> nameWeapon = new ArrayList<>();
         if (weapons == null)
-            mPlayerWeapons = "not have weapon";
+            mPlayerWeapons.put(NOWEAPON,0);
         else{
+            mPlayerWeapons.remove(NOWEAPON);
             for(Weapon weapon: weapons){
-
-                if(weapon != null && !weapon.isLoaded())
-                    nameWeapon.add(weapon.getName());
+                if(weapon!=null){
+                    if(!weapon.isLoaded())
+                        mPlayerWeapons.put(weapon.getName(),0);
+                    else
+                        mPlayerWeapons.remove(weapon.getName());
+                }
             }
-            mPlayerWeapons = String.join(",",nameWeapon);
         }
     }
 
     public void setWeaponOwner(Weapon[] weapons){
-        List<String> nameWeapon = new ArrayList<>();
         String load = "";
+        int isLoad=1;//is load
         if (weapons == null)
-            mPlayerWeapons = "not have weapon";
+            mPlayerWeapons.put(NOWEAPON,0);
         else{
+            mPlayerWeapons.remove(NOWEAPON);
             for(Weapon weapon: weapons){
                 if(weapon!= null){
-                    if(!weapon.isLoaded())
-                        load = "to load, cost"+ weapon.getReloadCost().toString();
-                    nameWeapon.add(weapon.getName() + load);
+                    if(!weapon.isLoaded()){
+                        load = " to load cost: "+ Colors.getColorTile("red") + "Red " + Colors.ANSI_RESET + weapon.getReloadCost().getRed()+" "+
+                                                  Colors.getColorTile("yellow") + "Yellow " +Colors.ANSI_RESET+ weapon.getReloadCost().getRed()+" "+
+                                                  Colors.getColorTile("blue") + "Blue "+Colors.ANSI_RESET + weapon.getReloadCost().getRed();
+                        isLoad=0;
+
+                    }
+                    else
+                        isLoad=1;
+                    mPlayerWeapons.put(weapon.getName(),isLoad);
+                    weaponsInfo.put(weapon.getName(),load);
+                    load ="";
                 }
             }
-            mPlayerWeapons = String.join( ",",nameWeapon);
         }
     }
 

@@ -1,5 +1,7 @@
 package it.polimi.se2019.view.cli;
 
+import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.model.*;
 
 import java.util.ArrayList;
@@ -17,9 +19,9 @@ public class Main {
         Player player2 = new Player("Player2",PlayerColor.GREY,new Position(2,2));
         Player player3 = new Player("Player3",PlayerColor.YELLOW,new Position(3,0));
         Player player4 = new Player("Player4",PlayerColor.PURPLE,new Position(1,3));
-     /*   Weapon weapon1 = Weapons.get("heatseeker");
-        Weapon weapon2 = Weapons.get("heatseeker");
-        Weapon weapon3 = Weapons.get("heatseeker");
+        Weapon weapon1 = Weapons.get("heatseeker");
+        Weapon weapon2 = Weapons.get("hellion");
+        Weapon weapon3 = Weapons.get("lock_rifle");
         weapon2.setLoaded(true);
         player1.addWeapon(weapon1);
         player1.addWeapon(weapon2);
@@ -35,7 +37,7 @@ public class Main {
         player4.addWeapon(weapon2);
         owner.addWeapon(weapon3);
         owner.addWeapon(weapon1);
-        owner.addWeapon(weapon2);*/
+        owner.addWeapon(weapon2);
         owner.onDamageTaken(new Damage(3,0), PlayerColor.YELLOW);
         owner.onDamageTaken(new Damage(3,1), PlayerColor.BLUE);
         owner.onDamageTaken(new Damage(3,0), PlayerColor.YELLOW);

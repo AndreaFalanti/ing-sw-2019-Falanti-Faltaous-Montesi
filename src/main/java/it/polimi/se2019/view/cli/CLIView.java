@@ -105,7 +105,9 @@ public class CLIView extends View {
                 break;
             case "shoot":
                 pos=parseDestination(otherCommandPart);
-                action = new MoveShootAction(mCLIInfo.getOwnerColorf(), pos , 1);// TODO: to complete
+                index=parseWeaponInformation();
+
+                action = new MoveShootAction(mCLIInfo.getOwnerColorf(), pos , parseWeaponInformation());
                 logger.log(Level.INFO,"Action: SHOOT  Pos: {0}",pos);
                 break;
             case "teleport":
@@ -118,7 +120,7 @@ public class CLIView extends View {
             case "reloadshoot":
                 pos=parseDestination(otherCommandPart);
                 index = reloadInteraction();
-                action = new MoveReloadShootAction(mCLIInfo.getOwnerColorf(), pos, 1, index);  // TODO
+                action = new MoveReloadShootAction(mCLIInfo.getOwnerColorf(), pos, parseWeaponInformation(), index);
                 logger.log(Level.INFO,"Action: RELOADSHOOT  Pos: {0}  ",pos );
                 break;
             case "reload" :
@@ -162,6 +164,26 @@ public class CLIView extends View {
         return pos;
     }
 
+    public int parseWeaponToAct(boolean shoot){
+        int index=5;
+        List<String> possibleWeapons = new ArrayList<>();
+        if(shoot){
+
+            System.out.print("Type the index of the weapon you want: ");
+            for(String weapon : mCLIInfo.getOwner().getWeaponsInfo().keySet())
+                if( mCLIInfo.getOwner().getWeaponsInfo().get(weapon).equals("")){
+                    System.out.print(weapon+" ");
+                    possibleWeapons.add(weapon);
+                }
+            while(index >=possibleWeapons.size() || index<0) {
+                index = parseInteger();
+                if(index >=possibleWeapons.size() || index<0)
+                    System.out.println("Invalid index please insert a correct index: ");
+            }
+
+        }  return index;
+    }
+
     public int parseWeaponInformation(TileColor tileColor){
         int index = 3;
 
@@ -177,13 +199,18 @@ public class CLIView extends View {
 
     public int parseWeaponInformation(){
         int index = 4;
+        List<String> weapons =new ArrayList<>();
 
-        System.out.print("Type the index of the weapon you want exchange");
+        System.out.print("Type the index of the weapon you want select between 0 and 2:\n");
         System.out.println(mCLIInfo.getOwner().getPlayerWeapons());
-        String[] weapons =  mCLIInfo.getOwner().getPlayerWeapons().split(",");
-        while(index >=weapons.length || index<0) {
+        for(String weapon: mCLIInfo.getOwner().getPlayerWeapons().keySet()){
+            if(weapon!=null){
+                weapons.add(weapon);
+            }
+        }
+        while(index >=weapons.size()|| index<0) {
             index = parseInteger();
-            if(index >=weapons.length || index<0)
+            if(index >=weapons.size() || index<0)
                 System.out.println("Invalid index please insert a correct index: ");
         }
 
@@ -191,7 +218,7 @@ public class CLIView extends View {
     }
 
     @Override
-    public void showPowerUpsDiscardView() {
+    public void showPowerUpsDiscardView() {//to discard one on spawn
         boolean[] discarded={false,false,false,false};
         System.out.println("Choose one or more power ups to discard:\n" +
                 "(example 1 0 1 to discard first and third.\n" +
@@ -313,8 +340,8 @@ public class CLIView extends View {
                 mCLIInfo.getOwner().getPlayerPowerUps() + SPACE +
                 "Number of deaths: " + mCLIInfo.getOwner().getPlayerDeaths() + SPACE +
                 "Is overkilled ? " + mCLIInfo.getOwner().playerIsOverkilled()+SPACE +
-                "Weapons : " + mCLIInfo.getOwner().getPlayerWeapons()+SPACE +
-                "Damage: " + mCLIInfo.getOwner().getPlayerDamage() + SPACE);
+                "Weapons : " + mCLIInfo.getOwner().getWeaponsInfo()+SPACE +
+                "Damage: " + mCLIInfo.getOwner().getPlayerDamage()+"\n");
     }
 
     public void infoPlayers(){
@@ -334,8 +361,8 @@ public class CLIView extends View {
                             "Power up: " + player.getPlayerPowerUps() + SPACE +
                             "Number of deaths: " + player.getPlayerDeaths() + SPACE +
                             "Is overkilled ? " + player.playerIsOverkilled()+SPACE +
-                            "Weapons : " + player.getPlayerWeapons()+SPACE +
-                            "Damage: " + player.getPlayerDamage() + SPACE);
+                            "Weapons : " + player.getWeaponsInfo().keySet()+SPACE +
+                            "Damage: " + player.getPlayerDamage() + "\n");
             }
         }
     }
@@ -423,19 +450,21 @@ public class CLIView extends View {
         System.out.println(" then press enter");
         String target = requestAdditionalInfo();
         String[] targets = target.split("\\s+");
-        while(targets.length<=minToSelect){
+        while(targets.length<minToSelect ){
             target = requestAdditionalInfo();
             targets = target.split("\\s+");
         }
         for (String s : targets) {
             if(mCLIInfo.colorFromName(s)== null){
-                System.out.println("Please insert correctly the names");
+                System.out.println("Please insert correctly the names\n");
                 return selectTargets(minToSelect,maxToSelect,possibleTargets);
             }
-            else
+            else{
                 choosen.add(mCLIInfo.colorFromName(s));
+                if(choosen.size()==maxToSelect)
+                    return choosen;
+            }
         }
-
         return choosen;
     }
 

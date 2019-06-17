@@ -113,7 +113,7 @@ public class CLIInfo {
     }
 
     public void updateBoardFlip(PlayerColor playerColor){
-        mPlayersInfo.get(playerColor).setmBoardFlipped();
+        mPlayersInfo.get(playerColor).setBoardFlipped();
     }
 
     public void updateAmmo(PlayerColor playerColor, AmmoValue ammo){
@@ -165,11 +165,11 @@ public class CLIInfo {
         return stringWeapons.toString();
     }
 
-      public String getActivePlayer(){return mActivePlayer;}
-      public Map<TileColor,String> getSpawnTiles(){return spawnTiles;}
-      public CLIPlayer getOwner(){return mOwner;}
-      public String getOwnerColor(){return mOwnerColor;}
-      public PlayerColor getOwnerColorf(){return mOwnerColorf;}
+    public String getActivePlayer(){return mActivePlayer;}
+    public Map<TileColor,String> getSpawnTiles(){return spawnTiles;}
+    public CLIPlayer getOwner(){return mOwner;}
+    public String getOwnerColor(){return mOwnerColor;}
+    public PlayerColor getOwnerColorf(){return mOwnerColorf;}
 
     public Map<PlayerColor, CLIPlayer> getPlayersInfo() {
         return mPlayersInfo;
