@@ -267,9 +267,9 @@ public class WeaponsTest {
         View viewMock = mock(View.class);
 
         // mock target selection (pick poor hidden luigi)
-        mockTargetSelections(viewMock, testController, Collections.singletonList(
-                Collections.singleton(PlayerColor.GREEN)
-        ));
+        mockSelections(testController,
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), viewMock)
+        );
 
         // initiate shoot interaction and wait for it to end
         Weapon heatseeker = Weapons.get("heatseeker");
@@ -304,15 +304,11 @@ public class WeaponsTest {
         View viewMock = mock(View.class);
 
         // shoot to Luigi with basic effect and to Smurfette with using the second lock
-        mockTargetSelections(viewMock, testController, Arrays.asList(
-                Collections.singleton(PlayerColor.GREEN),
-                Collections.singleton(PlayerColor.BLUE)
-        ));
-
-        // use second lock to shoot Smurfette
-        mockEffectSelections(viewMock, testController, Collections.singletonList(
-                Collections.singletonList("with_second_lock")
-        ));
+        mockSelections(testController,
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), viewMock),
+                new EffectsSelectedRequest(Collections.singletonList("with_second_lock"), viewMock),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.BLUE), viewMock)
+        );
 
         // shoot through controller
         testController.startShootInteraction(viewMock, PlayerColor.YELLOW, lockrifle.getBehaviour());
@@ -360,9 +356,9 @@ public class WeaponsTest {
         View viewMock = mock(View.class);
 
         // mock effect selection
-        mockModeSelections(viewMock, testController,  Collections.singletonList(
-                "in_reaper_mode"
-        ));
+        mockSelections(testController,
+                new WeaponModeSelectedRequest("in_reaper_mode", viewMock)
+        );
 
         // shoot through controller
         testController.startShootInteraction(viewMock, PlayerColor.PURPLE, testedWeapon.getBehaviour());
@@ -396,20 +392,15 @@ public class WeaponsTest {
         // create mock view
         View viewMock = mock(View.class);
 
-        // mock position selections
-        mockPositionSelections(viewMock, testController, Collections.singletonList(
-                new Position(2, 2) // vortex position
-        ));
-
-        // mock target selections
-        mockTargetSelections(viewMock, testController, Collections.singletonList(
-                Collections.singleton(PlayerColor.PURPLE)
-        ));
-
-        // mock effect selection
-        mockEffectSelections(viewMock, testController,  Collections.singletonList(
-                Collections.emptyList() // do not pick with black hole
-        ));
+        // mock selections
+        mockSelections(testController,
+                // select vortex position
+                new PositionSelectedRequest(new Position(2, 2), viewMock),
+                // select target to suck into vortex
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), viewMock),
+                // do not pick black hole
+                new EffectsSelectedRequest(Collections.emptyList(), viewMock)
+        );
 
         // shoot through controller
         testController.startShootInteraction(viewMock, PlayerColor.GREEN, testedWeapon.getBehaviour());
@@ -445,9 +436,9 @@ public class WeaponsTest {
         View viewMock = mock(View.class);
 
         // select Luigi
-        mockTargetSelections(viewMock, testController, Collections.singletonList(
-                Collections.singleton(PlayerColor.GREEN)
-        ));
+        mockSelections(testController,
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), viewMock)
+        );
 
         // shoot through controller
         testController.startShootInteraction(viewMock, PlayerColor.BLUE, testedWeapon.getBehaviour());
@@ -482,15 +473,13 @@ public class WeaponsTest {
         // create mock view
         View viewMock = mock(View.class);
 
-        // choose nano-tracer mode
-        mockModeSelections(viewMock, testController, Collections.singletonList(
-                "in_nano-tracer_mode"
-        ));
+        mockSelections(testController,
+                // choose nano-tracer mode
+                new WeaponModeSelectedRequest("in_nano-tracer_mode", viewMock),
 
-        // select Mario for the hurting (Luigi will be hurt automatically)
-        mockTargetSelections(viewMock, testController, Collections.singletonList(
-                Collections.singleton(PlayerColor.PURPLE)
-        ));
+                // select Mario for the hurting (Luigi will be hurt automatically)
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), viewMock)
+        );
 
         // shoot through controller
         testController.startShootInteraction(viewMock, PlayerColor.YELLOW, testedWeapon.getBehaviour());
@@ -521,7 +510,7 @@ public class WeaponsTest {
     }
 
     @Test
-    public void testRocketLauncher() {
+    public void testRocketLauncherLuigiSidestepsShootsMarioAndDecimatesOrigin() {
            // instantiate controller
         Controller testController = new Controller(mAllInOriginGame);
 
