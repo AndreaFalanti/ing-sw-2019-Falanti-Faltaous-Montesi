@@ -443,11 +443,6 @@ public class WeaponsTest {
         testController.startShootInteraction(viewMock, PlayerColor.GREEN, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
-        // verify order of mock method calls
-        // InOrder inOrder = inOrder(viewMock);
-        // inOrder.verify(viewMock).showWeaponModeSelectionView(any(Effect.class), any(Effect.class));
-        // inOrder.verify(viewMock).showTargetsSelectionView(anyInt(), anyInt(), anySet());
-
         // assert Luigi's rocket jump
         assertPlayerPosition(
                 mAllInOriginGame.getPlayerFromColor(PlayerColor.GREEN),

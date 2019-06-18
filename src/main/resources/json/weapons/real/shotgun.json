@@ -1,0 +1,75 @@
+{
+  "name": "Shotgun",
+  "guiID": "025",
+  "grabCost": "1y",
+  "reloadCost": "2y",
+  "behaviour": {
+    "expr": "XorEffect",
+    "lhs": {
+      "name": "Basic mode",
+      "behaviour": {
+        "expr": "PickEffect",
+        "effects": [
+          {
+            "name": "Basic mode damage",
+            "priority": 0,
+            "behaviour": {
+              "expr": "InflictDamage",
+              "amount": "3d",
+              "to": {
+                "expr": "SelectOneTarget",
+                "from": {
+                  "expr": "All",
+                  "from": {
+                    "expr": "Pos",
+                    "who": {
+                      "expr": "You"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "Basic mode move",
+            "priority": 1,
+            "optional": true,
+            "behaviour": {
+              "expr": "Move",
+              "from": {
+                "expr": "LastSelected"
+              },
+              "to": {
+                "expr": "Distance",
+                "origin": {
+                  "expr": "Pos",
+                  "who": {
+                    "expr": "LastSelected"
+                  }
+                },
+                "amount": 1
+              }
+            }
+          }
+        ]
+      }
+    },
+    "rhs": {
+      "name": "In long barrel mode",
+      "behaviour": {
+        "expr": "InflictDamage",
+        "amount": "2d",
+        "to": {
+          "expr": "SelectOneTarget",
+          "from": {
+            "expr": "All",
+            "from": {
+              "expr": "Distance",
+              "amount": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}
