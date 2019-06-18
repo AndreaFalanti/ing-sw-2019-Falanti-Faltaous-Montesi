@@ -229,7 +229,7 @@ public class WeaponsTest {
                         new Player("Mario", PlayerColor.PURPLE, new Position(3, 2)),
                         new Player("Luigi", PlayerColor.GREEN, new Position(2, 0)),
                         new Player("Dorian", PlayerColor.GREY, new Position(3, 2)),
-                        new Player("Smurfette", PlayerColor.BLUE, new Position(3, 1)),
+                        new Player("Smurfette", PlayerColor.BLUE, new Position(2, 2)),
                         new Player("Stones", PlayerColor.YELLOW, new Position(2, 1))
                 )),
                 1
@@ -416,6 +416,44 @@ public class WeaponsTest {
                 ),
                 Collections.emptyList(),
                 new Position(2, 2)
+        );
+    }
+
+    @Test
+    public void testWhisperSmurfetteSnipesLuigi() {
+         // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("whisper");
+
+        // create mock view
+        View viewMock = mock(View.class);
+
+        // select Luigi
+        mockTargetSelections(viewMock, testController, Collections.singletonList(
+                Collections.singleton(PlayerColor.GREEN)
+        ));
+
+        // shoot through controller
+        testController.startShootInteraction(viewMock, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // verify order of mock method calls
+        InOrder inOrder = inOrder(viewMock);
+        inOrder.verify(viewMock).showTargetsSelectionView(anyInt(), anyInt(), anySet());
+
+        // assert that Mario is hurt and has moved to new position
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN),
+                Arrays.asList(
+                        PlayerColor.BLUE,
+                        PlayerColor.BLUE,
+                        PlayerColor.BLUE
+                ),
+                Collections.singletonList(
+                        new Pair<>(PlayerColor.BLUE, 1)
+                )
         );
     }
 }

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class DistanceRange extends Behaviour {
     public DistanceRange() {
-        putSub("origin", new You());
+        putSub("origin", new Pos(new You()));
     }
 
     public DistanceRange(Expression origin, Expression min, Expression max) {

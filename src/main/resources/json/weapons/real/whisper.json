@@ -1,5 +1,5 @@
 {
-  "name": "Whipser",
+  "name": "Whisper",
   "guiID": "0218",
   "grabCost": "1b",
   "reloadCost": "1y2b",
@@ -7,14 +7,20 @@
     "expr": "InflictDamage",
     "amount": "3d1m",
     "to": {
-      "expr": "Difference",
-      "lhs": {
-        "expr": "CanSee"
-      },
-      "rhs": {
-        "expr": "DistanceRange",
-        "min": 0,
-        "max": 1
+      "expr": "SelectOneTarget",
+      "from": {
+        "expr": "All",
+        "from": {
+          "expr": "Difference",
+          "lhs": {
+            "expr": "GetVisibleRange"
+          },
+          "rhs": {
+            "expr": "DistanceRange",
+            "min": 0,
+            "max": 1
+          }
+        }
       }
     }
   }
