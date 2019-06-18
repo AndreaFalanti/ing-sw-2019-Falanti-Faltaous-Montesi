@@ -137,9 +137,9 @@ public abstract class Expression {
 
     // select effects
     protected List<String> selectEffects(ShootContext context,
-                                         SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
+                                         SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
         // select effects through view
-        context.getView().showEffectsSelectionView(priorityMap, currentPriority);
+        context.getView().showEffectsSelectionView(priorityMap, possibleEffects);
 
         EffectsSelectedRequest request = (EffectsSelectedRequest) waitForSelectionRequest(
                 context.getShootInteraction(),

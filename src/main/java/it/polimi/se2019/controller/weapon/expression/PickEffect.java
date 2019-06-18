@@ -5,6 +5,8 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.view.View;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PickEffect extends Expression {
     // subexpressions
@@ -44,25 +46,60 @@ public class PickEffect extends Expression {
 
     @Override
     public Expression eval(ShootContext context) {
-        for (int curPriority : mSubexpressions.keySet()) {
-            Set<Effect> currentSubs = mSubexpressions.get(curPriority);
+        // get view for communicating with client
+        View view = context.getView();
 
-            // ask user which effect to pick if optional effects are present
-            final List<String> selectedEffects = new ArrayList<>();
-            if (currentSubs.stream().anyMatch(Effect::isOptional)) {
-                selectedEffects.addAll(selectEffects(context, mSubexpressions, curPriority));
+        // client interaction loop
+        for (Map.Entry<Integer, Set<Effect>> entry : mSubexpressions.entrySet()) {
+            // prettier names for entry fields
+            Set<Effect> effectsToSelect = entry.getValue();
 
-                // TODO: validate user input
+            // this loops keeps requesting input for the current priority until it is valid
+            while (!effectsToSelect.isEmpty()) {
+                // if only one non-optional effect is present no user interaction is necessary
+                if (effectsToSelect.size() == 1 && !effectsToSelect.iterator().next().isOptional()) {
+                    // directly evaluate this effect and go on to next priority
+                    discardEvalResult(effectsToSelect.iterator().next().getBehaviour().eval(context));
+                    break;
+                }
+
+                // user input is requested for optional effect choice AND effect evaluation order
+                List<String> selectedEffectIDs = selectEffects(context, mSubexpressions, effectsToSelect);
+
+                // an empty choice is interpreted specially: it corresponds with the will of picking no
+                // optional effects. If any non-optional effects are still available, they are offered again
+                // with another selection (since they must be picked)
+                if (selectedEffectIDs.isEmpty()) {
+                    // if all effects are already non-optional, issue a warning to the user
+                    if (effectsToSelect.stream().noneMatch(Effect::isOptional))
+                        view.showMessage("It is mandatory to select all non-optional effects!");
+
+                    // strip effects to select from optionals
+                    effectsToSelect = effectsToSelect.stream()
+                            .filter(eff -> !eff.isOptional())
+                            .collect(Collectors.toSet());
+                }
+
+                // once verified, effect IDs are turned into actual effects
+                List<Effect> selectedEffects = new ArrayList<>();
+                for (String id : selectedEffectIDs) {
+                    selectedEffects.add(
+                            effectsToSelect.stream()
+                                    .filter(eff -> eff.getId().equals(id))
+                                    .findFirst()
+                                    .orElseThrow(() ->
+                                            new InputMismatchException("nonexistent ID in effect selection"))
+                    );
+                }
+
+                // evaluate selected effects
+                selectedEffects.stream()
+                        .map(Effect::getBehaviour)
+                        .forEach(e -> discardEvalResult(e.eval(context)));
+
+                // remove selected effects from effects to select
+                effectsToSelect.removeAll(selectedEffects);
             }
-
-            // evaluate picked and non-optional subexpressions (non-optionals are executed after optionals
-            // in a random order if none is specified
-            mSubexpressions.get(curPriority).stream()
-                    .filter(eff -> selectedEffects.contains(eff.getId()))
-                    .forEach(eff -> discardEvalResult(eff.getBehaviour().eval(context)));
-            mSubexpressions.get(curPriority).stream()
-                    .filter(eff -> !eff.isOptional() && !selectedEffects.contains(eff.getId()))
-                    .forEach(eff -> discardEvalResult(eff.getBehaviour().eval(context)));
         }
 
         return new Done();

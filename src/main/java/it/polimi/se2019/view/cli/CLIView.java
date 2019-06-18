@@ -270,6 +270,11 @@ public class CLIView extends View {
     }
 
     @Override
+    public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
+
+    }
+
+    @Override
     public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
 
     }
