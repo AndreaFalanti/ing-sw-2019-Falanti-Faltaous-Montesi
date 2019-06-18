@@ -9,10 +9,7 @@ import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
-import it.polimi.se2019.view.request.EffectsSelectedRequest;
-import it.polimi.se2019.view.request.PositionSelectedRequest;
-import it.polimi.se2019.view.request.TargetsSelectedRequest;
-import it.polimi.se2019.view.request.WeaponModeSelectedRequest;
+import it.polimi.se2019.view.request.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -20,14 +17,12 @@ import org.mockito.stubbing.Stubber;
 
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 public class WeaponsTest {
@@ -62,12 +57,15 @@ public class WeaponsTest {
                 damagedPlayer.getMarks()
         );
     }
+    private void assertPlayerPosition(Player player, Position newPosition) {
+        assertEquals(player.getPos(), newPosition);
+    }
     private void assertPlayerStatus(Player affectedPlayer,
                                     List<PlayerColor> damageInflicted,
                                     List<Pair<PlayerColor, Integer>> inflictedMarks,
                                     Position newPosition) {
         assertPlayerDamage(affectedPlayer, damageInflicted, inflictedMarks);
-        assertEquals(affectedPlayer.getPos(), newPosition);
+        assertPlayerPosition(affectedPlayer, newPosition);
     }
 
     /**
@@ -98,6 +96,19 @@ public class WeaponsTest {
     /**
      * Utility functions for providing fake requests to a shoot interaction (used in mocking)
      */
+    private void mockViewLogging(View viewMock) {
+        doAnswer(invocationOnMock -> {
+            mLogger.log(Level.SEVERE, "ERR FROM VIEW: {0}", (String) invocationOnMock.getArgument(0));
+            return null;
+        }).
+                when(viewMock).reportError(anyString());
+
+        doAnswer(invocationOnMock -> {
+            mLogger.log(Level.INFO, "MSG FROM VIEW: {0}", (String) invocationOnMock.getArgument(0));
+            return null;
+        }).
+                when(viewMock).showMessage(anyString());
+    }
     private void mockTargetSelections(View viewMock, Controller controller, List<Set<PlayerColor>> targetSelections) {
         if (targetSelections.isEmpty())
             throw new IllegalArgumentException();
@@ -146,7 +157,7 @@ public class WeaponsTest {
             ));
         }
 
-        stubber.when(viewMock).showEffectsSelectionView(any(), anyInt());
+        stubber.when(viewMock).showEffectsSelectionView(any(), anySet());
     }
     private void mockPositionSelections(View viewMock, Controller controller, List<Position> positionSelections) {
         if (positionSelections.isEmpty())
@@ -197,6 +208,9 @@ public class WeaponsTest {
         }
 
         stubber.when(viewMock).showWeaponModeSelectionView(any(Effect.class), any(Effect.class));
+    }
+    private void mockSelections(Controller controller, Request... requestsInOrder) {
+        controller.getShootInteraction().getRequestQueue().addAll(Arrays.asList(requestsInOrder));
     }
 
     private void waitForShootInteractionToEnd(ShootInteraction interaction) {
@@ -307,7 +321,7 @@ public class WeaponsTest {
         // verify order of mock method calls
         InOrder inOrder = inOrder(viewMock);
         inOrder.verify(viewMock).showTargetsSelectionView(1, 1, allTargets(PlayerColor.YELLOW));
-        inOrder.verify(viewMock).showEffectsSelectionView(any(), eq(1));
+        inOrder.verify(viewMock).showEffectsSelectionView(any(), anySet());
         inOrder.verify(viewMock).showTargetsSelectionView(1, 1, allTargetsExcept(
                 PlayerColor.YELLOW, PlayerColor.GREEN
         ));
@@ -340,7 +354,7 @@ public class WeaponsTest {
         Controller testController = new Controller(mAllInOriginGame);
 
         // instantiate weapon
-        Weapon lockrifle = Weapons.get("electroscythe");
+        Weapon testedWeapon = Weapons.get("electroscythe");
 
         // create mock view
         View viewMock = mock(View.class);
@@ -351,7 +365,7 @@ public class WeaponsTest {
         ));
 
         // shoot through controller
-        testController.startShootInteraction(viewMock, PlayerColor.PURPLE, lockrifle.getBehaviour());
+        testController.startShootInteraction(viewMock, PlayerColor.PURPLE, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // verify order of mock method calls
@@ -405,7 +419,7 @@ public class WeaponsTest {
         InOrder inOrder = inOrder(viewMock);
         inOrder.verify(viewMock).showPositionSelectionView(anySet());
         inOrder.verify(viewMock).showTargetsSelectionView(anyInt(), anyInt(), anySet());
-        inOrder.verify(viewMock).showEffectsSelectionView(any(), anyInt());
+        inOrder.verify(viewMock).showEffectsSelectionView(any(), anySet());
 
         // assert that Mario is hurt and has moved to new position
         assertPlayerStatus(
@@ -509,67 +523,66 @@ public class WeaponsTest {
     @Test
     public void testRocketLauncher() {
            // instantiate controller
-        Controller testController = new Controller(mLuigiHidesFromYellowParty);
+        Controller testController = new Controller(mAllInOriginGame);
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("rocket_launcher");
 
         // create mock view
         View viewMock = mock(View.class);
+        mockViewLogging(viewMock);
 
-        // choose Mario as primary target
-        mockTargetSelections(viewMock, testController, Collections.singletonList(
-                Collections.singleton(PlayerColor.PURPLE)
-        ));
+        // mock selection
+        mockSelections(testController,
+                // move downwards to the other room with rocket jump
+                new EffectsSelectedRequest(Collections.singletonList("with_rocket_jump"), viewMock),
+                new PositionSelectedRequest(new Position(0, 1), viewMock),
 
-        // choose to use the basic effect's move
-        mockEffectSelections(viewMock, testController, Collections.singletonList(
-                Collections.singletonList("basic_effect_move")
-        ));
+                // Shoot Mario as basic effect target
+                new EffectsSelectedRequest(Collections.singletonList("basic_effect"), viewMock),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), viewMock),
 
-        // move Mario upwards
-        mockTargetSelections(viewMock, testController, Collections.singletonList(
-                Collections.singleton(PlayerColor.PURPLE)
-        ));
-        mockPositionSelections(viewMock, testController, Collections.singletonList(
-                new Position(3, 1)
-        ));
+                // Use fragmenting warhead for extra mayhem
+                new EffectsSelectedRequest(Collections.singletonList("with_fragmenting_warhead"), viewMock),
 
-        // choose nano-tracer mode
-        mockModeSelections(viewMock, testController, Collections.singletonList(
-                "in_nano-tracer_mode"
-        ));
-
-        // select Mario for the hurting (Luigi will be hurt automatically)
-        mockTargetSelections(viewMock, testController, Collections.singletonList(
-                Collections.singleton(PlayerColor.PURPLE)
-        ));
+                // Move Mario on your square
+                new EffectsSelectedRequest(Collections.singletonList("basic_effect_move"), viewMock),
+                new PositionSelectedRequest(new Position(0, 1), viewMock)
+        );
 
         // shoot through controller
-        testController.startShootInteraction(viewMock, PlayerColor.YELLOW, testedWeapon.getBehaviour());
+        testController.startShootInteraction(viewMock, PlayerColor.GREEN, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // verify order of mock method calls
-        InOrder inOrder = inOrder(viewMock);
-        inOrder.verify(viewMock).showWeaponModeSelectionView(any(Effect.class), any(Effect.class));
-        inOrder.verify(viewMock).showTargetsSelectionView(anyInt(), anyInt(), anySet());
+        // InOrder inOrder = inOrder(viewMock);
+        // inOrder.verify(viewMock).showWeaponModeSelectionView(any(Effect.class), any(Effect.class));
+        // inOrder.verify(viewMock).showTargetsSelectionView(anyInt(), anyInt(), anySet());
 
-        // assert that Mario is hurt and that Dorian has been inflicted marks
-        assertPlayerDamage(
-                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.PURPLE),
-                Collections.singletonList(
-                        PlayerColor.YELLOW
+        // assert Luigi's rocket jump
+        assertPlayerPosition(
+                mAllInOriginGame.getPlayerFromColor(PlayerColor.GREEN),
+                new Position(0, 1)
+        );
+        // assert that Mario is hurt more than the others and is on your square
+        assertPlayerStatus(
+                mAllInOriginGame.getPlayerFromColor(PlayerColor.PURPLE),
+                Arrays.asList(
+                        PlayerColor.GREEN,
+                        PlayerColor.GREEN,
+                        PlayerColor.GREEN
                 ),
-                Collections.singletonList(
-                        new Pair<>(PlayerColor.YELLOW, 2)
-                )
-        );
-        assertPlayerDamage(
-                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY),
                 Collections.emptyList(),
-                Collections.singletonList(
-                        new Pair<>(PlayerColor.YELLOW, 2)
-                )
+                new Position(0, 1)
         );
+        // assert that everybody else was properly damaged by fragmenting warhead
+        for (PlayerColor target : allTargetsExcept(PlayerColor.GREEN, PlayerColor.PURPLE))
+            assertPlayerDamage(
+                    mAllInOriginGame.getPlayerFromColor(target),
+                    Collections.singletonList(
+                            PlayerColor.GREEN
+                    ),
+                    Collections.emptyList()
+            );
     }
 }

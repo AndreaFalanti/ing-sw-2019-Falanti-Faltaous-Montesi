@@ -57,12 +57,18 @@
             "name": "first_target"
           },
           "to": {
-            "expr": "Distance",
-            "origin": {
-              "expr": "Load",
-              "name": "first_target"
-            },
-            "amount": 1
+            "expr": "SelectOnePosition",
+            "from": {
+              "expr": "Distance",
+              "origin": {
+                "expr": "Pos",
+                "who": {
+                  "expr": "Load",
+                  "name": "first_target"
+                }
+              },
+              "amount": 1
+            }
           }
         }
       },
@@ -77,9 +83,12 @@
             "expr": "You"
           },
           "to": {
-            "expr": "DistanceRange",
-            "min": 1,
-            "max": 2
+            "expr": "SelectOnePosition",
+            "from": {
+              "expr": "DistanceRange",
+              "min": 1,
+              "max": 2
+            }
           }
         }
       },

@@ -52,7 +52,7 @@ public class PickEffect extends Expression {
         // client interaction loop
         for (Map.Entry<Integer, Set<Effect>> entry : mSubexpressions.entrySet()) {
             // prettier names for entry fields
-            Set<Effect> effectsToSelect = entry.getValue();
+            final Set<Effect> effectsToSelect = entry.getValue();
 
             // this loops keeps requesting input for the current priority until it is valid
             while (!effectsToSelect.isEmpty()) {
@@ -75,9 +75,9 @@ public class PickEffect extends Expression {
                         view.showMessage("It is mandatory to select all non-optional effects!");
 
                     // strip effects to select from optionals
-                    effectsToSelect = effectsToSelect.stream()
-                            .filter(eff -> !eff.isOptional())
-                            .collect(Collectors.toSet());
+                    effectsToSelect.removeAll(effectsToSelect.stream()
+                            .filter(Effect::isOptional)
+                            .collect(Collectors.toSet()));
                 }
 
                 // once verified, effect IDs are turned into actual effects
@@ -88,7 +88,11 @@ public class PickEffect extends Expression {
                                     .filter(eff -> eff.getId().equals(id))
                                     .findFirst()
                                     .orElseThrow(() ->
-                                            new InputMismatchException("nonexistent ID in effect selection"))
+                                            new InputMismatchException(
+                                                    "nonexistent ID in effect selection: " + id + "\n" +
+                                                    "Available IDs in requested selection: " + effectsToSelect.stream()
+                                                            .map(Effect::getId)
+                                                            .collect(Collectors.toList())))
                     );
                 }
 

@@ -81,6 +81,18 @@ public class SetExpression extends Expression {
     }
 
     @Override
+    public Position asPosition() {
+        if (mSubexpressions.size() == 1)
+            return mSubexpressions.iterator().next().asPosition();
+
+        if (mSubexpressions.isEmpty())
+            throw new UnsupportedConversionException("SetExpression (empty)", "Position");
+
+        else
+            throw new UnsupportedConversionException("SetExpression (more than one element)", "Position");
+    }
+
+    @Override
     public Set<PlayerColor> asTargets() {
         return stream()
                 .map(Expression::asTarget)
