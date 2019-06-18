@@ -19,9 +19,7 @@ public class SelectOnePosition extends Behaviour {
 
     @Override
     protected Expression continueEval(ShootContext context) {
-        View view = context.getView();
-
-        Position selectedPosition = view.selectPosition(getSub("from").asRange());
+        Position selectedPosition = selectPosition(context, getSub("from").asRange());
 
         return new PositionLiteral(selectedPosition);
     }

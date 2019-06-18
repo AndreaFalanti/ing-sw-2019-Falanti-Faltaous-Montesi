@@ -8,10 +8,7 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
 import it.polimi.se2019.util.Exclude;
-import it.polimi.se2019.view.request.EffectsSelectedRequest;
-import it.polimi.se2019.view.request.Request;
-import it.polimi.se2019.view.request.TargetsSelectedRequest;
-import it.polimi.se2019.view.request.WeaponModeSelectedRequest;
+import it.polimi.se2019.view.request.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -123,6 +120,19 @@ public abstract class Expression {
         );
 
         return request.getSelectedTargets();
+    }
+
+    // select position
+    protected Position selectPosition(ShootContext context, Set<Position> range) {
+        context.getView().showPositionSelectionView(range);
+
+        PositionSelectedRequest request = (PositionSelectedRequest) waitForSelectionRequest(
+                context.getShootInteraction(),
+                req -> ((PositionSelectedRequest) req).getPosition(),
+                "position"
+        );
+
+        return request.getPosition();
     }
 
     // select effects

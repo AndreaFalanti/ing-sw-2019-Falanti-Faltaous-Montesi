@@ -39,6 +39,7 @@ public class ShootInteraction {
         if (!isOccupied())
             throw new InvalidStateException("No one is shooting!");
 
+        mLogger.log(Level.INFO, "Putting request in shoot interaction queue: {0}", request);
         mRequests.add(request);
     }
 

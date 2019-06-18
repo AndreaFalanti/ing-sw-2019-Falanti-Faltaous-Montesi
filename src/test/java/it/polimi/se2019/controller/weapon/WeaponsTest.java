@@ -10,6 +10,7 @@ import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.EffectsSelectedRequest;
+import it.polimi.se2019.view.request.PositionSelectedRequest;
 import it.polimi.se2019.view.request.TargetsSelectedRequest;
 import it.polimi.se2019.view.request.WeaponModeSelectedRequest;
 import org.junit.Before;
@@ -60,6 +61,13 @@ public class WeaponsTest {
                 marks,
                 damagedPlayer.getMarks()
         );
+    }
+    private void assertPlayerStatus(Player affectedPlayer,
+                                    List<PlayerColor> damageInflicted,
+                                    List<Pair<PlayerColor, Integer>> inflictedMarks,
+                                    Position newPosition) {
+        assertPlayerDamage(affectedPlayer, damageInflicted, inflictedMarks);
+        assertEquals(affectedPlayer.getPos(), newPosition);
     }
 
     /**
@@ -140,6 +148,31 @@ public class WeaponsTest {
 
         stubber.when(viewMock).showEffectsSelectionView(any(), anyInt());
     }
+    private void mockPositionSelections(View viewMock, Controller controller, List<Position> positionSelections) {
+        if (positionSelections.isEmpty())
+            throw new IllegalArgumentException();
+
+        BiFunction<View, Position, Object> requestProvider = (mock, positionSelection) -> {
+            controller.getShootInteraction().putRequest(new PositionSelectedRequest(positionSelection, mock));
+            return null;
+        };
+
+        Iterator<Position> itr = positionSelections.listIterator();
+        Position firstEle = itr.next();
+        Stubber stubber = doAnswer(invocationOnMock -> requestProvider.apply(
+                (View) invocationOnMock.getMock(),
+                firstEle
+        ));
+        while (itr.hasNext()) {
+            Position ele = itr.next();
+            stubber = stubber.doAnswer(invocationOnMock -> requestProvider.apply(
+                    (View) invocationOnMock.getMock(),
+                    ele
+            ));
+        }
+
+        stubber.when(viewMock).showPositionSelectionView(anySet());
+    }
     private void mockModeSelections(View viewMock, Controller controller, List<String> modeSelections) {
         if (modeSelections.isEmpty())
             throw new IllegalArgumentException();
@@ -177,7 +210,7 @@ public class WeaponsTest {
     }
 
     @Before
-    public void instantiate() {
+    public void instantiateTestGames() {
         mAllInOriginGame = new Game(
                 Board.fromJson(Jsons.get("boards/game/board1")),
                 new ArrayList<>(Arrays.asList(
@@ -256,16 +289,15 @@ public class WeaponsTest {
         // create mock view
         View viewMock = mock(View.class);
 
-        // mock effect selection
-        mockEffectSelections(viewMock, testController, Arrays.asList(
-                Collections.singletonList("basic_effect"),
-                Collections.singletonList("with_second_lock")
-        ));
-
-        // mock target selection (first Luigi, then Smurfette)
+        // shoot to Luigi with basic effect and to Smurfette with using the second lock
         mockTargetSelections(viewMock, testController, Arrays.asList(
                 Collections.singleton(PlayerColor.GREEN),
                 Collections.singleton(PlayerColor.BLUE)
+        ));
+
+        // use second lock to shoot Smurfette
+        mockEffectSelections(viewMock, testController, Collections.singletonList(
+                Collections.singletonList("with_second_lock")
         ));
 
         // shoot through controller
@@ -274,7 +306,6 @@ public class WeaponsTest {
 
         // verify order of mock method calls
         InOrder inOrder = inOrder(viewMock);
-        inOrder.verify(viewMock).showEffectsSelectionView(any(), eq(0));
         inOrder.verify(viewMock).showTargetsSelectionView(1, 1, allTargets(PlayerColor.YELLOW));
         inOrder.verify(viewMock).showEffectsSelectionView(any(), eq(1));
         inOrder.verify(viewMock).showTargetsSelectionView(1, 1, allTargetsExcept(
@@ -338,5 +369,53 @@ public class WeaponsTest {
                     Collections.emptyList()
             );
         }
+    }
+
+    @Test
+    public void testVortexCannonBasicModeOnlyLuigiSucksMarioIntoVortex() {
+        // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("vortex_cannon");
+
+        // create mock view
+        View viewMock = mock(View.class);
+
+        // mock position selections
+        mockPositionSelections(viewMock, testController, Collections.singletonList(
+                new Position(2, 2) // vortex position
+        ));
+
+        // mock target selections
+        mockTargetSelections(viewMock, testController, Collections.singletonList(
+                Collections.singleton(PlayerColor.PURPLE)
+        ));
+
+        // mock effect selection
+        mockEffectSelections(viewMock, testController,  Collections.singletonList(
+                Collections.emptyList() // do not pick with black hole
+        ));
+
+        // shoot through controller
+        testController.startShootInteraction(viewMock, PlayerColor.GREEN, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // verify order of mock method calls
+        InOrder inOrder = inOrder(viewMock);
+        inOrder.verify(viewMock).showPositionSelectionView(anySet());
+        inOrder.verify(viewMock).showTargetsSelectionView(anyInt(), anyInt(), anySet());
+        inOrder.verify(viewMock).showEffectsSelectionView(any(), anyInt());
+
+        // assert that Mario is hurt and has moved to new position
+        assertPlayerStatus(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.PURPLE),
+                Arrays.asList(
+                        PlayerColor.GREEN,
+                        PlayerColor.GREEN
+                ),
+                Collections.emptyList(),
+                new Position(2, 2)
+        );
     }
 }

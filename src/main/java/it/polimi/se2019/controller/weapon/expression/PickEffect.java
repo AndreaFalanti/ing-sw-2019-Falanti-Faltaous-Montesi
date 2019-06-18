@@ -45,15 +45,19 @@ public class PickEffect extends Expression {
     @Override
     public Expression eval(ShootContext context) {
         for (int curPriority : mSubexpressions.keySet()) {
-            // ask user which effect to pick
-            List<String> selectedEffects = selectEffects(context, mSubexpressions, curPriority);
+            Set<Effect> currentSubs = mSubexpressions.get(curPriority);
 
-            // validate user input
-            // TODO: actually do this
+            // ask user which effect to pick if optional effects are present
+            final List<String> selectedEffects = new ArrayList<>();
+            if (currentSubs.stream().anyMatch(Effect::isOptional)) {
+                selectedEffects.addAll(selectEffects(context, mSubexpressions, curPriority));
 
-            // evaluate picked subexpressions
+                // TODO: validate user input
+            }
+
+            // evaluate picked and non-optional subexpressions
             mSubexpressions.get(curPriority).stream()
-                    .filter(eff -> selectedEffects.contains(eff.getId()))
+                    .filter(eff -> !eff.isOptional() || selectedEffects.contains(eff.getId()))
                     .forEach(eff -> discardEvalResult(eff.getBehaviour().eval(context)));
         }
 
