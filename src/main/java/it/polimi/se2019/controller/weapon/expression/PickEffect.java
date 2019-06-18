@@ -55,9 +55,13 @@ public class PickEffect extends Expression {
                 // TODO: validate user input
             }
 
-            // evaluate picked and non-optional subexpressions
+            // evaluate picked and non-optional subexpressions (non-optionals are executed after optionals
+            // in a random order if none is specified
             mSubexpressions.get(curPriority).stream()
-                    .filter(eff -> !eff.isOptional() || selectedEffects.contains(eff.getId()))
+                    .filter(eff -> selectedEffects.contains(eff.getId()))
+                    .forEach(eff -> discardEvalResult(eff.getBehaviour().eval(context)));
+            mSubexpressions.get(curPriority).stream()
+                    .filter(eff -> !eff.isOptional() && !selectedEffects.contains(eff.getId()))
                     .forEach(eff -> discardEvalResult(eff.getBehaviour().eval(context)));
         }
 
