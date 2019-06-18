@@ -69,6 +69,18 @@ public class SetExpression extends Expression {
 
     // utility conversion to primitives
     @Override
+    public PlayerColor asTarget() {
+        if (mSubexpressions.size() == 1)
+            return mSubexpressions.iterator().next().asTarget();
+
+        if (mSubexpressions.isEmpty())
+            throw new UnsupportedConversionException("SetExpression (empty)", "Target");
+
+        else
+            throw new UnsupportedConversionException("SetExpression (more than one element)", "Target");
+    }
+
+    @Override
     public Set<PlayerColor> asTargets() {
         return stream()
                 .map(Expression::asTarget)

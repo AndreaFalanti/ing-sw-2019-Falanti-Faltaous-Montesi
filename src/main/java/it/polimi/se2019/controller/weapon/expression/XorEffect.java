@@ -18,10 +18,12 @@ public class XorEffect extends Expression {
     public Expression eval(ShootContext context) {
         View view = context.getView();
 
+        // get input
         String selectedEffectID = selectWeaponMode(context, mLhs, mRhs);
 
-        // TODO: verify input
+        // TODO: check if input needs to be validated
 
+        // use input to decide which effect should be chosen
         if (mLhs.getId().equals(selectedEffectID))
             discardEvalResult(mLhs.getBehaviour().eval(context));
         else

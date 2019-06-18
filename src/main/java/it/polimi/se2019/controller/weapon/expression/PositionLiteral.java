@@ -1,6 +1,5 @@
 package it.polimi.se2019.controller.weapon.expression;
 
-import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 
 import java.util.Collections;
@@ -9,6 +8,11 @@ import java.util.Set;
 public class PositionLiteral extends Literal<Position> {
     public PositionLiteral(Position contents) {
         super(contents);
+    }
+
+    @Override
+    public SetExpression asSetExpr() {
+        return SetExpression.from(Collections.singleton(this));
     }
 
     @Override

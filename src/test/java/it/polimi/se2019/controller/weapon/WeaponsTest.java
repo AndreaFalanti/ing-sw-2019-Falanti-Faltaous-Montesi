@@ -456,4 +456,120 @@ public class WeaponsTest {
                 )
         );
     }
+
+    @Test
+    public void testHellionStonesHurtsMarioAndThenNanoTracesMarioAndLuigi() {
+          // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("hellion");
+
+        // create mock view
+        View viewMock = mock(View.class);
+
+        // choose nano-tracer mode
+        mockModeSelections(viewMock, testController, Collections.singletonList(
+                "in_nano-tracer_mode"
+        ));
+
+        // select Mario for the hurting (Luigi will be hurt automatically)
+        mockTargetSelections(viewMock, testController, Collections.singletonList(
+                Collections.singleton(PlayerColor.PURPLE)
+        ));
+
+        // shoot through controller
+        testController.startShootInteraction(viewMock, PlayerColor.YELLOW, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // verify order of mock method calls
+        InOrder inOrder = inOrder(viewMock);
+        inOrder.verify(viewMock).showWeaponModeSelectionView(any(Effect.class), any(Effect.class));
+        inOrder.verify(viewMock).showTargetsSelectionView(anyInt(), anyInt(), anySet());
+
+        // assert that Mario is hurt and that Dorian has been inflicted marks
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.PURPLE),
+                Collections.singletonList(
+                        PlayerColor.YELLOW
+                ),
+                Collections.singletonList(
+                        new Pair<>(PlayerColor.YELLOW, 2)
+                )
+        );
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY),
+                Collections.emptyList(),
+                Collections.singletonList(
+                        new Pair<>(PlayerColor.YELLOW, 2)
+                )
+        );
+    }
+
+    @Test
+    public void testRocketLauncher() {
+           // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("rocket_launcher");
+
+        // create mock view
+        View viewMock = mock(View.class);
+
+        // choose Mario as primary target
+        mockTargetSelections(viewMock, testController, Collections.singletonList(
+                Collections.singleton(PlayerColor.PURPLE)
+        ));
+
+        // choose to use the basic effect's move
+        mockEffectSelections(viewMock, testController, Collections.singletonList(
+                Collections.singletonList("basic_effect_move")
+        ));
+
+        // move Mario upwards
+        mockTargetSelections(viewMock, testController, Collections.singletonList(
+                Collections.singleton(PlayerColor.PURPLE)
+        ));
+        mockPositionSelections(viewMock, testController, Collections.singletonList(
+                new Position(3, 1)
+        ));
+
+        // choose nano-tracer mode
+        mockModeSelections(viewMock, testController, Collections.singletonList(
+                "in_nano-tracer_mode"
+        ));
+
+        // select Mario for the hurting (Luigi will be hurt automatically)
+        mockTargetSelections(viewMock, testController, Collections.singletonList(
+                Collections.singleton(PlayerColor.PURPLE)
+        ));
+
+        // shoot through controller
+        testController.startShootInteraction(viewMock, PlayerColor.YELLOW, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // verify order of mock method calls
+        InOrder inOrder = inOrder(viewMock);
+        inOrder.verify(viewMock).showWeaponModeSelectionView(any(Effect.class), any(Effect.class));
+        inOrder.verify(viewMock).showTargetsSelectionView(anyInt(), anyInt(), anySet());
+
+        // assert that Mario is hurt and that Dorian has been inflicted marks
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.PURPLE),
+                Collections.singletonList(
+                        PlayerColor.YELLOW
+                ),
+                Collections.singletonList(
+                        new Pair<>(PlayerColor.YELLOW, 2)
+                )
+        );
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY),
+                Collections.emptyList(),
+                Collections.singletonList(
+                        new Pair<>(PlayerColor.YELLOW, 2)
+                )
+        );
+    }
 }

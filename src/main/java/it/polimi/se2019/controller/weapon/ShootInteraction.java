@@ -9,9 +9,6 @@ import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,7 +47,16 @@ public class ShootInteraction {
         mThread = new Thread(() -> {
             // evaluate shoot expression
             ShootContext initialContext = new ShootContext(game, view, shooter, this);
-            weaponBehaviour.eval(initialContext);
+            try {
+                weaponBehaviour.eval(initialContext);
+            } catch (Exception e) {
+                synchronized (mLock) {
+                    mLogger.log(Level.WARNING,
+                            "Shutting down shoot interaction because of exception in expression evaluation...");
+                    mLock.notifyAll();
+                    throw e;
+                }
+            }
 
             // announce end of shoot interaction
             synchronized (mLock) {

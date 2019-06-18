@@ -6,78 +6,85 @@
   "behaviour": {
     "expr": "XorEffect",
     "lhs": {
-      "expr": "Do",
-      "list": [
-        {
-          "expr": "InflictDamage",
-          "amount": "1d",
-          "to": {
-            "expr": "SelectOneTarget",
-            "from": {
-              "expr": "Difference",
-              "lhs": {
-                "expr": "CanSee"
-              },
-              "rhs": {
+      "name": "Basic mode",
+      "behaviour": {
+        "expr": "Do",
+        "list": [
+          {
+            "expr": "InflictDamage",
+            "amount": "1d",
+            "to": {
+              "expr": "SelectOneTarget",
+              "from": {
+                "expr": "Difference",
+                "lhs": {
+                  "expr": "CanSee"
+                },
+                "rhs": {
+                  "expr": "Pos",
+                  "who": {
+                    "expr": "You"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "expr": "InflictDamage",
+            "amount": "1m",
+            "to": {
+              "expr": "All",
+              "from": {
                 "expr": "Pos",
                 "who": {
-                  "expr": "You"
+                  "expr": "LastSelected"
                 }
               }
             }
           }
-        },
-        {
-          "expr": "InflictDamage",
-          "amount": "1m",
-          "to": {
-            "expr": "All",
-            "from": {
-              "expr": "Pos",
-              "who": {
-                "expr": "LastSelected"
-              }
-            }
-          }
-        }
-      ]
+        ]
+      }
     },
     "rhs": {
-      "expr": "Do",
-      "list": [
-        {
-          "expr": "InflictDamage",
-          "amount": "1d",
-          "to": {
-            "expr": "SelectOneTarget",
-            "from": {
-              "expr": "Difference",
-              "lhs": {
-                "expr": "CanSee"
-              },
-              "rhs": {
+      "name": "In nano-tracer mode",
+      "cost": "1r",
+      "behaviour": {
+        "expr": "Do",
+        "list": [
+          {
+            "expr": "InflictDamage",
+            "amount": "1d",
+            "to": {
+              "expr": "SelectOneTarget",
+              "from": {
+                "expr": "Difference",
+                "lhs": {
+                  "expr": "CanSee"
+                },
+                "rhs": {
+                  "expr": "Pos",
+                  "who": {
+                    "expr": "You"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "expr": "InflictDamage",
+            "amount": "2m",
+            "to": {
+              "expr": "All",
+              "from": {
                 "expr": "Pos",
                 "who": {
-                  "expr": "You"
+                  "expr": "LastSelected"
                 }
               }
             }
           }
-        },
-        {
-          "expr": "InflictDamage",
-          "amount": "2m",
-          "to": {
-            "expr": "All",
-            "from": {
-              "expr": "Pos",
-              "who": {
-                "expr": "LastSelected"
-              }
-            }
-          }
-        }
-      ]
+        ]
+      }
     }
   }
 }
