@@ -9,6 +9,7 @@ public class Chain extends Behaviour {
 
     @Override
     protected Expression continueEval(ShootContext context) {
+        // TODO: define this
         throw new UnsupportedOperationException("WIP");
     }
 }

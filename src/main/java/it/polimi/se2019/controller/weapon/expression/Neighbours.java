@@ -13,8 +13,8 @@ public class Neighbours extends Behaviour {
 
     @Override
     protected Expression continueEval(ShootContext context) {
-        Expression moreGeneral = new All(new Pos(getSub("who")));
+        Expression moreGeneric = new All(new Pos(getSub("who")));
 
-        return moreGeneral.eval(context);
+        return moreGeneric.eval(context);
     }
 }
