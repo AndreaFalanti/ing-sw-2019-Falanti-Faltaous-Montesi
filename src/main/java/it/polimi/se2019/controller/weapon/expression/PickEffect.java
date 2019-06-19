@@ -44,7 +44,7 @@ public class PickEffect extends Expression {
     }
 
     @Override
-    public Expression eval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         // get view for communicating with client
         View view = context.getView();
 

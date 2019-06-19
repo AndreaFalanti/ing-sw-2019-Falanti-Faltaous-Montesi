@@ -18,16 +18,16 @@ public class InflictDamage extends Behaviour {
 
     // TODO: add doc
     @Override
-    protected final Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         PlayerColor inflicter = context.getShooterColor();
 
         // remove shooter to inflicted players
-        Set<PlayerColor> targets = getSub("to").asTargets().stream()
+        Set<PlayerColor> targets = getSub("to").eval(context).asTargets().stream()
                 .filter(tar -> !tar.equals(inflicter))
                 .collect(Collectors.toSet());
 
         // calculate resulting action
-        inflictDamage(context, inflicter, targets, getSub("amount").asDamage());
+        inflictDamage(context, inflicter, targets, getSub("amount").eval(context).asDamage());
 
         // return it
         return new Done();

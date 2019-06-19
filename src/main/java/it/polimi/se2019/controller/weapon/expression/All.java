@@ -17,9 +17,9 @@ public class All extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         Set<Player> players = context.getPlayers();
-        Set<Position> range = getSub("from").asRange();
+        Set<Position> range = getSub("from").eval(context).asRange();
 
         return SetExpression.from(players.stream()
                 .filter(pl -> range.contains(pl.getPos()))

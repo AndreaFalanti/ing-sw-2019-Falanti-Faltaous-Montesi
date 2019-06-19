@@ -13,11 +13,11 @@ public class Move extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         move(
                 context,
-                getSub("from").asTargets(),
-                getSub("to").asPosition()
+                getSub("from").eval(context).asTargets(),
+                getSub("to").eval(context).asPosition()
         );
 
         return new Done();

@@ -59,7 +59,7 @@ public class SetExpression extends Expression {
     }
 
     @Override
-    public Expression eval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         // return SetExpression of all evaluated expressions
         return from(stream()
                         .map(expr -> expr.eval(context))

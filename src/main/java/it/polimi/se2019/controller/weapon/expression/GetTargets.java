@@ -15,9 +15,9 @@ public class GetTargets extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         Set<Player> players = context.getPlayers();
-        Set<Position> positions = getSub("from").asRange();
+        Set<Position> positions = getSub("from").eval(context).asRange();
 
         // get all players standing in provided range and are not the shooter
         return SetExpression.from(players.stream()

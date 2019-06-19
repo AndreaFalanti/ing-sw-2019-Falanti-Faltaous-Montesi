@@ -289,6 +289,7 @@ public class WeaponsTest {
 
         // create mock view
         View viewMock = mock(View.class);
+        mockViewLogging(viewMock);
 
         // mock selections
         mockSelections(testController,

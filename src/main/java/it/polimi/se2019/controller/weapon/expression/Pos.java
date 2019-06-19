@@ -13,11 +13,11 @@ public class Pos extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         Game game = context.getGame();
 
         return new PositionLiteral(
-                game.getPlayerFromColor(getSub("who").asTarget()).getPos()
+                game.getPlayerFromColor(getSub("who").eval(context).asTarget()).getPos()
         );
     }
 }

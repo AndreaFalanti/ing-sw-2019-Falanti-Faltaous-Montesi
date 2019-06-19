@@ -33,13 +33,13 @@ public class DistanceRange extends Behaviour {
      *         when {@code this}  is instantiated (see the constructor for more info)
      */
     @Override
-    protected final Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         Board board = context.getBoard();
 
         Set<Position> reachablePositions = board.getReachablePositions(
-                getSub("origin").asPosition(),
-                getSub("min").asInt(),
-                getSub("max").asInt()
+                getSub("origin").eval(context).asPosition(),
+                getSub("min").eval(context).asInt(),
+                getSub("max").eval(context).asInt()
         );
 
         return SetExpression.from(reachablePositions.stream()

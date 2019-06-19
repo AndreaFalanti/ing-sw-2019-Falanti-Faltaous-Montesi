@@ -13,8 +13,8 @@ public class SelectOnePosition extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
-        Position selectedPosition = selectPosition(context, getSub("from").asRange());
+    public final Expression eval(ShootContext context) {
+        Position selectedPosition = selectPosition(context, getSub("from").eval(context).asRange());
 
         return new PositionLiteral(selectedPosition);
     }

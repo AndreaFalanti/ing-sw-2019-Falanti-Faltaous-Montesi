@@ -4,7 +4,7 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 
 public class You extends Behaviour {
     @Override
-    protected Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         return new TargetLiteral(context.getShooterColor());
     }
 }

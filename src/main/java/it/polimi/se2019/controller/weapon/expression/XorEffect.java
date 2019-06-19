@@ -13,7 +13,7 @@ public class XorEffect extends Expression {
     private Effect mRhs;
 
     @Override
-    public Expression eval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         View view = context.getView();
 
         // get input

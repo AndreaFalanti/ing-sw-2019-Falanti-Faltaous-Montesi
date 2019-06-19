@@ -22,19 +22,19 @@ public class SelectTargets extends Behaviour {
 
     // TODO: add doc
     @Override
-    public final Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         View view = context.getView();
 
         // remove shooter from selectable targets
-        Set<PlayerColor> targets = getSub("from").asTargets().stream()
+        Set<PlayerColor> targets = getSub("from").eval(context).asTargets().stream()
                 .filter(clr -> !clr.equals(context.getShooterColor()))
                 .collect(Collectors.toSet());
 
         // select targets
         Set<PlayerColor> selectedTargets = selectTargets(
                 context,
-                getSub("min").asInt(),
-                getSub("max").asInt(),
+                getSub("min").eval(context).asInt(),
+                getSub("max").eval(context).asInt(),
                 targets
         );
 

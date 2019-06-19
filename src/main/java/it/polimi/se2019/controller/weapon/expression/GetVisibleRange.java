@@ -15,18 +15,9 @@ public class GetVisibleRange extends Behaviour {
     }
 
     @Override
-    protected Expression handleSubDefaultValue(String subName, ShootContext context) {
-        if (subName.equals("origin")) {
-            return new You();
-        }
-
-        return super.handleSubDefaultValue(subName, context);
-    }
-
-    @Override
-    protected Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         // TODO: make this better by streamlining selections (todo file)
-        Position observerPos = getSub("origin").asPosition();
+        Position observerPos = getSub("origin").eval(context).asPosition();
 
         return SetExpression.from(
                 context.getBoard().getAllSeenBy(observerPos).stream()

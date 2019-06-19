@@ -17,8 +17,8 @@ public class NegateTargets extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
-        Set<PlayerColor> targets = getSub("selection").asTargets();
+    public final Expression eval(ShootContext context) {
+        Set<PlayerColor> targets = getSub("selection").eval(context).asTargets();
 
         Set<PlayerColor> negatedTargets = context.getPlayers().stream()
                 .map(Player::getColor)

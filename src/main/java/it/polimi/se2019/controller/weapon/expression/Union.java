@@ -16,9 +16,9 @@ public class Union extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
-        Set<Expression> lhsSet = new HashSet<>(getSub("lhs").asSetExpr().asSet());
-        Set<Expression> rhsSet = new HashSet<>(getSub("rhs").asSetExpr().asSet());
+    public final Expression eval(ShootContext context) {
+        Set<Expression> lhsSet = new HashSet<>(getSub("lhs").eval(context).asSetExpr().asSet());
+        Set<Expression> rhsSet = new HashSet<>(getSub("rhs").eval(context).asSetExpr().asSet());
 
         lhsSet = new HashSet<>(lhsSet);
         lhsSet.addAll(rhsSet);

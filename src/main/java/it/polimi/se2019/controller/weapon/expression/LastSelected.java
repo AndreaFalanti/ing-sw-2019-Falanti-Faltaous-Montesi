@@ -10,7 +10,7 @@ public class LastSelected extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         return context.getVar(SPECIAL_VAR_LAST_SELECTED);
     }
 }

@@ -8,7 +8,8 @@ public class Line extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
+        // TODO: implement this
         throw new UnsupportedOperationException("WIP");
     }
 }
