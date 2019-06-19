@@ -61,18 +61,15 @@
             "expr": "InflictDamage",
             "amount": "2d",
             "to": {
-              "expr": "SelectOneTarget",
+              "expr": "All",
               "from": {
-                "expr": "All",
-                "from": {
-                  "expr": "Line",
-                  "direction": {
-                    "store": "jet_dir",
-                    "expr": "SelectOneDirection"
-                  },
-                  "minLength": 1,
-                  "maxLength": 1
-                }
+                "expr": "Line",
+                "direction": {
+                  "store": "jet_dir",
+                  "expr": "SelectOneDirection"
+                },
+                "minLength": 1,
+                "maxLength": 1
               }
             }
           },

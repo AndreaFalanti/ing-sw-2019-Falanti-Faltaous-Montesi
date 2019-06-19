@@ -503,6 +503,7 @@ public class WeaponsTest {
     public void testFlamethrowerBasicModeSmurfetteRoastsStonesAndLuigi() {
          // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty);
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY).move(new Position(2, 1));
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("flamethrower");
@@ -534,6 +535,56 @@ public class WeaponsTest {
         );
         assertPlayerDamage(
                 mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.YELLOW),
+                Collections.singletonList(
+                        PlayerColor.BLUE
+                ),
+                Collections.emptyList()
+        );
+    }
+
+    @Test
+    public void testFlamethrowerBarbecueModeSmurfetteRoastsSomeMore() {
+        // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty);
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY).move(new Position(2, 1));
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("flamethrower");
+
+        // create mock view
+        View viewMock = mock(View.class);
+        mockViewLogging(viewMock);
+
+        // mock selection
+        mockSelections(testController,
+                // roast Stones, Dorian and then Luigi
+                new WeaponModeSelectedRequest("in_barbecue_mode", viewMock),
+                new DirectionSelectedRequest(Direction.NORTH, viewMock)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(viewMock, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // assert roasting
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY),
+                Arrays.asList(
+                        PlayerColor.BLUE,
+                        PlayerColor.BLUE
+                ),
+                Collections.emptyList()
+        );
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.YELLOW),
+                Arrays.asList(
+                        PlayerColor.BLUE,
+                        PlayerColor.BLUE
+                ),
+                Collections.emptyList()
+        );
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN),
                 Collections.singletonList(
                         PlayerColor.BLUE
                 ),
