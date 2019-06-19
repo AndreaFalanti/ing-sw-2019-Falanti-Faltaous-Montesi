@@ -16,4 +16,10 @@ public interface ResponseHandler extends AbstractHandler<Response> {
     default void handle(DiscardPowerUpResponse response) {
         fallbackHandle(response);
     }
+    default void handle(PickDirectionResponse response) {
+        fallbackHandle(response);
+    }
+    default void handle(PickPositionResponse response) {
+        fallbackHandle(response);
+    }
 }

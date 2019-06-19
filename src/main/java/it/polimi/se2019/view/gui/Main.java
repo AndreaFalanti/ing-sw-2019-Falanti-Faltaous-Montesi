@@ -22,7 +22,7 @@ public class Main extends Application {
         Pane root = loader.load();
         primaryStage.setTitle("Adrenalina");
         primaryStage.setResizable(false);
-        primaryStage.setAlwaysOnTop(true);
+        //primaryStage.setAlwaysOnTop(true);
 
         BackgroundImage backgroundImage = new BackgroundImage(new Image(GuiResourcePaths.BACKGROUND + "bg.jpg"),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
