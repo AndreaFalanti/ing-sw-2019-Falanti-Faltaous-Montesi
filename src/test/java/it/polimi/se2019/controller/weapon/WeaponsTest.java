@@ -6,6 +6,7 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
@@ -164,19 +165,12 @@ public class WeaponsTest {
         // create mock view
         View viewMock = mock(View.class);
 
-        // mock target selection (pick poor hidden luigi)
-        mockSelections(testController,
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), viewMock)
-        );
+        // NB. no selection mocking is necessary, since Luigi is the only target that cannot be seen by Mario
 
         // initiate shoot interaction and wait for it to end
         Weapon heatseeker = Weapons.get("heatseeker");
         testController.startShootInteraction(viewMock, PlayerColor.PURPLE, heatseeker.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
-
-        // verify order of mock view method calls
-        InOrder inOrder = inOrder(viewMock);
-        inOrder.verify(viewMock).showTargetsSelectionView(1, 1, Collections.singleton(PlayerColor.GREEN));
 
         // assert that Luigi was hurt
         assertPlayerDamage(
@@ -467,5 +461,83 @@ public class WeaponsTest {
                     ),
                     Collections.emptyList()
             );
+    }
+
+    @Test
+    public void testTractorBeamMarioDragsLuigiOutOfHiding() {
+        // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty);
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN).move(new Position(1, 0));
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("tractor_beam");
+
+        // create mock view
+        View viewMock = mock(View.class);
+        mockViewLogging(viewMock);
+
+        // mock selection
+        mockSelections(testController,
+                // drag Luigi into yellow room with basic effect
+                new WeaponModeSelectedRequest("basic_mode", viewMock),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), viewMock),
+                new PositionSelectedRequest(new Position(2, 1), viewMock)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(viewMock, PlayerColor.PURPLE, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // assert that Luigi has been hazardously dragged into the yellow room
+        assertPlayerStatus(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN),
+                Collections.singletonList(
+                        PlayerColor.PURPLE
+                ),
+                Collections.emptyList(),
+                new Position(2, 1)
+        );
+    }
+
+    @Test
+    public void testFlamthrowerBasicModeSmurfetteRoastsStonesAndLuigi() {
+         // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("flamethrower");
+
+        // create mock view
+        View viewMock = mock(View.class);
+        mockViewLogging(viewMock);
+
+        // mock selection
+        mockSelections(testController,
+                // roast Luigi and Stones with basic mode
+                //   NB. Luigi doesn't need to be selected since he's the only one standing in his position
+                new WeaponModeSelectedRequest("basic_mode", viewMock),
+                new DirectionSelectedRequest(Direction.NORTH, viewMock),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), viewMock)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(viewMock, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // assert that Luigi and Stones have been roasted thoroughly
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN),
+                Collections.singletonList(
+                        PlayerColor.BLUE
+                ),
+                Collections.emptyList()
+        );
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.YELLOW),
+                Collections.singletonList(
+                        PlayerColor.BLUE
+                ),
+                Collections.emptyList()
+        );
     }
 }

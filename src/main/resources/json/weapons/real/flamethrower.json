@@ -16,12 +16,16 @@
             "to": {
               "expr": "SelectOneTarget",
               "from": {
-                "expr": "Line",
-                "direction": {
-                  "store": "jet_dir",
-                  "expr": "SelectOneDirection"
-                },
-                "length": 1
+                "expr": "All",
+                "from": {
+                  "expr": "Line",
+                  "direction": {
+                    "store": "jet_dir",
+                    "expr": "SelectOneDirection"
+                  },
+                  "minLength": 1,
+                  "maxLength": 1
+                }
               }
             }
           },
@@ -31,12 +35,16 @@
             "to": {
               "expr": "SelectOneTarget",
               "from": {
-                "expr": "Line",
-                "direction": {
-                  "expr": "Load",
-                  "name": "jet_dir"
-                },
-                "length": 2
+                "expr": "All",
+                "from": {
+                  "expr": "Line",
+                  "direction": {
+                    "expr": "Load",
+                    "name": "jet_dir"
+                  },
+                  "minLength": 2,
+                  "maxLength": 2
+                }
               }
             }
           }
@@ -55,12 +63,16 @@
             "to": {
               "expr": "SelectOneTarget",
               "from": {
-                "expr": "Line",
-                "direction": {
-                  "store": "jet_dir",
-                  "expr": "SelectOneDirection"
-                },
-                "length": 1
+                "expr": "All",
+                "from": {
+                  "expr": "Line",
+                  "direction": {
+                    "store": "jet_dir",
+                    "expr": "SelectOneDirection"
+                  },
+                  "minLength": 1,
+                  "maxLength": 1
+                }
               }
             }
           },
@@ -70,12 +82,16 @@
             "to": {
               "expr": "SelectOneTarget",
               "from": {
-                "expr": "Line",
-                "direction": {
-                  "expr": "Load",
-                  "name": "jet_dir"
-                },
-                "length": 2
+                "expr": "All",
+                "from": {
+                  "expr": "Line",
+                  "direction": {
+                    "expr": "Load",
+                    "name": "jet_dir"
+                  },
+                  "minLength": 2,
+                  "maxLength": 2
+                }
               }
             }
           }

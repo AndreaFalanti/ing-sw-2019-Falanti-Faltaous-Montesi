@@ -18,10 +18,10 @@
                 "expr": "All",
                 "from": {
                   "expr": "Chain",
-                  "lhs": {
-                    "expr": "CanSee"
+                  "base": {
+                    "expr": "GetVisibleRange"
                   },
-                  "rhs": {
+                  "chainFunc": {
                     "expr": "DistanceRange",
                     "min": 0,
                     "max": 2
@@ -30,7 +30,10 @@
               }
             },
             "to": {
-              "expr": "CanSee"
+              "expr": "SelectOnePosition",
+              "from": {
+                "expr": "GetVisibleRange"
+              }
             }
           },
           {

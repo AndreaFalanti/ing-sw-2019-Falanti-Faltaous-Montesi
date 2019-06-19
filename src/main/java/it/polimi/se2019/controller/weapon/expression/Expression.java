@@ -24,8 +24,9 @@ import java.util.logging.Logger;
 // TODO: refine doc
 public abstract class Expression {
     @Exclude
-    public Logger logger = Logger.getLogger(getClass().getName());
+    protected static final Logger LOGGER = Logger.getLogger(Expression.class.getName());
 
+    // trivial constructor
     public Expression() {
 
     }
@@ -85,7 +86,7 @@ public abstract class Expression {
     // safely discard result of evaluated expression by issuing a warning
     protected static Expression discardEvalResult(Expression result) {
         if (!result.isDone())
-            // TODO: use logger (todof)
+            // TODO: use mLogger (todof)
             System.out.println(
                     "WARNING:" + result.getClass().getSimpleName() + "was discarded after evaluation!"
             );
@@ -99,14 +100,14 @@ public abstract class Expression {
         // TODO: use poll instead of take in case nothing is ever returned by anyone...
         // NB: treat this as an exception since player timeout should be handled by the main RequestHandler
         try {
-            logger.log(Level.INFO, "Shoot interaction waiting for {0} selection...", selectionDescriptor);
+            LOGGER.log(Level.INFO, "Shoot interaction waiting for {0} selection...", selectionDescriptor);
             Request request = interaction.getRequestQueue().take();
             // TODO: check that request type is sound
-            logger.log(Level.INFO, "Shoot interaction received {0} selection: [{1}]",
+            LOGGER.log(Level.INFO, "Shoot interaction received {0} selection: [{1}]",
                     new Object[]{selectionDescriptor, selectionGetter.apply(request)});
             return request;
         } catch (InterruptedException e) {
-            logger.log(Level.WARNING, "Shoot interaction interrupted while waiting for {0} selection!", selectionDescriptor);
+            LOGGER.log(Level.WARNING, "Shoot interaction interrupted while waiting for {0} selection!", selectionDescriptor);
             throw new EvaluationInterruptedException("selectTargets");
         }
     }
@@ -167,6 +168,20 @@ public abstract class Expression {
         return request.getId();
     }
 
+    // pick direction
+    protected Direction pickDirection(ShootContext context) {
+        // get input through view
+        context.getView().pickDirection();
+
+        DirectionSelectedRequest request = (DirectionSelectedRequest) waitForSelectionRequest(
+                context.getShootInteraction(),
+                req -> ((DirectionSelectedRequest) req).getDirection(),
+                "direction"
+        );
+
+        return request.getDirection();
+    }
+
     /**
      * Undoes the side effects that the evaluation of an expression had on a game object
      * @param info an object containing the info needed to undo the partial effects of a shoot expression on a game
@@ -177,6 +192,11 @@ public abstract class Expression {
 
     // evaluation is done (it's only done in Done expression)
     public boolean isDone() {
+        return false;
+    }
+
+    // true if the expression represents infinity
+    public boolean isInf() {
         return false;
     }
 
