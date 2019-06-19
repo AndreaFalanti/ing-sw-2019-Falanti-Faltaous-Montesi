@@ -3,20 +3,18 @@ package it.polimi.se2019.view.cli;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CLIPlayer {
+    private static final String SPACE   =  "\n\t\t\t\t\t\t";
     private static final String NOWEAPON = "not have weapon";
     private String mPlayerName ;
     private String mPlayerColor ;
     private String mPlayerScore;
     private String dead;
     private String overkilled;
-    private Map<String,Integer> mPlayerWeapons =new HashMap<>() ;
+    private List<String> mPlayerWeapons =new  ArrayList<>();
     private Map<String,String> weaponsInfo =new HashMap<>();
     private String mPlayerPos;
     private Map<String,Integer> mPlayerMarks = new HashMap<>();
@@ -76,7 +74,7 @@ public class CLIPlayer {
 
     public String getPlayerPosition(){return mPlayerPos;}
 
-    public Map<String, Integer> getPlayerWeapons(){return mPlayerWeapons;}
+    public List<String> getPlayerWeapons(){return mPlayerWeapons;}
 
     public Map<String, String> getWeaponsInfo(){return weaponsInfo;}
 
@@ -105,7 +103,10 @@ public class CLIPlayer {
     }
 
     public void setAmmo(AmmoValue ammo){
-        mPlayerAmmo = ammo.toString();
+
+        mPlayerAmmo =   Colors.getColorTile("red") + "Red " + Colors.ANSI_RESET + ammo.getRed()+" "+
+                        Colors.getColorTile("yellow") + "Yellow " +Colors.ANSI_RESET+ ammo.getYellow()+" "+
+                        Colors.getColorTile("blue") + "Blue "+Colors.ANSI_RESET + ammo.getBlue();
     }
 
     public void setPowerUpsOtherPlayers(int i){
@@ -129,7 +130,7 @@ public class CLIPlayer {
                 power.append(Colors.getColorTile(powerUpCard.getColor().getPascalName()));
                 power.append(powerUpCard.getColor().getPascalName());
                 power.append(Colors.ANSI_RESET);
-                power.append("\n\t\t\t\t\t\t ");
+                power.append(SPACE+" ");
             }
         }
 
@@ -216,45 +217,49 @@ public class CLIPlayer {
     }
 
     public void setWeaponOtherPlayer(Weapon[] weapons){
-        if (weapons == null)
-            mPlayerWeapons.put(NOWEAPON,0);
+        List<String> actualWeapons = new ArrayList<>();
+        if (weapons == null){
+            actualWeapons.add(NOWEAPON);
+            mPlayerWeapons = actualWeapons;
+        }
         else{
-            mPlayerWeapons.remove(NOWEAPON);
             for(Weapon weapon: weapons){
-                if(weapon!=null){
-                    if(!weapon.isLoaded())
-                        mPlayerWeapons.put(weapon.getName(),0);
-                    else
-                        mPlayerWeapons.remove(weapon.getName());
+                if(weapon!=null && !weapon.isLoaded()){
+                        actualWeapons.add(weapon.getName());
                 }
             }
         }
+        mPlayerWeapons = actualWeapons;
     }
 
     public void setWeaponOwner(Weapon[] weapons){
-        String load = "";
+        String load = "load";
+        List<String> actualWeapons = new ArrayList<>();
+        Map<String,String> info = new HashMap<>();
         int isLoad=1;//is load
-        if (weapons == null)
-            mPlayerWeapons.put(NOWEAPON,0);
+        if (weapons == null){
+            actualWeapons.add(NOWEAPON);
+            mPlayerWeapons = actualWeapons;
+        }
         else{
-            mPlayerWeapons.remove(NOWEAPON);
+
             for(Weapon weapon: weapons){
                 if(weapon!= null){
                     if(!weapon.isLoaded()){
                         load = " to load cost: "+ Colors.getColorTile("red") + "Red " + Colors.ANSI_RESET + weapon.getReloadCost().getRed()+" "+
-                                                  Colors.getColorTile("yellow") + "Yellow " +Colors.ANSI_RESET+ weapon.getReloadCost().getRed()+" "+
-                                                  Colors.getColorTile("blue") + "Blue "+Colors.ANSI_RESET + weapon.getReloadCost().getRed();
-                        isLoad=0;
-
+                                                  Colors.getColorTile("yellow") + "Yellow " +Colors.ANSI_RESET+ weapon.getReloadCost().getYellow()+" "+
+                                                  Colors.getColorTile("blue") + "Blue "+Colors.ANSI_RESET + weapon.getReloadCost().getBlue();
                     }
-                    else
-                        isLoad=1;
-                    mPlayerWeapons.put(weapon.getName(),isLoad);
-                    weaponsInfo.put(weapon.getName(),load);
-                    load ="";
+
+                    actualWeapons.add(weapon.getName());
+                    info.put(weapon.getName(),load);
+                    load ="load";
                 }
             }
         }
+
+        mPlayerWeapons = actualWeapons;
+        weaponsInfo = info;
     }
 
 
