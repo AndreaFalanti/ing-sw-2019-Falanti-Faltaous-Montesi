@@ -7,6 +7,7 @@ import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.Request;
 import sun.plugin.dom.exception.InvalidStateException;
 
+import javax.xml.ws.WebServiceProvider;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
@@ -61,6 +62,15 @@ public class ShootInteraction {
             // announce end of shoot interaction
             synchronized (mLock) {
                 mLogger.info("Shutting down shoot interaction thread...");
+
+                if (!mRequests.isEmpty())
+                    mLogger.log(Level.SEVERE,
+                            "Shoot interaction thread is shutting down, but there are still " +
+                                    "requests to process in the request queue!\n" +
+                                    "Unprocessed requests: {0}", mRequests
+                    );
+                mRequests.clear();
+
                 mOccupied = false;
                 mLock.notifyAll();
             }
@@ -70,6 +80,7 @@ public class ShootInteraction {
         mThread.start();
     }
 
+    @Deprecated
     public void reset() throws InterruptedException {
         // since the game needs to be reset, the current shoot interaction is not longer valid,
         // and so can be interrupted
@@ -80,6 +91,7 @@ public class ShootInteraction {
         throw new UnsupportedOperationException("WIP");
     }
 
+    @Deprecated
     private void handleInterruption() throws InterruptedException {
         mLogger.log(Level.SEVERE, "Something inside a shoot interaction was interrupted!\n" +
                 "Resetting shoot interaction and interrupting his thread...\n" +

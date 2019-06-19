@@ -52,7 +52,7 @@
       }
     },
     "rhs": {
-      "name": "In barebecue mode",
+      "name": "In barbecue mode",
       "cost": "2y",
       "behaviour": {
         "expr": "Do",

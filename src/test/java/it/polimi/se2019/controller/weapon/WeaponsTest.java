@@ -500,7 +500,7 @@ public class WeaponsTest {
     }
 
     @Test
-    public void testFlamthrowerBasicModeSmurfetteRoastsStonesAndLuigi() {
+    public void testFlamethrowerBasicModeSmurfetteRoastsStonesAndLuigi() {
          // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty);
 

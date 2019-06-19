@@ -36,12 +36,6 @@ public class SelectTargets extends Behaviour {
                 .filter(clr -> !clr.equals(context.getShooterColor()))
                 .collect(Collectors.toSet());
 
-        // if only one target, no need to select, just return it
-        if (targets.size() == 1) {
-            LOGGER.info("Skipping selection of single target");
-            return returnSelection(context, new TargetLiteral(targets.iterator().next()));
-        }
-
         // select targets
         Set<PlayerColor> selectedTargets = selectTargets(
                 context,

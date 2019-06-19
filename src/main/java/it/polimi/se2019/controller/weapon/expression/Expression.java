@@ -115,8 +115,15 @@ public abstract class Expression {
     // select targets
     protected Set<PlayerColor> selectTargets(ShootContext context, int min, int max,
                                              Set<PlayerColor> possibleTargets) {
-        context.getView().showTargetsSelectionView(min, max, possibleTargets);
+        // TODO: validate selection validity
 
+        // attempt to skip selection request
+        if (possibleTargets.size() == min) {
+            LOGGER.log(Level.INFO, "Skipping selection of {0} targets", min);
+            return possibleTargets;
+        }
+
+        context.getView().showTargetsSelectionView(min, max, possibleTargets);
         TargetsSelectedRequest request = (TargetsSelectedRequest) waitForSelectionRequest(
                 context.getShootInteraction(),
                 req -> ((TargetsSelectedRequest) req).getSelectedTargets(),
