@@ -52,6 +52,11 @@ public class GraphicView extends View {
     }
 
     @Override
+    public void showPowerUpSelectionView(List<Integer> indexes) {
+
+    }
+
+    @Override
     public void showDirectionSelectionView() {
         mMainFrameController.activateDirectionTab();
     }

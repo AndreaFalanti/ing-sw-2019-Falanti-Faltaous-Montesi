@@ -2,11 +2,6 @@ package it.polimi.se2019.controller.weapon.expression;
 
 import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.Player;
-import org.w3c.dom.ranges.Range;
-
-import java.util.Collections;
-import java.util.Set;
 
 public class Pos extends Behaviour {
     public Pos() {

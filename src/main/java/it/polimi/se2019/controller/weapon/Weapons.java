@@ -1,6 +1,9 @@
 package it.polimi.se2019.controller.weapon;
 
-import it.polimi.se2019.resource_handler.*;
+import it.polimi.se2019.resource_handler.BadLoadException;
+import it.polimi.se2019.resource_handler.NonExistentResourceException;
+import it.polimi.se2019.resource_handler.ResourceHandler;
+import it.polimi.se2019.resource_handler.WeaponResource;
 import it.polimi.se2019.util.Jsons;
 
 import java.io.IOException;

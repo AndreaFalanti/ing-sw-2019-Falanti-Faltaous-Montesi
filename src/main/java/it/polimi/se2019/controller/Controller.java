@@ -1,19 +1,14 @@
 package it.polimi.se2019.controller;
 
 
-import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.controller.weapon.ShootInteraction;
-import it.polimi.se2019.controller.weapon.UndoRequestedException;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.action.MoveShootAction;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class Controller implements AbstractController {
     // fields
@@ -124,6 +119,11 @@ public class Controller implements AbstractController {
 
     @Override
     public void handle(WeaponModeSelectedRequest request) {
+
+    }
+
+    @Override
+    public void handle(PowerUpSelectedRequest request) {
 
     }
 

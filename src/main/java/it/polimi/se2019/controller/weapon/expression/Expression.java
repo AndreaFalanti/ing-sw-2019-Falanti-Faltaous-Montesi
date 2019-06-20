@@ -1,6 +1,9 @@
 package it.polimi.se2019.controller.weapon.expression;
 
-import it.polimi.se2019.controller.weapon.*;
+import it.polimi.se2019.controller.weapon.Effect;
+import it.polimi.se2019.controller.weapon.EvaluationInterruptedException;
+import it.polimi.se2019.controller.weapon.ShootContext;
+import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;

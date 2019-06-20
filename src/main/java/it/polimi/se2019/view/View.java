@@ -51,6 +51,8 @@ public abstract class View extends Observable<Request> implements Observer<Updat
 
     public abstract void showValidPositions(List<Position> positions);
 
+    public abstract void showPowerUpSelectionView(List<Integer> indexes);
+
     // WEAPONS related
     /**
      * Ask player a cardinal direction

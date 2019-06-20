@@ -4,8 +4,6 @@ import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.view.View;
 
-import java.util.*;
-
 public class XorEffect extends Expression {
     public XorEffect() {
 

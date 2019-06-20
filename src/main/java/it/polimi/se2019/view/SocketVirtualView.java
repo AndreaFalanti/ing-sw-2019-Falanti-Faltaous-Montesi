@@ -19,6 +19,7 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SocketVirtualView extends View {
@@ -51,22 +52,22 @@ public class SocketVirtualView extends View {
 
     @Override
     public void showMessage(String message) {
-        mOut.print(mGson.toJson(new MessageResponse(message, false)));
+        sendResponse(new MessageResponse(message, false));
     }
 
     @Override
     public void reportError(String error) {
-        mOut.print(mGson.toJson(new MessageResponse(error, true)));
+        sendResponse(new MessageResponse(error, true));
     }
 
     @Override
     public void showPowerUpsDiscardView() {
-        mOut.print(mGson.toJson(new DiscardPowerUpResponse()));
+        sendResponse(new DiscardPowerUpResponse());
     }
 
     @Override
     public void showWeaponSelectionView(TileColor spawnColor) {
-        mOut.print(mGson.toJson(new PickWeaponResponse(spawnColor)));
+        sendResponse(new PickWeaponResponse(spawnColor));
     }
 
     @Override
@@ -75,13 +76,18 @@ public class SocketVirtualView extends View {
     }
 
     @Override
+    public void showPowerUpSelectionView(List<Integer> indexes) {
+
+    }
+
+    @Override
     public void showDirectionSelectionView() {
-        mOut.print(mGson.toJson(new PickDirectionResponse()));
+        sendResponse(new PickDirectionResponse());
     }
 
     @Override
     public void showPositionSelectionView(Set<Position> possiblePositions) {
-        mOut.print(mGson.toJson(new PickPositionResponse(possiblePositions)));
+        sendResponse(new PickPositionResponse(possiblePositions));
     }
 
     @Override
@@ -96,7 +102,7 @@ public class SocketVirtualView extends View {
 
     @Override
     public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
-        
+
     }
 
     @Override
@@ -124,5 +130,8 @@ public class SocketVirtualView extends View {
         return null;
     }
 
-
+    private void sendResponse (Response response) {
+        logger.log(Level.INFO, "Sending {0}...", response.getClass().getSimpleName());
+        mOut.print(mGson.toJson(response));
+    }
 }

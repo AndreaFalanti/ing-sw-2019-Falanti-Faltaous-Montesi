@@ -4,7 +4,6 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Intersect extends Behaviour {
     public Intersect() {

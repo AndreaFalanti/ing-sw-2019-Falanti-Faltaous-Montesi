@@ -13,10 +13,8 @@ import it.polimi.se2019.view.request.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
-import org.mockito.stubbing.Stubber;
 
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;

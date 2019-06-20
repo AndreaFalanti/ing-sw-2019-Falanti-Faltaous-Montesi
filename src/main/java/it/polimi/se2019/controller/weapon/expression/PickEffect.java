@@ -6,7 +6,6 @@ import it.polimi.se2019.view.View;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class PickEffect extends Expression {
     // subexpressions

@@ -1,16 +1,9 @@
 package it.polimi.se2019.model.action;
 
-import it.polimi.se2019.controller.Controller;
-import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.Player;
-import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.response.ActionResponseStrings;
 import it.polimi.se2019.model.action.response.InvalidActionResponse;
 import it.polimi.se2019.model.action.response.MessageActionResponse;
-import it.polimi.se2019.model.board.SpawnTile;
-import it.polimi.se2019.model.board.Tile;
-import it.polimi.se2019.view.View;
 
 import java.util.Optional;
 

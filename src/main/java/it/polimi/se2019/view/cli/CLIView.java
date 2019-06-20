@@ -271,6 +271,11 @@ public class CLIView extends View {
     }
 
     @Override
+    public void showPowerUpSelectionView(List<Integer> indexes) {
+
+    }
+
+    @Override
     public void showDirectionSelectionView() {
         notify(new DirectionSelectedRequest(pickDirection(),this));
     }
