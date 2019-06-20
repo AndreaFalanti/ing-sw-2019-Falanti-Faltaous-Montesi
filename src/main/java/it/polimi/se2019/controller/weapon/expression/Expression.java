@@ -4,6 +4,8 @@ import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.controller.weapon.EvaluationInterruptedException;
 import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.controller.weapon.ShootInteraction;
+import it.polimi.se2019.controller.Controller;
+import it.polimi.se2019.controller.weapon.*;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
@@ -17,14 +19,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 // TODO: refine doc
 public abstract class Expression {
-    @Exclude
+    // logger
     protected static final Logger LOGGER = Logger.getLogger(Expression.class.getName());
+
+    // amount of time spent waiting for a request in seconds
+    private static final int REQUEST_ACCEPTANCE_TIMEOUT = 1;
 
     // trivial constructor
     public Expression() {
@@ -86,9 +92,9 @@ public abstract class Expression {
     // safely discard result of evaluated expression by issuing a warning
     protected static Expression discardEvalResult(Expression result) {
         if (!result.isDone())
-            // TODO: use mLogger (todof)
-            System.out.println(
-                    "WARNING:" + result.getClass().getSimpleName() + "was discarded after evaluation!"
+            LOGGER.log(Level.WARNING,
+                    "{0} was discarded after evaluation!",
+                    result.getClass().getSimpleName()
             );
 
         return result;
@@ -97,25 +103,48 @@ public abstract class Expression {
     // wait for a particular request
     private Request waitForSelectionRequest(ShootInteraction interaction, Function<Request, Object> selectionGetter,
                                             String selectionDescriptor) {
-        // TODO: use poll instead of take in case nothing is ever returned by anyone...
-        // NB: treat this as an exception since player timeout should be handled by the main RequestHandler
+        LOGGER.log(Level.INFO, "Shoot interaction waiting for {0} selection...", selectionDescriptor);
+
+        // wait for request to be presented on the request queue by another thread
+        Request request;
         try {
-            LOGGER.log(Level.INFO, "Shoot interaction waiting for {0} selection...", selectionDescriptor);
-            Request request = interaction.getRequestQueue().take();
-            // TODO: check that request type is sound
-            LOGGER.log(Level.INFO, "Shoot interaction received {0} selection: [{1}]",
-                    new Object[]{selectionDescriptor, selectionGetter.apply(request)});
-            return request;
+            request = interaction.getRequestQueue().poll(REQUEST_ACCEPTANCE_TIMEOUT, TimeUnit.SECONDS);
+
+            // interrupt if timeout is too long
+            if (request == null)
+                throw new InterruptedException();
         } catch (InterruptedException e) {
+            // handle interruption
             LOGGER.log(Level.WARNING, "Shoot interaction interrupted while waiting for {0} selection!", selectionDescriptor);
-            throw new EvaluationInterruptedException("selectTargets");
+
+            Thread.currentThread().interrupt();
+            throw new EvaluationInterruptedException(selectionDescriptor);
         }
+
+        // undo shoot interaction if requested
+        // TODO: use alternative approach to instanceof
+        if (request instanceof UndoWeaponInteractionRequest) {
+            LOGGER.log(
+                    Level.INFO, "Received undo request while waiting for {0} selection!",
+                    selectionDescriptor
+            );
+            throw new UndoShootInteractionException();
+        }
+
+        // return request to be handled
+        LOGGER.log(Level.INFO, "Shoot interaction received {0} selection: [{1}]",
+                new Object[]{selectionDescriptor, selectionGetter.apply(request)});
+        return request;
     }
 
     // select targets
     protected Set<PlayerColor> selectTargets(ShootContext context, int min, int max,
                                              Set<PlayerColor> possibleTargets) {
-        // TODO: validate selection validity
+        // undo if selection cannot be performed...
+        if (possibleTargets.size() < min) {
+            context.getView().reportError(Controller.NO_ACTIONS_REMAINING_ERROR_MSG);
+            throw new UndoShootInteractionException();
+        }
 
         // attempt to skip selection request
         if (possibleTargets.size() == min) {
@@ -187,14 +216,6 @@ public abstract class Expression {
         );
 
         return request.getDirection();
-    }
-
-    /**
-     * Undoes the side effects that the evaluation of an expression had on a game object
-     * @param info an object containing the info needed to undo the partial effects of a shoot expression on a game
-     */
-    public static void undoShootInteraction(ShootUndoInfo info) {
-        throw new UnsupportedOperationException();
     }
 
     // evaluation is done (it's only done in Done expression)

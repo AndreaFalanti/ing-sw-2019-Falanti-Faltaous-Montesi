@@ -41,7 +41,7 @@ public class ShootContext {
         mShooterColor = shooterColor;
         mScope = new HashMap<>();
         mShootInteraction = shootInteraction;
-        mUndoInfo = new ShootUndoInfo();
+        mUndoInfo = new ShootUndoInfo(mGame);
     }
 
     // trivial getters

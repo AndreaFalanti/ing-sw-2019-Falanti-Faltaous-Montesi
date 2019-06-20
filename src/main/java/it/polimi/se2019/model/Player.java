@@ -30,12 +30,16 @@ public class Player extends Observable<Update> {
         mMarks.put(PlayerColor.GREY,0);
     }
 
-    public Player (String name, PlayerColor color, Position pos) {
+    public Player (String name, PlayerColor color, Position pos, AmmoValue ammo) {
         mName = name;
         mColor = color;
         mPos = pos;
-        mAmmo = new AmmoValue(1, 1, 1);
+        mAmmo = ammo;
         initializeMarksMap();
+    }
+
+    public Player (String name, PlayerColor color, Position pos) {
+        this(name, color, pos, new AmmoValue(1, 1 , 1));
     }
 
     public Player (String name, PlayerColor color) {
@@ -98,6 +102,34 @@ public class Player extends Observable<Update> {
     public PowerUpCard getPowerUpCard(int index) {
         return mPowerUpCards[index];
     }
+    //endregion
+
+    //region SETTERS
+
+    public void setAmmo(AmmoValue ammo) {
+        mAmmo = ammo;
+    }
+
+    public void setDeathsNum(int deathsNum) {
+        mDeathsNum = deathsNum;
+    }
+
+    public void setDamageTaken(PlayerColor[] damageTaken) {
+        mDamageTaken = damageTaken;
+    }
+
+    public void setMarks(Map<PlayerColor, Integer> marks) {
+        mMarks = marks;
+    }
+
+    public void setPos(Position pos) {
+        mPos = pos;
+    }
+
+    public void setDead(boolean dead) {
+        mDead = dead;
+    }
+
     //endregion
 
     public void flipBoard () {

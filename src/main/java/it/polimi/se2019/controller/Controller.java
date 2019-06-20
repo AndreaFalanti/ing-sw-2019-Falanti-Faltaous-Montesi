@@ -11,6 +11,9 @@ import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
 public class Controller implements AbstractController {
+    // messages constants
+    public static final String NO_ACTIONS_REMAINING_ERROR_MSG = "No actions remaining! Undo and try again...";
+
     // fields
     private Game mGame;
     private PlayerActionController mPlayerActionController;

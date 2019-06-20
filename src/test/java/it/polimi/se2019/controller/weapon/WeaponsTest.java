@@ -1,10 +1,7 @@
 package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.controller.Controller;
-import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.Player;
-import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.util.Jsons;
@@ -58,6 +55,9 @@ public class WeaponsTest {
     }
     private void assertPlayerPosition(Player player, Position newPosition) {
         assertEquals(player.getPos(), newPosition);
+    }
+    private void assertPlayerAmmo(Player player, AmmoValue newAmmo) {
+        assertEquals(player.getAmmo(), newAmmo);
     }
     private void assertPlayerStatus(Player affectedPlayer,
                                     List<PlayerColor> damageInflicted,
@@ -124,14 +124,15 @@ public class WeaponsTest {
 
     @Before
     public void instantiateTestGames() {
+        AmmoValue initialAmmo = new AmmoValue(3, 3, 3);
         mAllInOriginGame = new Game(
                 Board.fromJson(Jsons.get("boards/game/board1")),
                 new ArrayList<>(Arrays.asList(
-                        new Player("Mario", PlayerColor.PURPLE, new Position(0, 0)),
-                        new Player("Luigi", PlayerColor.GREEN, new Position(0, 0)),
-                        new Player("Dorian", PlayerColor.GREY, new Position(0, 0)),
-                        new Player("Smurfette", PlayerColor.BLUE, new Position(0, 0)),
-                        new Player("Stones", PlayerColor.YELLOW, new Position(0, 0))
+                        new Player("Mario", PlayerColor.PURPLE, new Position(0, 0), initialAmmo),
+                        new Player("Luigi", PlayerColor.GREEN, new Position(0, 0), initialAmmo),
+                        new Player("Dorian", PlayerColor.GREY, new Position(0, 0), initialAmmo),
+                        new Player("Smurfette", PlayerColor.BLUE, new Position(0, 0), initialAmmo),
+                        new Player("Stones", PlayerColor.YELLOW, new Position(0, 0), initialAmmo)
                 )),
                 1
         );
@@ -139,11 +140,11 @@ public class WeaponsTest {
         mLuigiHidesFromYellowParty = new Game(
                 Board.fromJson(Jsons.get("boards/game/board1")),
                 new ArrayList<>(Arrays.asList(
-                        new Player("Mario", PlayerColor.PURPLE, new Position(3, 2)),
-                        new Player("Luigi", PlayerColor.GREEN, new Position(2, 0)),
-                        new Player("Dorian", PlayerColor.GREY, new Position(3, 2)),
-                        new Player("Smurfette", PlayerColor.BLUE, new Position(2, 2)),
-                        new Player("Stones", PlayerColor.YELLOW, new Position(2, 1))
+                        new Player("Mario", PlayerColor.PURPLE, new Position(3, 2), initialAmmo),
+                        new Player("Luigi", PlayerColor.GREEN, new Position(2, 0), initialAmmo),
+                        new Player("Dorian", PlayerColor.GREY, new Position(3, 2), initialAmmo),
+                        new Player("Smurfette", PlayerColor.BLUE, new Position(2, 2), initialAmmo),
+                        new Player("Stones", PlayerColor.YELLOW, new Position(2, 1), initialAmmo)
                 )),
                 1
         );
@@ -318,7 +319,7 @@ public class WeaponsTest {
     }
 
     @Test
-    public void testWhisperSmurfetteSnipesLuigi() {
+    public void testWhisperSmurfetteCannotSeeLuigiAndTheShootInteractionIsAutomaticallyUndone() {
          // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty);
 
@@ -327,32 +328,20 @@ public class WeaponsTest {
 
         // create mock view
         View viewMock = mock(View.class);
+        mockViewLogging(viewMock);
 
-        // select Luigi
-        mockSelections(testController,
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), viewMock)
-        );
+        // no selections can be done
 
         // shoot through controller
         testController.startShootInteraction(viewMock, PlayerColor.BLUE, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
-        // verify order of mock method calls
-        InOrder inOrder = inOrder(viewMock);
-        inOrder.verify(viewMock).showTargetsSelectionView(anyInt(), anyInt(), anySet());
-
-        // assert that Mario is hurt and has moved to new position
-        assertPlayerDamage(
-                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN),
-                Arrays.asList(
-                        PlayerColor.BLUE,
-                        PlayerColor.BLUE,
-                        PlayerColor.BLUE
-                ),
-                Collections.singletonList(
-                        new Pair<>(PlayerColor.BLUE, 1)
-                )
-        );
+        // assert that everyone is without damage and in their original position
+        for (Player pl : mLuigiHidesFromYellowParty.getPlayers())
+            assertPlayerDamage(pl,
+                    Collections.emptyList(),
+                    Collections.emptyList()
+            );
     }
 
     @Test
@@ -589,6 +578,36 @@ public class WeaponsTest {
                         PlayerColor.BLUE
                 ),
                 Collections.emptyList()
+        );
+    }
+
+    @Test
+    public void testFlamethrowerPrematureUndoWhenPickingDirection() {
+         // instantiate controller
+        Controller testController = new Controller(mAllInOriginGame);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("flamethrower");
+
+        // create mock view
+        View viewMock = mock(View.class);
+        mockViewLogging(viewMock);
+
+        // mock selection
+        mockSelections(testController,
+                // roast Stones, Dorian and then Luigi
+                new WeaponModeSelectedRequest("in_barbecue_mode", viewMock),
+                new UndoWeaponInteractionRequest(viewMock)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(viewMock, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // verify that paying the cost of barbecue mode has been undone
+        assertPlayerAmmo(
+                mAllInOriginGame.getPlayerFromColor(PlayerColor.BLUE),
+                new AmmoValue(3, 3, 3)
         );
     }
 }

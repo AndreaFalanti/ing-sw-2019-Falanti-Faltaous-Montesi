@@ -47,15 +47,20 @@ public class ShootInteraction {
 
         mThread = new Thread(() -> {
             // evaluate shoot expression
-            ShootContext initialContext = new ShootContext(game, view, shooter, this);
+            ShootContext context = new ShootContext(game, view, shooter, this);
             try {
-                weaponBehaviour.eval(initialContext);
+                weaponBehaviour.eval(context);
+            } catch (UndoShootInteractionException e) {
+                mLogger.log(Level.INFO,
+                        "Undoing shoot interaction...");
+                context.getUndoInfo().doUndo();
             } catch (Exception e) {
+                mLogger.log(Level.WARNING,
+                        "Shutting down shoot interaction because of exception in expression evaluation...");
+                throw e;
+            } finally {
                 synchronized (mLock) {
-                    mLogger.log(Level.WARNING,
-                            "Shutting down shoot interaction because of exception in expression evaluation...");
                     mLock.notifyAll();
-                    throw e;
                 }
             }
 
