@@ -2,6 +2,7 @@ package it.polimi.se2019.controller.weapon.expression;
 
 import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.controller.weapon.ShootContext;
+import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.view.View;
 
 import java.util.*;
@@ -46,6 +47,7 @@ public class PickEffect extends Expression {
     @Override
     public final Expression eval(ShootContext context) {
         // get view for communicating with client
+        ShootInteraction interaction = context.getShootInteraction();
         View view = context.getView();
 
         // client interaction loop
@@ -63,7 +65,7 @@ public class PickEffect extends Expression {
                 }
 
                 // user input is requested for optional effect choice AND effect evaluation order
-                List<String> selectedEffectIDs = selectEffects(context, mSubexpressions, effectsToSelect);
+                List<String> selectedEffectIDs = interaction.selectEffects(view, mSubexpressions, effectsToSelect);
 
                 // an empty choice is interpreted specially: it corresponds with the will of picking no
                 // optional effects. If any non-optional effects are still available, they are offered again

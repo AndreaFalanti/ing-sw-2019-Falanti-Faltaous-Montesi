@@ -6,19 +6,15 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.controller.weapon.*;
-import it.polimi.se2019.model.Damage;
-import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
 import it.polimi.se2019.util.Exclude;
+import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.SortedMap;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -28,9 +24,6 @@ import java.util.logging.Logger;
 public abstract class Expression {
     // logger
     protected static final Logger LOGGER = Logger.getLogger(Expression.class.getName());
-
-    // amount of time spent waiting for a request in seconds
-    private static final int REQUEST_ACCEPTANCE_TIMEOUT = 1;
 
     // trivial constructor
     public Expression() {
@@ -70,25 +63,6 @@ public abstract class Expression {
         return ExpressionFactory.fromRawJson(ExpressionFactory.toJsonTree(this));
     }
 
-    // inflict damage
-    protected static void inflictDamage(ShootContext context, PlayerColor inflicter, Set<PlayerColor> inflicted, Damage amount) {
-        Game game = context.getGame();
-
-        System.out.println(inflicter + " inflicting " + amount + " damage to " + inflicted);
-
-        inflicted.forEach(
-                singularInflicted -> game.handleDamageInteraction(inflicter, singularInflicted, amount)
-        );
-    }
-
-    // move player around
-    protected static void move(ShootContext context, Set<PlayerColor> who, Position where) {
-        Game game = context.getGame();
-
-        who
-                .forEach(pl -> game.getPlayerFromColor(pl).move(where));
-    }
-
     // safely discard result of evaluated expression by issuing a warning
     protected static Expression discardEvalResult(Expression result) {
         if (!result.isDone())
@@ -98,124 +72,6 @@ public abstract class Expression {
             );
 
         return result;
-    }
-
-    // wait for a particular request
-    private Request waitForSelectionRequest(ShootInteraction interaction, Function<Request, Object> selectionGetter,
-                                            String selectionDescriptor) {
-        LOGGER.log(Level.INFO, "Shoot interaction waiting for {0} selection...", selectionDescriptor);
-
-        // wait for request to be presented on the request queue by another thread
-        Request request;
-        try {
-            request = interaction.getRequestQueue().poll(REQUEST_ACCEPTANCE_TIMEOUT, TimeUnit.SECONDS);
-
-            // interrupt if timeout is too long
-            if (request == null)
-                throw new InterruptedException();
-        } catch (InterruptedException e) {
-            // handle interruption
-            LOGGER.log(Level.WARNING, "Shoot interaction interrupted while waiting for {0} selection!", selectionDescriptor);
-
-            Thread.currentThread().interrupt();
-            throw new EvaluationInterruptedException(selectionDescriptor);
-        }
-
-        // undo shoot interaction if requested
-        // TODO: use alternative approach to instanceof
-        if (request instanceof UndoWeaponInteractionRequest) {
-            LOGGER.log(
-                    Level.INFO, "Received undo request while waiting for {0} selection!",
-                    selectionDescriptor
-            );
-            throw new UndoShootInteractionException();
-        }
-
-        // return request to be handled
-        LOGGER.log(Level.INFO, "Shoot interaction received {0} selection: [{1}]",
-                new Object[]{selectionDescriptor, selectionGetter.apply(request)});
-        return request;
-    }
-
-    // select targets
-    protected Set<PlayerColor> selectTargets(ShootContext context, int min, int max,
-                                             Set<PlayerColor> possibleTargets) {
-        // undo if selection cannot be performed...
-        if (possibleTargets.size() < min) {
-            context.getView().reportError(Controller.NO_ACTIONS_REMAINING_ERROR_MSG);
-            throw new UndoShootInteractionException();
-        }
-
-        // attempt to skip selection request
-        if (possibleTargets.size() == min) {
-            LOGGER.log(Level.INFO, "Skipping selection of {0} targets", min);
-            return possibleTargets;
-        }
-
-        context.getView().showTargetsSelectionView(min, max, possibleTargets);
-        TargetsSelectedRequest request = (TargetsSelectedRequest) waitForSelectionRequest(
-                context.getShootInteraction(),
-                req -> ((TargetsSelectedRequest) req).getSelectedTargets(),
-                "target"
-        );
-
-        return request.getSelectedTargets();
-    }
-
-    // select position
-    protected Position selectPosition(ShootContext context, Set<Position> range) {
-        context.getView().showPositionSelectionView(range);
-
-        PositionSelectedRequest request = (PositionSelectedRequest) waitForSelectionRequest(
-                context.getShootInteraction(),
-                req -> ((PositionSelectedRequest) req).getPosition(),
-                "position"
-        );
-
-        return request.getPosition();
-    }
-
-    // select effects
-    protected List<String> selectEffects(ShootContext context,
-                                         SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
-        // select effects through view
-        context.getView().showEffectsSelectionView(priorityMap, possibleEffects);
-
-        EffectsSelectedRequest request = (EffectsSelectedRequest) waitForSelectionRequest(
-                context.getShootInteraction(),
-                req -> ((EffectsSelectedRequest) req).getSelectedEffects(),
-                "effect"
-        );
-
-        return request.getSelectedEffects();
-    }
-
-    // select modes
-    protected String selectWeaponMode(ShootContext context, Effect mode1, Effect mode2) {
-        // select effects through view
-        context.getView().showWeaponModeSelectionView(mode1, mode2);
-
-        WeaponModeSelectedRequest request = (WeaponModeSelectedRequest) waitForSelectionRequest(
-                context.getShootInteraction(),
-                req -> ((WeaponModeSelectedRequest) req).getId(),
-                "mode"
-        );
-
-        return request.getId();
-    }
-
-    // pick direction
-    protected Direction pickDirection(ShootContext context) {
-        // get input through view
-        context.getView().pickDirection();
-
-        DirectionSelectedRequest request = (DirectionSelectedRequest) waitForSelectionRequest(
-                context.getShootInteraction(),
-                req -> ((DirectionSelectedRequest) req).getDirection(),
-                "direction"
-        );
-
-        return request.getDirection();
     }
 
     // evaluation is done (it's only done in Done expression)

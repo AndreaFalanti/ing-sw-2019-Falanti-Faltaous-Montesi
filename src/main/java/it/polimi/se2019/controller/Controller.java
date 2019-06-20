@@ -18,6 +18,7 @@ public class Controller implements AbstractController {
     private Game mGame;
     private PlayerActionController mPlayerActionController;
     private ShootInteraction mShootInteraction = new ShootInteraction();
+    private PlayerColor mTagbackGrenadePlayer = null; // null if no one is handling the tagback grenade
 
     // constructors
     public Controller(Game game) {
