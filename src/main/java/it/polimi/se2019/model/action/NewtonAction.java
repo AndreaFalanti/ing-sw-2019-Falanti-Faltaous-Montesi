@@ -51,7 +51,7 @@ public class NewtonAction implements Action {
         if (game.getBoard().getTileDistance(game.getPlayerFromColor(mTarget).getPos(), mDestination) >= 3) {
             return Optional.of(new MessageActionResponse("Can't move a player more than 2 spaces"));
         }
-        if (!powerUpCard.getName().equals("Newton")) {
+        if (powerUpCard.getType() != PowerUpType.NEWTON) {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
         }
 

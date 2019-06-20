@@ -45,9 +45,9 @@ public class Main {
         player2.onDamageTaken(new Damage(3,0), PlayerColor.YELLOW);
         player2.onDamageTaken(new Damage(3,1), PlayerColor.YELLOW);
         player3.onDamageTaken(new Damage(3,2), PlayerColor.YELLOW);
-        PowerUpCard card1 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
-        PowerUpCard card2 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
-        PowerUpCard card3 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
+        PowerUpCard card1 = new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,1,0));
+        PowerUpCard card2 = new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,1,0));
+        PowerUpCard card3 = new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,1,0));
         owner.addPowerUp(card1);
         owner.addPowerUp(card2);
         owner.addPowerUp(card3);

@@ -124,7 +124,7 @@ public class CLIPlayer {
         for (PowerUpCard powerUpCard : powerUpCards) {
             if(powerUpCard != null){
                 power.append("Name : ");
-                power.append(powerUpCard.getName());
+                power.append(powerUpCard.getType());
                 power.append(" ");
                 power.append("Color: ");
                 power.append(Colors.getColorTile(powerUpCard.getColor().getPascalName()));

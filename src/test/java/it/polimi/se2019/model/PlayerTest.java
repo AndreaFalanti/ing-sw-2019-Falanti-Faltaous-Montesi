@@ -188,9 +188,9 @@ public class PlayerTest {
     public void testAddPowerUp() {
 
         Player player = new Player("Andrea", PlayerColor.GREY);
-        PowerUpCard card1 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
-        PowerUpCard card2 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
-        PowerUpCard card3 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
+        PowerUpCard card1 = new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,1,0));
+        PowerUpCard card2 = new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,0,1));
+        PowerUpCard card3 = new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,1,0));
 
         try {
             player.addPowerUp(card1);
@@ -214,9 +214,9 @@ public class PlayerTest {
     @Test
     public void testAddPowerUpFullHandException() {
         Player player = new Player("Andrea", PlayerColor.GREY);
-        PowerUpCard card1 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
-        PowerUpCard card2 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
-        PowerUpCard card3 = new PowerUpCard("Teleport", new AmmoValue(0,1,0), null);
+        PowerUpCard card1 = new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,0,1));
+        PowerUpCard card2 = new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,1,0));
+        PowerUpCard card3 = new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,1,0));
 
         try {
             player.addPowerUp(card1);
@@ -233,9 +233,9 @@ public class PlayerTest {
     @Test
     public void testDiscard() {
         Player player = new Player("Andrea", PlayerColor.GREY);
-        PowerUpCard card1 = new PowerUpCard("Teleport", new AmmoValue(0, 1, 0), null);
-        PowerUpCard card2 = new PowerUpCard("Teleport", new AmmoValue(0, 1, 0), null);
-        PowerUpCard card3 = new PowerUpCard("Teleport", new AmmoValue(0, 1, 0), null);
+        PowerUpCard card1 = new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0, 1, 0));
+        PowerUpCard card2 = new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0, 0, 1));
+        PowerUpCard card3 = new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0, 1, 0));
 
         try {
             player.addPowerUp(card1);

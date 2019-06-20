@@ -1,9 +1,6 @@
 package it.polimi.se2019.model.action;
 
-import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.Player;
-import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.PowerUpCard;
+import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.response.ActionResponseStrings;
 import it.polimi.se2019.model.action.response.InvalidActionResponse;
 import it.polimi.se2019.model.action.response.MessageActionResponse;
@@ -41,7 +38,7 @@ public class TeleportAction implements Action {
         if (powerUpCard == null) {
             return Optional.of(new MessageActionResponse("Power up used is null"));
         }
-        return powerUpCard.getName().equals("Teleport") ?
+        return powerUpCard.getType() == PowerUpType.TELEPORT ?
                 Optional.empty() : Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
     }
 
