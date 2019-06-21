@@ -10,20 +10,24 @@ import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 public class Controller implements AbstractController {
     // messages constants
     public static final String NO_ACTIONS_REMAINING_ERROR_MSG = "No actions remaining! Undo and try again...";
 
     // fields
-    private Game mGame;
-    private PlayerActionController mPlayerActionController;
-    private ShootInteraction mShootInteraction = new ShootInteraction();
-    private PlayerColor mTagbackGrenadePlayer = null; // null if no one is handling the tagback grenade
+    private final Game mGame;
+    private final PlayerActionController mPlayerActionController;
+    private final Map<PlayerColor, View> mPlayerViews = new EnumMap<>(PlayerColor.class);
+    private final ShootInteraction mShootInteraction;
 
     // constructors
     public Controller(Game game) {
         mGame = game;
         mPlayerActionController = new PlayerActionController(this);
+        mShootInteraction = new ShootInteraction(mGame, mPlayerViews);
     }
 
     // trivial getters

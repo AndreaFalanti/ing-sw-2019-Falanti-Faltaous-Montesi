@@ -195,6 +195,7 @@ public class WeaponsTest {
 
         // create mock view
         View viewMock = mock(View.class);
+        mockViewLogging(viewMock);
 
         // shoot to Luigi with basic effect and to Smurfette with using the second lock
         mockSelections(testController,

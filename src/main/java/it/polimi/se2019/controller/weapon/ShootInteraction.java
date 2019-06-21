@@ -1,7 +1,7 @@
 package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.controller.Controller;
-import it.polimi.se2019.controller.weapon.expression.Expression;
+import it.polimi.se2019.controller.weapon.expression.*;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
@@ -9,10 +9,7 @@ import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 import sun.plugin.dom.exception.InvalidStateException;
 
-import javax.xml.ws.WebServiceProvider;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedMap;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +30,14 @@ public class ShootInteraction {
     private boolean mOccupied = false;
     private final BlockingQueue<Request> mRequests = new LinkedBlockingQueue<>();
     private final Object mLock = new Object();
+    private final Map<PlayerColor, View> mPlayerViews = new EnumMap<>(PlayerColor.class);
+    private final Game mGame;
+
+    // trivial constructors
+    public ShootInteraction(Game game, Map<PlayerColor, View> playerViews) {
+        mGame = game;
+        mPlayerViews.putAll(playerViews);
+    }
 
     // trivial getters
     public boolean isOccupied() {
@@ -104,32 +109,66 @@ public class ShootInteraction {
     }
 
     // inflict damage
-    public static void inflictDamage(Game game, PlayerColor inflicter, Set<PlayerColor> inflicted, Damage amount) {
+    public void inflictDamage(Game game, PlayerColor inflicter, Set<PlayerColor> inflicted, Damage amount) {
+        Board board = game.getBoard();
+        Player inflicterPlayer = game.getPlayerFromColor(inflicter);
+        View inflicterView = mPlayerViews.get(inflicter);
+
         LOGGER.log(Level.INFO,
                 "{0} inflicting {1} damage to {2}",
                 new Object[]{inflicter, amount, inflicted}
         );
 
-        inflicted.forEach(
-                singularInflicted -> {
-                    Board board = game.getBoard();
+        // handle targeting scope activation
+        if (amount.getDamage() > 0) {
+            Set<Integer> possibleIndices = inflicterPlayer.getPowerUpIndices(PowerUpType.TARGETING_SCOPE);
+
+            possibleIndices.forEach(index -> {
+                // the activation of each scope is requested individually from the user
+                inflicterView.showMessage(
+                        "You can use your targeting scope on one of the selected targets! Select it in the powerup " +
+                                "menu to use it."
+                );
+
+                if (requestPowerupActivation(
+                        inflicter, PowerUpType.TARGETING_SCOPE.toString(), index)
+                ) {
+                    useTargetingScope(inflicter, inflicted, index);
+                }
+            });
+        }
+
+        inflicted.stream()
+                // actually do damage to inflicted player
+                .peek(singularInflicted ->
+                        game.handleDamageInteraction(inflicter, singularInflicted, amount))
+
+                // handle tagback activation
+                .forEach(singularInflicted -> {
+                    Player inflictedPlayer = game.getPlayerFromColor(singularInflicted);
+                    View inflictedView = mPlayerViews.get(singularInflicted);
 
                     // handle tag-back grenade activation
-                    // TODO: have better powerup management
-                    // if (Arrays.stream(inflictedPlayer.getPowerUps())
-                    // .anyMatch(card -> card.getName().equals("Tagback grenade")) &&
-                    // board.canSee(inflictedPlayer.getPos(), inflicterPlayer.getPos())) {
-                    // if (requestTagbackGrenadeActivation(inflicted)) {
-                    // useTagbackGrenade(inflicted, inflicter);
-                    // }
-                    // }
+                    if (board.canSee(inflictedPlayer.getPos(), inflicterPlayer.getPos())) {
+                        Set<Integer> possibleIndices = inflictedPlayer.getPowerUpIndices(PowerUpType.TAGBACK_GRENADE);
 
-                    // handle targeting scope activation
-                    // if (board.)
+                        possibleIndices.forEach(index -> {
+                            inflictedView.showMessage(
+                                    "You can use your tagback grenade on " + inflicterPlayer.getName() + "!" +
+                                            "Select it from the powerup menu to use it."
+                            );
 
-                    game.handleDamageInteraction(inflicter, singularInflicted, amount);
-                }
-        );
+                            if (requestPowerupActivation(
+                                    singularInflicted,PowerUpType.TAGBACK_GRENADE.toString(), index)
+                            ) {
+                                useTagbackGrenade(singularInflicted, inflicter, index);
+                            }
+                        });
+                    }
+
+                    // damage targets
+                    mGame.handleDamageInteraction(singularInflicted, inflicter, new Damage(0, 1));
+                });
     }
 
     // move player around
@@ -139,7 +178,7 @@ public class ShootInteraction {
     }
 
     // wait for a particular request
-    public Request waitForRequest(String requestName) {
+    private Request waitForRequest(String requestName) {
         LOGGER.log(Level.INFO, "Shoot interaction waiting for {0} request", requestName);
 
         // wait for request to be presented on the request queue by another thread
@@ -204,6 +243,8 @@ public class ShootInteraction {
                 "target"
         );
 
+        // TODO: check if selection is right
+
         return request.getSelectedTargets();
     }
 
@@ -221,7 +262,7 @@ public class ShootInteraction {
 
     // select effects
     public List<String> selectEffects(View view,
-                                         SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
+                                      SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
         // select effects through view
         view.showEffectsSelectionView(priorityMap, possibleEffects);
 
@@ -258,10 +299,47 @@ public class ShootInteraction {
         return request.getDirection();
     }
 
-    // request tagback grenade activation
-    public static boolean requestTagbackGrenadeActivation(ShootInteraction interaction, View view,
-                                                          PlayerColor inflicter, PlayerColor inflicted) {
-        throw new UnsupportedOperationException("WIP");
+    /************************/
+    /* Powerup interactions */
+    /************************/
+
+    // request a powerup activation
+    private boolean requestPowerupActivation(PlayerColor activator, String powerupName, int index) {
+        View view = mPlayerViews.get(activator);
+        view.showPowerUpSelectionView(Collections.singletonList(index));
+
+        while (true) {
+            Request request = waitForRequest(powerupName + "activation");
+
+            int selectedIndex = ((PowerUpSelectedRequest) request).getIndex();
+
+            if (false /*TODO:  no selection */)
+                return false;
+
+            if (selectedIndex != index) {
+                view.reportError("You can't use a " +
+                        mGame.getPlayerFromColor(activator).getPowerUpCard(selectedIndex).getType() +
+                        " you can only use a " + powerupName
+                );
+                continue;
+            }
+
+            return true;
+        }
+    }
+
+    // activate tagback grenade
+    private void useTagbackGrenade(PlayerColor inflicter, PlayerColor inflicted, int index) {
+        mGame.getPlayerFromColor(inflicted).discard(index);
+
+        inflictDamage(mGame, inflicter, Collections.singleton(inflicted), new Damage(0, 1));
+    }
+    private void useTargetingScope(PlayerColor inflicter, Set<PlayerColor> possibleTargets, int index) {
+        mGame.getPlayerFromColor(inflicter).discard(index);
+
+        PlayerColor selectedTarget = selectTargets(mPlayerViews.get(inflicter), 1, 1, possibleTargets)
+                .iterator().next();
+        mGame.handleDamageInteraction(inflicter, selectedTarget, new Damage(0, 1));
     }
 }
 

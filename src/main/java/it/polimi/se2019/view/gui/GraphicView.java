@@ -33,7 +33,6 @@ public class GraphicView extends View {
     @Override
     public void showPowerUpsDiscardView() {
         mMainFrameController.enablePowerUpBoxForSendingDiscardedIndex();
-
     }
 
     @Override

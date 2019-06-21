@@ -1,13 +1,12 @@
 package it.polimi.se2019.controller.weapon.expression;
 
 import it.polimi.se2019.controller.weapon.ShootContext;
+import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static it.polimi.se2019.controller.weapon.ShootInteraction.inflictDamage;
 
 public class InflictDamage extends Behaviour {
     public InflictDamage() {
@@ -24,6 +23,7 @@ public class InflictDamage extends Behaviour {
     public final Expression eval(ShootContext context) {
         PlayerColor inflicter = context.getShooterColor();
         Game game = context.getGame();
+        ShootInteraction interaction = context.getShootInteraction();
 
         // remove shooter to inflicted players
         Set<PlayerColor> targets = getSub("to").eval(context).asTargets().stream()
@@ -31,7 +31,7 @@ public class InflictDamage extends Behaviour {
                 .collect(Collectors.toSet());
 
         // calculate resulting action
-        inflictDamage(game, inflicter, targets, getSub("amount").eval(context).asDamage());
+        interaction.inflictDamage(game, inflicter, targets, getSub("amount").eval(context).asDamage());
 
         // return it
         return new Done();

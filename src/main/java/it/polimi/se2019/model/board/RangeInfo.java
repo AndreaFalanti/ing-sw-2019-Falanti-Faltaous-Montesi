@@ -113,7 +113,7 @@ public class RangeInfo {
         MatrixUtils.fillRectangularMatrix(distanceMatrix,  mMaxDistance * 2 + 1, mMaxDistance * 2 + 1, -1);
         MatrixUtils.fillRectangularMatrix(sightMatrix,     mMaxDistance * 2 + 1, mMaxDistance * 2 + 1, 0);
 
-        mDistances.entrySet().stream()
+        mDistances.entrySet()
                 .forEach(entry -> {
                     Position absolutePos = entry.getKey();
                     Position posRelToObserver = absolutePos.subtract(mObserverPos);

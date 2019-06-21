@@ -3,9 +3,11 @@ package it.polimi.se2019.model;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.update.*;
 import it.polimi.se2019.util.Observable;
+import it.polimi.se2019.util.Pair;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Player extends Observable<Update> {
     private AmmoValue mAmmo;
@@ -102,6 +104,7 @@ public class Player extends Observable<Update> {
     public PowerUpCard getPowerUpCard(int index) {
         return mPowerUpCards[index];
     }
+
     //endregion
 
     //region SETTERS
@@ -382,5 +385,19 @@ public class Player extends Observable<Update> {
         weapon.setLoaded(true);
 
         notify(new PlayerWeaponsUpdate(mColor, mWeapons));
+    }
+
+    /**
+     * Returns all the indices for the powerups of the given type
+     * @param wantedType the wanted type
+     * @return all the indices corresponding to the wanted powerup type
+     */
+    public Set<Integer> getPowerUpIndices(PowerUpType wantedType) {
+        return IntStream.range(0, getPowerUps().length)
+                .mapToObj(i -> new Pair<>(i, getPowerUps()[i]))
+                .filter(pair -> pair.getSecond() != null)
+                .filter(pair -> pair.getSecond().getType().equals(wantedType))
+                .map(Pair::getFirst)
+                .collect(Collectors.toSet());
     }
 }

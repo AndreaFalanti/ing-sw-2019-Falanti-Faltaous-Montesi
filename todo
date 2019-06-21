@@ -1,3 +1,4 @@
+0. Check request type in ShootInteraction.waitForRequest
 1. Refactor Expression selection functions
 2. Move trivial type parsing into separate function
 3. Check if Gson actually cares about default constructors
