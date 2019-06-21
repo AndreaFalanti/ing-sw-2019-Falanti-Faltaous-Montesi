@@ -3,8 +3,13 @@ package it.polimi.se2019.resource_handler;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ResourceHandler {
+    // logger
+    private Logger mLogger = Logger.getLogger(getClass().getName());
+
     // fields
     private final HashMap<String, Resource> mResources = new HashMap<>();
     private String mBasePath;
@@ -23,10 +28,12 @@ public class ResourceHandler {
         try {
             toRegister = loader.apply(path);
         } catch(Exception e) {
-            // TODO: use logger instead of cacthing all expressions
-            throw new IllegalArgumentException(
-                    "Could not load resource [key: " + customName + "; path: " + path + "]: " + e
+            mLogger.log(
+                    Level.SEVERE,
+                    "Could not load resource [key: {0}; path: {1}]",
+                    new Object[]{ path, customName }
             );
+            throw e;
         }
 
         mResources.put(customName, toRegister);

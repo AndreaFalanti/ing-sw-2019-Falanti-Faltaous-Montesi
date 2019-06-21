@@ -297,23 +297,24 @@ public class Player extends Observable<Update> {
      * @param value powerup card to add
      * @param isRespawn boolean value to know if a player could have four powerups instead of three
      * @throws FullHandException
+     * @return modified player
      */
-    public void addPowerUp(PowerUpCard value, boolean isRespawn) {
+    public Player addPowerUp(PowerUpCard value, boolean isRespawn) {
         int lengthToCheck = isRespawn ? mPowerUpCards.length : (mPowerUpCards.length - 1);
         for (int i = 0; i < lengthToCheck; i++) {
             if (mPowerUpCards[i] == null) {
                 mPowerUpCards[i] = value;
 
                 notify(new PlayerPowerUpsUpdate(mColor, mPowerUpCards));
-                return;
+                return this;
             }
         }
 
         throw new FullHandException ("PowerUp hand is full, can't draw another card");
     }
 
-    public void addPowerUp (PowerUpCard value) {
-        addPowerUp(value, false);
+    public Player addPowerUp (PowerUpCard value) {
+        return addPowerUp(value, false);
     }
 
     /**

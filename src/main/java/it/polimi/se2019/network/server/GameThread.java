@@ -72,7 +72,8 @@ public class GameThread extends Thread {
 
     private void initializeGame (Board board, List<Player> players, int killsTarget) {
         mGame = new Game(board, players, killsTarget);
-        mController = new Controller(mGame);
+        // TODO: initialize controller with real view map
+        mController = new Controller(mGame, new HashMap<>());
         for (PlayerConnection playerConnection : mPlayerConnections) {
             switch (playerConnection.getType()) {
                 case SOCKET:

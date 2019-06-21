@@ -1,6 +1,7 @@
 package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.controller.weapon.expression.Expression;
+import it.polimi.se2019.controller.weapon.expression.SetExpression;
 import it.polimi.se2019.controller.weapon.expression.ShootUndoInfo;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
@@ -42,6 +43,9 @@ public class ShootContext {
         mScope = new HashMap<>();
         mShootInteraction = shootInteraction;
         mUndoInfo = new ShootUndoInfo(mGame);
+
+        // initialize special variables
+        setVar(SPECIAL_VAR_LAST_SELECTED, new SetExpression());
     }
 
     // trivial getters

@@ -42,7 +42,7 @@ public class DistanceRange extends Behaviour {
                 getSub("max").eval(context).asInt()
         );
 
-        return SetExpression.from(reachablePositions.stream()
+        return new SetExpression(reachablePositions.stream()
                 .map(PositionLiteral::new)
                 .collect(Collectors.toSet()));
     }

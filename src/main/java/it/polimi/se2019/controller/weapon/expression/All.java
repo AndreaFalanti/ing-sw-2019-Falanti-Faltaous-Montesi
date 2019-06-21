@@ -21,7 +21,7 @@ public class All extends Behaviour {
         Set<Player> players = context.getPlayers();
         Set<Position> range = getSub("from").eval(context).asRange();
 
-        return SetExpression.from(players.stream()
+        return new SetExpression(players.stream()
                 .filter(pl -> range.contains(pl.getPos()))
                 .map(Player::getColor)
                 .map(TargetLiteral::new)

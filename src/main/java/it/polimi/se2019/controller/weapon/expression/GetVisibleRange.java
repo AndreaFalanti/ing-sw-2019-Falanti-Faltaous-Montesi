@@ -19,7 +19,7 @@ public class GetVisibleRange extends Behaviour {
         // TODO: make this better by streamlining selections (todo file)
         Position observerPos = getSub("origin").eval(context).asPosition();
 
-        return SetExpression.from(
+        return new SetExpression(
                 context.getBoard().getAllSeenBy(observerPos).stream()
                         .map(PositionLiteral::new)
                         .collect(Collectors.toSet())

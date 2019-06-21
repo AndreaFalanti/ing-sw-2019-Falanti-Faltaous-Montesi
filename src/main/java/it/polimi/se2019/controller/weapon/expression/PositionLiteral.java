@@ -12,7 +12,7 @@ public class PositionLiteral extends Literal<Position> {
 
     @Override
     public SetExpression asSetExpr() {
-        return SetExpression.from(Collections.singleton(this));
+        return new SetExpression(Collections.singleton(this));
     }
 
     @Override

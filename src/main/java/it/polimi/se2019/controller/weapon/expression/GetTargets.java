@@ -20,7 +20,7 @@ public class GetTargets extends Behaviour {
         Set<Position> positions = getSub("from").eval(context).asRange();
 
         // get all players standing in provided range and are not the shooter
-        return SetExpression.from(players.stream()
+        return new SetExpression(players.stream()
                 .filter(pl -> positions.contains(pl.getPos()))
                 .filter(pl -> pl.getColor() != context.getShooterColor())
                 .map(Player::getColor)

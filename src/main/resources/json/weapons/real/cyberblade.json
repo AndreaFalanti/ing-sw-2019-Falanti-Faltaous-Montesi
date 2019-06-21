@@ -15,10 +15,12 @@
           "to": {
             "expr": "SelectOneTarget",
             "from": {
-              "expr": "All",
-              "from": {
-                "expr": "Distance",
-                "amount": 1
+              "expr": "Difference",
+              "lhs": {
+                "expr": "Neighbours"
+              },
+              "rhs": {
+                "expr": "LastSelected"
               }
             }
           }
@@ -34,8 +36,11 @@
             "expr": "You"
           },
           "to": {
-            "expr": "Distance",
-            "amount": 1
+            "expr": "SelectOnePosition",
+            "from": {
+              "expr": "Distance",
+              "amount": 1
+            }
           }
         }
       },
@@ -50,10 +55,12 @@
           "to": {
             "expr": "SelectOneTarget",
             "from": {
-              "expr": "All",
-              "from": {
-                "expr": "Distance",
-                "amount": 1
+              "expr": "Difference",
+              "lhs": {
+                "expr": "Neighbours"
+              },
+              "rhs": {
+                "expr": "LastSelected"
               }
             }
           }

@@ -50,7 +50,7 @@ public class SelectTargets extends Behaviour {
 
         LOGGER.log(Level.INFO, context.getShooterColor() + " selected " + selectedTargets + " among " + targets);
 
-        Expression result = SetExpression.from(selectedTargets.stream()
+        Expression result = new SetExpression(selectedTargets.stream()
                 .map(TargetLiteral::new)
                 .collect(Collectors.toSet())
         );

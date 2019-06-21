@@ -3,17 +3,20 @@ package it.polimi.se2019.view.request;
 import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.view.View;
 
+import java.util.Optional;
+import java.util.OptionalInt;
+
 public class PowerUpSelectedRequest implements Request {
-    private int mIndex;
+    private Integer mIndex;
     private View mView;
 
-    public PowerUpSelectedRequest(int index, View view) {
+    public PowerUpSelectedRequest(Integer index, View view) {
         mIndex = index;
         mView = view;
     }
 
-    public int getIndex() {
-        return mIndex;
+    public Optional<Integer> getIndex() {
+        return Optional.ofNullable(mIndex);
     }
 
     @Override

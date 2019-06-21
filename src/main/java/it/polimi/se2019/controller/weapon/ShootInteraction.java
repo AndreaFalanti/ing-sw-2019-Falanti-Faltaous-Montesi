@@ -30,13 +30,13 @@ public class ShootInteraction {
     private boolean mOccupied = false;
     private final BlockingQueue<Request> mRequests = new LinkedBlockingQueue<>();
     private final Object mLock = new Object();
-    private final Map<PlayerColor, View> mPlayerViews = new EnumMap<>(PlayerColor.class);
+    private final Map<PlayerColor, View> mPlayerViews;
     private final Game mGame;
 
     // trivial constructors
     public ShootInteraction(Game game, Map<PlayerColor, View> playerViews) {
         mGame = game;
-        mPlayerViews.putAll(playerViews);
+        mPlayerViews = playerViews;
     }
 
     // trivial getters
@@ -173,8 +173,7 @@ public class ShootInteraction {
 
     // move player around
     public static void move(Game game, Set<PlayerColor> who, Position where) {
-        who
-                .forEach(pl -> game.getPlayerFromColor(pl).move(where));
+        who.forEach(pl -> game.getPlayerFromColor(pl).move(where));
     }
 
     // wait for a particular request
@@ -309,12 +308,14 @@ public class ShootInteraction {
         view.showPowerUpSelectionView(Collections.singletonList(index));
 
         while (true) {
-            Request request = waitForRequest(powerupName + "activation");
+            Request request = waitForRequest(powerupName + " activation");
 
-            int selectedIndex = ((PowerUpSelectedRequest) request).getIndex();
+            Optional<Integer> maybeSelectedIndex = ((PowerUpSelectedRequest) request).getIndex();
 
-            if (false /*TODO:  no selection */)
+            if (!maybeSelectedIndex.isPresent())
                 return false;
+
+            int selectedIndex = maybeSelectedIndex.get();
 
             if (selectedIndex != index) {
                 view.reportError("You can't use a " +
@@ -323,6 +324,7 @@ public class ShootInteraction {
                 );
                 continue;
             }
+
 
             return true;
         }

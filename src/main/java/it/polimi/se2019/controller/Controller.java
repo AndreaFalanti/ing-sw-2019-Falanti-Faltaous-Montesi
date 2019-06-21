@@ -20,12 +20,13 @@ public class Controller implements AbstractController {
     // fields
     private final Game mGame;
     private final PlayerActionController mPlayerActionController;
-    private final Map<PlayerColor, View> mPlayerViews = new EnumMap<>(PlayerColor.class);
+    private final Map<PlayerColor, View> mPlayerViews;
     private final ShootInteraction mShootInteraction;
 
     // constructors
-    public Controller(Game game) {
+    public Controller(Game game, Map<PlayerColor, View> playerViews) {
         mGame = game;
+        mPlayerViews = playerViews;
         mPlayerActionController = new PlayerActionController(this);
         mShootInteraction = new ShootInteraction(mGame, mPlayerViews);
     }
