@@ -81,7 +81,7 @@ public class PickEffect extends Expression {
                             .collect(Collectors.toSet()));
                 }
 
-                // once verified, effect IDs are turned into actual effects
+                // once verified, the selected effect IDs are turned into actual effects
                 List<Effect> selectedEffects = new ArrayList<>();
                 for (String id : selectedEffectIDs) {
                     selectedEffects.add(
@@ -89,12 +89,7 @@ public class PickEffect extends Expression {
                                     .filter(eff -> eff.getId().equals(id))
                                     .findFirst()
                                     .orElseThrow(() ->
-                                            new InputMismatchException(
-                                                    "nonexistent ID in effect selection: " + id + "\n" +
-                                                    "Available IDs in requested selection: " + effectsToSelect.stream()
-                                                            .map(Effect::getId)
-                                                            .collect(Collectors.toList())))
-                    );
+                                            new InputMismatchException("Illegal effect names!")));
                 }
 
                 // evaluate selected effects

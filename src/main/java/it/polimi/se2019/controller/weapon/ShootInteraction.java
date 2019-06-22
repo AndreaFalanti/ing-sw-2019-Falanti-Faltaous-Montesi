@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
@@ -209,11 +211,35 @@ public class ShootInteraction {
     }
 
     // wait for a particular selection request
-    private Request waitForSelectionRequest(Function<Request, Object> selectionGetter, String selectionDescriptor) {
-        Request request = waitForRequest(selectionDescriptor + " selection");
+    private <T> Request waitForSelectionRequest(View selectingView, Collection<T> possibleToselect,
+                                                Function<Request, Stream<T>> selectionGetter, String selectionDescriptor) {
+        Request request;
+        List<T> selection;
+        while (true) {
+            request = waitForRequest(selectionDescriptor + " selection");
+
+            selection = selectionGetter.apply(request)
+                    .collect(Collectors.toList());
+
+            // find invalid input that the user was not allowed to select
+            Set<T> invalidSelected = selection.stream()
+                    .filter(selected -> !possibleToselect.contains(selected))
+                    .collect(Collectors.toSet());
+
+            // go on if all input is correct
+            if (invalidSelected.isEmpty())
+                break;
+
+            // else report error and request input again
+            selectingView.reportError(String.format(
+                    "Illegal %s selection made: %s\n" +
+                            "Possible selection set: %s",
+                    selectionDescriptor, selection, possibleToselect
+            ));
+        }
 
         LOGGER.log(Level.INFO, "Shoot interaction received {0} selection: [{1}]",
-                new Object[]{selectionDescriptor, selectionGetter.apply(request)});
+                new Object[]{selectionDescriptor, selection});
 
         return request;
     }
@@ -234,11 +260,10 @@ public class ShootInteraction {
 
         view.showTargetsSelectionView(min, max, possibleTargets);
         TargetsSelectedRequest request = (TargetsSelectedRequest) waitForSelectionRequest(
-                req -> ((TargetsSelectedRequest) req).getSelectedTargets(),
+                view, possibleTargets,
+                req -> ((TargetsSelectedRequest) req).getSelectedTargets().stream(),
                 "target"
         );
-
-        // TODO: check if selection is right
 
         return request.getSelectedTargets();
     }
@@ -248,7 +273,8 @@ public class ShootInteraction {
         view.showPositionSelectionView(range);
 
         PositionSelectedRequest request = (PositionSelectedRequest) waitForSelectionRequest(
-                req -> ((PositionSelectedRequest) req).getPosition(),
+                view, range,
+                req -> Stream.of(((PositionSelectedRequest) req).getPosition()),
                 "position"
         );
 
@@ -262,7 +288,11 @@ public class ShootInteraction {
         view.showEffectsSelectionView(priorityMap, possibleEffects);
 
         EffectsSelectedRequest request = (EffectsSelectedRequest) waitForSelectionRequest(
-                req -> ((EffectsSelectedRequest) req).getSelectedEffects(),
+                view,
+                possibleEffects.stream()
+                        .map(Effect::getId)
+                        .collect(Collectors.toSet()),
+                req -> ((EffectsSelectedRequest) req).getSelectedEffects().stream(),
                 "effect"
         );
 
@@ -275,7 +305,8 @@ public class ShootInteraction {
         view.showWeaponModeSelectionView(mode1, mode2);
 
         WeaponModeSelectedRequest request = (WeaponModeSelectedRequest) waitForSelectionRequest(
-                req -> ((WeaponModeSelectedRequest) req).getId(),
+                view, new HashSet<>(Arrays.asList(mode1, mode2)),
+                req -> Stream.of(((WeaponModeSelectedRequest) req).getId()),
                 "mode"
         );
 
@@ -286,10 +317,8 @@ public class ShootInteraction {
     public Direction pickDirection(View view) {
         view.pickDirection();
 
-        DirectionSelectedRequest request = (DirectionSelectedRequest) waitForSelectionRequest(
-                req -> ((DirectionSelectedRequest) req).getDirection(),
-                "direction"
-        );
+        DirectionSelectedRequest request =
+                (DirectionSelectedRequest) waitForRequest("direction selection");
 
         return request.getDirection();
     }

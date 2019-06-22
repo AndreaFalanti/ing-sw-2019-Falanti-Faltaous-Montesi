@@ -325,7 +325,7 @@ public class WeaponsTest {
         inOrder.verify(shooterView).showTargetsSelectionView(anyInt(), anyInt(), anySet());
         inOrder.verify(shooterView).showEffectsSelectionView(any(), anySet());
 
-        // assert that Mario is hurt and has moved to new position
+        // assert that Mario is hurt and has moved to a new position
         assertPlayerStatus(
                 mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.PURPLE),
                 Arrays.asList(
@@ -739,6 +739,40 @@ public class WeaponsTest {
                 Collections.singletonList(
                         new Pair<>(PlayerColor.YELLOW, 1)
                 )
+        );
+    }
+
+    @Test
+    public void testPlasmaGunSmurfettePicksWrongPositionWithPhaseGlide() {
+         // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+
+        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("plasma_gun");
+
+        // mock selection
+        mockSelections(testController,
+                // try to go too far using phase glide
+                new EffectsSelectedRequest(Collections.singletonList("with_phase_glide"), shooterView),
+                new PositionSelectedRequest(new Position(1, 0), shooterView),
+
+                // immediately undo to keep this test simple
+                new UndoWeaponInteractionRequest(shooterView)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterView, PlayerColor.PURPLE, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // verify that an error has been issued to the user
+        verify(shooterView, times(1)).reportError(anyString());
+
+        // verify that Smurfette hasn't moved
+        assertPlayerPosition(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.BLUE),
+                new Position(2, 2)
         );
     }
 }
