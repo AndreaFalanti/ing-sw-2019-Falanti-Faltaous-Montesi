@@ -148,7 +148,6 @@ public class ShootInteraction {
                     Player inflictedPlayer = game.getPlayerFromColor(singularInflicted);
                     View inflictedView = mPlayerViews.get(singularInflicted);
 
-                    // handle tag-back grenade activation
                     if (board.canSee(inflictedPlayer.getPos(), inflicterPlayer.getPos())) {
                         Set<Integer> possibleIndices = inflictedPlayer.getPowerUpIndices(PowerUpType.TAGBACK_GRENADE);
 
@@ -165,9 +164,6 @@ public class ShootInteraction {
                             }
                         });
                     }
-
-                    // damage targets
-                    mGame.handleDamageInteraction(singularInflicted, inflicter, new Damage(0, 1));
                 });
     }
 
@@ -334,7 +330,7 @@ public class ShootInteraction {
     private void useTagbackGrenade(PlayerColor inflicter, PlayerColor inflicted, int index) {
         mGame.getPlayerFromColor(inflicted).discard(index);
 
-        inflictDamage(mGame, inflicter, Collections.singleton(inflicted), new Damage(0, 1));
+        mGame.handleDamageInteraction(inflicter, inflicted, new Damage(0, 1));
     }
     private void useTargetingScope(PlayerColor inflicter, Set<PlayerColor> possibleTargets, int index) {
         mGame.getPlayerFromColor(inflicter).discard(index);

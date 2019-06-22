@@ -1,5 +1,6 @@
 package it.polimi.se2019.controller.weapon;
 
+import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
@@ -17,6 +18,8 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -676,5 +679,66 @@ public class WeaponsTest {
                     ),
                     Collections.emptyList()
             );
+    }
+
+    @Test
+    public void testThorMarioUsesChainToZapHiddenLuigiThroughStonesAlsoStonesUsesATagbackAndLuigiCannotBecauseHeCantSeeMario() {
+        // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN).move(new Position(1, 0));
+
+        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+
+        // give out powerups
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.YELLOW)
+                .addPowerUp(new PowerUpCard(PowerUpType.TAGBACK_GRENADE, new AmmoValue(0, 0, 1)));
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN)
+                .addPowerUp(new PowerUpCard(PowerUpType.TAGBACK_GRENADE, new AmmoValue(0, 1, 0)));
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("thor");
+
+        // mock selection
+        mockSelections(testController,
+                // damage Stones with basic effect
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), shooterView),
+
+                // Stones counters with tagback activation
+                new PowerUpSelectedRequest(0, mPlayerViewMocks.get(PlayerColor.YELLOW)),
+
+                // damage Luigi with chain reaction
+                //  NB. Luigi cannot respond with his tagback since he can't see Mario
+                new EffectsSelectedRequest(Collections.singletonList("with_chain_reaction"), shooterView),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), shooterView),
+
+                // do not select high voltage
+                new EffectsSelectedRequest(Collections.emptyList(), shooterView)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterView, PlayerColor.PURPLE, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // verify damage caused but the Thor's effects
+        {
+            final List<PlayerColor> targets = Arrays.asList(PlayerColor.GREEN, PlayerColor.YELLOW);
+            IntStream.range(0, 2)
+                    .forEach(i ->
+                            assertPlayerDamage(
+                                    mLuigiHidesFromYellowParty.getPlayerFromColor(targets.get(i)),
+                                    Stream.generate(() -> PlayerColor.PURPLE).limit(i + 1).collect(Collectors.toList()),
+                                    Collections.emptyList()
+                            )
+                    );
+        }
+
+        // verify tagback damage to Mario
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.PURPLE),
+                Collections.emptyList(),
+                Collections.singletonList(
+                        new Pair<>(PlayerColor.YELLOW, 1)
+                )
+        );
     }
 }

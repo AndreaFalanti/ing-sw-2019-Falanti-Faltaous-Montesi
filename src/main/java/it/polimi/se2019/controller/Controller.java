@@ -51,11 +51,12 @@ public class Controller implements AbstractController {
     /*******************/
     /* control methods */
     /*******************/
+    // TODO: make this private and notify ShootRequest in weapon tests
     public void startShootInteraction(View view, PlayerColor shooter, Expression weaponBehaviour) {
         mShootInteraction.exec(mGame, view, shooter, weaponBehaviour);
     }
 
-    public void continueShootInteraction(Request request) {
+    private void continueShootInteraction(Request request) {
         // shoot info is useless without the shooting
         if (isHandlingShootInteraction()) {
             request.getView().reportError("You can't provide shoot info with no shooting going on...");
