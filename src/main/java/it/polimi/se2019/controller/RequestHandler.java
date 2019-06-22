@@ -26,4 +26,6 @@ public interface RequestHandler {
     void handle(WeaponModeSelectedRequest request);
 
     void handle(PowerUpSelectedRequest request);
+
+    void handle(RoomSelectedRequest request);
 }

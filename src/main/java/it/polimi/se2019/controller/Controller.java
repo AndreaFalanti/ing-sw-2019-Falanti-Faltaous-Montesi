@@ -10,7 +10,6 @@ import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
-import java.util.EnumMap;
 import java.util.Map;
 
 public class Controller implements AbstractController {
@@ -134,6 +133,11 @@ public class Controller implements AbstractController {
 
     @Override
     public void handle(PowerUpSelectedRequest request) {
+
+    }
+
+    @Override
+    public void handle(RoomSelectedRequest request) {
 
     }
 

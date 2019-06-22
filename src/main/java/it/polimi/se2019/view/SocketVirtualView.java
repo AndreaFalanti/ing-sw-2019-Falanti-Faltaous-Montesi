@@ -50,6 +50,10 @@ public class SocketVirtualView extends View {
         }
     }
 
+    /*public SocketVirtualView (Socket socket) {
+
+    }*/
+
     @Override
     public void showMessage(String message) {
         sendResponse(new MessageResponse(message, false));

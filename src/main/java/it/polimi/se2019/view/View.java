@@ -17,11 +17,16 @@ import java.util.SortedMap;
 
 public abstract class View extends Observable<Request> implements Observer<Update> {
     // fields
-    protected PlayerColor ownerColor;
+    protected PlayerColor mOwnerColor;
     protected UpdateHandler mUpdateHandler;
 
-    // constructor
+    // constructors
     public View(UpdateHandler updateHandler) {
+        mUpdateHandler = updateHandler;
+    }
+
+    public View(PlayerColor ownerColor, UpdateHandler updateHandler) {
+        mOwnerColor = ownerColor;
         mUpdateHandler = updateHandler;
     }
 
@@ -30,7 +35,7 @@ public abstract class View extends Observable<Request> implements Observer<Updat
     }
 
     public PlayerColor getOwnerColor() {
-        return ownerColor;
+        return mOwnerColor;
     }
 
 

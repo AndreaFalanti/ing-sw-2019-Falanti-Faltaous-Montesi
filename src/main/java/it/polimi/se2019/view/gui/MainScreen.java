@@ -5,10 +5,7 @@ import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.MoveShootAction;
 import it.polimi.se2019.model.action.ReloadAction;
-import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.board.Direction;
-import it.polimi.se2019.model.board.NormalTile;
-import it.polimi.se2019.model.board.SpawnTile;
+import it.polimi.se2019.model.board.*;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.view.request.*;
@@ -49,6 +46,8 @@ public class MainScreen extends Observable<Request> {
     @FXML
     private Pane directionButtonsPane;
     @FXML
+    private Pane roomColorButtonsPane;
+    @FXML
     private VBox effectsBox;
     @FXML
     private VBox targetsBox;
@@ -62,7 +61,8 @@ public class MainScreen extends Observable<Request> {
     private Button directionsUndoButton;
     @FXML
     private Button targetsUndoButton;
-
+    @FXML
+    private Button roomsUndoButton;
 
 
     private static final Logger logger = Logger.getLogger(MainScreen.class.getName());
@@ -72,8 +72,8 @@ public class MainScreen extends Observable<Request> {
     private static final int EFFECTS_TAB = 2;
     private static final int DIRECTION_TAB = 3;
     private static final int TARGETS_TAB = 4;
+    private static final int ROOM_TAB = 5;
 
-    
     private static final double LOADED_OPACITY = 1;
     private static final double UNLOADED_OPACITY = 0.4;
 
@@ -88,6 +88,8 @@ public class MainScreen extends Observable<Request> {
     private int mActualEffectIndex;
     private List<Effect> mEffectsCache;
     private List<Effect> mMandatoryEffectsCache;
+
+    private List<Button> mUndoWeaponButtons;
 
 
     public BoardPane getBoardController() {
@@ -117,6 +119,21 @@ public class MainScreen extends Observable<Request> {
     public PlayerPane getPlayerControllerFromColor(PlayerColor color) {
         return mPlayerControllers.get(color);
     }
+
+
+    @FXML
+    public void initialize () {
+        mUndoWeaponButtons = new ArrayList<>();
+        mUndoWeaponButtons.add(effectsUndoButton);
+        mUndoWeaponButtons.add(targetsUndoButton);
+        mUndoWeaponButtons.add(directionsUndoButton);
+        mUndoWeaponButtons.add(roomsUndoButton);
+
+        setupDirectionButtonsBehaviour();
+        setupRoomColorButtonsBehaviour();
+        setWeaponTabsUndoButtonsBehaviour();
+    }
+
 
     /**
      * Load player board of given color
@@ -224,10 +241,6 @@ public class MainScreen extends Observable<Request> {
         mBoardController.updateBoardTile(spawnTile, new Position(2, 0));
 
         boardPane.getChildren().add(newLoadedPane);
-
-        // TODO: move in a proper setup method someday
-        setupDirectionButtonsBehaviour();
-        setWeaponTabsUndoButtonsBehaviour();
     }
 
 
@@ -544,6 +557,17 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    private void setupRoomColorButtonsBehaviour () {
+        TileColor[] tileColors = TileColor.values();
+        for (int i = 0; i < tileColors.length; i++) {
+            final int index = i;
+            roomColorButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
+                logToChat("Selected room: " + tileColors[index].toString());
+                notify(new RoomSelectedRequest(tileColors[index], mView));
+            });
+        }
+    }
+
     public void activateDirectionTab () {
         tabPane.getSelectionModel().select(DIRECTION_TAB);
     }
@@ -711,20 +735,12 @@ public class MainScreen extends Observable<Request> {
     }
 
     private void setWeaponTabsUndoButtonsBehaviour () {
-        targetsUndoButton.setOnMouseClicked(event -> {
-            returnToActionTab();
-            notify(new UndoWeaponInteractionRequest(mView));
-        });
-
-        directionsUndoButton.setOnMouseClicked(event -> {
-            returnToActionTab();
-            notify(new UndoWeaponInteractionRequest(mView));
-        });
-
-        effectsUndoButton.setOnMouseClicked(event -> {
-            returnToActionTab();
-            notify(new UndoWeaponInteractionRequest(mView));
-        });
+        for (Button button : mUndoWeaponButtons) {
+            button.setOnMouseClicked(event -> {
+                returnToActionTab();
+                notify(new UndoWeaponInteractionRequest(mView));
+            });
+        }
     }
 
     private void returnToActionTab() {
