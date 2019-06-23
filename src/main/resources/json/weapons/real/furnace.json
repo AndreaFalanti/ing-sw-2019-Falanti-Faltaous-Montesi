@@ -10,19 +10,9 @@
         "expr": "InflictDamage",
         "amount": "1d",
         "to": {
-          "expr": "All",
-          "from": {
-            "expr": "SelectOnePosition",
-            "from": {
-              "expr": "Difference",
-              "lhs": {
-                "expr": "CanSee"
-              },
-              "rhs": {
-                "expr": "Distance",
-                "amount": 1
-              }
-            }
+          "expr": "AllInRoom",
+          "color": {
+            "expr": "SelectOneColor"
           }
         }
       }

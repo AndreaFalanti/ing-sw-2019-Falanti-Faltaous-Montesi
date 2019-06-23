@@ -5,6 +5,7 @@ import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
+import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
@@ -774,6 +775,38 @@ public class WeaponsTest {
                 mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.BLUE),
                 new Position(2, 2)
         );
+    }
+
+    @Test
+    public void testFurnaceLuigiRoastsEveryoneInYellowRoom() {
+        // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+
+        View shooterView = mPlayerViewMocks.get(PlayerColor.GREEN);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("furnace");
+
+        // mock selection
+        mockSelections(testController,
+                // roast everyone in yellow room
+                new WeaponModeSelectedRequest("basic_effect", shooterView),
+                new RoomSelectedRequest(TileColor.YELLOW, shooterView)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterView, PlayerColor.GREEN, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // very that everyone in yellow rooms has been damaged
+        for (PlayerColor target : allTargets(PlayerColor.GREEN))
+            assertPlayerDamage(
+                    mLuigiHidesFromYellowParty.getPlayerFromColor(target),
+                    Collections.singletonList(
+                            PlayerColor.GREEN
+                    ),
+                    Collections.emptyList()
+            );
     }
 }
 

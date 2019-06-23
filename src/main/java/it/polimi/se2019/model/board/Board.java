@@ -390,8 +390,13 @@ public class Board {
      */
     public Stream<TileColor> getRoomColors() {
         return posStream()
+                .filter(pos -> !isOutOfBounds(pos))
+
                 .map(this::getTileAt)
+                .filter(Objects::nonNull)
+
                 .map(Tile::getColor)
+
                 .distinct();
     }
 
@@ -425,6 +430,8 @@ public class Board {
      */
     public Stream<Position> getRoom(TileColor color) {
         Position randomRoomPos = posStream()
+                .filter(pos -> !isOutOfBounds(pos))
+                .filter(pos -> getTileAt(pos) != null)
                 .filter(pos -> getTileAt(pos).getColor().equals(color))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException(
