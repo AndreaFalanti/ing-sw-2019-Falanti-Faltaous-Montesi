@@ -276,6 +276,11 @@ public class CLIView extends View {
     }
 
     @Override
+    public void showRoomColorSelectionView() {
+
+    }
+
+    @Override
     public void showDirectionSelectionView() {
         notify(new DirectionSelectedRequest(pickDirection(),this));
     }

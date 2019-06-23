@@ -8,10 +8,7 @@ import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -385,5 +382,55 @@ public class Board {
     public Stream<Position> posStream() {
         return IntStream.range(0, getWidth() * getHeight())
                 .mapToObj(i -> new Position(i / getWidth(), i % getWidth()));
+    }
+
+    /**
+     * Get a list of the colors of all the rooms
+     * @return the result of the operation
+     */
+    public Stream<TileColor> getRoomColors() {
+        return posStream()
+                .map(this::getTileAt)
+                .map(Tile::getColor)
+                .distinct();
+    }
+
+    /**
+     * Get a room from a position contained in that room
+     * @return the result of the operation
+     */
+    public Stream<Position> getRoom(Position randomPosInsideRoom) {
+        return getRoom(randomPosInsideRoom, new HashSet<>());
+    }
+    // helper
+    private Stream<Position> getRoom(Position randomPosInsideRoom, Set<Position> visited) {
+        visited.add(randomPosInsideRoom);
+        return Stream.concat(
+                Stream.of(randomPosInsideRoom),
+                Arrays.stream(Direction.values())
+                        .map(randomPosInsideRoom::directionalIncrement)
+                        .filter(pos -> !visited.contains(pos))
+                        .filter(pos -> !isOutOfBounds(pos))
+                        .filter(pos -> getTileAt(pos) != null)
+                        .filter(pos -> getTileAt(pos).getColor().equals(
+                                getTileAt(randomPosInsideRoom).getColor()
+                        ))
+                        .flatMap(pos -> getRoom(pos, visited))
+        );
+    }
+
+    /**
+     * Get a room corresponding with a particular color
+     * @return the result of the operation
+     */
+    public Stream<Position> getRoom(TileColor color) {
+        Position randomRoomPos = posStream()
+                .filter(pos -> getTileAt(pos).getColor().equals(color))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException(
+                        "This board contains no room with color " + color
+                ));
+
+        return getRoom(randomRoomPos);
     }
 }

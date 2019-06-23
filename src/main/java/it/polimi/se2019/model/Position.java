@@ -1,5 +1,7 @@
 package it.polimi.se2019.model;
 
+import it.polimi.se2019.model.board.Direction;
+
 import java.util.Objects;
 
 public class Position {
@@ -42,6 +44,33 @@ public class Position {
      */
     public Position add(final Position toAdd) {
         return new Position(mX + toAdd.getX(), mY + toAdd.getY());
+    }
+
+    /**
+     * Simple scalar multiplication
+     * @param toMultiply scalar to multiply by
+     * @return result of multiplication
+     */
+    public Position scalarMultiply(int toMultiply) {
+        return new Position(mX * toMultiply, mY * toMultiply);
+    }
+
+    /**
+     * Increments a position in a given direction {@code amount} times
+     * @param incrementDirection direction of increment
+     * @return the result of the increment
+     */
+    public Position directionalIncrement(Direction incrementDirection, int amount) {
+        return add(incrementDirection.toPosition().scalarMultiply(amount));
+    }
+
+    /**
+     * Increment a position once in a given direction
+     * @param incrementDirection direction of increment
+     * @return the result of the increment
+     */
+    public Position directionalIncrement(Direction incrementDirection) {
+        return directionalIncrement(incrementDirection, 1);
     }
 
     /**

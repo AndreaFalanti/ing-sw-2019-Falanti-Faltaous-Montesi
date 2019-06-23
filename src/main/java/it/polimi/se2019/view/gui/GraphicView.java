@@ -56,6 +56,11 @@ public class GraphicView extends View {
     }
 
     @Override
+    public void showRoomColorSelectionView() {
+
+    }
+
+    @Override
     public void showDirectionSelectionView() {
         mMainFrameController.activateDirectionTab();
     }

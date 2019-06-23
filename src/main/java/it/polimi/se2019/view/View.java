@@ -59,6 +59,12 @@ public abstract class View extends Observable<Request> implements Observer<Updat
     public abstract void showPowerUpSelectionView(List<Integer> indexes);
 
     // WEAPONS related
+
+    /**
+     * Ask a player to pick a room color
+     */
+    public abstract void showRoomColorSelectionView();
+
     /**
      * Ask player a cardinal direction
      */

@@ -85,6 +85,11 @@ public class SocketVirtualView extends View {
     }
 
     @Override
+    public void showRoomColorSelectionView() {
+
+    }
+
+    @Override
     public void showDirectionSelectionView() {
         sendResponse(new PickDirectionResponse());
     }

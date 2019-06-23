@@ -6,6 +6,8 @@ import it.polimi.se2019.util.PrettyJsonElement;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -251,5 +253,18 @@ public class BoardTest {
                 new Position(3, 3)
         ).collect(Collectors.toSet());
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetRoomFromPosition() {
+        assertEquals(
+                Stream.of(
+                        new Position(2, 1),
+                        new Position(2, 2),
+                        new Position(3, 1),
+                        new Position(3, 2)
+                ).collect(Collectors.toSet()),
+                mGameBoard1.getRoom(new Position(2, 1)).collect(Collectors.toSet())
+        );
     }
 }

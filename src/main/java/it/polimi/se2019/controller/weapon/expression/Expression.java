@@ -9,6 +9,7 @@ import it.polimi.se2019.controller.weapon.*;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
+import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
 import it.polimi.se2019.util.Exclude;
 import it.polimi.se2019.view.View;
@@ -111,6 +112,9 @@ public abstract class Expression {
     }
     public SetExpression asSetExpr() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "SetExpression");
+    }
+    public TileColor asColor() {
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Color");
     }
 }
 

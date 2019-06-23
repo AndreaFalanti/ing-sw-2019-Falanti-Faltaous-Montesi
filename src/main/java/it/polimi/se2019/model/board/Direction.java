@@ -14,7 +14,7 @@ public enum Direction {
         mPosition = position;
     }
 
-    Position toPosition() {
+    public Position toPosition() {
         return mPosition;
     }
 }

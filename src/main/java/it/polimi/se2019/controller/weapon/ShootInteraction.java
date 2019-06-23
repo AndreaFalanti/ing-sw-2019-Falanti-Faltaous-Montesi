@@ -5,6 +5,7 @@ import it.polimi.se2019.controller.weapon.expression.*;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
+import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
@@ -320,6 +321,22 @@ public class ShootInteraction {
 
         return request.getDirection();
     }
+
+    // pick room color
+    public TileColor pickRoomColor(View view, Set<TileColor> possibleColors) {
+        view.pickDirection();
+
+        RoomSelectedRequest request =
+                (RoomSelectedRequest) waitForSelectionRequest(
+                        view,
+                        possibleColors,
+                        req -> Stream.of(((RoomSelectedRequest) req).getColor()),
+                        "room color"
+                );
+
+        return request.getColor();
+    }
+
 
     /************************/
     /* Powerup interactions */

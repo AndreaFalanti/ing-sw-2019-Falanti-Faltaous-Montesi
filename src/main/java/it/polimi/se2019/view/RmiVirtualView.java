@@ -55,6 +55,11 @@ public class RmiVirtualView extends View {
     }
 
     @Override
+    public void showRoomColorSelectionView() {
+
+    }
+
+    @Override
     public void showDirectionSelectionView() {
 
     }
