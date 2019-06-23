@@ -1,6 +1,5 @@
 package it.polimi.se2019.model.weapon.serialization;
 
-import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.controller.weapon.expression.*;
 import it.polimi.se2019.model.Damage;
 import it.polimi.se2019.model.PlayerColor;
@@ -8,8 +7,6 @@ import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.PrettyJsonElement;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 

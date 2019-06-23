@@ -1,0 +1,43 @@
+{
+  "name": "Railgun",
+  "guiID": "026",
+  "grabCost": "1y",
+  "reloadCost": "2y1b",
+  "behaviour": {
+    "expr": "XorEffect",
+    "lhs": {
+      "name": "Basic mode",
+      "behaviour": {
+        "expr": "InflictDamage",
+        "amount": "3d",
+        "to": {
+          "expr": "SelectOneTarget",
+          "from": {
+            "expr": "Line",
+            "direction": {
+              "expr": "SelectOneDirection"
+            }
+          }
+        }
+      }
+    },
+    "rhs": {
+      "name": "In piercing mode",
+      "behaviour": {
+        "expr": "InflictDamage",
+        "amount": "2d",
+        "to": {
+          "expr": "SelectTargets",
+          "min": 2,
+          "max": 2,
+          "from": {
+            "expr": "Line",
+            "direction": {
+              "expr": "SelectOneDirection"
+            }
+          }
+        }
+      }
+    }
+  }
+}

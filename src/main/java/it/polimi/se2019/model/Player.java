@@ -3,9 +3,11 @@ package it.polimi.se2019.model;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.update.*;
 import it.polimi.se2019.util.Observable;
+import it.polimi.se2019.util.Pair;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Player extends Observable<Update> {
     private AmmoValue mAmmo;
@@ -30,12 +32,16 @@ public class Player extends Observable<Update> {
         mMarks.put(PlayerColor.GREY,0);
     }
 
-    public Player (String name, PlayerColor color, Position pos) {
+    public Player (String name, PlayerColor color, Position pos, AmmoValue ammo) {
         mName = name;
         mColor = color;
         mPos = pos;
-        mAmmo = new AmmoValue(1, 1, 1);
+        mAmmo = ammo;
         initializeMarksMap();
+    }
+
+    public Player (String name, PlayerColor color, Position pos) {
+        this(name, color, pos, new AmmoValue(1, 1 , 1));
     }
 
     public Player (String name, PlayerColor color) {
@@ -98,6 +104,35 @@ public class Player extends Observable<Update> {
     public PowerUpCard getPowerUpCard(int index) {
         return mPowerUpCards[index];
     }
+
+    //endregion
+
+    //region SETTERS
+
+    public void setAmmo(AmmoValue ammo) {
+        mAmmo = ammo;
+    }
+
+    public void setDeathsNum(int deathsNum) {
+        mDeathsNum = deathsNum;
+    }
+
+    public void setDamageTaken(PlayerColor[] damageTaken) {
+        mDamageTaken = damageTaken;
+    }
+
+    public void setMarks(Map<PlayerColor, Integer> marks) {
+        mMarks = marks;
+    }
+
+    public void setPos(Position pos) {
+        mPos = pos;
+    }
+
+    public void setDead(boolean dead) {
+        mDead = dead;
+    }
+
     //endregion
 
     public void flipBoard () {
@@ -262,23 +297,24 @@ public class Player extends Observable<Update> {
      * @param value powerup card to add
      * @param isRespawn boolean value to know if a player could have four powerups instead of three
      * @throws FullHandException
+     * @return modified player
      */
-    public void addPowerUp(PowerUpCard value, boolean isRespawn) {
+    public Player addPowerUp(PowerUpCard value, boolean isRespawn) {
         int lengthToCheck = isRespawn ? mPowerUpCards.length : (mPowerUpCards.length - 1);
         for (int i = 0; i < lengthToCheck; i++) {
             if (mPowerUpCards[i] == null) {
                 mPowerUpCards[i] = value;
 
                 notify(new PlayerPowerUpsUpdate(mColor, mPowerUpCards));
-                return;
+                return this;
             }
         }
 
         throw new FullHandException ("PowerUp hand is full, can't draw another card");
     }
 
-    public void addPowerUp (PowerUpCard value) {
-        addPowerUp(value, false);
+    public Player addPowerUp (PowerUpCard value) {
+        return addPowerUp(value, false);
     }
 
     /**
@@ -350,5 +386,19 @@ public class Player extends Observable<Update> {
         weapon.setLoaded(true);
 
         notify(new PlayerWeaponsUpdate(mColor, mWeapons));
+    }
+
+    /**
+     * Returns all the indices for the powerups of the given type
+     * @param wantedType the wanted type
+     * @return all the indices corresponding to the wanted powerup type
+     */
+    public Set<Integer> getPowerUpIndices(PowerUpType wantedType) {
+        return IntStream.range(0, getPowerUps().length)
+                .mapToObj(i -> new Pair<>(i, getPowerUps()[i]))
+                .filter(pair -> pair.getSecond() != null)
+                .filter(pair -> pair.getSecond().getType().equals(wantedType))
+                .map(Pair::getFirst)
+                .collect(Collectors.toSet());
     }
 }

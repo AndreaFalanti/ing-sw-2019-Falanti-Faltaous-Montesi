@@ -21,6 +21,7 @@ public class TargetsSelectedRequest implements Request {
         return mSelectedTargets;
     }
 
+    @Override
     public View getView() {
         return mView;
     }

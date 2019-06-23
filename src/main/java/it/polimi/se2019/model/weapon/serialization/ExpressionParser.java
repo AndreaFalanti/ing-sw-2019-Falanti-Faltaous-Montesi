@@ -2,17 +2,16 @@ package it.polimi.se2019.model.weapon.serialization;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
-import it.polimi.se2019.controller.weapon.*;
+import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.controller.weapon.expression.*;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Damage;
-import it.polimi.se2019.util.CustomFieldNamingStrategy;
-import org.omg.CosNaming.BindingHelper;
 
 import java.lang.reflect.Type;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Exists to parse pretty (more readable) definition of expression in json into that can be more

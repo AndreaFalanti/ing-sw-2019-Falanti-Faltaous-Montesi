@@ -2,12 +2,11 @@ package it.polimi.se2019.controller.weapon.expression;
 
 import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.controller.weapon.ShootContext;
+import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.view.View;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PickEffect extends Expression {
     // subexpressions
@@ -46,19 +45,61 @@ public class PickEffect extends Expression {
     }
 
     @Override
-    public Expression eval(ShootContext context) {
-        for (int curPriority : mSubexpressions.keySet()) {
-            // ask user which effect to pick
-            View view = context.getView();
-            Set<String> selectedEffects = view.selectEffects(mSubexpressions, curPriority);
+    public final Expression eval(ShootContext context) {
+        // get view for communicating with client
+        ShootInteraction interaction = context.getShootInteraction();
+        View view = context.getView();
 
-            // validate user input
-            // TODO: actually do this
+        // client interaction loop
+        for (Map.Entry<Integer, Set<Effect>> entry : mSubexpressions.entrySet()) {
+            // prettier names for entry fields
+            final Set<Effect> effectsToSelect = entry.getValue();
 
-            // evaluate picked subexpressions
-            mSubexpressions.get(curPriority).stream()
-                    .filter(eff -> selectedEffects.contains(eff.getId()))
-                    .forEach(eff -> discardEvalResult(eff.getBehaviour().eval(context)));
+            // this loops keeps requesting input for the current priority until it is valid
+            while (!effectsToSelect.isEmpty()) {
+                // if only one non-optional effect is present no user interaction is necessary
+                if (effectsToSelect.size() == 1 && !effectsToSelect.iterator().next().isOptional()) {
+                    // directly evaluate this effect and go on to next priority
+                    discardEvalResult(effectsToSelect.iterator().next().getBehaviour().eval(context));
+                    break;
+                }
+
+                // user input is requested for optional effect choice AND effect evaluation order
+                List<String> selectedEffectIDs = interaction.selectEffects(view, mSubexpressions, effectsToSelect);
+
+                // an empty choice is interpreted specially: it corresponds with the will of picking no
+                // optional effects. If any non-optional effects are still available, they are offered again
+                // with another selection (since they must be picked)
+                if (selectedEffectIDs.isEmpty()) {
+                    // if all effects are already non-optional, issue a warning to the user
+                    if (effectsToSelect.stream().noneMatch(Effect::isOptional))
+                        view.showMessage("It is mandatory to select all non-optional effects!");
+
+                    // strip effects to select from optionals
+                    effectsToSelect.removeAll(effectsToSelect.stream()
+                            .filter(Effect::isOptional)
+                            .collect(Collectors.toSet()));
+                }
+
+                // once verified, the selected effect IDs are turned into actual effects
+                List<Effect> selectedEffects = new ArrayList<>();
+                for (String id : selectedEffectIDs) {
+                    selectedEffects.add(
+                            effectsToSelect.stream()
+                                    .filter(eff -> eff.getId().equals(id))
+                                    .findFirst()
+                                    .orElseThrow(() ->
+                                            new InputMismatchException("Illegal effect names!")));
+                }
+
+                // evaluate selected effects
+                selectedEffects.stream()
+                        .map(Effect::getBehaviour)
+                        .forEach(e -> discardEvalResult(e.eval(context)));
+
+                // remove selected effects from effects to select
+                effectsToSelect.removeAll(selectedEffects);
+            }
         }
 
         return new Done();

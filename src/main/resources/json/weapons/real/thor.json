@@ -1,0 +1,63 @@
+{
+  "name": "Thor",
+  "guiID": "0216",
+  "grabCost": "1r1b",
+  "reloadCost": "1b",
+  "behaviour": {
+    "expr": "PickEffect",
+    "effects": [
+      {
+        "name": "Basic effect",
+        "priority": 0,
+        "behaviour": {
+          "expr": "InflictDamage",
+          "amount": "2d",
+          "to": {
+            "expr": "SelectOneTarget",
+            "from": {
+              "expr": "CanSee"
+            }
+          }
+        }
+      },
+      {
+        "name": "With chain reaction",
+        "cost": "1b",
+        "priority": 1,
+        "optional": true,
+        "behaviour": {
+          "expr": "InflictDamage",
+          "amount": "1d",
+          "to": {
+            "expr": "SelectOneTarget",
+            "from": {
+              "expr": "CanSee",
+              "origin": {
+                "expr": "LastSelected"
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "With high voltage",
+        "cost": "1b",
+        "priority": 2,
+        "optional": true,
+        "behaviour": {
+          "expr": "InflictDamage",
+          "amount": "2d",
+          "to": {
+            "expr": "SelectOneTarget",
+            "from": {
+              "expr": "CanSee",
+              "origin": {
+                "expr": "LastSelected"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "name": "Sledgehammer",
+  "guiID": "022",
+  "grabCost": "1y",
+  "reloadCost": "1y",
+  "behaviour": {
+    "expr": "XorEffect",
+    "lhs": {
+      "name": "Basic mode",
+      "behaviour": {
+        "expr": "InflictDamage",
+        "amount": "2d",
+        "to": {
+          "expr": "SelectOneTarget",
+          "from": {
+            "expr": "Neighbours"
+          }
+        }
+      }
+    },
+    "rhs": {
+      "name": "In pulverize mode",
+      "cost": "1r",
+      "behaviour": {
+        "expr": "Do",
+        "list": [
+          {
+            "expr": "InflictDamage",
+            "amount": "3d",
+            "to": {
+              "expr": "SelectOneTarget",
+              "from": {
+                "expr": "Neighbours"
+              }
+            }
+          },
+          {
+            "expr": "Move",
+            "from": {
+              "expr": "LastSelected"
+            },
+            "to": {
+              "expr": "SelectOnePosition",
+              "from": {
+                "expr": "Intersect",
+                "lhs": {
+                  "expr": "Line",
+                  "direction": {
+                    "expr": "SelectOneDirection"
+                  }
+                },
+                "rhs": {
+                  "expr": "DistanceRange",
+                  "min": 0,
+                  "max": 2
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

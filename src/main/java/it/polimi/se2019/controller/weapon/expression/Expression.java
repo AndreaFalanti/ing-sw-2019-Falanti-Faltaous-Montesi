@@ -1,18 +1,31 @@
 package it.polimi.se2019.controller.weapon.expression;
 
+import it.polimi.se2019.controller.weapon.Effect;
+import it.polimi.se2019.controller.weapon.EvaluationInterruptedException;
 import it.polimi.se2019.controller.weapon.ShootContext;
-import it.polimi.se2019.model.Damage;
-import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.Position;
+import it.polimi.se2019.controller.weapon.ShootInteraction;
+import it.polimi.se2019.controller.Controller;
+import it.polimi.se2019.controller.weapon.*;
+import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
+import it.polimi.se2019.util.Exclude;
+import it.polimi.se2019.view.View;
+import it.polimi.se2019.view.request.*;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 // TODO: refine doc
 public abstract class Expression {
+    // logger
+    protected static final Logger LOGGER = Logger.getLogger(Expression.class.getName());
+
+    // trivial constructor
     public Expression() {
 
     }
@@ -50,31 +63,12 @@ public abstract class Expression {
         return ExpressionFactory.fromRawJson(ExpressionFactory.toJsonTree(this));
     }
 
-    // inflict damage
-    protected static void inflictDamage(ShootContext context, PlayerColor inflicter, Set<PlayerColor> inflicted, Damage amount) {
-        Game game = context.getGame();
-
-        System.out.println(inflicter + " inflicting " + amount + " damage to " + inflicted);
-
-        inflicted.forEach(
-                singularInflicted -> game.handleDamageInteraction(inflicter, singularInflicted, amount)
-        );
-    }
-
-    // move player around
-    protected static void move(ShootContext context, Set<PlayerColor> who, Position where) {
-        Game game = context.getGame();
-
-        who
-                .forEach(pl -> game.getPlayerFromColor(pl).move(where));
-    }
-
     // safely discard result of evaluated expression by issuing a warning
     protected static Expression discardEvalResult(Expression result) {
         if (!result.isDone())
-            // TODO: use logger (todof)
-            System.out.println(
-                    "WARNING:" + result.getClass().getSimpleName() + "was discarded after evaluation!"
+            LOGGER.log(Level.WARNING,
+                    "{0} was discarded after evaluation!",
+                    result.getClass().getSimpleName()
             );
 
         return result;
@@ -82,6 +76,11 @@ public abstract class Expression {
 
     // evaluation is done (it's only done in Done expression)
     public boolean isDone() {
+        return false;
+    }
+
+    // true if the expression represents infinity
+    public boolean isInf() {
         return false;
     }
 

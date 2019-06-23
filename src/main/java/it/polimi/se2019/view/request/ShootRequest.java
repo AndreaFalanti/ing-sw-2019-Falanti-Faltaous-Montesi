@@ -15,6 +15,7 @@ public class ShootRequest implements Request {
         mShooterColor = shooterColor;
     }
 
+    @Override
     public View getView() {
         return mView;
     }

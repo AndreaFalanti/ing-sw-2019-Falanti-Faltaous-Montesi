@@ -58,12 +58,17 @@ public class GameThread extends Thread {
         logger.info("Starting game creation ...");
         List<Player> players = new ArrayList<>();
 
-        // TODO: make players choose colors and board? If not, put all this block in constructor
+        // TODO: make players choose colors and board?
         for (PlayerConnection playerConnection : mPlayerConnections) {
             int randomIndex = mRandom.nextInt(mColors.size());
-            players.add(new Player(playerConnection.getUsername(), mColors.get(randomIndex)));
+            PlayerColor color = mColors.get(randomIndex);
+
+            players.add(new Player(playerConnection.getUsername(), color));
+            playerConnection.setColor(color);
+
             mColors.remove(randomIndex);
         }
+
         Board board = Board.fromJson(Jsons.get("boards/game/board1"));
         int killsTarget = 8;
 
@@ -72,7 +77,8 @@ public class GameThread extends Thread {
 
     private void initializeGame (Board board, List<Player> players, int killsTarget) {
         mGame = new Game(board, players, killsTarget);
-        mController = new Controller(mGame);
+
+        EnumMap<PlayerColor, View> viewMap = new EnumMap<>(PlayerColor.class);
         for (PlayerConnection playerConnection : mPlayerConnections) {
             switch (playerConnection.getType()) {
                 case SOCKET:
@@ -85,7 +91,11 @@ public class GameThread extends Thread {
                     logger.severe("Invalid connection type");
                     throw new IllegalArgumentException("Invalid connection type");
             }
+
+            viewMap.put(playerConnection.getColor(), playerConnection.getVirtualView());
         }
+
+        mController = new Controller(mGame, viewMap);
 
         logger.info("Game created successfully");
         start();

@@ -40,8 +40,6 @@ public class WeaponTest {
             assertNotNull(weapon.getName());
             assertNotNull(weapon.getReloadCost());
             assertNotNull(weapon.getGrabCost());
-
-            System.out.println(weapon);
         }
     }
 }

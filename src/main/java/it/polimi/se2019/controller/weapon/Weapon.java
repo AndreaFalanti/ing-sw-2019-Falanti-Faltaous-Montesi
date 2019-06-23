@@ -18,7 +18,6 @@ public class Weapon {
     private AmmoValue mGrabCost;
     private String mGuiID;
 
-    @Exclude
     private boolean mLoaded;
 
     // weapon expression

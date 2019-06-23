@@ -2,9 +2,8 @@ package it.polimi.se2019.controller.weapon.expression;
 
 import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.controller.weapon.ShootContext;
+import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.view.View;
-
-import java.util.*;
 
 public class XorEffect extends Expression {
     public XorEffect() {
@@ -15,19 +14,16 @@ public class XorEffect extends Expression {
     private Effect mRhs;
 
     @Override
-    public Expression eval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
+        ShootInteraction interaction = context.getShootInteraction();
         View view = context.getView();
 
-        Set<String> selectedEffectIDs = view.selectEffects(
-                new TreeMap<>(Collections.singletonMap(
-                        0, new HashSet<>(Arrays.asList(mLhs, mRhs))
-                )),
-                0
-        );
+        // get input
+        String selectedEffectID = interaction.selectWeaponMode(view, mLhs, mRhs);
 
-        // TODO: verify input
+        // TODO: check if input needs to be validated
 
-        String selectedEffectID = selectedEffectIDs.iterator().next();
+        // use input to decide which effect should be chosen
         if (mLhs.getId().equals(selectedEffectID))
             discardEvalResult(mLhs.getBehaviour().eval(context));
         else

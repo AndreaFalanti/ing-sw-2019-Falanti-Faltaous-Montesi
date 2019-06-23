@@ -1,12 +1,9 @@
 package it.polimi.se2019.controller.weapon.expression;
 
-import com.google.gson.annotations.SerializedName;
-import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.controller.weapon.ShootContext;
+import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.view.View;
-
-import java.util.Collections;
 
 public class SelectOnePosition extends Behaviour {
     public SelectOnePosition() {
@@ -18,10 +15,11 @@ public class SelectOnePosition extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
+        ShootInteraction interaction = context.getShootInteraction();
         View view = context.getView();
 
-        Position selectedPosition = view.selectPosition(getSub("from").asRange());
+        Position selectedPosition = interaction.selectPosition(view, getSub("from").eval(context).asRange());
 
         return new PositionLiteral(selectedPosition);
     }

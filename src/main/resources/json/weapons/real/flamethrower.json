@@ -16,12 +16,16 @@
             "to": {
               "expr": "SelectOneTarget",
               "from": {
-                "expr": "Line",
-                "direction": {
-                  "store": "jet_dir",
-                  "expr": "SelectOneDirection"
-                },
-                "length": 1
+                "expr": "All",
+                "from": {
+                  "expr": "Line",
+                  "direction": {
+                    "store": "jet_dir",
+                    "expr": "SelectOneDirection"
+                  },
+                  "minLength": 1,
+                  "maxLength": 1
+                }
               }
             }
           },
@@ -31,12 +35,16 @@
             "to": {
               "expr": "SelectOneTarget",
               "from": {
-                "expr": "Line",
-                "direction": {
-                  "expr": "Load",
-                  "name": "jet_dir"
-                },
-                "length": 2
+                "expr": "All",
+                "from": {
+                  "expr": "Line",
+                  "direction": {
+                    "expr": "Load",
+                    "name": "jet_dir"
+                  },
+                  "minLength": 2,
+                  "maxLength": 2
+                }
               }
             }
           }
@@ -44,7 +52,7 @@
       }
     },
     "rhs": {
-      "name": "In barebecue mode",
+      "name": "In barbecue mode",
       "cost": "2y",
       "behaviour": {
         "expr": "Do",
@@ -53,14 +61,15 @@
             "expr": "InflictDamage",
             "amount": "2d",
             "to": {
-              "expr": "SelectOneTarget",
+              "expr": "All",
               "from": {
                 "expr": "Line",
                 "direction": {
                   "store": "jet_dir",
                   "expr": "SelectOneDirection"
                 },
-                "length": 1
+                "minLength": 1,
+                "maxLength": 1
               }
             }
           },
@@ -70,12 +79,16 @@
             "to": {
               "expr": "SelectOneTarget",
               "from": {
-                "expr": "Line",
-                "direction": {
-                  "expr": "Load",
-                  "name": "jet_dir"
-                },
-                "length": 2
+                "expr": "All",
+                "from": {
+                  "expr": "Line",
+                  "direction": {
+                    "expr": "Load",
+                    "name": "jet_dir"
+                  },
+                  "minLength": 2,
+                  "maxLength": 2
+                }
               }
             }
           }

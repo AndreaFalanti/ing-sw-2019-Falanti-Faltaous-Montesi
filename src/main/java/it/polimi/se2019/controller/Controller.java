@@ -1,7 +1,7 @@
 package it.polimi.se2019.controller;
 
 
-import it.polimi.se2019.controller.weapon.ShootContext;
+import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
@@ -10,32 +10,60 @@ import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
+import java.util.Map;
 
 public class Controller implements AbstractController {
+    // messages constants
+    public static final String NO_ACTIONS_REMAINING_ERROR_MSG = "No actions remaining! Undo and try again...";
+
     // fields
-    private Game mGame;
-    private PlayerActionController mPlayerActionController;
+    private final Game mGame;
+    private final PlayerActionController mPlayerActionController;
+    private final Map<PlayerColor, View> mPlayerViews;
+    private final ShootInteraction mShootInteraction;
 
     // constructors
-    public Controller(Game game) {
+    public Controller(Game game, Map<PlayerColor, View> playerViews) {
         mGame = game;
+        mPlayerViews = playerViews;
         mPlayerActionController = new PlayerActionController(this);
+        mShootInteraction = new ShootInteraction(mGame, mPlayerViews);
     }
 
     // trivial getters
     public Game getGame() {
         return mGame;
     }
+    public ShootInteraction getShootInteraction() {
+        return mShootInteraction;
+    }
+    public Object getShootInteractionLock() {
+        if (mShootInteraction.isOccupied())
+            return mShootInteraction.getLock();
+        else
+            throw new UnsupportedOperationException("Trying to get lock of a non occupied shoot interaction!");
+    }
+    public boolean isHandlingShootInteraction() {
+        return mShootInteraction.isOccupied();
+    }
 
     /*******************/
     /* control methods */
     /*******************/
+    // TODO: make this private and notify ShootRequest in weapon tests
+    public void startShootInteraction(View view, PlayerColor shooter, Expression weaponBehaviour) {
+        mShootInteraction.exec(mGame, view, shooter, weaponBehaviour);
+    }
 
-    public void shoot(View view, PlayerColor shooter, Expression weaponBehaviour) {
-        // initialize context for shooting
-        ShootContext initialContext = new ShootContext(mGame, view, shooter);
+    private void continueShootInteraction(Request request) {
+        // shoot info is useless without the shooting
+        if (isHandlingShootInteraction()) {
+            request.getView().reportError("You can't provide shoot info with no shooting going on...");
+            return;
+        }
 
-        weaponBehaviour.eval(initialContext);
+        // feed shooting information to current shoot interaction
+        mShootInteraction.putRequest(request);
     }
 
 
@@ -50,7 +78,7 @@ public class Controller implements AbstractController {
 
     @Override
     public void handle(TargetsSelectedRequest request) {
-
+        continueShootInteraction(request);
     }
 
     @Override
@@ -70,7 +98,7 @@ public class Controller implements AbstractController {
 
     @Override
     public void handle(ShootRequest request) {
-        shoot(
+        startShootInteraction(
                 request.getView(),
                 request.getShooterColor(),
                 // TODO: substitute with Weapons.get() call
@@ -80,16 +108,36 @@ public class Controller implements AbstractController {
 
     @Override
     public void handle(DirectionSelectedRequest request) {
-
+        continueShootInteraction(request);
     }
 
     @Override
     public void handle(PositionSelectedRequest request) {
-
+        continueShootInteraction(request);
     }
 
     @Override
     public void handle(EffectsSelectedRequest request) {
+        continueShootInteraction(request);
+    }
+
+    @Override
+    public void handle(UndoWeaponInteractionRequest request) {
+
+    }
+
+    @Override
+    public void handle(WeaponModeSelectedRequest request) {
+
+    }
+
+    @Override
+    public void handle(PowerUpSelectedRequest request) {
+
+    }
+
+    @Override
+    public void handle(RoomSelectedRequest request) {
 
     }
 

@@ -1,7 +1,7 @@
 [
   {
     "card": {
-      "mName": "Targeting scope",
+      "mType": "TARGETING_SCOPE",
       "mAmmoValue": {
         "mRed": 1,
         "mYellow": 0,
@@ -13,7 +13,7 @@
   },
   {
     "card": {
-      "mName": "Targeting scope",
+      "mType": "TARGETING_SCOPE",
       "mAmmoValue": {
         "mRed": 0,
         "mYellow": 1,
@@ -25,7 +25,7 @@
   },
   {
     "card": {
-      "mName": "Targeting scope",
+      "mType": "TARGETING_SCOPE",
       "mAmmoValue": {
         "mRed": 0,
         "mYellow": 0,
@@ -37,7 +37,7 @@
   },
   {
     "card": {
-      "mName": "Tagback grenade",
+      "mType": "TAGBACK_GRENADE",
       "mAmmoValue": {
         "mRed": 1,
         "mYellow": 0,
@@ -49,7 +49,7 @@
   },
   {
     "card": {
-      "mName": "Tagback grenade",
+      "mType": "TAGBACK_GRENADE",
       "mAmmoValue": {
         "mRed": 0,
         "mYellow": 1,
@@ -61,7 +61,7 @@
   },
   {
     "card": {
-      "mName": "Tagback grenade",
+      "mType": "TAGBACK_GRENADE",
       "mAmmoValue": {
         "mRed": 0,
         "mYellow": 0,
@@ -73,7 +73,7 @@
   },
   {
     "card": {
-      "mName": "Newton",
+      "mType": "NEWTON",
       "mAmmoValue": {
         "mRed": 1,
         "mYellow": 0,
@@ -85,7 +85,7 @@
   },
   {
     "card": {
-      "mName": "Newton",
+      "mType": "NEWTON",
       "mAmmoValue": {
         "mRed": 0,
         "mYellow": 1,
@@ -97,7 +97,7 @@
   },
   {
     "card": {
-      "mName": "Newton",
+      "mType": "NEWTON",
       "mAmmoValue": {
         "mRed": 0,
         "mYellow": 0,
@@ -109,7 +109,7 @@
   },
   {
     "card": {
-      "mName": "Teleport",
+      "mType": "TELEPORT",
       "mAmmoValue": {
         "mRed": 1,
         "mYellow": 0,
@@ -121,7 +121,7 @@
   },
   {
     "card": {
-      "mName": "Teleport",
+      "mType": "TELEPORT",
       "mAmmoValue": {
         "mRed": 0,
         "mYellow": 1,
@@ -133,7 +133,7 @@
   },
   {
     "card": {
-      "mName": "Teleport",
+      "mType": "TELEPORT",
       "mAmmoValue": {
         "mRed": 0,
         "mYellow": 0,

@@ -3,9 +3,6 @@ package it.polimi.se2019.model.weapon.serialization;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import it.polimi.se2019.controller.weapon.expression.Do;
-import it.polimi.se2019.controller.weapon.expression.Expression;
-import it.polimi.se2019.controller.weapon.expression.PickEffect;
 import it.polimi.se2019.controller.weapon.expression.*;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.serialization.AmmoValueDeserializer;
@@ -21,6 +18,7 @@ public class ExpressionFactory {
                 .registerSubtype(Behaviour.class, "Behaviour")
                 .registerSubtype(InflictDamage.class, "InflictDamage")
                 .registerSubtype(DamageLiteral.class, "DamageLiteral")
+                .registerSubtype(SelectOnePosition.class, "SelectOnePosition")
                 .registerSubtype(SelectTargets.class, "SelectTargets")
                 .registerSubtype(CanSee.class, "CanSee")
                 .registerSubtype(TargetLiteral.class, "TargetLiteral")

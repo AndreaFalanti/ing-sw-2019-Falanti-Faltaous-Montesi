@@ -8,26 +8,23 @@ import java.util.List;
 
 
 public class PowerUpCard {
-    private String mName;
+    private PowerUpType mType;
     private AmmoValue mAmmoValue;
-    private PowerUpBehaviour mBehaviour;
     private String mGuiID;
 
     /**
      *
-     * @param name Card name
+     * @param type Card type
      * @param ammo Ammo value of the card
-     * @param behaviour Card effect
      * @throws IllegalArgumentException Thrown if AmmoValue total isn't of 1 ammo cube
      */
-    public PowerUpCard (String name, AmmoValue ammo, PowerUpBehaviour behaviour) {
+    public PowerUpCard(PowerUpType type, AmmoValue ammo) {
         if (ammo != null && ammo.getRed() + ammo.getYellow() + ammo.getBlue() != 1) {
             throw new IllegalArgumentException ();
         }
 
-        mName = name;
+        mType = type;
         mAmmoValue = ammo;
-        mBehaviour = behaviour;
     }
 
     /**
@@ -46,29 +43,18 @@ public class PowerUpCard {
         }
     }
 
-    public String getName() {
-        return mName;
+    public PowerUpType getType() {
+        return mType;
     }
 
     public AmmoValue getAmmoValue() {
         return mAmmoValue;
     }
 
-    public PowerUpBehaviour getBehaviour() {
-        return mBehaviour;
-    }
-
     public String getGuiID() {
         return mGuiID;
     }
 
-    /**
-     * Activate card effect
-     * @param player Target player for the effect processing
-     */
-    public void activate(Player player) {
-        mBehaviour.activate(player);
-    }
 
     /**
      * Return a complete list of PowerUpCards parsed from a json.
@@ -80,27 +66,11 @@ public class PowerUpCard {
         PowerUpStruct[] powerUpStructs = gson.fromJson(json, PowerUpStruct[].class);
         ArrayList<PowerUpCard> cards = new ArrayList<>();
         for (PowerUpStruct struct : powerUpStructs) {
-            switch (struct.card.mName) {
-                case "Targeting scope":
-                    struct.card.mBehaviour = new TargetingScopeBehaviour();
-                    break;
-                case "Teleport":
-                    struct.card.mBehaviour = new TeleportBehaviour();
-                    break;
-                case "Tagback grenade":
-                    struct.card.mBehaviour = new TagbackGrenadeBehaviour();
-                    break;
-                case "Newton":
-                    struct.card.mBehaviour = new NewtonBehaviour();
-                    break;
-                default:
-                    throw new IllegalArgumentException("PowerUp name not recognized, can't set proper behaviour");
-            }
-
             for (int i = 0; i < struct.quantity; i++) {
                 cards.add(struct.card);
             }
         }
+
         return cards;
     }
 
@@ -115,9 +85,8 @@ public class PowerUpCard {
     @Override
     public String toString() {
         return "PowerUpCard{" +
-                "mName='" + mName + '\'' +
+                "mType='" + mType + '\'' +
                 ", mAmmoValue=" + mAmmoValue +
-                ", mBehaviour=" + mBehaviour +
                 ", mGuiID='" + mGuiID + '\'' +
                 '}';
     }

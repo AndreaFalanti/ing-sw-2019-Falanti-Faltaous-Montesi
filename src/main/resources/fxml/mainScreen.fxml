@@ -194,6 +194,39 @@
                   </AnchorPane>
                </content>
             </Tab>
+            <Tab text="Room">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label alignment="CENTER" layoutX="187.0" layoutY="27.0" prefHeight="25.0" prefWidth="174.0" text="Choose a room..." textFill="WHITE">
+                           <font>
+                              <Font name="System Bold Italic" size="18.0" />
+                           </font>
+                        </Label>
+                        <GridPane fx:id="roomColorButtonsPane" layoutX="22.0" layoutY="86.0" prefHeight="260.0" prefWidth="504.0">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="148.0" minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="128.0" minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Button mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" text="GREEN" />
+                              <Button layoutX="22.0" layoutY="49.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" style="-fx-background-color: RED;" text="RED" GridPane.columnIndex="1" />
+                              <Button layoutX="22.0" layoutY="49.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" style="-fx-background-color: YELLOW;" text="YELLOW" GridPane.columnIndex="2" />
+                              <Button layoutX="22.0" layoutY="49.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" style="-fx-background-color: BLUE;" text="BLUE" GridPane.rowIndex="1" />
+                              <Button layoutX="22.0" layoutY="49.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" style="-fx-background-color: dddddd;" text="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Button layoutX="22.0" layoutY="49.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="131.0" style="-fx-background-color: PURPLE;" text="PURPLE" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
+                        <Button fx:id="roomsUndoButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="85.0" text="UNDO" AnchorPane.bottomAnchor="57.0" AnchorPane.rightAnchor="14.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
         </tabs>
       </TabPane>
    </children>

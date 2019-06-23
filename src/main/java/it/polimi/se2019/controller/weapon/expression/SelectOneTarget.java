@@ -11,7 +11,7 @@ public class SelectOneTarget extends Behaviour {
     }
 
     @Override
-    public Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         // use generic expression to synthesise this
         Expression moreGeneric = new SelectTargets(
                 new IntLiteral(1),

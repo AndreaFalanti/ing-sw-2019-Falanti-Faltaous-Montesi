@@ -6,13 +6,21 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SetExpression extends Expression {
     @SerializedName("subs")
-    private Set<Expression> mSubexpressions;
+    private final Set<Expression> mSubexpressions;
+
+    /**
+     * Constructs an empty set expression
+     */
+    public SetExpression() {
+        mSubexpressions = new HashSet<>();
+    }
 
     /**
      * Constructs SetExpression from set of subexpressions
@@ -20,26 +28,6 @@ public class SetExpression extends Expression {
      */
     public SetExpression(Set<Expression> subs) {
         mSubexpressions = subs;
-    }
-
-    /**
-     * Constructs SetExpression from list of subexpressions
-     * @param subs subexpressions of constructed SetExpression
-     */
-    public SetExpression(Expression... subs) {
-        this(Arrays.stream(subs).collect(Collectors.toSet()));
-    }
-
-    /**
-     * Trivial constructor
-     * @param subexpressions subexpressions of {@code this}
-     */
-    public static SetExpression from(Set<Expression> subexpressions) {
-        SetExpression result = new SetExpression();
-
-        result.mSubexpressions = subexpressions;
-
-        return result;
     }
 
     /**
@@ -59,15 +47,39 @@ public class SetExpression extends Expression {
     }
 
     @Override
-    public Expression eval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         // return SetExpression of all evaluated expressions
-        return from(stream()
+        return new SetExpression(stream()
                         .map(expr -> expr.eval(context))
                         .collect(Collectors.toSet())
         );
     }
 
     // utility conversion to primitives
+    @Override
+    public PlayerColor asTarget() {
+        if (mSubexpressions.size() == 1)
+            return mSubexpressions.iterator().next().asTarget();
+
+        if (mSubexpressions.isEmpty())
+            throw new UnsupportedConversionException("SetExpression (empty)", "Target");
+
+        else
+            throw new UnsupportedConversionException("SetExpression (more than one element)", "Target");
+    }
+
+    @Override
+    public Position asPosition() {
+        if (mSubexpressions.size() == 1)
+            return mSubexpressions.iterator().next().asPosition();
+
+        if (mSubexpressions.isEmpty())
+            throw new UnsupportedConversionException("SetExpression (empty)", "Position");
+
+        else
+            throw new UnsupportedConversionException("SetExpression (more than one element)", "Position");
+    }
+
     @Override
     public Set<PlayerColor> asTargets() {
         return stream()

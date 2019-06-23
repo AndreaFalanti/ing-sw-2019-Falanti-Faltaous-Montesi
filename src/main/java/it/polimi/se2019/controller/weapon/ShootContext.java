@@ -1,14 +1,18 @@
 package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.controller.weapon.expression.Expression;
+import it.polimi.se2019.controller.weapon.expression.SetExpression;
+import it.polimi.se2019.controller.weapon.expression.ShootUndoInfo;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.view.View;
+import it.polimi.se2019.view.request.Request;
 
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
 
 public class ShootContext {
     // statics
@@ -22,12 +26,14 @@ public class ShootContext {
     private View mView;
     private PlayerColor mShooterColor;
     private Map<String, Expression> mScope;
+    private ShootInteraction mShootInteraction;
+    private ShootUndoInfo mUndoInfo;
 
     // trivial constructor
-    public ShootContext(Game game, View view, PlayerColor shooterColor) {
+    public ShootContext(Game game, View view, PlayerColor shooterColor, ShootInteraction shootInteraction) {
         // safety check to assure that shooter is present among provided players
         List<Player> players = game.getPlayers();
-        if (!players.stream().anyMatch(pl -> pl.getColor() == shooterColor))
+        if (players.stream().noneMatch(pl -> pl.getColor() == shooterColor))
             throw new IllegalArgumentException(MISSING_PLAYER_MSG);
 
         // initialize fields
@@ -35,6 +41,11 @@ public class ShootContext {
         mView = view;
         mShooterColor = shooterColor;
         mScope = new HashMap<>();
+        mShootInteraction = shootInteraction;
+        mUndoInfo = new ShootUndoInfo(mGame);
+
+        // initialize special variables
+        setVar(SPECIAL_VAR_LAST_SELECTED, new SetExpression());
     }
 
     // trivial getters
@@ -66,6 +77,22 @@ public class ShootContext {
         return mView;
     }
 
+    public Game getGame() {
+        return mGame;
+    }
+
+    public ShootInteraction getShootInteraction() {
+        return mShootInteraction;
+    }
+
+    public BlockingQueue<Request> getRequestQueue() {
+        return mShootInteraction.getRequestQueue();
+    }
+
+    public ShootUndoInfo getUndoInfo() {
+        return mUndoInfo;
+    }
+
     // manipulate scope
     public Expression getVar(String name) {
         if (mScope.get(name) == null)
@@ -76,10 +103,6 @@ public class ShootContext {
 
     public void setVar(String name, Expression value) {
         mScope.put(name, value);
-    }
-
-    public Game getGame() {
-        return mGame;
     }
 }
 

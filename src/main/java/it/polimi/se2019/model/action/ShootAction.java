@@ -19,7 +19,9 @@ public class ShootAction implements Action {
     }
 
     @Override
-    public void perform(Game game) {}
+    public void perform(Game game) {
+        throw new UnsupportedOperationException("WIP");
+    }
 
     @Override
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {

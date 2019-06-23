@@ -1,9 +1,6 @@
 package it.polimi.se2019.model.action;
 
-import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.model.Player;
-import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.PowerUpCard;
+import it.polimi.se2019.model.*;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -13,7 +10,7 @@ public class AmmoPaymentTest {
     @Test
     public void testPayCost() {
         Player player = new Player("a", PlayerColor.GREY);
-        player.addPowerUp(new PowerUpCard("a", new AmmoValue(0,0,1), null));
+        player.addPowerUp(new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,0,1)));
         AmmoValue cost1 = new AmmoValue(1,1,0);
         AmmoValue cost2 = new AmmoValue(1,1,2);
         boolean[] discardedCards1 = {false, false, false};
@@ -31,7 +28,7 @@ public class AmmoPaymentTest {
     @Test
     public void testIsValid() {
         Player player = new Player("a", PlayerColor.GREY);
-        player.addPowerUp(new PowerUpCard("a", new AmmoValue(0,0,1), null));
+        player.addPowerUp(new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,0,1)));
         AmmoValue cost1 = new AmmoValue(1,1,0);
         AmmoValue cost2 = new AmmoValue(1,1,2);
         boolean[] discardedCards1 = {false, false, false};
@@ -51,9 +48,9 @@ public class AmmoPaymentTest {
     @Test
     public void testAddAmmoAndDiscard() {
         Player player = new Player("a", PlayerColor.GREY);
-        player.addPowerUp(new PowerUpCard("c", new AmmoValue(1,0,0), null));
-        player.addPowerUp(new PowerUpCard("b", new AmmoValue(0,1,0), null));
-        player.addPowerUp(new PowerUpCard("a", new AmmoValue(0,0,1), null));
+        player.addPowerUp(new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(1,0,0)));
+        player.addPowerUp(new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,1,0)));
+        player.addPowerUp(new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,0,1)));
 
         boolean[] discardedCards1 = {false, true, true};
         boolean[] discardedCards2 = {true, false, false};

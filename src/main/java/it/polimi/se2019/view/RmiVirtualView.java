@@ -50,6 +50,11 @@ public class RmiVirtualView extends View {
     }
 
     @Override
+    public void showPowerUpSelectionView(List<Integer> indexes) {
+
+    }
+
+    @Override
     public void showDirectionSelectionView() {
 
     }
@@ -66,6 +71,16 @@ public class RmiVirtualView extends View {
 
     @Override
     public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
+
+    }
+
+    @Override
+    public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
+
+    }
+
+    @Override
+    public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
 
     }
 

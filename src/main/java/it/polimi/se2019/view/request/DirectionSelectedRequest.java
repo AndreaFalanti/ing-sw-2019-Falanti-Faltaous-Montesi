@@ -17,6 +17,7 @@ public class DirectionSelectedRequest implements Request {
         return mDirection;
     }
 
+    @Override
     public View getView() {
         return mView;
     }

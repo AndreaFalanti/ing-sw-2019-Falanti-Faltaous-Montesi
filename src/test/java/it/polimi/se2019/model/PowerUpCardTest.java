@@ -18,7 +18,7 @@ public class PowerUpCardTest {
     public void testPowerUpCardConstructor () {
         try {
             PowerUpCard card =
-                    new PowerUpCard("Teleport", new AmmoValue(0,0,1), new TeleportBehaviour());
+                    new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,0,1));
             assertTrue(true);
         }
         catch (IllegalArgumentException e) {
@@ -33,7 +33,7 @@ public class PowerUpCardTest {
     public void testPowerUpCardConstructorIllegalArgumentException () {
         try {
             PowerUpCard card =
-                    new PowerUpCard("Teleport", new AmmoValue(1,0,1), new TeleportBehaviour());
+                    new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(1,0,1));
             fail();
         }
         catch (IllegalArgumentException e) {
@@ -41,7 +41,7 @@ public class PowerUpCardTest {
         }
         try {
             PowerUpCard card =
-                    new PowerUpCard("Teleport", new AmmoValue(0,0,0), new TeleportBehaviour());
+                    new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(0,0,0));
             fail();
         }
         catch (IllegalArgumentException e) {
@@ -54,15 +54,15 @@ public class PowerUpCardTest {
      */
     @Test
     public void testGetColor() {
-        PowerUpCard card = new PowerUpCard("Newton", new AmmoValue(0,1,0), null);
+        PowerUpCard card = new PowerUpCard(PowerUpType.NEWTON, new AmmoValue(0,1,0));
         TileColor color = card.getColor();
         assertEquals(TileColor.YELLOW, color);
 
-        PowerUpCard card2 = new PowerUpCard("Newton", new AmmoValue(1,0,0), null);
+        PowerUpCard card2 = new PowerUpCard(PowerUpType.NEWTON, new AmmoValue(1,0,0));
         TileColor color2 = card2.getColor();
         assertEquals(TileColor.RED, color2);
 
-        PowerUpCard card3 = new PowerUpCard("Newton", new AmmoValue(0,0,1), null);
+        PowerUpCard card3 = new PowerUpCard(PowerUpType.NEWTON, new AmmoValue(0,0,1));
         TileColor color3 = card3.getColor();
         assertEquals(TileColor.BLUE, color3);
     }
@@ -76,9 +76,8 @@ public class PowerUpCardTest {
 
         for (PowerUpCard powerUpCard : deck) {
             assertNotNull(powerUpCard);
-            assertNotNull(powerUpCard.getName());
+            assertNotNull(powerUpCard.getType());
             assertNotNull(powerUpCard.getAmmoValue());
-            assertNotNull(powerUpCard.getBehaviour());
             assertNotNull(powerUpCard.getGuiID());
         }
     }

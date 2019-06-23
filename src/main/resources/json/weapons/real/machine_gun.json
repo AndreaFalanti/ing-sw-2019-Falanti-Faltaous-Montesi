@@ -1,21 +1,22 @@
 {
-  "name": "Machine Gun",
-  "shootCost": "1b",
-  "grabCost": "1r1b",
+  "name": "Machine gun",
+  "guiID": "0220",
+  "grabCost": "1b",
+  "reloadCost": "1r1b",
   "behaviour": {
     "expr": "PickEffect",
     "effects": [
       {
-        "name" : "Basic effect",
+        "name": "Machine gun",
         "priority": 0,
-        "behaviour" : {
+        "behaviour": {
           "expr": "InflictDamage",
           "amount": "1d",
-          "to" : {
+          "to": {
             "expr": "SelectTargets",
-            "store" : "basic_effect_selection",
-            "min" : 1,
-            "max" : 2,
+            "store": "basic_target",
+            "min": 1,
+            "max": 2,
             "from": {
               "expr": "CanSee"
             }
@@ -24,58 +25,63 @@
       },
       {
         "name": "With focus shot",
+        "cost": "1y",
         "priority": 1,
         "optional": true,
-        "cost" : "1y",
-        "behaviour" : {
-          "expr" : "InflictDamage",
+        "behaviour": {
+          "expr": "InflictDamage",
           "amount": "1d",
           "to": {
             "expr": "SelectOneTarget",
-            "store" : "focus_shot_selection",
+            "store": "focus_target",
             "from": {
-              "expr" : "LastSelected"
+              "expr": "Load",
+              "name": "basic_target"
             }
           }
         }
       },
       {
-        "name" : "With turrent tripod 1",
-        "priority" : 1,
-        "optional" : true,
-        "behaviour" : {
-          "expr" : "InflictDamage",
-          "amount" : 1,
-          "to" : {
-            "expr" : "Difference",
-            "lhs" : {
-              "expr" : "Load",
-              "name" : "basic_effect_selection"
+        "name": "With turret tripod",
+        "cost": "1b",
+        "priority": 1,
+        "optional": true,
+        "behaviour": {
+          "expr": "PickEffect",
+          "effects": [
+            {
+              "name": "With turret tripod 1",
+              "priority": 0,
+              "optional": true,
+              "behaviour": {
+                "expr": "InflictDamage",
+                "amount": "1d",
+                "to": {
+                  "expr": "Load",
+                  "name": "focus_target"
+                }
+              }
             },
-            "rhs" : {
-              "expr" : "Load",
-              "name" : "focus_shot_selection"
+            {
+              "name": "With turret tripod 2",
+              "priority": 0,
+              "optional": true,
+              "behaviour": {
+                "expr": "InflictDamage",
+                "amount": "1d",
+                "to": {
+                  "expr": "Difference",
+                  "lhs": {
+                    "expr": "CanSee"
+                  },
+                  "rhs": {
+                    "expr": "Load",
+                    "name": "basic_target"
+                  }
+                }
+              }
             }
-          }
-        }
-      },
-      {
-        "name" : "With turrent tripod 2",
-        "priority" : 1,
-        "optional" : true,
-        "behaviour" : {
-          "expr" : "InflictDamage",
-          "amount" : 1,
-          "to" : {
-            "expr" : "Difference",
-            "lhs" : {
-              "expr" : "CanSee"
-            },
-            "rhs" : {
-              "expr" : "Load",
-              "name" : "basic_effect_selection"
-            }
-          }
+          ]
         }
       }
     ]

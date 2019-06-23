@@ -5,20 +5,14 @@ import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.MoveShootAction;
 import it.polimi.se2019.model.action.ReloadAction;
-import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.board.Direction;
-import it.polimi.se2019.model.board.NormalTile;
-import it.polimi.se2019.model.board.SpawnTile;
+import it.polimi.se2019.model.board.*;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.view.request.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -52,6 +46,8 @@ public class MainScreen extends Observable<Request> {
     @FXML
     private Pane directionButtonsPane;
     @FXML
+    private Pane roomColorButtonsPane;
+    @FXML
     private VBox effectsBox;
     @FXML
     private VBox targetsBox;
@@ -65,7 +61,8 @@ public class MainScreen extends Observable<Request> {
     private Button directionsUndoButton;
     @FXML
     private Button targetsUndoButton;
-
+    @FXML
+    private Button roomsUndoButton;
 
 
     private static final Logger logger = Logger.getLogger(MainScreen.class.getName());
@@ -75,8 +72,8 @@ public class MainScreen extends Observable<Request> {
     private static final int EFFECTS_TAB = 2;
     private static final int DIRECTION_TAB = 3;
     private static final int TARGETS_TAB = 4;
+    private static final int ROOM_TAB = 5;
 
-    
     private static final double LOADED_OPACITY = 1;
     private static final double UNLOADED_OPACITY = 0.4;
 
@@ -88,6 +85,11 @@ public class MainScreen extends Observable<Request> {
 
     private boolean[] mDiscardedPowerUpsCache = new boolean[3];
     private boolean[] mTargetSelectedCache;
+    private int mActualEffectIndex;
+    private List<Effect> mEffectsCache;
+    private List<Effect> mMandatoryEffectsCache;
+
+    private List<Button> mUndoWeaponButtons;
 
 
     public BoardPane getBoardController() {
@@ -117,6 +119,21 @@ public class MainScreen extends Observable<Request> {
     public PlayerPane getPlayerControllerFromColor(PlayerColor color) {
         return mPlayerControllers.get(color);
     }
+
+
+    @FXML
+    public void initialize () {
+        mUndoWeaponButtons = new ArrayList<>();
+        mUndoWeaponButtons.add(effectsUndoButton);
+        mUndoWeaponButtons.add(targetsUndoButton);
+        mUndoWeaponButtons.add(directionsUndoButton);
+        mUndoWeaponButtons.add(roomsUndoButton);
+
+        setupDirectionButtonsBehaviour();
+        setupRoomColorButtonsBehaviour();
+        setWeaponTabsUndoButtonsBehaviour();
+    }
+
 
     /**
      * Load player board of given color
@@ -224,10 +241,6 @@ public class MainScreen extends Observable<Request> {
         mBoardController.updateBoardTile(spawnTile, new Position(2, 0));
 
         boardPane.getChildren().add(newLoadedPane);
-
-        // TODO: move in a proper setup method someday
-        setupDirectionButtonsBehaviour();
-        setWeaponTabsUndoButtonsBehaviour();
     }
 
 
@@ -544,6 +557,17 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    private void setupRoomColorButtonsBehaviour () {
+        TileColor[] tileColors = TileColor.values();
+        for (int i = 0; i < tileColors.length; i++) {
+            final int index = i;
+            roomColorButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
+                logToChat("Selected room: " + tileColors[index].toString());
+                notify(new RoomSelectedRequest(tileColors[index], mView));
+            });
+        }
+    }
+
     public void activateDirectionTab () {
         tabPane.getSelectionModel().select(DIRECTION_TAB);
     }
@@ -608,28 +632,70 @@ public class MainScreen extends Observable<Request> {
         });
     }
 
-    public void activateEffectsTab (SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
+    public void activateEffectsTabForEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
         tabPane.getSelectionModel().select(EFFECTS_TAB);
         effectsBox.getChildren().clear();
+        effectsOkButton.setDisable(true);
+
+        mActualEffectIndex = 0;
+        mEffectsCache = new ArrayList<>();
+        mMandatoryEffectsCache = new ArrayList<>();
 
         for (Map.Entry<Integer, Set<Effect>> entry : priorityMap.entrySet()) {
             boolean enableEffectPane = entry.getKey() == currentPriority;
 
             for (Effect effect : entry.getValue()) {
+                if (!effect.isOptional()) {
+                    mMandatoryEffectsCache.add(effect);
+                }
+
                 AnchorPane child = createEffectPane(effect, enableEffectPane);
+
+                CheckBox checkBox = new CheckBox();
+                checkBox.setOnAction(event -> {
+                    if (checkBox.isSelected()) {
+                        checkBox.setText(Integer.toString(mActualEffectIndex));
+                        mEffectsCache.add(effect);
+                        mActualEffectIndex++;
+                    }
+                    else {
+                        checkBox.setText("");
+                        mEffectsCache.remove(effect);
+                    }
+
+                    effectsOkButton.setDisable(!checkMandatoryEffectsAreSelected());
+                });
+
+                child.getChildren().add(checkBox);
+                AnchorPane.setBottomAnchor(checkBox, 5d);
+                AnchorPane.setRightAnchor(checkBox, 5d);
+
                 effectsBox.getChildren().add(child);
                 VBox.setVgrow(child, Priority.ALWAYS);
             }
         }
+
+        effectsOkButton.setOnMouseClicked(event -> {
+            List<String> ids = new ArrayList<>();
+            for (Effect effect : mEffectsCache) {
+                ids.add(effect.getId());
+            }
+
+            notify(new EffectsSelectedRequest(ids, mView));
+            returnToActionTab();
+        });
     }
 
     private AnchorPane createEffectPane (Effect effect, boolean enabled) {
         AnchorPane anchorPane = new AnchorPane();
 
-        Label nameLabel = new Label(effect.getName());
+        String name = effect.isOptional() ? effect.getName() : effect.getName() + " [MANDATORY]";
+        Label nameLabel = new Label(name);
+
         nameLabel.setStyle("-fx-font: 16 segoe; -fx-font-weight: bold; -fx-font-style: italic");
 
-        Label costLabel = new Label("(1, 2, 3)");
+        Label costLabel = new Label(String.format("(%d, %d, %d)", effect.getCost().getRed(),
+                effect.getCost().getYellow(), effect.getCost().getBlue()));
 
         anchorPane.getChildren().add(nameLabel);
         anchorPane.getChildren().add(costLabel);
@@ -669,9 +735,12 @@ public class MainScreen extends Observable<Request> {
     }
 
     private void setWeaponTabsUndoButtonsBehaviour () {
-        targetsUndoButton.setOnMouseClicked(event -> returnToActionTab());
-        directionsUndoButton.setOnMouseClicked(event -> returnToActionTab());
-        effectsUndoButton.setOnMouseClicked(event -> returnToActionTab());
+        for (Button button : mUndoWeaponButtons) {
+            button.setOnMouseClicked(event -> {
+                returnToActionTab();
+                notify(new UndoWeaponInteractionRequest(mView));
+            });
+        }
     }
 
     private void returnToActionTab() {
@@ -679,5 +748,17 @@ public class MainScreen extends Observable<Request> {
             tabPane.getTabs().get(i).setDisable(i != ACTIONS_TAB && i != PLAYERS_TAB);
         }
         tabPane.getSelectionModel().selectFirst();
+    }
+
+    // TODO: use this in weapon tabs activation after testing is over
+    private void activateWeaponRelatedTab (int index) {
+        for (int i = 0; i < tabPane.getTabs().size(); i++) {
+            tabPane.getTabs().get(i).setDisable(i != index);
+        }
+        tabPane.getSelectionModel().select(index);
+    }
+
+    private boolean checkMandatoryEffectsAreSelected () {
+        return mEffectsCache.containsAll(mMandatoryEffectsCache);
     }
 }

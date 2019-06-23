@@ -12,7 +12,7 @@ public class Load extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
-        return context.getVar(getSub("name").asString());
+    public final Expression eval(ShootContext context) {
+        return context.getVar(getSub("name").eval(context).asString());
     }
 }

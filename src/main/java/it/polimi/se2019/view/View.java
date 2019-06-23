@@ -17,11 +17,16 @@ import java.util.SortedMap;
 
 public abstract class View extends Observable<Request> implements Observer<Update> {
     // fields
-    protected PlayerColor ownerColor;
+    protected PlayerColor mOwnerColor;
     protected UpdateHandler mUpdateHandler;
 
-    // constructor
+    // constructors
     public View(UpdateHandler updateHandler) {
+        mUpdateHandler = updateHandler;
+    }
+
+    public View(PlayerColor ownerColor, UpdateHandler updateHandler) {
+        mOwnerColor = ownerColor;
         mUpdateHandler = updateHandler;
     }
 
@@ -30,7 +35,7 @@ public abstract class View extends Observable<Request> implements Observer<Updat
     }
 
     public PlayerColor getOwnerColor() {
-        return ownerColor;
+        return mOwnerColor;
     }
 
 
@@ -50,6 +55,8 @@ public abstract class View extends Observable<Request> implements Observer<Updat
     public abstract void showWeaponSelectionView(TileColor spawnColor);
 
     public abstract void showValidPositions(List<Position> positions);
+
+    public abstract void showPowerUpSelectionView(List<Integer> indexes);
 
     // WEAPONS related
     /**
@@ -82,6 +89,23 @@ public abstract class View extends Observable<Request> implements Observer<Updat
      *                        this priority, then the controller should consider the call an input error.
      */
     public abstract void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority);
+
+    /**
+     * Ask player to select a list of effects
+     * @param priorityMap The possible effects that the player can choose from. The effects are associated to their
+     *                    respective priorities. If an effect is picked that is not present among this map, the the
+     *                    controller should consider the call an input error.
+     * @param possibleEffects TODO complete this doc
+     */
+    public abstract void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap,
+                                                  Set<Effect> possibleEffects);
+
+    /**
+     * Ask player to select which weapon mode to use
+     * @param effect1 First effect
+     * @param effect2 Second effect
+     */
+    public abstract void showWeaponModeSelectionView(Effect effect1, Effect effect2);
 
     //region old responses
     /**

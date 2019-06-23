@@ -33,7 +33,6 @@ public class GraphicView extends View {
     @Override
     public void showPowerUpsDiscardView() {
         mMainFrameController.enablePowerUpBoxForSendingDiscardedIndex();
-
     }
 
     @Override
@@ -48,6 +47,11 @@ public class GraphicView extends View {
 
     @Override
     public void showValidPositions(List<Position> positions) {
+
+    }
+
+    @Override
+    public void showPowerUpSelectionView(List<Integer> indexes) {
 
     }
 
@@ -72,23 +76,33 @@ public class GraphicView extends View {
     }
 
     @Override
+    public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
+
+    }
+
+    @Override
+    public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
+
+    }
+
+    @Override
     public Direction pickDirection() {
-        return null;
+        throw new UnsupportedOperationException("WIP");
     }
 
     @Override
     public Position selectPosition(Set<Position> possiblePositions) {
-        return null;
+        throw new UnsupportedOperationException("WIP");
     }
 
     @Override
     public Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect) {
-        return null;
+        throw new UnsupportedOperationException("WIP");
     }
 
     @Override
     public Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
-        return null;
+        throw new UnsupportedOperationException("WIP");
     }
 
 }

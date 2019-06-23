@@ -1,0 +1,68 @@
+{
+  "name": "Grenade Launcher",
+  "guiID": "0212",
+  "grabCost": "1r",
+  "reloadCost": "1r",
+  "behaviour": {
+    "expr": "PickEffect",
+    "effects": [
+      {
+        "name": "Basic effect",
+        "priority": 0,
+        "behaviour": {
+          "expr": "InflictDamage",
+          "amount": "1d",
+          "to": {
+            "expr": "SelectOneTarget",
+            "store": "basic_target",
+            "from": {
+              "expr": "CanSee"
+            }
+          }
+        }
+      },
+      {
+        "name": "Basic effect move",
+        "priority": 1,
+        "optional": true,
+        "behaviour": {
+          "expr": "Move",
+          "from": {
+            "expr": "Load",
+            "name": "basic_target"
+          },
+          "to": {
+            "expr": "Distance",
+            "origin": {
+              "expr": "Pos",
+              "who": {
+                "expr": "Load",
+                "name": "basic_target"
+              }
+            },
+            "amount": 1
+          }
+        }
+      },
+      {
+        "name": "With extra grenade",
+        "cost": "1r",
+        "priority": 1,
+        "optional": true,
+        "behaviour": {
+          "expr": "InflictDamage",
+          "amount": "1d",
+          "to": {
+            "expr": "All",
+            "from": {
+              "expr": "SelectOnePosition",
+              "from": {
+                "expr": "CanSee"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

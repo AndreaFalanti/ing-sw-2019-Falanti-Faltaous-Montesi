@@ -147,6 +147,12 @@ public class Game extends Observable<Update> {
     }
     //endregion
 
+    //region SETTERS
+    public void setPlayers(List<Player> players) {
+        mPlayers = players;
+    }
+    //endregion
+
     /**
      * Start next turn, incrementing turn number, changing active player and setting number of actions.
      * If it's game over, distribute kill points to players and finish the game.

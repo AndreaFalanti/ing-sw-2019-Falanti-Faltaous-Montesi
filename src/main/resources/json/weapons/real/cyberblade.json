@@ -1,0 +1,71 @@
+{
+  "name": "Cyberblade",
+  "guiID": "023",
+  "grabCost": "1r1y",
+  "reloadCost": "1y",
+  "behaviour": {
+    "expr": "PickEffect",
+    "effects": [
+      {
+        "name": "Basic effect",
+        "priority": 0,
+        "behaviour": {
+          "expr": "InflictDamage",
+          "amount": "2d",
+          "to": {
+            "expr": "SelectOneTarget",
+            "from": {
+              "expr": "Difference",
+              "lhs": {
+                "expr": "Neighbours"
+              },
+              "rhs": {
+                "expr": "LastSelected"
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "With shadowstep",
+        "priority": 0,
+        "optional": true,
+        "behaviour": {
+          "expr": "Move",
+          "from": {
+            "expr": "You"
+          },
+          "to": {
+            "expr": "SelectOnePosition",
+            "from": {
+              "expr": "Distance",
+              "amount": 1
+            }
+          }
+        }
+      },
+      {
+        "name": "With slice and dice",
+        "cost": "1y",
+        "priority": 0,
+        "optional": true,
+        "behaviour": {
+          "expr": "InflictDamage",
+          "amount": "2d",
+          "to": {
+            "expr": "SelectOneTarget",
+            "from": {
+              "expr": "Difference",
+              "lhs": {
+                "expr": "Neighbours"
+              },
+              "rhs": {
+                "expr": "LastSelected"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

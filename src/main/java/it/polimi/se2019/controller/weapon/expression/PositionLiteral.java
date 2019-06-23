@@ -11,6 +11,11 @@ public class PositionLiteral extends Literal<Position> {
     }
 
     @Override
+    public SetExpression asSetExpr() {
+        return new SetExpression(Collections.singleton(this));
+    }
+
+    @Override
     public Set<Position> asRange() {
         return Collections.singleton(getPrimitive());
     }

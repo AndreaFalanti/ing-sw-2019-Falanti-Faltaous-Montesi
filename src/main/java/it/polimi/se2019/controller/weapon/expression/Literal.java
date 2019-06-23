@@ -19,7 +19,7 @@ public class Literal<PrimitiveType> extends Expression {
 
     // a literal usually evaluates to itself
     @Override
-    public Expression eval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         return this;
     }
 }

@@ -4,7 +4,7 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 
 public class Distance extends Behaviour {
     public Distance() {
-        putSub("origin", new You());
+        putSub("origin", new Pos(new You()));
     }
 
     public Distance(Expression origin, Expression amount) {
@@ -16,7 +16,7 @@ public class Distance extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         Expression moreGeneric = new DistanceRange(
                 getSub("origin"),
                 getSub("amount"),

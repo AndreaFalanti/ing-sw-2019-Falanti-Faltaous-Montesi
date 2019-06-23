@@ -1,7 +1,5 @@
 package it.polimi.se2019.util;
 
-import com.google.gson.FieldNamingPolicy;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -14,7 +14,7 @@ public class Do extends Expression {
     private List<Expression> mSubexpressions;
 
     @Override
-    public Expression eval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         // TODO: use logger
         mSubexpressions.forEach(sub -> discardEvalResult(sub.eval(context)));
 

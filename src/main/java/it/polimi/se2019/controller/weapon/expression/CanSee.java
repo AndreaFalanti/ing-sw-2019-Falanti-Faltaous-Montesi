@@ -8,23 +8,23 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CanSee extends Behaviour {
-    public CanSee(){
-        putSub("observer", new You());
+    public CanSee() {
+        putSub("origin", new You());
     }
 
-    public CanSee(Expression observer) {
-        putSub("observer", observer);
+    public CanSee(Expression origin) {
+        putSub("origin", origin);
     }
 
     // TODO: add doc
     @Override
-    public Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         Set<Position> visibleRange = new GetVisibleRange(
-                new Pos(getSub("observer"))
+                new Pos(getSub("origin").eval(context))
         ).eval(context).asRange();
         Set<Player> allPlayers = context.getPlayers();
 
-        return SetExpression.from(allPlayers.stream()
+        return new SetExpression(allPlayers.stream()
                 .filter(pl -> visibleRange.contains(pl.getPos()))
                 .map(Player::getColor)
                 .map(TargetLiteral::new)

@@ -11,12 +11,14 @@ public class Store extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
+        Expression evaluatedValue = getSub("value").eval(context);
+
         context.setVar(
-                getSub("name").asString(),
-                getSub("value")
+                getSub("name").eval(context).asString(),
+                evaluatedValue
         );
 
-        return getSub("value");
+        return evaluatedValue;
     }
 }

@@ -1,0 +1,33 @@
+{
+  "name": "Zx-2",
+  "guiID": "027",
+  "grabCost": "1r1y",
+  "reloadCost": "1y",
+  "behaviour": {
+    "expr": "XorEffect",
+    "lhs": {
+      "name": "Basic mode",
+      "behaviour": {
+        "expr": "InflictDamage",
+        "amount": "1d2m",
+        "to": {
+          "expr": "SelectOneTarget",
+          "from": {
+            "expr": "CanSee"
+          }
+        }
+      }
+    },
+    "rhs": {
+      "name": "In scanner mode",
+      "behaviour": {
+        "expr": "SelectTargets",
+        "min": 1,
+        "max": 3,
+        "from": {
+          "expr": "CanSee"
+        }
+      }
+    }
+  }
+}

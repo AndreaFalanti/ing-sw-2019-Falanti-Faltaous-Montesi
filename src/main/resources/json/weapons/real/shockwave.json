@@ -1,0 +1,108 @@
+{
+  "name": "Shockwave",
+  "guiID": "028",
+  "grabCost": "1y",
+  "reloadCost": "1y",
+  "behaviour": {
+    "expr": "XorEffect",
+    "lhs": {
+      "name": "Basic mode",
+      "behaviour": {
+        "expr": "PickEffect",
+        "effects": [
+          {
+            "priority": 0,
+            "behaviour": {
+              "expr": "InflictDamage",
+              "amount": "1d",
+              "to": {
+                "expr": "SelectOneTarget",
+                "store": "target1",
+                "from": {
+                  "expr": "All",
+                  "from": {
+                    "expr": "Distance",
+                    "amount": 1
+                  }
+                }
+              }
+            }
+          },
+          {
+            "priority": 0,
+            "optional": true,
+            "behaviour": {
+              "expr": "InflictDamage",
+              "amount": "1d",
+              "to": {
+                "expr": "SelectOneTarget",
+                "store": "target2",
+                "from": {
+                  "expr": "All",
+                  "from": {
+                    "expr": "Difference",
+                    "lhs": {
+                      "expr": "Distance",
+                      "amount": 1
+                    },
+                    "rhs": {
+                      "expr": "Pos",
+                      "store": "position2",
+                      "who": {
+                        "expr": "Load",
+                        "name": "target1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "priority": 0,
+            "optional": true,
+            "behaviour": {
+              "expr": "InflictDamage",
+              "amount": "1d",
+              "to": {
+                "expr": "SelectOneTarget",
+                "from": {
+                  "expr": "All",
+                  "from": {
+                    "expr": "Difference",
+                    "lhs": {
+                      "expr": "Load",
+                      "name": "position2"
+                    },
+                    "rhs": {
+                      "expr": "Pos",
+                      "who": {
+                        "expr": "Load",
+                        "name": "target2"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "rhs": {
+      "name": "In tsunami mode",
+      "cost": "1y",
+      "behaviour": {
+        "expr": "InflictDamage",
+        "amount": "1d",
+        "to": {
+          "expr": "All",
+          "from": {
+            "expr": "Distance",
+            "amount": 1
+          }
+        }
+      }
+    }
+  }
+}

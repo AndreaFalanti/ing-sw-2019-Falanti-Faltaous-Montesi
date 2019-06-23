@@ -10,7 +10,7 @@ public class Others extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         Expression moreGeneric = new NegateTargets(new Load(new StringLiteral(SPECIAL_VAR_LAST_SELECTED)));
 
         return moreGeneric.eval(context);

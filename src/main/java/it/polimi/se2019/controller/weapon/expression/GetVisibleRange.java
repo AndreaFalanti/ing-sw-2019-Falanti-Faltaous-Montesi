@@ -7,28 +7,19 @@ import java.util.stream.Collectors;
 
 public class GetVisibleRange extends Behaviour {
     public GetVisibleRange() {
-        putSub("observer", new Pos(new You()));
+        putSub("origin", new Pos(new You()));
     }
 
-    public GetVisibleRange(Expression observer) {
-        putSub("observer", observer);
-    }
-
-    @Override
-    protected Expression handleSubDefaultValue(String subName, ShootContext context) {
-        if (subName.equals("observer")) {
-            return new You();
-        }
-
-        return super.handleSubDefaultValue(subName, context);
+    public GetVisibleRange(Expression origin) {
+        putSub("origin", origin);
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
+    public final Expression eval(ShootContext context) {
         // TODO: make this better by streamlining selections (todo file)
-        Position observerPos = getSub("observer").asPosition();
+        Position observerPos = getSub("origin").eval(context).asPosition();
 
-        return SetExpression.from(
+        return new SetExpression(
                 context.getBoard().getAllSeenBy(observerPos).stream()
                         .map(PositionLiteral::new)
                         .collect(Collectors.toSet())

@@ -29,19 +29,19 @@ public final class GameTestCaseBuilder {
     }
 
     public static PowerUpCard generateTeleportCard () {
-        return new PowerUpCard("Teleport", new AmmoValue(1,0,0), new TeleportBehaviour());
+        return new PowerUpCard(PowerUpType.TELEPORT, new AmmoValue(1,0,0));
     }
 
     public static PowerUpCard generateNewtonCard () {
-        return new PowerUpCard("Newton", new AmmoValue(0,1,0), new NewtonBehaviour());
+        return new PowerUpCard(PowerUpType.NEWTON, new AmmoValue(0,1,0));
     }
 
     public static PowerUpCard generateTagbackGrenadeCard () {
-        return new PowerUpCard("TagbackGrenade", new AmmoValue(0,0,1), new TagbackGrenadeBehaviour());
+        return new PowerUpCard(PowerUpType.TAGBACK_GRENADE, new AmmoValue(0,0,1));
     }
 
     public static PowerUpCard generateTargetingScopeCard () {
-        return new PowerUpCard("TargetingScope", new AmmoValue(0,1,0), new TargetingScopeBehaviour());
+        return new PowerUpCard(PowerUpType.TARGETING_SCOPE, new AmmoValue(0,1,0));
     }
 
     /**

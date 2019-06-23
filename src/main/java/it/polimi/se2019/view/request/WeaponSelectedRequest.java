@@ -16,6 +16,7 @@ public class WeaponSelectedRequest implements Request {
         return mWeaponIndex;
     }
 
+    @Override
     public View getView() {
         return mView;
     }

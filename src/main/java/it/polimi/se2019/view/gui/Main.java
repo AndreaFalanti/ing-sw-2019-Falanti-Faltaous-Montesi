@@ -22,7 +22,7 @@ public class Main extends Application {
         Pane root = loader.load();
         primaryStage.setTitle("Adrenalina");
         primaryStage.setResizable(false);
-        primaryStage.setAlwaysOnTop(true);
+        //primaryStage.setAlwaysOnTop(true);
 
         BackgroundImage backgroundImage = new BackgroundImage(new Image(GuiResourcePaths.BACKGROUND + "bg.jpg"),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
@@ -65,7 +65,7 @@ public class Main extends Application {
         Set<Effect> effectsSet2 = new HashSet<>();
         effectsSet2.add(new Effect("Effect3", 1, true, new AmmoValue(0,0,1)));
         sortedMap.put(1, effectsSet2);
-        controller.activateEffectsTab(sortedMap, 0);
+        controller.activateEffectsTabForEffects(sortedMap, 0);
     }
 
 

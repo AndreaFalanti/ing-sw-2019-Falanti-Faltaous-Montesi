@@ -4,7 +4,6 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Intersect extends Behaviour {
     public Intersect() {
@@ -17,9 +16,9 @@ public class Intersect extends Behaviour {
     }
 
     @Override
-    protected Expression continueEval(ShootContext context) {
-        Set<Expression> lhsSet = new HashSet<>(getSub("lhs").asSetExpr().asSet());
-        Set<Expression> rhsSet = new HashSet<>(getSub("rhs").asSetExpr().asSet());
+    public final Expression eval(ShootContext context) {
+        Set<Expression> lhsSet = new HashSet<>(getSub("lhs").eval(context).asSetExpr().asSet());
+        Set<Expression> rhsSet = new HashSet<>(getSub("rhs").eval(context).asSetExpr().asSet());
 
         lhsSet = new HashSet<>(lhsSet);
         lhsSet.retainAll(rhsSet);
