@@ -808,5 +808,159 @@ public class WeaponsTest {
                     Collections.emptyList()
             );
     }
+
+    @Test
+    public void testZX2SmurfetteUsesInScannerModeOnMarioAndDorian() {
+                // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+
+        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("zx-2");
+
+        // mock selection
+        mockSelections(testController,
+                // shoot to Mario and Dorian (refrain from selecting 3 people)
+                new WeaponModeSelectedRequest("in_scanner_mode", shooterView),
+                new TargetsSelectedRequest(
+                        new HashSet<>(Arrays.asList(PlayerColor.PURPLE, PlayerColor.GREY)),
+                        shooterView
+                )
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // very that everyone in yellow rooms has been damaged
+        for (PlayerColor target : Arrays.asList(PlayerColor.PURPLE, PlayerColor.GREY))
+            assertPlayerDamage(
+                    mLuigiHidesFromYellowParty.getPlayerFromColor(target),
+                    Collections.emptyList(),
+                    Collections.singletonList(
+                            new Pair<>(PlayerColor.BLUE, 1)
+                    )
+            );
+    }
+
+    @Test
+    public void testGrenadeLauncherSmurfetteUsesAdditionalGrenadeOnMarioAndDorianAndThenShootsStones() {
+                 // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+
+        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("grenade_launcher");
+
+        // mock selection
+        mockSelections(testController,
+                // shoot Dorian w/ basic effect
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), shooterView),
+
+                // shoot to Mario and Dorian (refrain from selecting 3 people)
+                new EffectsSelectedRequest(Collections.singletonList("with_extra_grenade"), shooterView),
+                new PositionSelectedRequest(new Position(3, 2), shooterView),
+
+                // move Dorian
+                new EffectsSelectedRequest(Collections.singletonList("basic_effect_move"), shooterView),
+                new PositionSelectedRequest(new Position(3, 1 ), shooterView)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // very that everyone in yellow rooms has been damaged
+        for (PlayerColor target : Arrays.asList(PlayerColor.PURPLE, PlayerColor.YELLOW, PlayerColor.GREY))
+            assertPlayerDamage(
+                    mLuigiHidesFromYellowParty.getPlayerFromColor(target),
+                    Collections.singletonList(
+                            PlayerColor.BLUE
+                    ),
+                    Collections.emptyList()
+            );
+    }
+
+    @Test
+    public void testShotgunMarioShootsDorian() {
+        // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+
+        View shooterView = mPlayerViewMocks.get(PlayerColor.PURPLE);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("shotgun");
+
+        // mock selection
+        mockSelections(testController,
+                // shoot Dorian w/ basic effect (Luigi is picked immediately)
+                new WeaponModeSelectedRequest("basic_mode", shooterView),
+
+                // do not move
+                new EffectsSelectedRequest(Collections.emptyList(), shooterView)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterView, PlayerColor.PURPLE, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // very that everyone in yellow rooms has been damaged
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY),
+                Arrays.asList(
+                        PlayerColor.PURPLE,
+                        PlayerColor.PURPLE,
+                        PlayerColor.PURPLE
+                ),
+                Collections.emptyList()
+        );
+    }
+
+    @Test
+    public void testPowerGloveRocketFistModeLuigiPunchesSmurfetteOnly() {
+         // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+
+        View shooterView = mPlayerViewMocks.get(PlayerColor.GREEN);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("power_glove");
+
+        // mock selection
+        mockSelections(testController,
+                new WeaponModeSelectedRequest("in_rocket_fist_mode", shooterView),
+
+                // refrain from punching Stones, but still jump to his position
+                new DirectionSelectedRequest(Direction.SOUTH, shooterView),
+                new EffectsSelectedRequest(Collections.emptyList(), shooterView),
+
+                // go on rocket-fisting; this time punch Smurfette
+                new EffectsSelectedRequest(Collections.singletonList("second_rocket_jump"), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("second_punch"), shooterView)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterView, PlayerColor.GREEN, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // very Smurfette's final position after two jumps
+        assertPlayerPosition(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN),
+                new Position(2, 2)
+        );
+
+        // assert damage of punch to Smurfette
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.BLUE),
+                Arrays.asList(
+                        PlayerColor.GREEN,
+                        PlayerColor.GREEN
+                ),
+                Collections.emptyList()
+        );
+
+    }
 }
 

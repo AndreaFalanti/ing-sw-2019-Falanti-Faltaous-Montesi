@@ -8,6 +8,7 @@ import it.polimi.se2019.model.board.Direction;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Line extends Behaviour {
     public Line() {
@@ -16,28 +17,8 @@ public class Line extends Behaviour {
         putSub("maxLength", new InfLiteral());
     }
 
-    private static Position directionalIncrement(Position position, Direction direction, int amount) {
-        switch (direction) {
-            case NORTH:
-                return position.add(new Position(0, -amount));
-            case WEST:
-                return position.add(new Position(amount, 0));
-            case SOUTH:
-                return position.add(new Position(0, amount));
-            case EAST:
-                return position.add(new Position(-amount, 0));
-            default:
-                throw new UnsupportedOperationException("Unknown direction");
-        }
-    }
-    private static Position directionalIncrement(Position position, Direction direction) {
-        return directionalIncrement(position, direction, 1);
-    }
-
     @Override
     public final Expression eval(ShootContext context) {
-        Board board = context.getBoard();
-
         Position origin = getSub("origin").eval(context).asPosition();
         Direction direction = getSub("direction").eval(context).asDirection();
 
@@ -53,12 +34,9 @@ public class Line extends Behaviour {
         if (minLength > maxLength)
             throw new IllegalArgumentException("Trying to create line with minLength > maxLength");
 
-        // stretch line as far as it can go
-        final Set<Position> resultSet = new HashSet<>();
-        for (Position pos = directionalIncrement(origin, direction, minLength);
-             maxLength > 0 && !board.isOutOfBounds(pos);
-             pos = directionalIncrement(pos, direction), --maxLength)
-            resultSet.add(pos);
+        final Set<Position> resultSet = IntStream.rangeClosed(minLength, maxLength)
+                .mapToObj(len -> origin.directionalIncrement(direction, len))
+                .collect(Collectors.toSet());
 
         // encapsulate result and return it
         return new SetExpression(
