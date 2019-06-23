@@ -7,7 +7,6 @@ import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -18,8 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
 public class ShootInteraction {
     // logger
@@ -55,7 +52,7 @@ public class ShootInteraction {
     // trivial setters
     public void putRequest(Request request) {
         if (!isOccupied())
-            throw new InvalidStateException("No one is shooting!");
+            throw new UnsupportedOperationException("No one is shooting!");
 
         mLogger.log(Level.INFO, "Putting request in shoot interaction queue: {0}", request);
         mRequests.add(request);
@@ -116,7 +113,7 @@ public class ShootInteraction {
         Player inflicterPlayer = game.getPlayerFromColor(inflicter);
         View inflicterView = mPlayerViews.get(inflicter);
 
-        LOGGER.log(Level.INFO,
+        mLogger.log(Level.INFO,
                 "{0} inflicting {1} damage to {2}",
                 new Object[]{inflicter, amount, inflicted}
         );
@@ -176,7 +173,7 @@ public class ShootInteraction {
 
     // wait for a particular request
     private Request waitForRequest(String requestName) {
-        LOGGER.log(Level.INFO, "Shoot interaction waiting for {0} request", requestName);
+        mLogger.log(Level.INFO, "Shoot interaction waiting for {0} request", requestName);
 
         // wait for request to be presented on the request queue by another thread
         Request request;
@@ -188,7 +185,7 @@ public class ShootInteraction {
                 throw new InterruptedException();
         } catch (InterruptedException e) {
             // handle interruption
-            LOGGER.log(Level.WARNING,
+            mLogger.log(Level.WARNING,
                     "Shoot interaction interrupted while waiting for {0} request!",
                     requestName
             );
@@ -200,7 +197,7 @@ public class ShootInteraction {
         // undo shoot interaction if requested
         // TODO: use alternative approach to instanceof
         if (request instanceof UndoWeaponInteractionRequest) {
-            LOGGER.log(
+            mLogger.log(
                     Level.INFO, "Received undo request while waiting for {0} request!",
                     request
             );
@@ -238,7 +235,7 @@ public class ShootInteraction {
             ));
         }
 
-        LOGGER.log(Level.INFO, "Shoot interaction received {0} selection: [{1}]",
+        mLogger.log(Level.INFO, "Shoot interaction received {0} selection: [{1}]",
                 new Object[]{selectionDescriptor, selection});
 
         return request;
@@ -254,7 +251,7 @@ public class ShootInteraction {
 
         // attempt to skip selection request
         if (possibleTargets.size() == min) {
-            LOGGER.log(Level.INFO, "Skipping selection of {0} targets", min);
+            mLogger.log(Level.INFO, "Skipping selection of {0} targets", min);
             return possibleTargets;
         }
 
