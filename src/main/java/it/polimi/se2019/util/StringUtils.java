@@ -17,7 +17,7 @@ public class StringUtils {
         if (toModify == null)
             throw new NullPointerException();
 
-        Matcher matcher = Pattern.compile("\\w+").matcher(toModify);
+        Matcher matcher = Pattern.compile("[\\w-]+").matcher(toModify);
 
         StringBuilder builder = new StringBuilder();
         while (matcher.find()) {

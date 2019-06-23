@@ -208,7 +208,7 @@ public class ShootInteraction {
     }
 
     // wait for a particular selection request
-    private <T> Request waitForSelectionRequest(View selectingView, Collection<T> possibleToselect,
+    private <T> Request waitForSelectionRequest(View selectingView, Collection<T> possibleToSelect,
                                                 Function<Request, Stream<T>> selectionGetter, String selectionDescriptor) {
         Request request;
         List<T> selection;
@@ -220,7 +220,7 @@ public class ShootInteraction {
 
             // find invalid input that the user was not allowed to select
             Set<T> invalidSelected = selection.stream()
-                    .filter(selected -> !possibleToselect.contains(selected))
+                    .filter(selected -> !possibleToSelect.contains(selected))
                     .collect(Collectors.toSet());
 
             // go on if all input is correct
@@ -231,7 +231,7 @@ public class ShootInteraction {
             selectingView.reportError(String.format(
                     "Illegal %s selection made: %s\n" +
                             "Possible selection set: %s",
-                    selectionDescriptor, selection, possibleToselect
+                    selectionDescriptor, selection, possibleToSelect
             ));
         }
 
@@ -284,11 +284,12 @@ public class ShootInteraction {
         // select effects through view
         view.showEffectsSelectionView(priorityMap, possibleEffects);
 
-        EffectsSelectedRequest request = (EffectsSelectedRequest) waitForSelectionRequest(
+        Set<String> possibleEffectIDs = possibleEffects.stream()
+                .map(Effect::getId)
+                .collect(Collectors.toSet());
+        EffectsSelectedRequest request = (EffectsSelectedRequest) this.<String>waitForSelectionRequest(
                 view,
-                possibleEffects.stream()
-                        .map(Effect::getId)
-                        .collect(Collectors.toSet()),
+                possibleEffectIDs,
                 req -> ((EffectsSelectedRequest) req).getSelectedEffects().stream(),
                 "effect"
         );
@@ -302,7 +303,7 @@ public class ShootInteraction {
         view.showWeaponModeSelectionView(mode1, mode2);
 
         WeaponModeSelectedRequest request = (WeaponModeSelectedRequest) waitForSelectionRequest(
-                view, new HashSet<>(Arrays.asList(mode1, mode2)),
+                view, Stream.of(mode1, mode2).map(Effect::getId).collect(Collectors.toSet()),
                 req -> Stream.of(((WeaponModeSelectedRequest) req).getId()),
                 "mode"
         );
