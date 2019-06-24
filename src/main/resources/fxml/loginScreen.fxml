@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <AnchorPane prefHeight="630.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.se2019.view.gui.LoginScreen">
    <children>
-      <AnchorPane layoutX="136.0" layoutY="330.0" prefHeight="250.0" prefWidth="630.0" style="-fx-background-color: rgba(153,153,153,0.2);" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="136.0" AnchorPane.rightAnchor="134.0">
+      <AnchorPane fx:id="infoPane" layoutX="136.0" layoutY="330.0" prefHeight="250.0" prefWidth="630.0" style="-fx-background-color: rgba(153,153,153,0.7);" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="136.0" AnchorPane.rightAnchor="134.0">
          <children>
-            <HBox layoutX="152.0" layoutY="31.0">
+            <HBox layoutX="152.0" layoutY="26.0">
                <children>
                   <Label prefHeight="40.0" prefWidth="111.0" text="Username:">
                      <font>
@@ -22,12 +21,7 @@
                   </TextField>
                </children>
             </HBox>
-            <Button fx:id="loginButton" layoutX="289.0" layoutY="168.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="93.0" text="LOGIN">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-            <HBox layoutX="103.0" layoutY="93.0" prefHeight="48.0" prefWidth="497.0">
+            <HBox layoutX="105.0" layoutY="77.0" prefHeight="48.0" prefWidth="497.0">
                <children>
                   <Label prefHeight="48.0" prefWidth="190.0" text="Network connection:">
                      <font>
@@ -49,6 +43,16 @@
                   </RadioButton>
                </children>
             </HBox>
+            <Button fx:id="loginButton" layoutX="288.0" layoutY="182.0" mnemonicParsing="false" onAction="#login" prefHeight="48.0" prefWidth="93.0" text="LOGIN">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
+            <Label fx:id="errorLabel" alignment="CENTER" layoutX="208.0" layoutY="143.0" prefHeight="25.0" prefWidth="253.0" textAlignment="CENTER" textFill="RED">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>
