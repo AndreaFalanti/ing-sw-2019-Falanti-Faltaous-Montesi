@@ -26,7 +26,7 @@
         "list": [
           {
             "expr": "InflictDamage",
-            "amount": "3d",
+            "amount":"3d",
             "to": {
               "expr": "SelectOneTarget",
               "from": {
@@ -44,15 +44,15 @@
               "from": {
                 "expr": "Intersect",
                 "lhs": {
+                  "expr": "DistanceRange",
+                  "min": 0,
+                  "max": 3
+                },
+                "rhs": {
                   "expr": "Line",
                   "direction": {
                     "expr": "SelectOneDirection"
                   }
-                },
-                "rhs": {
-                  "expr": "DistanceRange",
-                  "min": 0,
-                  "max": 2
                 }
               }
             }

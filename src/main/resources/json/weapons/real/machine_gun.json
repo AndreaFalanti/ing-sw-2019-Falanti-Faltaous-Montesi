@@ -57,8 +57,15 @@
                 "expr": "InflictDamage",
                 "amount": "1d",
                 "to": {
-                  "expr": "Load",
-                  "name": "focus_target"
+                  "expr": "Difference",
+                  "lhs": {
+                    "expr": "Load",
+                    "name": "basic_target"
+                  },
+                  "rhs": {
+                    "expr": "Load",
+                    "name": "focus_target"
+                  }
                 }
               }
             },

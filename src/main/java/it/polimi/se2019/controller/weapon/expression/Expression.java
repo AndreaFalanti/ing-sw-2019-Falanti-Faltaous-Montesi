@@ -38,7 +38,11 @@ public abstract class Expression {
      */
     public abstract Expression eval(ShootContext context);
 
-    // TODO: add doc
+    /**
+     * Checks if two
+     * @param o
+     * @return
+     */
     @Override
     public final boolean equals(Object o) {
         if (this == o)

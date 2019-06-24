@@ -14,7 +14,9 @@ import it.polimi.se2019.view.request.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
+import sun.plugin.security.PluginClassLoader;
 
+import java.lang.annotation.Target;
 import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -1039,6 +1041,105 @@ public class WeaponsTest {
                     ),
                     Collections.emptyList()
             );
+    }
+
+    @Test
+    public void testSledgehammerSmurfettePushesLuigiAlongFullLengthOfCorridor() {
+         // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.BLUE).move(new Position(0, 0));
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN).move(new Position(0, 0));
+
+        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("sledgehammer");
+
+        // mock selection
+        mockSelections(testController,
+                // hurt and push Luigi
+                new WeaponModeSelectedRequest("in_pulverize_mode", shooterView),
+                new DirectionSelectedRequest(Direction.EAST, shooterView),
+                new PositionSelectedRequest(new Position(3, 0), shooterView)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // assert and position of Luigi
+        assertPlayerStatus(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN),
+                Arrays.asList(
+                        PlayerColor.BLUE,
+                        PlayerColor.BLUE,
+                        PlayerColor.BLUE
+                ),
+                Collections.emptyList(),
+                new Position(3, 0)
+        );
+    }
+
+    @Test
+    public void testMachineGunSmurfetteUsesBasicEffectOnMarioAndDorianThenFocusesOnMarioThenUsesTurretTripodOnStones() {
+        // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+
+        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("machine_gun");
+
+        // mock selection
+        mockSelections(testController,
+                // use basic effect on Mario and Dorian
+                new TargetsSelectedRequest(new HashSet<>(Arrays.asList(
+                        PlayerColor.PURPLE, PlayerColor.GREY
+                )), shooterView),
+
+                // use focus shot on Mario
+                new EffectsSelectedRequest(Collections.singletonList("with_focus_shot"), shooterView),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterView),
+
+                // use turret tripod 1 on Mario
+                new EffectsSelectedRequest(Collections.singletonList("with_turret_tripod"), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("with_turret_tripod_1"), shooterView),
+
+                // use turret tripod 2 on Stones
+                //  NB. target selection should be automatic
+                new EffectsSelectedRequest(Collections.singletonList("with_turret_tripod_2"), shooterView)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // assert damage
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.PURPLE),
+                Arrays.asList(
+                        PlayerColor.BLUE,
+                        PlayerColor.BLUE
+                ),
+                Collections.emptyList()
+        );
+
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY),
+                Arrays.asList(
+                        PlayerColor.BLUE,
+                        PlayerColor.BLUE
+                ),
+                Collections.emptyList()
+        );
+
+        assertPlayerDamage(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.YELLOW),
+                Collections.singletonList(
+                        PlayerColor.BLUE
+                ),
+                Collections.emptyList()
+        );
     }
 }
 
