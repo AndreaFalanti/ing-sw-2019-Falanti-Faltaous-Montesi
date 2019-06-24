@@ -254,7 +254,7 @@ public class ShootInteraction {
         }
 
         // attempt to skip selection request
-        if (possibleToSelect.size() == min) {
+        if (min == max && possibleToSelect.size() == min) {
             mLogger.log(Level.INFO,
                     "Skipping {0} selection of {1}",
                     new Object[]{ selectionDescriptor, min }

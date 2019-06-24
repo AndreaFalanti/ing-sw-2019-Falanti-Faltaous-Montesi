@@ -961,5 +961,44 @@ public class WeaponsTest {
                 Collections.emptyList()
         );
     }
+
+    @Test
+    public void testRailgunLuigiShootsStonesAndDorianWhichIsBehindAWall() {
+        // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN).move(new Position(0, 1));
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.YELLOW).move(new Position(1, 1));
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY).move(new Position(2, 1));
+
+        View shooterView = mPlayerViewMocks.get(PlayerColor.GREEN);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("railgun");
+
+        // mock selection
+        mockSelections(testController,
+                // Shoot Dorian and Luigi
+                new WeaponModeSelectedRequest("in_piercing_mode", shooterView),
+                new DirectionSelectedRequest(Direction.EAST, shooterView),
+                new TargetsSelectedRequest(new HashSet<>(Arrays.asList(
+                        PlayerColor.YELLOW, PlayerColor.GREY
+                )), shooterView)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterView, PlayerColor.GREEN, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // assert damage to Dorian and Luigi
+        for (PlayerColor target : Arrays.asList(PlayerColor.YELLOW, PlayerColor.GREY))
+            assertPlayerDamage(
+                    mLuigiHidesFromYellowParty.getPlayerFromColor(target),
+                    Arrays.asList(
+                            PlayerColor.GREEN,
+                            PlayerColor.GREEN
+                    ),
+                    Collections.emptyList()
+            );
+    }
 }
 

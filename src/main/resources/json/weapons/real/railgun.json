@@ -13,9 +13,12 @@
         "to": {
           "expr": "SelectOneTarget",
           "from": {
-            "expr": "Line",
-            "direction": {
-              "expr": "SelectOneDirection"
+            "expr": "All",
+            "from": {
+              "expr": "Line",
+              "direction": {
+                "expr": "SelectOneDirection"
+              }
             }
           }
         }
@@ -28,12 +31,15 @@
         "amount": "2d",
         "to": {
           "expr": "SelectTargets",
-          "min": 2,
+          "min": 1,
           "max": 2,
           "from": {
-            "expr": "Line",
-            "direction": {
-              "expr": "SelectOneDirection"
+            "expr": "All",
+            "from": {
+              "expr": "Line",
+              "direction": {
+                "expr": "SelectOneDirection"
+              }
             }
           }
         }
