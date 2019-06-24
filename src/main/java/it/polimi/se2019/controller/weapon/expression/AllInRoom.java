@@ -8,6 +8,9 @@ import it.polimi.se2019.model.board.TileColor;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Return all targets standing in a given room (color)
+ */
 public class AllInRoom extends Behaviour {
     public AllInRoom() {
 
@@ -17,6 +20,11 @@ public class AllInRoom extends Behaviour {
         putSub("color", color);
     }
 
+    /**
+     * Evaluates expression
+     * @param context context used for evaluation
+     * @return result of evaluation
+     */
     @Override
     public Expression eval(ShootContext context) {
         Board board = context.getBoard();

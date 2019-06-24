@@ -7,6 +7,10 @@ import it.polimi.se2019.model.Position;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Expression for returning all targets that a given observer can see
+ *  NB. the observer is considered the shooter if not specified
+ */
 public class CanSee extends Behaviour {
     public CanSee() {
         putSub("origin", new You());
@@ -16,7 +20,11 @@ public class CanSee extends Behaviour {
         putSub("origin", origin);
     }
 
-    // TODO: add doc
+    /**
+     * Evaluates expression
+     * @param context context used for evaluation
+     * @return result of evaluation
+     */
     @Override
     public final Expression eval(ShootContext context) {
         Set<Position> visibleRange = new GetVisibleRange(

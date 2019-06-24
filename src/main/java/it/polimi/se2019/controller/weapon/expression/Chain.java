@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Expression for chaining two expression ranges
+ */
 public class Chain extends Behaviour {
     public Chain() {
 
@@ -17,6 +20,11 @@ public class Chain extends Behaviour {
         putSub("chainFunc", chainFunc);
     }
 
+    /**
+     * Evaluates expression
+     * @param context context used for evaluation
+     * @return result of evaluation
+     */
     @Override
     public final Expression eval(ShootContext context) {
         final Set<Position> baseSet = new HashSet<>(
