@@ -49,7 +49,6 @@ public class BoardCLI {
     private boolean thirdNull= false;
 
     public BoardCLI(Board realBoard) {
-        Tile tile;
         List<Tile> tBoard = new ArrayList<>();
         Tile[] tiles = new Tile[12];
         StringBuilder line0 = new StringBuilder();
@@ -59,21 +58,18 @@ public class BoardCLI {
 
         for (int x = 0; x < BOARD_COLUMNS; x++) {
             for (int y = 0; y < BOARD_ROWS; y++) {
-                if (realBoard.getTileAt(new Position(x, y)) != null) {
-                    tile = realBoard.getTileAt(new Position(x, y));
-                    tBoard.add(tile);
-                }else tBoard.add(null);
+                tBoard.add(realBoard.getTileAt(new Position(x, y)));
             }
         }
         tBoard.toArray(tiles);
 
 
         line0.append(firstline(tiles));
-        line1.append(creaprima(0,tiles));
+        line1.append(createfirst(0,tiles));
         if(tiles[LENGTH-1] == null)
             line1.replace(line1.lastIndexOf("|\n"),line1.lastIndexOf("\n"),addLastLine());
-        line2.append(creaprima(LENGTH,tiles));
-        line3.append(ultimaLinea(LENGTH *2,tiles));
+        line2.append(createfirst(LENGTH,tiles));
+        line3.append(lastline(LENGTH *2,tiles));
         if(tiles[LENGTH*2]==null)
             thirdNull=true;
 
@@ -167,7 +163,7 @@ public class BoardCLI {
         return line;
     }
 
-    public StringBuilder creaprima(int indexTile,Tile[] tiles) {
+    public StringBuilder createfirst(int indexTile, Tile[] tiles) {
         StringBuilder line = new StringBuilder();
 
         for (int j = 0; j <= HIGHCELL; j++) {
@@ -185,7 +181,7 @@ public class BoardCLI {
         return line;
     }
 
-    public StringBuilder ultimaLinea(int indexTile,Tile[] tiles){
+    public StringBuilder lastline(int indexTile, Tile[] tiles){
         StringBuilder line = new StringBuilder();
         int indexValutation;
         for (int j = 0; j <= HIGHCELL; j++) {
@@ -220,14 +216,23 @@ public class BoardCLI {
 
     public StringBuilder valutation(int i,int j,int indexTile,Tile[] tiles){
         StringBuilder line = new StringBuilder();
-        if (tiles[(i-1)/ SIZECELL +indexTile].getColor().getPascalName()
-                .equals((tiles[i/ SIZECELL +indexTile].getColor().getPascalName())))
-            line.append(sameRoom(i, j, tiles[i/ SIZECELL +indexTile].getColor().getPascalName(),indexTile,tiles));
+
+        Tile leftTile = tiles[(i-1) / SIZECELL +indexTile];
+        Tile rightTile = tiles[i / SIZECELL +indexTile];
+
+        if (leftTile == null) {
+            System.out.println(i);
+            throw new IllegalArgumentException("validation cannot handle null tiles");
+        }
+
+        if (leftTile.getColor().getPascalName()
+                .equals((rightTile.getColor().getPascalName())))
+            line.append(sameRoom(i, j, tiles[i / SIZECELL + indexTile].getColor().getPascalName(), indexTile, tiles));
         else {
-            if (tiles[(i-1)/ SIZECELL +indexTile].getDoors()[2])
-                line.append(makeDoor(i, j, tiles[i/ SIZECELL +indexTile].getColor().getPascalName()));
+            if (leftTile.getDoors()[2])
+                line.append(makeDoor(i, j, rightTile.getColor().getPascalName()));
             else
-                line.append(makeWall(i, tiles[i/ SIZECELL +indexTile].getColor().getPascalName()));
+                line.append(makeWall(i, rightTile.getColor().getPascalName()));
         }
 
         return line;

@@ -3,6 +3,8 @@ package it.polimi.se2019.view.cli;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.util.Jsons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +13,10 @@ public class Main {
 
 
     public static void main(String[] args) {
-        //test
-        List<Player> mPlayers = new ArrayList<>() ;
+        // init players
         PlayerColor activePlayer = PlayerColor.BLUE;
         Player owner = new Player("Owner",PlayerColor.GREEN,new Position(0,0));
+        List<Player> mPlayers = new ArrayList<>() ;
         Player player1 = new Player("Player1",PlayerColor.BLUE,new Position(1,0));
         Player player2 = new Player("Player2",PlayerColor.GREY,new Position(2,2));
         Player player3 = new Player("Player3",PlayerColor.YELLOW,new Position(3,0));
@@ -60,10 +62,9 @@ public class Main {
         mPlayers.add(player3);
         mPlayers.add(player4);
         PlayerColor ownerColor = PlayerColor.GREEN;
-      //  Board board= new Board();
-        //end test
 
-        CLIInfo cLIInfo = new CLIInfo(mPlayers,owner,ownerColor,activePlayer);
+        // init CLIInfo
+        CLIInfo cLIInfo = new CLIInfo(mPlayers,owner,ownerColor,activePlayer,Board.fromJson(Jsons.get("boards/game/board1")));
         CLIView cliView = new CLIView(cLIInfo);
         cliView.availableCommands();
     }
