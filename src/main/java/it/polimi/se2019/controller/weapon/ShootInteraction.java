@@ -209,12 +209,13 @@ public class ShootInteraction {
     }
 
     // wait for a particular selection request
-    private <T> Request waitForSelectionRequest(View selectingView, Collection<T> possibleToSelect,
-                                                Function<Request, Stream<T>> selectionGetter, String selectionDescriptor) {
+    private <T> Stream<T> waitForSelectionRequest(View selectingView, Collection<T> possibleToSelect,
+                                                  Function<Request, Stream<T>> selectionGetter,
+                                                  String selectionDescriptor) {
         Request request;
         List<T> selection;
         while (true) {
-            request = waitForRequest(selectionDescriptor + " selection");
+            request = waitForRequest(selectionDescriptor + " selection (among " + possibleToSelect + ")");
 
             selection = selectionGetter.apply(request)
                     .collect(Collectors.toList());
@@ -239,44 +240,70 @@ public class ShootInteraction {
         mLogger.log(Level.INFO, "Shoot interaction received {0} selection: [{1}]",
                 new Object[]{selectionDescriptor, selection});
 
-        return request;
+        return selectionGetter.apply(request);
     }
 
-    // select targets
-    public Set<PlayerColor> selectTargets(View view, int min, int max, Set<PlayerColor> possibleTargets) {
+    // wait for a particular selection request
+    private <T> Stream<T> waitForSelectionRequest(View selectingView, Collection<T> possibleToSelect,
+                                                  int min, int max, Function<Request, Stream<T>> selectionGetter,
+                                                  String selectionDescriptor) {
         // undo if selection cannot be performed...
-        if (possibleTargets.size() < min) {
-            view.reportError(Controller.NO_ACTIONS_REMAINING_ERROR_MSG);
+        if (possibleToSelect.size() < min) {
+            selectingView.reportError(Controller.NO_ACTIONS_REMAINING_ERROR_MSG);
             throw new UndoShootInteractionException();
         }
 
         // attempt to skip selection request
-        if (possibleTargets.size() == min) {
-            mLogger.log(Level.INFO, "Skipping selection of {0} targets", min);
-            return possibleTargets;
+        if (possibleToSelect.size() == min) {
+            mLogger.log(Level.INFO,
+                    "Skipping {0} selection of {1}",
+                    new Object[]{ selectionDescriptor, min }
+            );
+            return possibleToSelect.stream();
         }
 
+        while (true) {
+            List<T> selection = waitForSelectionRequest(
+                    selectingView, possibleToSelect,
+                    selectionGetter, selectionDescriptor
+            )
+                    .collect(Collectors.toList());
+
+            if (selection.size() <= max)
+                return selection.stream();
+
+            else
+                selectingView.reportError(String.format(
+                        "Over-sized %s selection received: %d (max: %d)",
+                        selectionDescriptor, selection.size(), max
+                ));
+        }
+    }
+
+
+    // select targets
+    public Set<PlayerColor> selectTargets(View view, int min, int max, Set<PlayerColor> possibleTargets) {
         view.showTargetsSelectionView(min, max, possibleTargets);
-        TargetsSelectedRequest request = (TargetsSelectedRequest) waitForSelectionRequest(
-                view, possibleTargets,
+
+        return waitForSelectionRequest(
+                view, possibleTargets, min, max,
                 req -> ((TargetsSelectedRequest) req).getSelectedTargets().stream(),
                 "target"
-        );
-
-        return request.getSelectedTargets();
+        )
+                .collect(Collectors.toSet());
     }
 
     // select position
     public Position selectPosition(View view, Set<Position> range) {
         view.showPositionSelectionView(range);
 
-        PositionSelectedRequest request = (PositionSelectedRequest) waitForSelectionRequest(
-                view, range,
+        return  waitForSelectionRequest(
+                view, range, 1, 1,
                 req -> Stream.of(((PositionSelectedRequest) req).getPosition()),
                 "position"
-        );
-
-        return request.getPosition();
+        )
+                .collect(Collectors.toList())
+                .get(0);
     }
 
     // select effects
@@ -288,14 +315,14 @@ public class ShootInteraction {
         Set<String> possibleEffectIDs = possibleEffects.stream()
                 .map(Effect::getId)
                 .collect(Collectors.toSet());
-        EffectsSelectedRequest request = (EffectsSelectedRequest) this.<String>waitForSelectionRequest(
+
+        return waitForSelectionRequest(
                 view,
                 possibleEffectIDs,
                 req -> ((EffectsSelectedRequest) req).getSelectedEffects().stream(),
                 "effect"
-        );
-
-        return request.getSelectedEffects();
+        )
+                .collect(Collectors.toList());
     }
 
     // select modes
@@ -303,13 +330,13 @@ public class ShootInteraction {
         // select effects through view
         view.showWeaponModeSelectionView(mode1, mode2);
 
-        WeaponModeSelectedRequest request = (WeaponModeSelectedRequest) waitForSelectionRequest(
-                view, Stream.of(mode1, mode2).map(Effect::getId).collect(Collectors.toSet()),
+        return waitForSelectionRequest(
+                view, Stream.of(mode1, mode2).map(Effect::getId).collect(Collectors.toSet()), 1, 1,
                 req -> Stream.of(((WeaponModeSelectedRequest) req).getId()),
                 "mode"
-        );
-
-        return request.getId();
+        )
+                .collect(Collectors.toList())
+                .get(0);
     }
 
     // pick direction
@@ -326,15 +353,13 @@ public class ShootInteraction {
     public TileColor pickRoomColor(View view, Set<TileColor> possibleColors) {
         view.pickDirection();
 
-        RoomSelectedRequest request =
-                (RoomSelectedRequest) waitForSelectionRequest(
-                        view,
-                        possibleColors,
+        return waitForSelectionRequest(
+                        view, possibleColors, 1, 1,
                         req -> Stream.of(((RoomSelectedRequest) req).getColor()),
                         "room color"
-                );
-
-        return request.getColor();
+        )
+                .collect(Collectors.toList())
+                .get(0);
     }
 
 

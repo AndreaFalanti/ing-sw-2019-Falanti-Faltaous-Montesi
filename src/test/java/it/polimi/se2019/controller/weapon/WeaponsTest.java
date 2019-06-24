@@ -960,7 +960,6 @@ public class WeaponsTest {
                 ),
                 Collections.emptyList()
         );
-
     }
 }
 

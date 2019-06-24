@@ -62,14 +62,22 @@
                 "expr": "You"
               },
               "to": {
-                "expr": "Line",
+                "expr": "SelectOnePosition",
                 "store": "first_jump_destination",
-                "direction": {
-                  "expr": "Load",
-                  "name": "punch_direction"
-                },
-                "minLength": 1,
-                "maxLength": 1
+                "from": {
+                  "expr": "Intersect",
+                  "lhs": {
+                    "expr": "Line",
+                    "direction": {
+                      "expr": "Load",
+                      "name": "punch_direction"
+                    }
+                  },
+                  "rhs": {
+                    "expr": "Distance",
+                    "amount": 1
+                  }
+                }
               }
             }
           },
@@ -108,14 +116,22 @@
                       "expr": "You"
                     },
                     "to": {
-                      "expr": "Line",
+                      "expr": "SelectOnePosition",
                       "store": "second_jump_destination",
-                      "direction": {
-                        "expr": "Load",
-                        "name": "punch_direction"
-                      },
-                      "minLength": 1,
-                      "maxLength": 1
+                      "from": {
+                        "expr": "Intersect",
+                        "lhs": {
+                          "expr": "Line",
+                          "direction": {
+                            "expr": "Load",
+                            "name": "punch_direction"
+                          }
+                        },
+                        "rhs": {
+                          "expr": "Distance",
+                          "amount": 1
+                        }
+                      }
                     }
                   }
                 },
