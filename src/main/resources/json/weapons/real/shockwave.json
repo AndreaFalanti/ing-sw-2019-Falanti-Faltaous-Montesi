@@ -11,6 +11,7 @@
         "expr": "PickEffect",
         "effects": [
           {
+            "name": "First selection",
             "priority": 0,
             "behaviour": {
               "expr": "InflictDamage",
@@ -29,7 +30,8 @@
             }
           },
           {
-            "priority": 0,
+            "name": "Second selection",
+            "priority": 1,
             "optional": true,
             "behaviour": {
               "expr": "InflictDamage",
@@ -59,7 +61,8 @@
             }
           },
           {
-            "priority": 0,
+            "name": "Third selection",
+            "priority": 2,
             "optional": true,
             "behaviour": {
               "expr": "InflictDamage",

@@ -2,6 +2,7 @@ package it.polimi.se2019.controller.weapon;
 
 import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 import it.polimi.se2019.controller.Controller;
+import it.polimi.se2019.controller.weapon.expression.*;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
@@ -996,6 +997,45 @@ public class WeaponsTest {
                     Arrays.asList(
                             PlayerColor.GREEN,
                             PlayerColor.GREEN
+                    ),
+                    Collections.emptyList()
+            );
+    }
+
+    @Test
+    public void testShockWaveBasicModeSmurfetteHurtsMarioAndStones() {
+        // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+
+        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("shockwave");
+
+        // mock selection
+        mockSelections(testController,
+                new WeaponModeSelectedRequest("basic_mode", shooterView),
+
+                // hurt Mario (first target selection is forced)
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterView),
+
+                // decide to also hurt Stones
+                new EffectsSelectedRequest(Collections.singletonList("second_selection"), shooterView),
+
+                // stop hurting people
+                new EffectsSelectedRequest(Collections.emptyList(), shooterView)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // assert damage to Dorian and Luigi
+        for (PlayerColor target : Arrays.asList(PlayerColor.YELLOW, PlayerColor.PURPLE))
+            assertPlayerDamage(
+                    mLuigiHidesFromYellowParty.getPlayerFromColor(target),
+                    Collections.singletonList(
+                            PlayerColor.BLUE
                     ),
                     Collections.emptyList()
             );
