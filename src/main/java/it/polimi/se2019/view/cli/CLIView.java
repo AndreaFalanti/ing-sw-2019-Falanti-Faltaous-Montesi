@@ -193,8 +193,6 @@ public class CLIView extends View {
             }
         }
 
-
-
         return indexWeapon(index,possibleWeapons);
     }
 
@@ -302,12 +300,14 @@ public class CLIView extends View {
 
     @Override
     public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
+        List<String> effects =new ArrayList<>();
         System.out.print("Choose an effect: ");
         for(Effect effect: possibleEffects)
             System.out.print(effect.getName());
         String effectChoosen = requestAdditionalInfo();
 
-       // notify(new EffectsSelectedRequest(effectChoosen);
+        effects.add(effectChoosen);
+        notify(new EffectsSelectedRequest(effects,mOwnerColor));
     }
 
     @Override
@@ -341,7 +341,10 @@ public class CLIView extends View {
             case "showg"      : showGrabbable();break;
             case "weapons"    : System.out.println(mCLIInfo.getOwner().getPlayerWeapons());availableCommands(); break;
             case "myinfo"     : ownerInfo();availableCommands();break;
-            case "board"      : mCLIInfo.getBoard().addPlayers(mCLIInfo.getBoard().getBoardCLI(),mCLIInfo.getPlayersInfo());availableCommands(); break;
+            case "board"      : mCLIInfo.getBoard().addPlayers(mCLIInfo.getBoard().getBoardCLI(),mCLIInfo.getPlayersInfo());
+
+
+                              ;availableCommands(); break;
             case "undo"       : deleteRequest(); availableCommands(); break;
             case "help"       : availableCommands(); break;
             case "break"      : availableCommands();break;
@@ -351,7 +354,7 @@ public class CLIView extends View {
 
     public void ownerInfo(){
 
-        System.out.print(Colors.getColorTile(mCLIInfo.getOwner().getPlayerColor())+
+        System.out.print(Colors.findColor(mCLIInfo.getOwner().getPlayerColor())+
                 mCLIInfo.getOwner().getPlayerName() +
                 Colors.ANSI_RESET + ":" + SPACE+
                 "Color : "+mCLIInfo.getOwner().getPlayerColor() + SPACE +
@@ -375,7 +378,7 @@ public class CLIView extends View {
         ownerInfo();
         for(CLIPlayer player: mCLIInfo.getPlayersInfo().values()) {
             if(!player.getPlayerName().equals(mCLIInfo.getOwner().getPlayerName())){
-            System.out.print(Colors.getColorTile(player.getPlayerColor())+
+            System.out.print(Colors.findColor(player.getPlayerColor())+
                             player.getPlayerName() +
                             Colors.ANSI_RESET+
                             ":" + SPACE+
@@ -525,14 +528,5 @@ public class CLIView extends View {
         parseCommand(command);
 
     }
-
-    public String getActiveP(){
-        return mCLIInfo.getActivePlayer();
-    }
-
-    public String getOwnerC(){
-        return mCLIInfo.getOwnerColor();
-    }
-
 
 }

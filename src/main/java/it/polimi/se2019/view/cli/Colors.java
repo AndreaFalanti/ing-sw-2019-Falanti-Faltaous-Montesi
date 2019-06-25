@@ -15,7 +15,7 @@ public class Colors {
 
 
 
-    public static String getColorTile(String color){
+    public static String findColor(String color){
 
         if(color.equalsIgnoreCase("yellow") )
             return ANSI_YELLOW;

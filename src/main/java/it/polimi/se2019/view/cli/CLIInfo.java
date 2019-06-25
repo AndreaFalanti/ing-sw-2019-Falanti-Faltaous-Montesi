@@ -41,10 +41,17 @@ public class CLIInfo {
                     tile=board.getTileAt(new Position(x, y));
                     if(tile.getTileType().equalsIgnoreCase("spawn")){
                         SpawnTile spawn = (SpawnTile)tile;
-                        spawnTiles.put(tile.getColor(),weaponToSting(spawn.getWeapons()));
+                        if(spawn.getWeapons()!=null)
+                            spawnTiles.put(tile.getColor(),weaponToSting(spawn.getWeapons()));
+                        else
+                            spawnTiles.put(tile.getColor(),"nothing");
                     } else{
-                        NormalTile normal = (NormalTile)tile;
-                        normalTiles.put((new Position(x,y)),normal.getAmmoCard().toString());
+
+                            NormalTile normal = (NormalTile)tile;
+                            if(normal.getAmmoCard()!=null)
+                                normalTiles.put((new Position(x,y)),normal.getAmmoCard().toString());
+                            else
+                                normalTiles.put((new Position(x,y)),"nothing");
                     }
                 }
             }
@@ -158,9 +165,11 @@ public class CLIInfo {
     public String weaponToSting(Weapon[] weapons){
         StringBuilder stringWeapons = new StringBuilder();
         for (Weapon weapon : weapons) {
+            if(weapon!=null){
                 stringWeapons.append(weapon.getName());
                 stringWeapons.append("  Cost: ");
                 stringWeapons.append(weapon.getGrabCost().toString());
+            }
         }
         return stringWeapons.toString();
     }

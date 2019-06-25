@@ -104,9 +104,9 @@ public class CLIPlayer {
 
     public void setAmmo(AmmoValue ammo){
 
-        mPlayerAmmo =   Colors.getColorTile("red") + "Red " + Colors.ANSI_RESET + ammo.getRed()+" "+
-                        Colors.getColorTile("yellow") + "Yellow " +Colors.ANSI_RESET+ ammo.getYellow()+" "+
-                        Colors.getColorTile("blue") + "Blue "+Colors.ANSI_RESET + ammo.getBlue();
+        mPlayerAmmo =   Colors.findColor("red") + "Red " + Colors.ANSI_RESET + ammo.getRed()+" "+
+                        Colors.findColor("yellow") + "Yellow " +Colors.ANSI_RESET+ ammo.getYellow()+" "+
+                        Colors.findColor("blue") + "Blue "+Colors.ANSI_RESET + ammo.getBlue();
     }
 
     public void setPowerUpsOtherPlayers(int i){
@@ -127,7 +127,7 @@ public class CLIPlayer {
                 power.append(powerUpCard.getType());
                 power.append(" ");
                 power.append("Color: ");
-                power.append(Colors.getColorTile(powerUpCard.getColor().getPascalName()));
+                power.append(Colors.findColor(powerUpCard.getColor().getPascalName()));
                 power.append(powerUpCard.getColor().getPascalName());
                 power.append(Colors.ANSI_RESET);
                 power.append(SPACE+" ");
@@ -153,7 +153,7 @@ public class CLIPlayer {
 
     public void setMarks(int marks,PlayerColor shooterPlayerColor){
 
-        mPlayerMarks.put(Colors.getColorTile(shooterPlayerColor.getPascalName())+
+        mPlayerMarks.put(Colors.findColor(shooterPlayerColor.getPascalName())+
                 shooterPlayerColor.getPascalName()+Colors.ANSI_RESET,marks);
     }
 
@@ -174,7 +174,7 @@ public class CLIPlayer {
                     .distinct()
                     .collect(Collectors.toList());
             shooter.append("First damage from ->");
-            shooter.append(Colors.getColorTile(damage[0].getPascalName()));
+            shooter.append(Colors.findColor(damage[0].getPascalName()));
             shooter.append(damage[0].getPascalName());
             shooter.append(Colors.ANSI_RESET);
             shooter.append("\n\t\t\t\t\t ");
@@ -199,7 +199,7 @@ public class CLIPlayer {
             if(color !=null){
                 shooter.append(count);
                 shooter.append("<-");
-                shooter.append(Colors.getColorTile(color.getPascalName()));
+                shooter.append(Colors.findColor(color.getPascalName()));
                 shooter.append(color.getPascalName());
                 shooter.append(Colors.ANSI_RESET);
                 shooter.append(" ");
@@ -246,9 +246,9 @@ public class CLIPlayer {
             for(Weapon weapon: weapons){
                 if(weapon!= null){
                     if(!weapon.isLoaded()){
-                        load = " to load cost: "+ Colors.getColorTile("red") + "Red " + Colors.ANSI_RESET + weapon.getReloadCost().getRed()+" "+
-                                                  Colors.getColorTile("yellow") + "Yellow " +Colors.ANSI_RESET+ weapon.getReloadCost().getYellow()+" "+
-                                                  Colors.getColorTile("blue") + "Blue "+Colors.ANSI_RESET + weapon.getReloadCost().getBlue();
+                        load = " to load cost: "+ Colors.findColor("red") + "Red " + Colors.ANSI_RESET + weapon.getReloadCost().getRed()+" "+
+                                                  Colors.findColor("yellow") + "Yellow " +Colors.ANSI_RESET+ weapon.getReloadCost().getYellow()+" "+
+                                                  Colors.findColor("blue") + "Blue "+Colors.ANSI_RESET + weapon.getReloadCost().getBlue();
                     }
 
                     actualWeapons.add(weapon.getName());
