@@ -1,6 +1,7 @@
 package it.polimi.se2019.model.action;
 
 import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.Position;
@@ -116,7 +117,10 @@ public class GrabWeaponAction implements GrabAction {
             }
 
             if (!AmmoPayment.isValid(player, weapon.getGrabCost(), mDiscardedCards)) {
-                return Optional.of(new DiscardRequiredActionResponse(ActionResponseStrings.DISCARD_MESSAGE));
+                AmmoValue remainingCost = weapon.getGrabCost().subtract(player.getAmmo(), true);
+                return AmmoPayment.canPayWithPowerUps(player, remainingCost) ?
+                        Optional.of(new DiscardRequiredActionResponse(ActionResponseStrings.DISCARD_MESSAGE)) :
+                        Optional.of(new MessageActionResponse(ActionResponseStrings.NOT_ENOUGH_AMMO));
             }
 
             // player is grabbing a weapon but it has space in hand

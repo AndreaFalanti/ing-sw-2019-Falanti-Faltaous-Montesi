@@ -1,6 +1,7 @@
 package it.polimi.se2019.model.action;
 
 import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.action.response.ActionResponseStrings;
@@ -65,8 +66,14 @@ public class ReloadAction implements Action {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
         }
 
-        return AmmoPayment.isValid(player, weaponToReload.getReloadCost(), mDiscardPowerUp) ?
-                Optional.empty() : Optional.of(new DiscardRequiredActionResponse(ActionResponseStrings.DISCARD_MESSAGE));
+        if (!AmmoPayment.isValid(player, weaponToReload.getReloadCost(), mDiscardPowerUp)) {
+            AmmoValue remainingCost = weaponToReload.getGrabCost().subtract(player.getAmmo(), true);
+            return AmmoPayment.canPayWithPowerUps(player, remainingCost) ?
+                    Optional.of(new DiscardRequiredActionResponse(ActionResponseStrings.DISCARD_MESSAGE)) :
+                    Optional.of(new MessageActionResponse(ActionResponseStrings.NOT_ENOUGH_AMMO));
+        }
+
+        return Optional.empty();
     }
 
     @Override

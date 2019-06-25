@@ -104,11 +104,15 @@ public class AmmoValue {
      * @return This AmmoValue after subtract
      */
     public AmmoValue subtract(AmmoValue value) {
+        return subtract(value, false);
+    }
+
+    public AmmoValue subtract(AmmoValue value, boolean allowNegativeValues) {
         mRed -= value.mRed;
         mYellow -= value.mYellow;
         mBlue -= value.mBlue;
 
-        if (mRed < 0 || mYellow < 0 || mBlue < 0) {
+        if (!allowNegativeValues && (mRed < 0 || mYellow < 0 || mBlue < 0)) {
             throw new NotEnoughAmmoException("Not enough ammo to pay cost");
         }
 

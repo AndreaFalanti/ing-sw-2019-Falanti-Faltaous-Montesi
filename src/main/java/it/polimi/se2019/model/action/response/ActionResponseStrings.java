@@ -5,6 +5,7 @@ public final class ActionResponseStrings {
     public static final String ILLEGAL_TILE_DISTANCE = "You can't reach that tile";
     public static final String HACKED_MOVE = "Hack or developer fault? Illegal action detected";
     public static final String DISCARD_MESSAGE = "Discard more power up cards to cover the cost";
+    public static final String NOT_ENOUGH_AMMO = "You can't pay the ammo cost";
 
     private ActionResponseStrings() {
     }
