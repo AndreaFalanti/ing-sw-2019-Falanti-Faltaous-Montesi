@@ -50,7 +50,13 @@ public class GrabAmmoAction implements GrabAction {
 
         // see if tile has still an ammo card or it was already picked
         Tile tile = game.getBoard().getTileAt(pos);
-        if (tile != null && tile.getTileType().equals("normal")) {
+        if (tile == null) {
+            throw new IndexOutOfBoundsException("Trying to reference tile outside of the board's bounds!\n" +
+                    "out-of-bounds position: " + pos
+            );
+        }
+
+        if (tile.getTileType().equals("normal")) {
             NormalTile normalTile = (NormalTile) tile;
             if(normalTile.getAmmoCard() == null){
                 return Optional.of(new MessageActionResponse("Tile is empty, you can't grab here again"));
@@ -61,6 +67,7 @@ public class GrabAmmoAction implements GrabAction {
         }
 
         // tile isn't an AmmoTile
-        return Optional.of(new SelectWeaponRequiredActionResponse("Select a weapon from spawn tile"));
+        return Optional.of(new SelectWeaponRequiredActionResponse("Select a weapon from spawn tile",
+                tile.getColor()));
     }
 }

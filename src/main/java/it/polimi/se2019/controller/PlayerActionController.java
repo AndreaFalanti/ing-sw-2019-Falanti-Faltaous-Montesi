@@ -38,12 +38,14 @@ public class PlayerActionController implements InvalidActionResponseHandler {
 
     @Override
     public void handle(DiscardRequiredActionResponse actionResponse) {
-
+        mRequestingView.showMessage(actionResponse.getMessage());
+        mRequestingView.showPowerUpsDiscardView();
     }
 
     @Override
     public void handle(SelectWeaponRequiredActionResponse actionResponse) {
-
+        mRequestingView.showMessage(actionResponse.getMessage());
+        mRequestingView.showWeaponSelectionView(actionResponse.getColor());
     }
 }
 

@@ -89,12 +89,13 @@ public class LoginScreen {
             stage.centerOnScreen();
 
             MainScreen controller = loader.getController();
-            GraphicView guiView = new GraphicView(controller);
+            PlayerColor clientColor = PlayerColor.GREEN;
+            GraphicView guiView = new GraphicView(clientColor, controller);
             controller.setView(guiView);
-            controller.setClientColor(PlayerColor.GREEN);
+            controller.setClientColor(clientColor);
 
 
-            controller.loadPlayerBoard(PlayerColor.GREEN);
+            controller.loadPlayerBoard(clientColor);
             controller.loadBoard();
             String[] ids = {"022", "023", "024"};
             controller.updatePowerUpGrid(ids);

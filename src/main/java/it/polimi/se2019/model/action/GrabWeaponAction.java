@@ -128,7 +128,8 @@ public class GrabWeaponAction implements GrabAction {
                 return !player.isFullOfWeapons() ?
                         Optional.empty() :
                         Optional.of(
-                                new SelectWeaponRequiredActionResponse("Your hand is full, select a weapon to exchange")
+                                new SelectWeaponRequiredActionResponse("Your hand is full," +
+                                        "select a weapon to exchange", null)
                         );
             }
             // player is trying to exchange one of his weapon with spawn's one

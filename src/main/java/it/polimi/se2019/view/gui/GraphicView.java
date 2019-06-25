@@ -15,8 +15,8 @@ public class GraphicView extends View {
     private MainScreen mMainFrameController;
 
 
-    public GraphicView(MainScreen mainFrameController) {
-        super(new GraphicUpdateHandler(mainFrameController));
+    public GraphicView(PlayerColor color, MainScreen mainFrameController) {
+        super(color, new GraphicUpdateHandler(mainFrameController));
         mMainFrameController = mainFrameController;
     }
 
