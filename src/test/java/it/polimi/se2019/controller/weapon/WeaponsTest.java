@@ -668,6 +668,13 @@ public class WeaponsTest {
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN).move(new Position(1, 0));
 
+        // reduce spending power and give out powerup to test its discard
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN)
+                .setAmmo(new AmmoValue(0, 0, 0))
+                .addPowerUp(new PowerUpCard(PowerUpType.TAGBACK_GRENADE, new AmmoValue(0, 0, 1)))
+                .addPowerUp(new PowerUpCard(PowerUpType.TARGETING_SCOPE, new AmmoValue(0, 0, 1)))
+                .addPowerUp(new PowerUpCard(PowerUpType.TAGBACK_GRENADE, new AmmoValue(0, 0, 1)));
+
         PlayerColor shooterColor = PlayerColor.PURPLE;
 
         // give out powerups

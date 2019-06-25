@@ -33,7 +33,7 @@ public class SelectTargets extends Behaviour {
     @Override
     public final Expression eval(ShootContext context) {
         View view = context.getView();
-        ShootInteraction interaction = context.getShootInteraction();
+        ShootInteraction interaction = context.getInteraction();
 
         // remove shooter from selectable targets
         Set<PlayerColor> targets = getSub("from").eval(context).asTargets().stream()

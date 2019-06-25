@@ -17,7 +17,7 @@ public class RmiVirtualView extends View {
                 new UpdateHandler() {
                     @Override
                     public void fallbackHandle(Update update) {
-                        // TODO: serialize and send
+
                     }
                 }
         );
@@ -25,7 +25,7 @@ public class RmiVirtualView extends View {
 
     @Override
     public void showMessage(String message) {
-
+        // send(message);
     }
 
     @Override
@@ -82,5 +82,4 @@ public class RmiVirtualView extends View {
     public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
 
     }
-
 }

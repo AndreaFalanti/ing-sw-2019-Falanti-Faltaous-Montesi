@@ -109,8 +109,9 @@ public class Player extends Observable<Update> {
 
     //region SETTERS
 
-    public void setAmmo(AmmoValue ammo) {
+    public Player setAmmo(AmmoValue ammo) {
         mAmmo = ammo;
+        return this;
     }
 
     public void setDeathsNum(int deathsNum) {
@@ -400,5 +401,27 @@ public class Player extends Observable<Update> {
                 .filter(pair -> pair.getSecond().getType().equals(wantedType))
                 .map(Pair::getFirst)
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns all the indices for the powerups that this player has
+     * @return all the wanted indices
+     */
+    public Set<Integer> getPowerupIndices() {
+        return IntStream.range(0, getPowerUps().length)
+                .mapToObj(i -> new Pair<>(i, getPowerUps()[i]))
+                .filter(pair -> pair.getSecond() != null)
+                .map(Pair::getFirst)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Counts the powerups in the player's hand
+     * @return the number of powerups in a {@code this}'s hand
+     */
+    public long getNumOfPowerupsInHand() {
+        return IntStream.range(0, getPowerUps().length)
+                .filter(Objects::nonNull)
+                .count();
     }
 }

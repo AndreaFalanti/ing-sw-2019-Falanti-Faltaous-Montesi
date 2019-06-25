@@ -45,7 +45,7 @@ public class Effect {
     }
 
     public AmmoValue getCost() {
-        return mCost;
+        return mCost != null ? mCost : new AmmoValue(0, 0, 0);
     }
 
     public Expression getBehaviour() {

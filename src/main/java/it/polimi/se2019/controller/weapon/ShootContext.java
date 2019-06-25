@@ -81,7 +81,7 @@ public class ShootContext {
         return mGame;
     }
 
-    public ShootInteraction getShootInteraction() {
+    public ShootInteraction getInteraction() {
         return mShootInteraction;
     }
 

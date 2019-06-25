@@ -1,14 +1,17 @@
 package it.polimi.se2019.controller.weapon;
 
+import com.google.gson.reflect.TypeToken;
 import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
+import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -17,6 +20,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class ShootInteraction {
@@ -24,6 +28,8 @@ public class ShootInteraction {
     private Logger mLogger = Logger.getLogger(getClass().getName());
 
     // constants
+    private final int MAX_POWERUP_DISCARDS = 3;
+    private final int MAX_POWERUPS_IN_HAND = 3;
     private static final int REQUEST_ACCEPTANCE_TIMEOUT = 1; // amount of time spent waiting for a request in seconds
 
     // fields
@@ -279,7 +285,6 @@ public class ShootInteraction {
         }
     }
 
-
     // select targets
     public Set<PlayerColor> selectTargets(View view, int min, int max, Set<PlayerColor> possibleTargets) {
         view.showTargetsSelectionView(min, max, possibleTargets);
@@ -336,6 +341,17 @@ public class ShootInteraction {
         )
                 .collect(Collectors.toList())
                 .get(0);
+    }
+
+    // select powerups for ammo payment
+    public Optional<Integer> selectPowerupsForPayment(View view, PlayerColor shooterColor) {
+        // select powerups to discard through view
+        view.showPowerUpsDiscardView();
+
+        PowerUpSelectedRequest request =
+                (PowerUpSelectedRequest) waitForRequest("powerup discard request");
+
+        return request.getIndex();
     }
 
     // pick direction

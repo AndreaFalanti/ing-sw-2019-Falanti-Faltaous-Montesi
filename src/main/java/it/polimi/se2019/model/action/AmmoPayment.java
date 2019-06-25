@@ -4,6 +4,9 @@ import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PowerUpCard;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 public final class AmmoPayment {
     // private constructor, avoids class instantiation
     private AmmoPayment() {
@@ -69,7 +72,9 @@ public final class AmmoPayment {
         AmmoValue ammo = player.getAmmo().deepCopy();
         for (int i = 0; i < discardedCards.length; i++) {
             if (discardedCards[i]) {
-                ammo.add(player.getPowerUpCard(i).getAmmoValue());
+                PowerUpCard powerup = player.getPowerUpCard(i);
+                if (powerup != null)
+                    ammo.add(powerup.getAmmoValue());
             }
         }
 
@@ -103,15 +108,9 @@ public final class AmmoPayment {
      * @return True if can pay, false otherwise
      */
     public static boolean canPayWithPowerUps (Player player, AmmoValue remainingCost) {
-        AmmoValue ammoValue = new AmmoValue(0,0,0);
-        PowerUpCard[] powerUpCards = player.getPowerUps();
+        boolean[] mask = new boolean[4];
+        Arrays.fill(mask, true);
 
-        for (int i = 0; i < powerUpCards.length; i++) {
-            if (powerUpCards[i] != null) {
-                ammoValue.add(powerUpCards[i].getAmmoValue());
-            }
-        }
-
-        return ammoValue.isBiggerOrEqual(remainingCost);
+        return getAmmoTotalWithPowerUpDiscard(player, mask).isBiggerOrEqual(remainingCost);
     }
 }
