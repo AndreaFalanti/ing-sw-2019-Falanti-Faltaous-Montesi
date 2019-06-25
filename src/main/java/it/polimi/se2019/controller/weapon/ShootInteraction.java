@@ -62,18 +62,17 @@ public class ShootInteraction {
     /**
      * Executes shoot interaction if not already occupied
      * @param game the game on which the shoot interaction will take place
-     * @param view the view used to communicate with the user
      * @param shooter the shooter
      * @param weaponBehaviour the weapon behaviour used to shoot
      */
-    public void exec(Game game, View view, PlayerColor shooter, Expression weaponBehaviour) {
+    public void exec(Game game, PlayerColor shooter, Expression weaponBehaviour) {
         // announce that thread is occupied
         mOccupied = true;
 
         mLogger.info("Starting shoot interaction thread...");
         new Thread(() -> {
             // evaluate shoot expression
-            ShootContext context = new ShootContext(game, view, shooter, this);
+            ShootContext context = new ShootContext(game, mPlayerViews.get(shooter), shooter, this);
             try {
                 weaponBehaviour.eval(context);
             } catch (UndoShootInteractionException e) {

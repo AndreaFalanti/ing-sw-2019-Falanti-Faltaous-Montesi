@@ -51,8 +51,8 @@ public class Controller implements AbstractController {
     /* control methods */
     /*******************/
     // TODO: make this private and notify ShootRequest in weapon tests
-    public void startShootInteraction(View view, PlayerColor shooter, Expression weaponBehaviour) {
-        mShootInteraction.exec(mGame, view, shooter, weaponBehaviour);
+    public void startShootInteraction(PlayerColor shooter, Expression weaponBehaviour) {
+        mShootInteraction.exec(mGame, shooter, weaponBehaviour);
     }
 
     private void continueShootInteraction(Request request) {
@@ -100,7 +100,6 @@ public class Controller implements AbstractController {
     @Override
     public void handle(ShootRequest request) {
         startShootInteraction(
-                mPlayerViews.get(request.getViewColor()),
                 request.getShooterColor(),
                 // TODO: substitute with Weapons.get() call
                 WeaponFactory.fromJson(Jsons.get("weapons/real/" + request.getWeaponID())).getBehaviour()

@@ -191,13 +191,13 @@ public class WeaponsTest {
         // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.GREEN);
+        PlayerColor shooterColor = PlayerColor.PURPLE;
 
         // NB. no selection mocking is necessary, since Luigi is the only target that cannot be seen by Mario
 
         // initiate shoot interaction and wait for it to end
         Weapon heatseeker = Weapons.get("heatseeker");
-        testController.startShootInteraction(shooterView, PlayerColor.PURPLE, heatseeker.getBehaviour());
+        testController.startShootInteraction(shooterColor, heatseeker.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // assert that Luigi was hurt
@@ -220,26 +220,18 @@ public class WeaponsTest {
         // instantiate weapon
         Weapon lockrifle = Weapons.get("lock_rifle");
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.GREEN);
+        PlayerColor shooterColor = PlayerColor.YELLOW;
 
         // shoot to Luigi with basic effect and to Smurfette with using the second lock
         mockSelections(testController,
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), shooterView),
-                new EffectsSelectedRequest(Collections.singletonList("with_second_lock"), shooterView),
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.BLUE), shooterView)
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), shooterColor),
+                new EffectsSelectedRequest(Collections.singletonList("with_second_lock"), shooterColor),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.BLUE), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.YELLOW, lockrifle.getBehaviour());
+        testController.startShootInteraction(shooterColor, lockrifle.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
-
-        // verify order of mock method calls
-        InOrder inOrder = inOrder(shooterView);
-        inOrder.verify(shooterView).showTargetsSelectionView(1, 1, allTargets(PlayerColor.YELLOW));
-        inOrder.verify(shooterView).showEffectsSelectionView(any(), anySet());
-        inOrder.verify(shooterView).showTargetsSelectionView(1, 1, allTargetsExcept(
-                PlayerColor.YELLOW, PlayerColor.GREEN
-        ));
 
         // assert that Luigi is hurt
         assertPlayerDamage(
@@ -271,20 +263,16 @@ public class WeaponsTest {
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("electroscythe");
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.PURPLE);
+        PlayerColor shooterColor = PlayerColor.PURPLE;
 
         // mock effect selection
         mockSelections(testController,
-                new WeaponModeSelectedRequest("in_reaper_mode", shooterView)
+                new WeaponModeSelectedRequest("in_reaper_mode", shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.PURPLE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
-
-        // verify order of mock method calls
-        InOrder inOrder = inOrder(shooterView);
-        inOrder.verify(shooterView).showWeaponModeSelectionView(any(Effect.class), any(Effect.class));
 
         // assert that everyone except Mario is hurt
         for (PlayerColor target : allTargets(PlayerColor.PURPLE)) {
@@ -307,27 +295,21 @@ public class WeaponsTest {
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("vortex_cannon");
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.GREEN);
+        PlayerColor shooterColor = PlayerColor.GREEN;
 
         // mock selections
         mockSelections(testController,
                 // select vortex position
-                new PositionSelectedRequest(new Position(2, 2), shooterView),
+                new PositionSelectedRequest(new Position(2, 2), shooterColor),
                 // select target to suck into vortex
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterView),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterColor),
                 // do not pick black hole
-                new EffectsSelectedRequest(Collections.emptyList(), shooterView)
+                new EffectsSelectedRequest(Collections.emptyList(), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.GREEN, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
-
-        // verify order of mock method calls
-        InOrder inOrder = inOrder(shooterView);
-        inOrder.verify(shooterView).showPositionSelectionView(anySet());
-        inOrder.verify(shooterView).showTargetsSelectionView(anyInt(), anyInt(), anySet());
-        inOrder.verify(shooterView).showEffectsSelectionView(any(), anySet());
 
         // assert that Mario is hurt and has moved to a new position
         assertPlayerStatus(
@@ -349,12 +331,12 @@ public class WeaponsTest {
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("whisper");
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+        PlayerColor shooterColor = PlayerColor.BLUE;
 
         // no selections can be done
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // assert that everyone is without damage and in their original position
@@ -373,25 +355,20 @@ public class WeaponsTest {
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("hellion");
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.YELLOW);
+        PlayerColor shooterColor = PlayerColor.YELLOW;
 
         // mock selection
         mockSelections(testController,
                 // choose nano-tracer mode
-                new WeaponModeSelectedRequest("in_nano-tracer_mode", shooterView),
+                new WeaponModeSelectedRequest("in_nano-tracer_mode", shooterColor),
 
                 // select Mario for the hurting (Luigi will be hurt automatically)
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterView)
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.YELLOW, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
-
-        // verify order of mock method calls
-        InOrder inOrder = inOrder(shooterView);
-        inOrder.verify(shooterView).showWeaponModeSelectionView(any(Effect.class), any(Effect.class));
-        inOrder.verify(shooterView).showTargetsSelectionView(anyInt(), anyInt(), anySet());
 
         // assert that Mario is hurt and that Dorian has been inflicted marks
         assertPlayerDamage(
@@ -420,28 +397,28 @@ public class WeaponsTest {
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("rocket_launcher");
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.GREEN);
+        PlayerColor shooterColor = PlayerColor.GREEN;
 
         // mock selection
         mockSelections(testController,
                 // move downwards to the other room with rocket jump
-                new EffectsSelectedRequest(Collections.singletonList("with_rocket_jump"), shooterView),
-                new PositionSelectedRequest(new Position(0, 1), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("with_rocket_jump"), shooterColor),
+                new PositionSelectedRequest(new Position(0, 1), shooterColor),
 
                 // Shoot Mario as basic effect target
-                new EffectsSelectedRequest(Collections.singletonList("basic_effect"), shooterView),
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("basic_effect"), shooterColor),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterColor),
 
                 // Use fragmenting warhead for extra mayhem
-                new EffectsSelectedRequest(Collections.singletonList("with_fragmenting_warhead"), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("with_fragmenting_warhead"), shooterColor),
 
                 // Move Mario on your square
-                new EffectsSelectedRequest(Collections.singletonList("basic_effect_move"), shooterView),
-                new PositionSelectedRequest(new Position(0, 1), shooterView)
+                new EffectsSelectedRequest(Collections.singletonList("basic_effect_move"), shooterColor),
+                new PositionSelectedRequest(new Position(0, 1), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.GREEN, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // assert Luigi's rocket jump
@@ -480,18 +457,18 @@ public class WeaponsTest {
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("tractor_beam");
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.PURPLE);
+        PlayerColor shooterColor = PlayerColor.PURPLE;
 
         // mock selection
         mockSelections(testController,
                 // drag Luigi into yellow room with basic effect
-                new WeaponModeSelectedRequest("basic_mode", shooterView),
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), shooterView),
-                new PositionSelectedRequest(new Position(2, 1), shooterView)
+                new WeaponModeSelectedRequest("basic_mode", shooterColor),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), shooterColor),
+                new PositionSelectedRequest(new Position(2, 1), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.PURPLE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // assert that Luigi has been hazardously dragged into the yellow room
@@ -514,19 +491,19 @@ public class WeaponsTest {
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("flamethrower");
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+        PlayerColor shooterColor = PlayerColor.BLUE;
 
         // mock selection
         mockSelections(testController,
                 // roast Luigi and Stones with basic mode
                 //   NB. Luigi doesn't need to be selected since he's the only one standing in his position
-                new WeaponModeSelectedRequest("basic_mode", shooterView),
-                new DirectionSelectedRequest(Direction.NORTH, shooterView),
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), shooterView)
+                new WeaponModeSelectedRequest("basic_mode", shooterColor),
+                new DirectionSelectedRequest(Direction.NORTH, shooterColor),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // assert that Luigi and Stones have been roasted thoroughly
@@ -555,17 +532,17 @@ public class WeaponsTest {
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("flamethrower");
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+        PlayerColor shooterColor = PlayerColor.BLUE;
 
         // mock selection
         mockSelections(testController,
                 // roast Stones, Dorian and then Luigi
-                new WeaponModeSelectedRequest("in_barbecue_mode", shooterView),
-                new DirectionSelectedRequest(Direction.NORTH, shooterView)
+                new WeaponModeSelectedRequest("in_barbecue_mode", shooterColor),
+                new DirectionSelectedRequest(Direction.NORTH, shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // assert roasting
@@ -602,17 +579,17 @@ public class WeaponsTest {
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("flamethrower");
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+        PlayerColor shooterColor = PlayerColor.BLUE;
 
         // mock selection
         mockSelections(testController,
                 // roast Stones, Dorian and then Luigi
-                new WeaponModeSelectedRequest("in_barbecue_mode", shooterView),
-                new UndoWeaponInteractionRequest(shooterView)
+                new WeaponModeSelectedRequest("in_barbecue_mode", shooterColor),
+                new UndoWeaponInteractionRequest(shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // verify that paying the cost of barbecue mode has been undone
@@ -627,7 +604,7 @@ public class WeaponsTest {
         // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+        PlayerColor shooterColor = PlayerColor.BLUE;
 
         // give out powerups
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.BLUE)
@@ -642,28 +619,28 @@ public class WeaponsTest {
         // mock selection
         mockSelections(testController,
                 // move onto the square where Mario and Dorian are with shadowstep
-                new EffectsSelectedRequest(Collections.singletonList("with_shadowstep"), shooterView),
-                new PositionSelectedRequest(new Position(3, 2), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("with_shadowstep"), shooterColor),
+                new PositionSelectedRequest(new Position(3, 2), shooterColor),
 
                 // use the basic effect to whack Mario
-                new EffectsSelectedRequest(Collections.singletonList("basic_effect"), shooterView),
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("basic_effect"), shooterColor),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterColor),
 
                 // do even more damage to Mario with the targeting scope
                 //  NB. target selection is skipped since only Mario was damaged
-                new PowerUpSelectedRequest(0, shooterView),
-                new PowerUpSelectedRequest(null, shooterView),
+                new PowerUpSelectedRequest(0, shooterColor),
+                new PowerUpSelectedRequest(null, shooterColor),
 
                 // whack stones with slice and dice
                 // NB. selection is skipped
-                new EffectsSelectedRequest(Collections.singletonList("with_slice_and_dice"), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("with_slice_and_dice"), shooterColor),
 
                 // use last targeting scope on Dorian
-                new PowerUpSelectedRequest(1, shooterView)
+                new PowerUpSelectedRequest(1, shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // verify shadowstep movement
@@ -691,7 +668,7 @@ public class WeaponsTest {
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN).move(new Position(1, 0));
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+        PlayerColor shooterColor = PlayerColor.PURPLE;
 
         // give out powerups
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.YELLOW)
@@ -705,22 +682,22 @@ public class WeaponsTest {
         // mock selection
         mockSelections(testController,
                 // damage Stones with basic effect
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), shooterView),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), shooterColor),
 
                 // Stones counters with tagback activation
-                new PowerUpSelectedRequest(0, mPlayerViewMocks.get(PlayerColor.YELLOW)),
+                new PowerUpSelectedRequest(0, PlayerColor.YELLOW),
 
                 // damage Luigi with chain reaction
                 //  NB. Luigi cannot respond with his tagback since he can't see Mario
-                new EffectsSelectedRequest(Collections.singletonList("with_chain_reaction"), shooterView),
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("with_chain_reaction"), shooterColor),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), shooterColor),
 
                 // do not select high voltage
-                new EffectsSelectedRequest(Collections.emptyList(), shooterView)
+                new EffectsSelectedRequest(Collections.emptyList(), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.PURPLE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // verify damage caused but the Thor's effects
@@ -751,7 +728,7 @@ public class WeaponsTest {
          // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+        PlayerColor shooterColor = PlayerColor.BLUE;
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("plasma_gun");
@@ -759,19 +736,19 @@ public class WeaponsTest {
         // mock selection
         mockSelections(testController,
                 // try to go too far using phase glide
-                new EffectsSelectedRequest(Collections.singletonList("with_phase_glide"), shooterView),
-                new PositionSelectedRequest(new Position(1, 0), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("with_phase_glide"), shooterColor),
+                new PositionSelectedRequest(new Position(1, 0), shooterColor),
 
                 // immediately undo to keep this test simple
-                new UndoWeaponInteractionRequest(shooterView)
+                new UndoWeaponInteractionRequest(shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.PURPLE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // verify that an error has been issued to the user
-        verify(shooterView, times(1)).reportError(anyString());
+        verify(mPlayerViewMocks.get(shooterColor), times(1)).reportError(anyString());
 
         // verify that Smurfette hasn't moved
         assertPlayerPosition(
@@ -785,7 +762,7 @@ public class WeaponsTest {
         // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.GREEN);
+        PlayerColor shooterColor = PlayerColor.GREEN;
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("furnace");
@@ -793,12 +770,12 @@ public class WeaponsTest {
         // mock selection
         mockSelections(testController,
                 // roast everyone in yellow room
-                new WeaponModeSelectedRequest("basic_effect", shooterView),
-                new RoomSelectedRequest(TileColor.YELLOW, shooterView)
+                new WeaponModeSelectedRequest("basic_effect", shooterColor),
+                new RoomSelectedRequest(TileColor.YELLOW, shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.GREEN, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // very that everyone in yellow rooms has been damaged
@@ -817,7 +794,7 @@ public class WeaponsTest {
                 // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+        PlayerColor shooterColor = PlayerColor.BLUE;
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("zx-2");
@@ -825,15 +802,15 @@ public class WeaponsTest {
         // mock selection
         mockSelections(testController,
                 // shoot to Mario and Dorian (refrain from selecting 3 people)
-                new WeaponModeSelectedRequest("in_scanner_mode", shooterView),
+                new WeaponModeSelectedRequest("in_scanner_mode", shooterColor),
                 new TargetsSelectedRequest(
                         new HashSet<>(Arrays.asList(PlayerColor.PURPLE, PlayerColor.GREY)),
-                        shooterView
+                        shooterColor
                 )
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // very that everyone in yellow rooms has been damaged
@@ -852,7 +829,7 @@ public class WeaponsTest {
                  // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+        PlayerColor shooterColor = PlayerColor.BLUE;
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("grenade_launcher");
@@ -860,19 +837,19 @@ public class WeaponsTest {
         // mock selection
         mockSelections(testController,
                 // shoot Dorian w/ basic effect
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), shooterView),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), shooterColor),
 
                 // shoot to Mario and Dorian (refrain from selecting 3 people)
-                new EffectsSelectedRequest(Collections.singletonList("with_extra_grenade"), shooterView),
-                new PositionSelectedRequest(new Position(3, 2), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("with_extra_grenade"), shooterColor),
+                new PositionSelectedRequest(new Position(3, 2), shooterColor),
 
                 // move Dorian
-                new EffectsSelectedRequest(Collections.singletonList("basic_effect_move"), shooterView),
-                new PositionSelectedRequest(new Position(3, 1 ), shooterView)
+                new EffectsSelectedRequest(Collections.singletonList("basic_effect_move"), shooterColor),
+                new PositionSelectedRequest(new Position(3, 1 ), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // very that everyone in yellow rooms has been damaged
@@ -891,7 +868,7 @@ public class WeaponsTest {
         // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.PURPLE);
+        PlayerColor shooterColor = PlayerColor.PURPLE;
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("shotgun");
@@ -899,14 +876,14 @@ public class WeaponsTest {
         // mock selection
         mockSelections(testController,
                 // shoot Dorian w/ basic effect (Luigi is picked immediately)
-                new WeaponModeSelectedRequest("basic_mode", shooterView),
+                new WeaponModeSelectedRequest("basic_mode", shooterColor),
 
                 // do not move
-                new EffectsSelectedRequest(Collections.emptyList(), shooterView)
+                new EffectsSelectedRequest(Collections.emptyList(), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.PURPLE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // very that everyone in yellow rooms has been damaged
@@ -926,26 +903,26 @@ public class WeaponsTest {
          // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.GREEN);
+        PlayerColor shooterColor = PlayerColor.GREEN;
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("power_glove");
 
         // mock selection
         mockSelections(testController,
-                new WeaponModeSelectedRequest("in_rocket_fist_mode", shooterView),
+                new WeaponModeSelectedRequest("in_rocket_fist_mode", shooterColor),
 
                 // refrain from punching Stones, but still jump to his position
-                new DirectionSelectedRequest(Direction.SOUTH, shooterView),
-                new EffectsSelectedRequest(Collections.emptyList(), shooterView),
+                new DirectionSelectedRequest(Direction.SOUTH, shooterColor),
+                new EffectsSelectedRequest(Collections.emptyList(), shooterColor),
 
                 // go on rocket-fisting; this time punch Smurfette
-                new EffectsSelectedRequest(Collections.singletonList("second_rocket_jump"), shooterView),
-                new EffectsSelectedRequest(Collections.singletonList("second_punch"), shooterView)
+                new EffectsSelectedRequest(Collections.singletonList("second_rocket_jump"), shooterColor),
+                new EffectsSelectedRequest(Collections.singletonList("second_punch"), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.GREEN, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // very Smurfette's final position after two jumps
@@ -973,7 +950,7 @@ public class WeaponsTest {
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.YELLOW).move(new Position(1, 1));
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY).move(new Position(2, 1));
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.GREEN);
+        PlayerColor shooterColor = PlayerColor.GREEN;
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("railgun");
@@ -981,15 +958,15 @@ public class WeaponsTest {
         // mock selection
         mockSelections(testController,
                 // Shoot Dorian and Luigi
-                new WeaponModeSelectedRequest("in_piercing_mode", shooterView),
-                new DirectionSelectedRequest(Direction.EAST, shooterView),
+                new WeaponModeSelectedRequest("in_piercing_mode", shooterColor),
+                new DirectionSelectedRequest(Direction.EAST, shooterColor),
                 new TargetsSelectedRequest(new HashSet<>(Arrays.asList(
                         PlayerColor.YELLOW, PlayerColor.GREY
-                )), shooterView)
+                )), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.GREEN, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // assert damage to Dorian and Luigi
@@ -1009,27 +986,27 @@ public class WeaponsTest {
         // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+        PlayerColor shooterColor = PlayerColor.BLUE;
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("shockwave");
 
         // mock selection
         mockSelections(testController,
-                new WeaponModeSelectedRequest("basic_mode", shooterView),
+                new WeaponModeSelectedRequest("basic_mode", shooterColor),
 
                 // hurt Mario (first target selection is forced)
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterView),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterColor),
 
                 // decide to also hurt Stones
-                new EffectsSelectedRequest(Collections.singletonList("second_selection"), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("second_selection"), shooterColor),
 
                 // stop hurting people
-                new EffectsSelectedRequest(Collections.emptyList(), shooterView)
+                new EffectsSelectedRequest(Collections.emptyList(), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // assert damage to Dorian and Luigi
@@ -1050,7 +1027,7 @@ public class WeaponsTest {
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.BLUE).move(new Position(0, 0));
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN).move(new Position(0, 0));
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+        PlayerColor shooterColor = PlayerColor.BLUE;
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("sledgehammer");
@@ -1058,13 +1035,13 @@ public class WeaponsTest {
         // mock selection
         mockSelections(testController,
                 // hurt and push Luigi
-                new WeaponModeSelectedRequest("in_pulverize_mode", shooterView),
-                new DirectionSelectedRequest(Direction.EAST, shooterView),
-                new PositionSelectedRequest(new Position(3, 0), shooterView)
+                new WeaponModeSelectedRequest("in_pulverize_mode", shooterColor),
+                new DirectionSelectedRequest(Direction.EAST, shooterColor),
+                new PositionSelectedRequest(new Position(3, 0), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // assert and position of Luigi
@@ -1085,7 +1062,7 @@ public class WeaponsTest {
         // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
-        View shooterView = mPlayerViewMocks.get(PlayerColor.BLUE);
+        PlayerColor shooterColor = PlayerColor.BLUE;
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("machine_gun");
@@ -1095,23 +1072,23 @@ public class WeaponsTest {
                 // use basic effect on Mario and Dorian
                 new TargetsSelectedRequest(new HashSet<>(Arrays.asList(
                         PlayerColor.PURPLE, PlayerColor.GREY
-                )), shooterView),
+                )), shooterColor),
 
                 // use focus shot on Mario
-                new EffectsSelectedRequest(Collections.singletonList("with_focus_shot"), shooterView),
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("with_focus_shot"), shooterColor),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterColor),
 
                 // use turret tripod 1 on Mario
-                new EffectsSelectedRequest(Collections.singletonList("with_turret_tripod"), shooterView),
-                new EffectsSelectedRequest(Collections.singletonList("with_turret_tripod_1"), shooterView),
+                new EffectsSelectedRequest(Collections.singletonList("with_turret_tripod"), shooterColor),
+                new EffectsSelectedRequest(Collections.singletonList("with_turret_tripod_1"), shooterColor),
 
                 // use turret tripod 2 on Stones
                 //  NB. target selection should be automatic
-                new EffectsSelectedRequest(Collections.singletonList("with_turret_tripod_2"), shooterView)
+                new EffectsSelectedRequest(Collections.singletonList("with_turret_tripod_2"), shooterColor)
         );
 
         // shoot through controller
-        testController.startShootInteraction(shooterView, PlayerColor.BLUE, testedWeapon.getBehaviour());
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
         waitForShootInteractionToEnd(testController.getShootInteraction());
 
         // assert damage
