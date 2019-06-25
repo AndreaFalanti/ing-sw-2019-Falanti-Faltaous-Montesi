@@ -65,4 +65,9 @@ public class MoveShootAction implements Action {
     public boolean consumeAction() {
         return true;
     }
+
+    @Override
+    public boolean isComposite() {
+        return true;
+    }
 }

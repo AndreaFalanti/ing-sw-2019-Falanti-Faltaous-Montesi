@@ -1,11 +1,20 @@
 package it.polimi.se2019.controller;
 
-import it.polimi.se2019.model.action.Action;
+import it.polimi.se2019.model.action.GrabAction;
+import it.polimi.se2019.model.action.GrabWeaponAction;
+
 
 public interface WeaponIndexStrategy {
-    Action completeAction (int index, Action action);
+    GrabAction completeAction (int index, GrabAction grabAction);
 
-    /*static WeaponIndexStrategy grabWeapon () {
-        return (index, action) -> new GrabWeaponAction(index, action);
-    }*/
+    static WeaponIndexStrategy exchangeWeapon () {
+        return (index, action) -> {
+            ((GrabWeaponAction)action).setWeaponToExchangeIndex(index);
+            return action;
+        };
+    }
+
+    static WeaponIndexStrategy grabWeapon () {
+        return (index, action) -> new GrabWeaponAction(index);
+    }
 }

@@ -1,5 +1,6 @@
 package it.polimi.se2019.model.action;
 
+import it.polimi.se2019.controller.WeaponIndexStrategy;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Game;
@@ -70,6 +71,10 @@ public class GrabWeaponAction implements GrabAction {
         return mDiscardedCards;
     }
 
+    public void setWeaponToExchangeIndex(Integer weaponToExchangeIndex) {
+        mWeaponToExchangeIndex = weaponToExchangeIndex;
+    }
+
     @Override
     public void perform(Game game) {
         SpawnTile spawnTile = (SpawnTile) game.getBoard().getTileAt(game.getActivePlayer().getPos());
@@ -87,6 +92,7 @@ public class GrabWeaponAction implements GrabAction {
         }
 
         AmmoPayment.payCost(player, grabbedWeapon.getGrabCost(), mDiscardedCards);
+        grabbedWeapon.setLoaded(true);
     }
 
     @Override
@@ -97,6 +103,11 @@ public class GrabWeaponAction implements GrabAction {
     @Override
     public boolean consumeAction() {
         return true;
+    }
+
+    @Override
+    public boolean isComposite() {
+        return false;
     }
 
     @Override
@@ -128,15 +139,15 @@ public class GrabWeaponAction implements GrabAction {
                 return !player.isFullOfWeapons() ?
                         Optional.empty() :
                         Optional.of(
-                                new SelectWeaponRequiredActionResponse("Your hand is full," +
-                                        "select a weapon to exchange", null)
+                                new SelectWeaponRequiredActionResponse("Your hand is full, select a weapon" +
+                                        " to exchange", null, WeaponIndexStrategy.exchangeWeapon(), this)
                         );
             }
             // player is trying to exchange one of his weapon with spawn's one
             else {
                 return player.isFullOfWeapons() ?
                         Optional.empty() :
-                        Optional.of(new MessageActionResponse("Can't exchange weapon if your hand is full"));
+                        Optional.of(new MessageActionResponse("Can't exchange weapon if your hand is not full"));
             }
         }
 

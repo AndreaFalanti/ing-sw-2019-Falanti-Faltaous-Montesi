@@ -62,4 +62,9 @@ public class NewtonAction implements Action {
     public boolean consumeAction() {
         return false;
     }
+
+    @Override
+    public boolean isComposite() {
+        return false;
+    }
 }

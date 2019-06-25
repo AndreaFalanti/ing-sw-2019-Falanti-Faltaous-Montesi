@@ -1,5 +1,6 @@
 package it.polimi.se2019.model.action;
 
+import it.polimi.se2019.controller.WeaponIndexStrategy;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.response.ActionResponseStrings;
 import it.polimi.se2019.model.action.response.InvalidActionResponse;
@@ -42,6 +43,11 @@ public class GrabAmmoAction implements GrabAction {
     }
 
     @Override
+    public boolean isComposite() {
+        return false;
+    }
+
+    @Override
     public Optional<InvalidActionResponse> getErrorMessageAtPos(Game game, Position pos) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
@@ -58,7 +64,7 @@ public class GrabAmmoAction implements GrabAction {
 
         if (tile.getTileType().equals("normal")) {
             NormalTile normalTile = (NormalTile) tile;
-            if(normalTile.getAmmoCard() == null){
+            if(normalTile.getAmmoCard() == null) {
                 return Optional.of(new MessageActionResponse("Tile is empty, you can't grab here again"));
             }
             else {
@@ -68,6 +74,6 @@ public class GrabAmmoAction implements GrabAction {
 
         // tile isn't an AmmoTile
         return Optional.of(new SelectWeaponRequiredActionResponse("Select a weapon from spawn tile",
-                tile.getColor()));
+                tile.getColor(), WeaponIndexStrategy.grabWeapon(), this));
     }
 }

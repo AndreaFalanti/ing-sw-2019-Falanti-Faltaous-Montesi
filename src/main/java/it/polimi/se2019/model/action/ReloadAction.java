@@ -80,4 +80,9 @@ public class ReloadAction implements Action {
     public boolean consumeAction() {
         return false;
     }
+
+    @Override
+    public boolean isComposite() {
+        return false;
+    }
 }

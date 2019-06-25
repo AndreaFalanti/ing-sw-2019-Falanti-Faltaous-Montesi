@@ -38,6 +38,10 @@ public class MoveGrabAction implements Action {
         return mGrabAction;
     }
 
+    public void setGrabAction(GrabAction grabAction) {
+        mGrabAction = grabAction;
+    }
+
     @Override
     public void perform(Game game) {
         mMoveAction.perform(game);
@@ -85,6 +89,11 @@ public class MoveGrabAction implements Action {
 
     @Override
     public boolean consumeAction() {
+        return true;
+    }
+
+    @Override
+    public boolean isComposite() {
         return true;
     }
 }

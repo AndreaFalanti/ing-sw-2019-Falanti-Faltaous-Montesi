@@ -5,22 +5,29 @@ import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.action.MoveGrabAction;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Controller implements AbstractController {
     // messages constants
     public static final String NO_ACTIONS_REMAINING_ERROR_MSG = "No actions remaining! Undo and try again...";
+
+    private static final Logger logger = Logger.getLogger(Controller.class.getName());
 
     // fields
     private final Game mGame;
     private final PlayerActionController mPlayerActionController;
     private final Map<PlayerColor, View> mPlayerViews;
     private final ShootInteraction mShootInteraction;
+
+    private WeaponIndexStrategy mWeaponIndexStrategy;
 
     // constructors
     public Controller(Game game, Map<PlayerColor, View> playerViews) {
@@ -34,18 +41,27 @@ public class Controller implements AbstractController {
     public Game getGame() {
         return mGame;
     }
+
     public ShootInteraction getShootInteraction() {
         return mShootInteraction;
     }
+
     public Object getShootInteractionLock() {
         if (mShootInteraction.isOccupied())
             return mShootInteraction.getLock();
         else
             throw new UnsupportedOperationException("Trying to get lock of a non occupied shoot interaction!");
     }
+
     public boolean isHandlingShootInteraction() {
         return mShootInteraction.isOccupied();
     }
+
+    // Setters
+    public void setWeaponIndexStrategy(WeaponIndexStrategy weaponIndexStrategy) {
+        mWeaponIndexStrategy = weaponIndexStrategy;
+    }
+
 
     /*******************/
     /* control methods */
@@ -94,7 +110,22 @@ public class Controller implements AbstractController {
 
     @Override
     public void handle(WeaponSelectedRequest request) {
+        logger.log(Level.INFO, "Handling weapon selection. Index selected: {0}", request.getWeaponIndex());
 
+        mPlayerActionController.setCompletableGrabAction(mWeaponIndexStrategy.completeAction(request.getWeaponIndex(),
+                mPlayerActionController.getCompletableGrabAction()));
+        if (mPlayerActionController.getCachedAction().isComposite()) {
+            ((MoveGrabAction) mPlayerActionController.getCachedAction()).setGrabAction(
+                    mPlayerActionController.getCompletableGrabAction()
+            );
+        }
+        else {
+            mPlayerActionController.setCachedAction(mPlayerActionController.getCompletableGrabAction());
+        }
+
+        mWeaponIndexStrategy = null;
+        mPlayerActionController.executeAction(mPlayerActionController.getCachedAction(),
+                mPlayerViews.get(request.getViewColor()));
     }
 
     @Override
