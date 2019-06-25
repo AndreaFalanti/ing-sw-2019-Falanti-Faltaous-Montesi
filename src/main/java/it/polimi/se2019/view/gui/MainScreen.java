@@ -476,7 +476,7 @@ public class MainScreen extends Observable<Request> {
         }
 
         powerUpDiscardButton.setOnMouseClicked(event -> {
-            notify(new PowerUpDiscardedRequest(mDiscardedPowerUpsCache, mView));
+            notify(new PowerUpDiscardedRequest(mDiscardedPowerUpsCache, mView.getOwnerColor()));
             powerUpDiscardButton.setDisable(true);
         });
 
@@ -503,7 +503,7 @@ public class MainScreen extends Observable<Request> {
                 GuiUtils.setBoxEnableStatus(weaponBox,false);
                 setEnableStatusActionButtonBox(true);
 
-                notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index), mView));
+                notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index), mView.getOwnerColor()));
             }
             else {
                 logToChat("Can't shoot with unloaded weapon");
@@ -524,7 +524,7 @@ public class MainScreen extends Observable<Request> {
                 GuiUtils.setBoxEnableStatus(weaponBox,false);
                 setEnableStatusActionButtonBox(true);
 
-                notify(new ActionRequest(new ReloadAction(index), mView));
+                notify(new ActionRequest(new ReloadAction(index), mView.getOwnerColor()));
             }
             else {
                 logToChat("Can't reload an already loaded weapon");
@@ -539,7 +539,7 @@ public class MainScreen extends Observable<Request> {
      */
     private void setIndexForwardingOnWeapon(Node weapon, int index) {
         weapon.setOnMouseClicked(event ->
-            notify(new WeaponSelectedRequest(index, mView))
+            notify(new WeaponSelectedRequest(index, mView.getOwnerColor()))
         );
     }
 
@@ -552,7 +552,7 @@ public class MainScreen extends Observable<Request> {
             final int index = i;
             directionButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
                 logToChat("Selected direction: " + directions[index].toString());
-                notify(new DirectionSelectedRequest(directions[index], mView));
+                notify(new DirectionSelectedRequest(directions[index], mView.getOwnerColor()));
             });
         }
     }
@@ -563,7 +563,7 @@ public class MainScreen extends Observable<Request> {
             final int index = i;
             roomColorButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
                 logToChat("Selected room: " + tileColors[index].toString());
-                notify(new RoomSelectedRequest(tileColors[index], mView));
+                notify(new RoomSelectedRequest(tileColors[index], mView.getOwnerColor()));
             });
         }
     }
@@ -627,7 +627,7 @@ public class MainScreen extends Observable<Request> {
                 }
             }
 
-            notify(new TargetsSelectedRequest(set, mView));
+            notify(new TargetsSelectedRequest(set, mView.getOwnerColor()));
             returnToActionTab();
         });
     }
@@ -681,7 +681,7 @@ public class MainScreen extends Observable<Request> {
                 ids.add(effect.getId());
             }
 
-            notify(new EffectsSelectedRequest(ids, mView));
+            notify(new EffectsSelectedRequest(ids, mView.getOwnerColor()));
             returnToActionTab();
         });
     }
@@ -738,7 +738,7 @@ public class MainScreen extends Observable<Request> {
         for (Button button : mUndoWeaponButtons) {
             button.setOnMouseClicked(event -> {
                 returnToActionTab();
-                notify(new UndoWeaponInteractionRequest(mView));
+                notify(new UndoWeaponInteractionRequest(mView.getOwnerColor()));
             });
         }
     }

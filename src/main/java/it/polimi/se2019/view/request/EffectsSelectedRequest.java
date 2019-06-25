@@ -1,17 +1,17 @@
 package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
-import it.polimi.se2019.view.View;
+import it.polimi.se2019.model.PlayerColor;
 
 import java.util.List;
 
 public class EffectsSelectedRequest implements Request {
     private List<String> mEffects;
-    private View mView;
+    private PlayerColor mViewColor;
 
-    public EffectsSelectedRequest(List<String> effects, View view) {
+    public EffectsSelectedRequest(List<String> effects, PlayerColor viewColor) {
         mEffects = effects;
-        mView = view;
+        mViewColor = viewColor;
     }
 
     public List<String> getSelectedEffects() {
@@ -19,8 +19,8 @@ public class EffectsSelectedRequest implements Request {
     }
 
     @Override
-    public View getView() {
-        return mView;
+    public PlayerColor getViewColor() {
+        return mViewColor;
     }
 
     @Override

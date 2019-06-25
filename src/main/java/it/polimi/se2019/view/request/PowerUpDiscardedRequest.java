@@ -1,15 +1,15 @@
 package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
-import it.polimi.se2019.view.View;
+import it.polimi.se2019.model.PlayerColor;
 
 public class PowerUpDiscardedRequest implements Request {
     private boolean[] mDiscarded;
-    private View mView;
+    private PlayerColor mViewColor;
 
-    public PowerUpDiscardedRequest(boolean[] discarded, View view) {
+    public PowerUpDiscardedRequest(boolean[] discarded, PlayerColor viewColor) {
         mDiscarded = discarded;
-        mView = view;
+        mViewColor = viewColor;
     }
 
     public boolean[] getDiscarded() {
@@ -17,8 +17,8 @@ public class PowerUpDiscardedRequest implements Request {
     }
 
     @Override
-    public View getView() {
-        return mView;
+    public PlayerColor getViewColor() {
+        return mViewColor;
     }
 
     @Override

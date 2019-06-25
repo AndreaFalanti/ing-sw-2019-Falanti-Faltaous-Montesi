@@ -403,7 +403,7 @@ public class BoardPane extends Observable<Request> {
 
                         notify(new ActionRequest(
                                 new MoveAction(mMainController.getClientColor(), new Position(x, y), true),
-                                mMainController.getView()));
+                                mMainController.getView().getOwnerColor()));
                     });
                 }
             }
@@ -424,7 +424,7 @@ public class BoardPane extends Observable<Request> {
 
                         notify(new ActionRequest(
                                 new MoveGrabAction(mMainController.getClientColor(), new Position(x, y)),
-                                mMainController.getView()));
+                                mMainController.getView().getOwnerColor()));
                     });
                 }
             }
@@ -462,7 +462,7 @@ public class BoardPane extends Observable<Request> {
         for (int i = 0; i < selectedSpawn.getChildren().size(); i++) {
             final int index = i;
             selectedSpawn.getChildren().get(i).setOnMouseClicked(event -> notify(
-                    new WeaponSelectedRequest(index, mMainController.getView())));
+                    new WeaponSelectedRequest(index, mMainController.getView().getOwnerColor())));
         }
 
         mMainController.getUndoButton().setOnMouseClicked(event -> {

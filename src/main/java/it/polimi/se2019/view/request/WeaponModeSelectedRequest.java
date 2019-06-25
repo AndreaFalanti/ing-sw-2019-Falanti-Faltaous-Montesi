@@ -1,23 +1,23 @@
 package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
-import it.polimi.se2019.view.View;
+import it.polimi.se2019.model.PlayerColor;
 
 public class WeaponModeSelectedRequest implements Request {
     private String mId;
-    private View mView;
+    private PlayerColor mViewColor;
 
-    public WeaponModeSelectedRequest(String id, View view) {
+    public WeaponModeSelectedRequest(String id, PlayerColor viewColor) {
         mId = id;
-        mView = view;
+        mViewColor = viewColor;
     }
 
     public String getId() {
         return mId;
     }
 
-    public View getView() {
-        return mView;
+    public PlayerColor getViewColor() {
+        return mViewColor;
     }
 
     @Override

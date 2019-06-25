@@ -2,22 +2,21 @@ package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.view.View;
 
 public class ShootRequest implements Request {
-    private View mView;
     private String mWeaponID;
     private PlayerColor mShooterColor;
+    private PlayerColor mViewColor;
 
-    public ShootRequest(View view, String weaponID, PlayerColor shooterColor) {
-        mView = view;
+    public ShootRequest(PlayerColor viewColor, String weaponID, PlayerColor shooterColor) {
+        mViewColor = viewColor;
         mWeaponID = weaponID;
         mShooterColor = shooterColor;
     }
 
     @Override
-    public View getView() {
-        return mView;
+    public PlayerColor getViewColor() {
+        return mViewColor;
     }
 
     public String getWeaponID() {

@@ -1,18 +1,17 @@
 package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
-import it.polimi.se2019.view.View;
+import it.polimi.se2019.model.PlayerColor;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 
 public class PowerUpSelectedRequest implements Request {
     private Integer mIndex;
-    private View mView;
+    private PlayerColor mViewColor;
 
-    public PowerUpSelectedRequest(Integer index, View view) {
+    public PowerUpSelectedRequest(Integer index, PlayerColor viewColor) {
         mIndex = index;
-        mView = view;
+        mViewColor = viewColor;
     }
 
     public Optional<Integer> getIndex() {
@@ -20,8 +19,8 @@ public class PowerUpSelectedRequest implements Request {
     }
 
     @Override
-    public View getView() {
-        return mView;
+    public PlayerColor getViewColor() {
+        return mViewColor;
     }
 
     @Override

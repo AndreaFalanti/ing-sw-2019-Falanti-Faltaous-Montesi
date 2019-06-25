@@ -1,18 +1,18 @@
 package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
-import it.polimi.se2019.view.View;
+import it.polimi.se2019.model.PlayerColor;
 
 public class ValidPositionRequest implements Request {
-    private View mView;
+    private PlayerColor mViewColor;
 
-    public ValidPositionRequest(View view) {
-        mView = view;
+    public ValidPositionRequest(PlayerColor viewColor) {
+        mViewColor = viewColor;
     }
 
     @Override
-    public View getView() {
-        return mView;
+    public PlayerColor getViewColor() {
+        return mViewColor;
     }
 
     @Override

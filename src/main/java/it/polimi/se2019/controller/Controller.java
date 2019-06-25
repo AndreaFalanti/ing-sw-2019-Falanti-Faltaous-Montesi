@@ -58,7 +58,8 @@ public class Controller implements AbstractController {
     private void continueShootInteraction(Request request) {
         // shoot info is useless without the shooting
         if (isHandlingShootInteraction()) {
-            request.getView().reportError("You can't provide shoot info with no shooting going on...");
+            //request.getViewColor()
+            mPlayerViews.get(request.getViewColor()).reportError("You can't provide shoot info with no shooting going on...");
             return;
         }
 
@@ -83,7 +84,7 @@ public class Controller implements AbstractController {
 
     @Override
     public void handle(ActionRequest actionRequest) {
-        mPlayerActionController.executeAction(actionRequest.getAction(), actionRequest.getView());
+        mPlayerActionController.executeAction(actionRequest.getAction(), mPlayerViews.get(actionRequest.getViewColor()));
     }
 
     @Override
@@ -99,7 +100,7 @@ public class Controller implements AbstractController {
     @Override
     public void handle(ShootRequest request) {
         startShootInteraction(
-                request.getView(),
+                mPlayerViews.get(request.getViewColor()),
                 request.getShooterColor(),
                 // TODO: substitute with Weapons.get() call
                 WeaponFactory.fromJson(Jsons.get("weapons/real/" + request.getWeaponID())).getBehaviour()

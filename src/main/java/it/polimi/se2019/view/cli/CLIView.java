@@ -136,7 +136,7 @@ public class CLIView extends View {
         }
 
 
-        notify(new ActionRequest(action,this));
+        notify(new ActionRequest(action, getOwnerColor()));
         availableCommands();
     }
 
@@ -252,15 +252,15 @@ public class CLIView extends View {
                 discarded[i]=true;
             }
         }
-        notify(new PowerUpDiscardedRequest(discarded,this));
+        notify(new PowerUpDiscardedRequest(discarded, getOwnerColor()));
     }
 
     @Override
     public void showWeaponSelectionView(TileColor spawnColor) {
         if(spawnColor!=null)
-            notify(new WeaponSelectedRequest(parseWeaponInformation(spawnColor),this));
+            notify(new WeaponSelectedRequest(parseWeaponInformation(spawnColor), getOwnerColor()));
         else
-            notify(new WeaponSelectedRequest(parseWeaponInformation(),this));
+            notify(new WeaponSelectedRequest(parseWeaponInformation(), getOwnerColor()));
     }
 
     @Override
@@ -282,17 +282,17 @@ public class CLIView extends View {
 
     @Override
     public void showDirectionSelectionView() {
-        notify(new DirectionSelectedRequest(pickDirection(),this));
+        notify(new DirectionSelectedRequest(pickDirection(), getOwnerColor()));
     }
 
     @Override
     public void showPositionSelectionView(Set<Position> possiblePositions) {
-        notify(new PositionSelectedRequest(selectPosition(possiblePositions),this));
+        notify(new PositionSelectedRequest(selectPosition(possiblePositions), getOwnerColor()));
     }
 
     @Override
     public void showTargetsSelectionView(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets) {
-        notify(new TargetsSelectedRequest(selectTargets(minToSelect,maxToSelect,possibleTargets),this) );
+        notify(new TargetsSelectedRequest(selectTargets(minToSelect,maxToSelect,possibleTargets), getOwnerColor()) );
     }
 
     @Override
@@ -314,7 +314,7 @@ public class CLIView extends View {
     public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
         System.out.print("Choose one of these effects: "+effect1.getName()+" "+effect2.getName());
         String effect = requestAdditionalInfo();
-        notify(new WeaponModeSelectedRequest(effect,this));
+        notify(new WeaponModeSelectedRequest(effect, getOwnerColor()));
     }
 
     public int parseInteger(){

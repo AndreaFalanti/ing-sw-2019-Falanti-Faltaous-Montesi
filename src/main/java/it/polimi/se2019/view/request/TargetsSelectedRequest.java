@@ -2,18 +2,17 @@ package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.view.View;
 
 import java.util.Set;
 
 public class TargetsSelectedRequest implements Request {
     private Set<PlayerColor> mSelectedTargets;
-    private View mView;
+    private PlayerColor mViewColor;
 
     // trivial constructor
-    public TargetsSelectedRequest(Set<PlayerColor> selectedTargets, View view) {
+    public TargetsSelectedRequest(Set<PlayerColor> selectedTargets, PlayerColor viewColor) {
         mSelectedTargets = selectedTargets;
-        mView = view;
+        mViewColor = viewColor;
     }
 
     // trivial getters
@@ -22,8 +21,8 @@ public class TargetsSelectedRequest implements Request {
     }
 
     @Override
-    public View getView() {
-        return mView;
+    public PlayerColor getViewColor() {
+        return mViewColor;
     }
 
     @Override
