@@ -61,8 +61,9 @@ public abstract class View extends Observable<Request> implements Observer<Updat
 
     /**
      * Ask a player to pick a room color
+     * @param possibleColors
      */
-    public abstract void showRoomColorSelectionView();
+    public abstract void showRoomColorSelectionView(Set<TileColor> possibleColors);
 
     /**
      * Ask player a cardinal direction

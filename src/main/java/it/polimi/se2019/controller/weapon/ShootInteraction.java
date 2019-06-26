@@ -363,7 +363,7 @@ public class ShootInteraction {
 
     // pick room color
     public TileColor pickRoomColor(View view, Set<TileColor> possibleColors) {
-        view.showDirectionSelectionView();
+        view.showRoomColorSelectionView(possibleColors);
 
         return waitForSelectionRequestSkippingObvious(
                         view, possibleColors, 1, 1,

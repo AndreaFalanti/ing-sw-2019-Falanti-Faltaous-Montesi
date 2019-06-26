@@ -84,7 +84,7 @@ public class SocketVirtualView extends View {
     }
 
     @Override
-    public void showRoomColorSelectionView() {
+    public void showRoomColorSelectionView(Set<TileColor> possibleColors) {
 
     }
 

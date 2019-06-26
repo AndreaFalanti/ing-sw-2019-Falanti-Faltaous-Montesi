@@ -264,7 +264,7 @@ public class CLIView extends View {
     }
 
     @Override
-    public void showRoomColorSelectionView() {
+    public void showRoomColorSelectionView(Set<TileColor> possibleColors) {
         System.out.println("Choose one color from the colo of the tiles");
         System.out.println(mCLIInfo.getTilesColor().values());
         String color = requestAdditionalInfo();

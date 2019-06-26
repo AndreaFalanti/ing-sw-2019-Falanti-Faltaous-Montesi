@@ -55,7 +55,7 @@ public class GraphicView extends View {
     }
 
     @Override
-    public void showRoomColorSelectionView() {
+    public void showRoomColorSelectionView(Set<TileColor> possibleColors) {
 
     }
 
