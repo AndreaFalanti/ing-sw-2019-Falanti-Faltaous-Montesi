@@ -9,6 +9,7 @@ import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
 import it.polimi.se2019.network.server.PlayerThread;
+import it.polimi.se2019.view.request.Request;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,8 +31,9 @@ public class SocketVirtualView extends View {
 
     private Gson mGson = new Gson();
 
-    public SocketVirtualView() {
+    public SocketVirtualView(PlayerColor ownerColor) {
         super(
+                ownerColor,
                 new UpdateHandler() {
                     @Override
                     public void fallbackHandle(Update update) {
@@ -41,6 +43,22 @@ public class SocketVirtualView extends View {
                 }
         );
 
+
+    }
+
+    public void setupUpdateHandler () {
+        mUpdateHandler = new UpdateHandler() {
+            @Override
+            public void fallbackHandle(Update update) {
+                        String json = mGson.toJson(update);
+                        mOut.print(json);
+            }
+        };
+    }
+
+    public void setupSocket (Socket socket) {
+        mSocket = socket;
+
         try {
             mIn = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
             mOut = new PrintWriter(mSocket.getOutputStream(), true);
@@ -48,10 +66,6 @@ public class SocketVirtualView extends View {
             logger.severe(e.getMessage());
         }
     }
-
-    /*public SocketVirtualView (Socket socket) {
-
-    }*/
 
     @Override
     public void showMessage(String message) {
@@ -75,17 +89,17 @@ public class SocketVirtualView extends View {
 
     @Override
     public void showValidPositions(List<Position> positions) {
-
+        // TODO: need implementation in controller if we have time
     }
 
     @Override
     public void showPowerUpSelectionView(List<Integer> indexes) {
-
+        sendResponse(new PickPowerUpsResponse(indexes));
     }
 
     @Override
     public void showRoomColorSelectionView(Set<TileColor> possibleColors) {
-
+        sendResponse(new PickRoomColorResponse(possibleColors));
     }
 
     @Override
@@ -100,21 +114,33 @@ public class SocketVirtualView extends View {
 
     @Override
     public void showTargetsSelectionView(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets) {
-
+        sendResponse(new PickTargetsResponse(minToSelect, maxToSelect, possibleTargets));
     }
 
     @Override
     public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
-
+        sendResponse(new PickEffectsResponse(priorityMap, possibleEffects));
     }
 
     @Override
     public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
-
+        sendResponse(new PickWeaponModeResponse(effect1, effect2));
     }
 
     private void sendResponse (Response response) {
         logger.log(Level.INFO, "Sending {0}...", response.getClass().getSimpleName());
         mOut.print(mGson.toJson(response));
+    }
+
+    public void getRequest () {
+        logger.info("Waiting for a request...");
+        try {
+            String json = mIn.readLine();
+            Request request = mGson.fromJson(json, Request.class);
+            notify(request);
+        }
+        catch (IOException e) {
+            logger.severe(e.getMessage());
+        }
     }
 }

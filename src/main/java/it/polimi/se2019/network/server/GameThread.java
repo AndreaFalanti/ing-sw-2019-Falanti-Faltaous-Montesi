@@ -7,8 +7,8 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.RmiVirtualView;
-import it.polimi.se2019.view.SocketVirtualView;
 import it.polimi.se2019.view.View;
+import it.polimi.se2019.view.ViewFactory;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -82,7 +82,8 @@ public class GameThread extends Thread {
         for (PlayerConnection playerConnection : mPlayerConnections) {
             switch (playerConnection.getType()) {
                 case SOCKET:
-                    playerConnection.setVirtualView(new SocketVirtualView());
+                    playerConnection.setVirtualView(ViewFactory.createSocketVirtualView(
+                            playerConnection.getSocket(), playerConnection.getColor()));
                     break;
                 case RMI:
                     playerConnection.setVirtualView(new RmiVirtualView());

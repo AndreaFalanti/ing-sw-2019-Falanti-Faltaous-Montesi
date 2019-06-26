@@ -4,6 +4,7 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.view.View;
 
 import java.io.Serializable;
+import java.net.Socket;
 
 public class PlayerConnection implements Serializable {
     private View mVirtualView;
@@ -12,6 +13,8 @@ public class PlayerConnection implements Serializable {
     private PlayerColor mColor;
     private ConnectionType mType;
 
+    private Socket mSocket;
+
     // TODO: add connection type so that server can send message to clients
 
     public PlayerConnection(String username, ConnectionType type) {
@@ -19,6 +22,13 @@ public class PlayerConnection implements Serializable {
         mActive = true;
         mType = type;
         mVirtualView = null;
+
+        mSocket = null;
+    }
+
+    public PlayerConnection(String username, ConnectionType type, Socket socket) {
+        this (username, type);
+        mSocket = socket;
     }
 
     public View getVirtualView() {
@@ -39,6 +49,10 @@ public class PlayerConnection implements Serializable {
 
     public ConnectionType getType() {
         return mType;
+    }
+
+    public Socket getSocket() {
+        return mSocket;
     }
 
     public void setVirtualView(View virtualView) {

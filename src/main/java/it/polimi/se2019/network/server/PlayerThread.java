@@ -61,23 +61,17 @@ public class PlayerThread extends Thread {
         String username = null;
         boolean logged = false;
 
-        while (!isInterrupted()) {
-            while (!logged && !isInterrupted()) {
-                username = receive();
-                if (mRegister.isUsernameAvailable(username)) {
-                    logged = mRegister.registerPlayer(username, ConnectionType.SOCKET);
-                    send("ok");
-                } else {
-                    send("Username is already used");
-                }
-            }
-
-            while (mInGame && !isInterrupted()) {
-                logger.info("I'm in a game");
+        while (!logged && !isInterrupted()) {
+            username = receive();
+            if (mRegister.isUsernameAvailable(username)) {
+                logged = mRegister.registerPlayer(username, ConnectionType.SOCKET, mSocket);
+                send("ok");
+            } else {
+                send("Username is already used");
             }
         }
 
-        logger.info("Closing thread " + getId());
+        logger.info("Closing registration thread " + getId());
     }
 
     public Socket getSocket() {

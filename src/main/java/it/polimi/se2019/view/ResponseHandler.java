@@ -22,4 +22,19 @@ public interface ResponseHandler extends AbstractHandler<Response> {
     default void handle(PickPositionResponse response) {
         fallbackHandle(response);
     }
+    default void handle(PickPowerUpsResponse response) {
+        fallbackHandle(response);
+    }
+    default void handle(PickTargetsResponse response) {
+        fallbackHandle(response);
+    }
+    default void handle(PickEffectsResponse response) {
+        fallbackHandle(response);
+    }
+    default void handle(PickWeaponModeResponse response) {
+        fallbackHandle(response);
+    }
+    default void handle(PickRoomColorResponse response) {
+        fallbackHandle(response);
+    }
 }

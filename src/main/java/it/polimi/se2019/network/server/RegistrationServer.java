@@ -1,6 +1,7 @@
 package it.polimi.se2019.network.server;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -105,9 +106,9 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
     }
 
     @Override
-    public boolean registerPlayer(String username, ConnectionType type) {
+    public boolean registerPlayer(String username, ConnectionType type, Socket socket) {
         if (isUsernameAvailable(username)) {
-            PlayerConnection connection = new PlayerConnection(username, type);
+            PlayerConnection connection = new PlayerConnection(username, type, socket);
             registerConnection(connection);
             return true;
         }
@@ -126,7 +127,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
 
     @Override
     public boolean registerPlayerRemote(String username) throws RemoteException {
-        return registerPlayer(username, ConnectionType.RMI);
+        return registerPlayer(username, ConnectionType.RMI, null);
     }
 
     @Override
