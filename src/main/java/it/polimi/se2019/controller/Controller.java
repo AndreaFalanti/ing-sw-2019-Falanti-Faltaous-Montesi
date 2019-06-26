@@ -5,12 +5,14 @@ import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.action.CostlyAction;
 import it.polimi.se2019.model.action.MoveGrabAction;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -105,7 +107,16 @@ public class Controller implements AbstractController {
 
     @Override
     public void handle(PowerUpDiscardedRequest request) {
+        logger.log(Level.INFO, "Handling power up discard selection. PowerUps discarded: {0}",
+                Arrays.toString(request.getDiscarded()));
 
+        CostlyAction costlyAction = mPlayerActionController.getCompletableCostlyAction();
+        if (costlyAction != null) {
+            costlyAction.setDiscardedCards(request.getDiscarded());
+
+            mPlayerActionController.executeAction(mPlayerActionController.getCachedAction(),
+                    mPlayerViews.get(request.getViewColor()));
+        }
     }
 
     @Override

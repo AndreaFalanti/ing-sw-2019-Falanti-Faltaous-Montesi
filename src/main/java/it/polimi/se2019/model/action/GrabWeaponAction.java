@@ -12,7 +12,7 @@ import it.polimi.se2019.model.board.Tile;
 
 import java.util.Optional;
 
-public class GrabWeaponAction implements GrabAction {
+public class GrabWeaponAction implements GrabAction, CostlyAction {
     private int mWeaponGrabbedIndex;
     private Integer mWeaponToExchangeIndex;
     private boolean[] mDiscardedCards = {false, false, false};
@@ -67,8 +67,14 @@ public class GrabWeaponAction implements GrabAction {
         return mWeaponToExchangeIndex;
     }
 
+    @Override
     public boolean[] getDiscardedCards() {
         return mDiscardedCards;
+    }
+
+    @Override
+    public void setDiscardedCards(boolean[] discardedCards) {
+        mDiscardedCards = discardedCards;
     }
 
     public void setWeaponToExchangeIndex(Integer weaponToExchangeIndex) {
@@ -81,6 +87,8 @@ public class GrabWeaponAction implements GrabAction {
         Weapon grabbedWeapon = spawnTile.grabWeapon(mWeaponGrabbedIndex);
         Player player = game.getActivePlayer();
 
+        grabbedWeapon.setLoaded(true);
+
         // if can't add weapon because hand is full, perform an exchange (catch block)
         if (mWeaponToExchangeIndex == null) {
             player.addWeapon(grabbedWeapon);
@@ -92,7 +100,6 @@ public class GrabWeaponAction implements GrabAction {
         }
 
         AmmoPayment.payCost(player, grabbedWeapon.getGrabCost(), mDiscardedCards);
-        grabbedWeapon.setLoaded(true);
     }
 
     @Override
@@ -130,7 +137,7 @@ public class GrabWeaponAction implements GrabAction {
             if (!AmmoPayment.isValid(player, weapon.getGrabCost(), mDiscardedCards)) {
                 AmmoValue remainingCost = weapon.getGrabCost().subtract(player.getAmmo(), true);
                 return AmmoPayment.canPayWithPowerUps(player, remainingCost) ?
-                        Optional.of(new DiscardRequiredActionResponse(ActionResponseStrings.DISCARD_MESSAGE)) :
+                        Optional.of(new DiscardRequiredActionResponse(ActionResponseStrings.DISCARD_MESSAGE, this)) :
                         Optional.of(new MessageActionResponse(ActionResponseStrings.NOT_ENOUGH_AMMO));
             }
 

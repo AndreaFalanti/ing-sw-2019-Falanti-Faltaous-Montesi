@@ -11,7 +11,7 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
-public class ReloadAction implements Action {
+public class ReloadAction implements CostlyAction {
     private int mWeaponIndex;
     private boolean[] mDiscardPowerUp = {false, false, false};
 
@@ -36,8 +36,14 @@ public class ReloadAction implements Action {
         return mWeaponIndex;
     }
 
-    public boolean[] getDiscardPowerUp() {
+    @Override
+    public boolean[] getDiscardedCards() {
         return mDiscardPowerUp;
+    }
+
+    @Override
+    public void setDiscardedCards(boolean[] discardedCards) {
+        mDiscardPowerUp = discardedCards;
     }
 
     @Override
@@ -69,7 +75,7 @@ public class ReloadAction implements Action {
         if (!AmmoPayment.isValid(player, weaponToReload.getReloadCost(), mDiscardPowerUp)) {
             AmmoValue remainingCost = weaponToReload.getGrabCost().subtract(player.getAmmo(), true);
             return AmmoPayment.canPayWithPowerUps(player, remainingCost) ?
-                    Optional.of(new DiscardRequiredActionResponse(ActionResponseStrings.DISCARD_MESSAGE)) :
+                    Optional.of(new DiscardRequiredActionResponse(ActionResponseStrings.DISCARD_MESSAGE, this)) :
                     Optional.of(new MessageActionResponse(ActionResponseStrings.NOT_ENOUGH_AMMO));
         }
 

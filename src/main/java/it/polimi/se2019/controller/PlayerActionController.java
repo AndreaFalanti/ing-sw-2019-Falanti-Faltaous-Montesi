@@ -1,6 +1,7 @@
 package it.polimi.se2019.controller;
 
 import it.polimi.se2019.model.action.Action;
+import it.polimi.se2019.model.action.CostlyAction;
 import it.polimi.se2019.model.action.GrabAction;
 import it.polimi.se2019.model.action.response.DiscardRequiredActionResponse;
 import it.polimi.se2019.model.action.response.InvalidActionResponse;
@@ -13,8 +14,11 @@ import java.util.Optional;
 public class PlayerActionController implements InvalidActionResponseHandler {
     private Controller mMainController;
     private View mRequestingView;
+
     private Action mCachedAction;
     private GrabAction mCompletableGrabAction;
+    private CostlyAction mCompletableCostlyAction;
+
 
     public PlayerActionController(Controller mainController) {
         mMainController = mainController;
@@ -28,6 +32,10 @@ public class PlayerActionController implements InvalidActionResponseHandler {
         return mCompletableGrabAction;
     }
 
+    public CostlyAction getCompletableCostlyAction() {
+        return mCompletableCostlyAction;
+    }
+
     public void setCachedAction(Action cachedAction) {
         mCachedAction = cachedAction;
     }
@@ -36,8 +44,15 @@ public class PlayerActionController implements InvalidActionResponseHandler {
         mCompletableGrabAction = completableGrabAction;
     }
 
+    private void resetCache () {
+        mCachedAction = null;
+        mCompletableCostlyAction = null;
+        mCompletableGrabAction = null;
+    }
+
     public void executeAction (Action action, View requestingView){
         mRequestingView = requestingView;
+        resetCache();
 
         Optional<InvalidActionResponse> response = action.getErrorResponse(mMainController.getGame());
         if(!response.isPresent()) {
@@ -58,6 +73,8 @@ public class PlayerActionController implements InvalidActionResponseHandler {
 
     @Override
     public void handle(DiscardRequiredActionResponse actionResponse) {
+        mCompletableCostlyAction = actionResponse.getCostlyAction();
+
         mRequestingView.showMessage(actionResponse.getMessage());
         mRequestingView.showPowerUpsDiscardView();
     }

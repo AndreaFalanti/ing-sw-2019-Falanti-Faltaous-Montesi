@@ -1,7 +1,7 @@
 {
   "name": "Grenade Launcher",
   "guiID": "0212",
-  "grabCost": "1r",
+  "grabCost": "0r",
   "reloadCost": "1r",
   "behaviour": {
     "expr": "PickEffect",

@@ -1,7 +1,7 @@
 {
   "name": "Shockwave",
   "guiID": "028",
-  "grabCost": "1y",
+  "grabCost": "0y",
   "reloadCost": "1y",
   "behaviour": {
     "expr": "XorEffect",

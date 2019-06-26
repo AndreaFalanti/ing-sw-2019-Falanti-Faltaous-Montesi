@@ -1,7 +1,7 @@
 {
   "name": "Power glove",
   "guiID": "024",
-  "grabCost": "1y",
+  "grabCost": "1b",
   "reloadCost": "1y1b",
   "behaviour": {
     "expr": "XorEffect",

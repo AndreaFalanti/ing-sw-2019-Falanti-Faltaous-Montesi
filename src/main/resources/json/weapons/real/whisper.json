@@ -1,7 +1,7 @@
 {
   "name": "Whisper",
   "guiID": "0218",
-  "grabCost": "1b",
+  "grabCost": "1y1b",
   "reloadCost": "1y2b",
   "behaviour": {
     "expr": "InflictDamage",

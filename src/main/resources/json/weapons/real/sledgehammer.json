@@ -1,7 +1,7 @@
 {
   "name": "Sledgehammer",
   "guiID": "022",
-  "grabCost": "1y",
+  "grabCost": "0y",
   "reloadCost": "1y",
   "behaviour": {
     "expr": "XorEffect",

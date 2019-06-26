@@ -1,7 +1,7 @@
 {
   "name": "Machine gun",
   "guiID": "0220",
-  "grabCost": "1b",
+  "grabCost": "1r",
   "reloadCost": "1r1b",
   "behaviour": {
     "expr": "PickEffect",

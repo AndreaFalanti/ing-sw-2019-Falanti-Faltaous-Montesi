@@ -1,6 +1,6 @@
 {
   "name": "Furnace",
-  "grabCost": "1r",
+  "grabCost": "1b",
   "reloadCost": "1r1b",
   "behaviour": {
     "expr": "XorEffect",

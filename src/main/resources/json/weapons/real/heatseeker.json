@@ -1,6 +1,6 @@
 {
   "name" : "Heatseeker",
-  "grabCost" : "1r",
+  "grabCost" : "1r1y",
   "reloadCost" : "2r1y",
   "behaviour" : {
     "expr" : "InflictDamage",
