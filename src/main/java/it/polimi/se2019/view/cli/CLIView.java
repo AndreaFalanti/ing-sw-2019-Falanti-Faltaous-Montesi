@@ -270,12 +270,18 @@ public class CLIView extends View {
 
     @Override
     public void showPowerUpSelectionView(List<Integer> indexes) {
-
+        notify(new PowerUpSelectedRequest(parseInteger(),mOwnerColor));
     }
 
     @Override
     public void showRoomColorSelectionView() {
+        System.out.println("Choose one color from the colo of the tiles");
+        System.out.println(mCLIInfo.getTilesColor().values());
+        String color = requestAdditionalInfo();
 
+        for(TileColor tileColor: mCLIInfo.getTilesColor().keySet())
+            if(tileColor.getPascalName().equalsIgnoreCase(color))
+                notify(new RoomSelectedRequest(tileColor,mOwnerColor));
     }
 
     @Override
@@ -291,11 +297,6 @@ public class CLIView extends View {
     @Override
     public void showTargetsSelectionView(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets) {
         notify(new TargetsSelectedRequest(selectTargets(minToSelect,maxToSelect,possibleTargets), getOwnerColor()) );
-    }
-
-    @Override
-    public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
-
     }
 
     @Override
@@ -341,10 +342,7 @@ public class CLIView extends View {
             case "showg"      : showGrabbable();break;
             case "weapons"    : System.out.println(mCLIInfo.getOwner().getPlayerWeapons());availableCommands(); break;
             case "myinfo"     : ownerInfo();availableCommands();break;
-            case "board"      : mCLIInfo.getBoard().addPlayers(mCLIInfo.getBoard().getBoardCLI(),mCLIInfo.getPlayersInfo());
-
-
-                              ;availableCommands(); break;
+            case "board"      : mCLIInfo.getBoard().addPlayers(mCLIInfo.getBoard().getBoardCLI(),mCLIInfo.getPlayersInfo());availableCommands(); break;
             case "undo"       : deleteRequest(); availableCommands(); break;
             case "help"       : availableCommands(); break;
             case "break"      : availableCommands();break;
@@ -470,7 +468,6 @@ public class CLIView extends View {
         String destination = requestAdditionalInfo();
         return  parseDestination(destination);
     }
-    public  Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority){return null;}
 
     public Set<PlayerColor> selectTargets(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets) {
         Set<PlayerColor> choosen = new HashSet<>();

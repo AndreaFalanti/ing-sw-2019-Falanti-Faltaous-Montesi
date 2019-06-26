@@ -65,7 +65,7 @@ public class BoardCLI {
                 }else tBoard.add(null);
             }
         }
-        System.out.println(tBoard);
+
         tBoard.toArray(tiles);
 
 
@@ -370,16 +370,16 @@ public class BoardCLI {
             String[] coord = player.getPlayerPosition()
                             .replaceAll("\\D","")
                             .split("");
-           if(coord[0].equals("0"))
-                    addPlayer(firstLineSostitution,coord[1],player.getPlayerColor(),numberPlayer);
+           if(coord[1].equals("0"))
+                    addPlayer(firstLineSostitution,coord[0],player.getPlayerColor(),numberPlayer);
              else{
-               if(coord[0].equals("1"))
-                    addPlayer(secondLineSostitution,coord[1],player.getPlayerColor(),numberPlayer);
+               if(coord[1].equals("1"))
+                    addPlayer(secondLineSostitution,coord[0],player.getPlayerColor(),numberPlayer);
                 else{
                     if(!thirdNull)
-                        addPlayer(thirdLineSostitution,coord[1],player.getPlayerColor(),numberPlayer);
+                        addPlayer(thirdLineSostitution,coord[0],player.getPlayerColor(),numberPlayer);
                     else
-                        addPlayerLastLine(thirdLineSostitution,coord[1],player.getPlayerColor(),numberPlayer);
+                        addPlayerLastLine(thirdLineSostitution,coord[0],player.getPlayerColor(),numberPlayer);
                 }
            }
         }
@@ -389,9 +389,9 @@ public class BoardCLI {
         System.out.print(thirdLineSostitution);
     }
 
-    public static void addPlayer(StringBuilder line , String vertical,String color,int numberPlayer){
+    public static void addPlayer(StringBuilder line , String horizontal,String color,int numberPlayer){
         int index=0;
-        int coordy=Integer.parseInt(vertical);
+        int coordX=Integer.parseInt(horizontal);
         System.out.println(HIGHCELL/2);
         for(int i=0;i<HIGHCELL/2 ;i++){
             index = line.indexOf("\n",index);
@@ -399,7 +399,7 @@ public class BoardCLI {
         }
         index+=1;
 
-       for(int i=0;i<(SIZECELL*coordy) + numberPlayer ;i++){
+       for(int i=0;i<(SIZECELL*coordX) + numberPlayer ;i++){
             index = line.indexOf(" ",index);
             index +=1;
         }
@@ -408,9 +408,9 @@ public class BoardCLI {
 
     }
 
-    public static void addPlayerLastLine(StringBuilder line , String vertical,String color,int numberPlayer){
+    public static void addPlayerLastLine(StringBuilder line , String horizontal,String color,int numberPlayer){
         int index=0;
-        int coordy=Integer.parseInt(vertical);
+        int coordX=Integer.parseInt(horizontal);
         for(int i=0;i<HIGHCELL/2 ;i++){
             index = line.indexOf("|\n",index);
             index+=1;
@@ -419,7 +419,7 @@ public class BoardCLI {
         index+=2;
         index = line.indexOf("|", index);
 
-        for(int i=0;i<(SIZECELL*(coordy-1)) + numberPlayer+5 ;i++){
+        for(int i=0;i<(SIZECELL*(coordX-1)) + numberPlayer+5 ;i++){
 
             index = line.indexOf(" ", index) ;
             index+=1;

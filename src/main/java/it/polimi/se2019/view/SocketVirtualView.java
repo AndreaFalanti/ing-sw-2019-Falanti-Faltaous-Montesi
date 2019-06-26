@@ -5,7 +5,6 @@ import it.polimi.se2019.controller.response.*;
 import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
@@ -105,11 +104,6 @@ public class SocketVirtualView extends View {
     }
 
     @Override
-    public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
-
-    }
-
-    @Override
     public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
 
     }
@@ -117,26 +111,6 @@ public class SocketVirtualView extends View {
     @Override
     public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
 
-    }
-
-    @Override
-    public Direction pickDirection() {
-        return null;
-    }
-
-    @Override
-    public Position selectPosition(Set<Position> possiblePositions) {
-        return null;
-    }
-
-    @Override
-    public Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect) {
-        return null;
-    }
-
-    @Override
-    public Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
-        return null;
     }
 
     private void sendResponse (Response response) {

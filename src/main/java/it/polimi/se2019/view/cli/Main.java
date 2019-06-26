@@ -20,14 +20,14 @@ import java.util.stream.Stream;
 public class Main {
 
 
-    public static void main2(String[] args) {
+    public static void main(String[] args) {
         //test
         List<Player> mPlayers = new ArrayList<>() ;
         PlayerColor activePlayer = PlayerColor.BLUE;
-        Player owner = new Player("Owner",PlayerColor.GREEN,new Position(1,3));
-        Player player1 = new Player("Player1",PlayerColor.BLUE,new Position(1,3));
-        Player player2 = new Player("Player2",PlayerColor.GREY,new Position(1,3));
-        Player player3 = new Player("Player3",PlayerColor.YELLOW,new Position(1,3));
+        Player owner = new Player("Owner",PlayerColor.GREEN,new Position(3,1));
+        Player player1 = new Player("Player1",PlayerColor.BLUE,new Position(1,2));
+        Player player2 = new Player("Player2",PlayerColor.GREY,new Position(1,2));
+        Player player3 = new Player("Player3",PlayerColor.YELLOW,new Position(1,1));
         Player player4 = new Player("Player4",PlayerColor.PURPLE,new Position(2,2));
         Weapon weapon1 = Weapons.get("heatseeker");
         Weapon weapon2 = Weapons.get("hellion");
@@ -80,14 +80,14 @@ public class Main {
         cliView.availableCommands();
     }
 
-    public static void main(String[] args) {
+    public static void main1(String[] args) {
         AmmoValue initialAmmo = new AmmoValue(3, 3, 3);
         Game game = new Game(
                 Board.fromJson(Jsons.get("boards/game/board1")),
                 new ArrayList<>(Arrays.asList(
                         new Player("Mario", PlayerColor.PURPLE, new Position(3, 2), initialAmmo),
                         new Player("Luigi", PlayerColor.GREEN, new Position(2, 0), initialAmmo),
-                        new Player("Dorian", PlayerColor.GREY, new Position(3, 2), initialAmmo),
+                        new Player("Dorian", PlayerColor.GREY, new Position(3,2 ), initialAmmo),
                         new Player("Smurfette", PlayerColor.BLUE, new Position(2, 2), initialAmmo),
                         new Player("Stones", PlayerColor.YELLOW, new Position(2, 1), initialAmmo)
                 )),

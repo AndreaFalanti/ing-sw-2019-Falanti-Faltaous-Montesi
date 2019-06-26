@@ -340,7 +340,7 @@ public class ShootInteraction {
 
     // pick direction
     public Direction pickDirection(View view) {
-        view.pickDirection();
+        view.showDirectionSelectionView();
 
         DirectionSelectedRequest request =
                 (DirectionSelectedRequest) waitForRequest("direction selection");
@@ -350,7 +350,7 @@ public class ShootInteraction {
 
     // pick room color
     public TileColor pickRoomColor(View view, Set<TileColor> possibleColors) {
-        view.pickDirection();
+        view.showDirectionSelectionView();
 
         return waitForSelectionRequest(
                         view, possibleColors, 1, 1,

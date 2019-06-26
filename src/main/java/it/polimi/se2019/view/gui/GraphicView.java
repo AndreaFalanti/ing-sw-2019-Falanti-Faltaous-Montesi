@@ -3,7 +3,6 @@ package it.polimi.se2019.view.gui;
 import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.view.View;
 
@@ -75,10 +74,7 @@ public class GraphicView extends View {
 
     }
 
-    @Override
-    public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
 
-    }
 
     @Override
     public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
@@ -88,26 +84,6 @@ public class GraphicView extends View {
     @Override
     public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
 
-    }
-
-    @Override
-    public Direction pickDirection() {
-        throw new UnsupportedOperationException("WIP");
-    }
-
-    @Override
-    public Position selectPosition(Set<Position> possiblePositions) {
-        throw new UnsupportedOperationException("WIP");
-    }
-
-    @Override
-    public Set<PlayerColor> selectTargets(int possibleTargets, int minToSelect, Set<PlayerColor> maxToSelect) {
-        throw new UnsupportedOperationException("WIP");
-    }
-
-    @Override
-    public Set<String> selectEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
-        throw new UnsupportedOperationException("WIP");
     }
 
 }

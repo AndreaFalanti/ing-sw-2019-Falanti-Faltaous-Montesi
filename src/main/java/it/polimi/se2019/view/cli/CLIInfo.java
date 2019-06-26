@@ -21,6 +21,7 @@ public class CLIInfo {
     private String mKillTrack;
     private EnumMap<TileColor,String> spawnTiles = new EnumMap<>(TileColor.class);
     private Map<Position,String> normalTiles = new HashMap<>();
+    private Map<TileColor,String> tilesColor = new EnumMap<>(TileColor.class);
     private BoardCLI mBoard ;
 
 
@@ -39,6 +40,7 @@ public class CLIInfo {
             for (int y = 0; y < BOARD_ROWS; y++) {
                 if (board.getTileAt(new Position(x, y)) != null) {
                     tile=board.getTileAt(new Position(x, y));
+                    tilesColor.put(tile.getColor(),tile.getColor().getPascalName());
                     if(tile.getTileType().equalsIgnoreCase("spawn")){
                         SpawnTile spawn = (SpawnTile)tile;
                         if(spawn.getWeapons()!=null)
@@ -189,4 +191,5 @@ public class CLIInfo {
     public BoardCLI getBoard(){
         return mBoard;
     }
+    public Map<TileColor,String> getTilesColor(){return tilesColor;}
 }
