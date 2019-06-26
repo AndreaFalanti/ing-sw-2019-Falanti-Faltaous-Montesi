@@ -10,6 +10,8 @@ import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.ShootRequest;
 
+import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.stream.Stream;
 public class Main {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, NotBoundException {
         //test
         List<Player> mPlayers = new ArrayList<>() ;
         PlayerColor activePlayer = PlayerColor.BLUE;
@@ -74,7 +76,7 @@ public class Main {
 
 
         //end test
-
+        LoginCLI.log();
         CLIInfo cLIInfo = new CLIInfo(mPlayers,owner,ownerColor,activePlayer,board);
         CLIView cliView = new CLIView(cLIInfo);
         cliView.availableCommands();
