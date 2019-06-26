@@ -4,11 +4,12 @@ import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.action.MoveAction;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
-import it.polimi.se2019.view.request.ShootRequest;
+import it.polimi.se2019.view.request.ActionRequest;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -22,7 +23,7 @@ import java.util.stream.Stream;
 public class Main {
 
 
-    public static void main(String[] args) throws IOException, NotBoundException {
+    public static void main2(String[] args) throws IOException, NotBoundException {
         //test
         List<Player> mPlayers = new ArrayList<>() ;
         PlayerColor activePlayer = PlayerColor.BLUE;
@@ -77,12 +78,12 @@ public class Main {
 
         //end test
         LoginCLI.log();
-        CLIInfo cLIInfo = new CLIInfo(mPlayers,owner,ownerColor,activePlayer,board);
+        CLIInfo cLIInfo = new CLIInfo(mPlayers,ownerColor,activePlayer,board);
         CLIView cliView = new CLIView(cLIInfo);
         cliView.availableCommands();
     }
 
-    public static void main1(String[] args) {
+    public static void main(String[] args) {
         AmmoValue initialAmmo = new AmmoValue(3, 3, 3);
         Game game = new Game(
                 Board.fromJson(Jsons.get("boards/game/board1")),
@@ -100,19 +101,19 @@ public class Main {
                 new Pair<>(
                         PlayerColor.PURPLE,
                         new CLIView(new CLIInfo(
-                            game.getPlayers(), game.getPlayerFromColor(PlayerColor.PURPLE), PlayerColor.PURPLE, PlayerColor.PURPLE)
+                            game.getPlayers(), PlayerColor.PURPLE, PlayerColor.PURPLE,Board.fromJson(Jsons.get("boards/game/board1")))
                         )
                 ),
                 new Pair<>(
                         PlayerColor.BLUE,
                         new CLIView(new CLIInfo(
-                                game.getPlayers(), game.getPlayerFromColor(PlayerColor.BLUE), PlayerColor.BLUE, PlayerColor.BLUE)
+                                game.getPlayers(), PlayerColor.BLUE, PlayerColor.BLUE,Board.fromJson(Jsons.get("boards/game/board1")))
                         )
                 ),
                 new Pair<>(
                         PlayerColor.YELLOW,
                         new CLIView(new CLIInfo(
-                                game.getPlayers(), game.getPlayerFromColor(PlayerColor.YELLOW), PlayerColor.YELLOW, PlayerColor.YELLOW)
+                                game.getPlayers(), PlayerColor.YELLOW, PlayerColor.YELLOW,Board.fromJson(Jsons.get("boards/game/board1")))
                         )
                 )
         )
@@ -122,8 +123,9 @@ public class Main {
                 ));
 
         Controller controller = new Controller(game, viewMap);
-        game.register(viewMap.get(PlayerColor.PURPLE));
-        viewMap.get(PlayerColor.PURPLE).register(controller);
-        viewMap.get(PlayerColor.PURPLE).notify(new ShootRequest(PlayerColor.PURPLE, "heatseeker", PlayerColor.PURPLE));
+        game.register(viewMap.get(PlayerColor.YELLOW));
+        viewMap.get(PlayerColor.YELLOW).register(controller);
+        viewMap.get(PlayerColor.YELLOW).notify(new ActionRequest(new MoveAction(PlayerColor.YELLOW,new Position(0,2)),PlayerColor.YELLOW));
+        System.out.println(controller.getGame().getActivePlayer().getPos());
     }
 }

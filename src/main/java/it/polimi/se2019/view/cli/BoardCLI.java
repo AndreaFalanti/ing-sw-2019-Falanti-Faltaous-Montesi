@@ -69,12 +69,12 @@ public class BoardCLI {
         tBoard.toArray(tiles);
 
 
-        line0.append(firstline(tiles));
-        line1.append(creaprima(0,tiles));
+        line0.append(firstLine(tiles));
+        line1.append(createFirst(0,tiles));
         if(tiles[LENGTH-1] == null)
             line1.replace(line1.lastIndexOf("|\n"),line1.lastIndexOf("\n"),addLastLine());
-        line2.append(creaprima(LENGTH,tiles));
-        line3.append(ultimaLinea(LENGTH *2,tiles));
+        line2.append(createFirst(LENGTH,tiles));
+        line3.append(lastLine(LENGTH *2,tiles));
         if(tiles[LENGTH*2]==null)
             thirdNull=true;
 
@@ -88,16 +88,9 @@ public class BoardCLI {
 
     public String addLastLine(){
         StringBuilder line = new StringBuilder();
-
-
-        line.append(ANSI_BLACK);
-        line.append("|");
-        line.append(ANSI_RESET);
-        for(int i = 0 ;i< SIZECELL;i++)
-        {
-            line.append(ANSI_BLACK);
-            line.append("_");
-            line.append(ANSI_RESET);
+        line.append(appendLines(false));
+        for(int i = 0 ;i< SIZECELL;i++) {
+            line.append(appendLines(true));
         }
 
         return line.toString();
@@ -106,23 +99,35 @@ public class BoardCLI {
     public StringBuilder colleague(boolean door, int i){
         StringBuilder line = new StringBuilder();
         if(door) {
-            if((i>7 && i<SIZECELL -7) || (i>SIZECELL +7 &&i< SIZECELL *2-7) || (i>SIZECELL*2 +7 &&i< SIZECELL *3-7)||(i>SIZECELL*3 +7 &&i< SIZECELL *4-7))
-                line.append(" ");
-            else{
-                line.append(ANSI_BLACK);
-                line.append("_");
-                line.append(ANSI_RESET);
+            for (int j=0 ; j<LENGTH ; j++){
+                if((i>SIZECELL*j+7 && i<SIZECELL*(j+1) -7)){
+                    line.append(" ");
+                    return line;
+                }else{
+                    line.append(appendLines(true));
+                    return line;
+                }
             }
-
         }
         else{
-            if(i== SIZECELL -1 || i== SIZECELL *2-1 || i== SIZECELL *3-1|| i==1 || i== SIZECELL +1 || i== SIZECELL *2+1 || i== SIZECELL *3+1 ||i== SIZECELL *4-1 ){
-                line.append(ANSI_BLACK);
-                line.append("_");
-                line.append(ANSI_RESET);
-            }else
+            if(i== SIZECELL -1 || i== SIZECELL *2-1 || i== SIZECELL *3-1|| i==1 || i== SIZECELL +1 || i== SIZECELL *2+1 || i== SIZECELL *3+1 ||i== SIZECELL *4-1 )
+                line.append(appendLines(true));
+            else
                 line.append(" ");
         }
+        return line;
+    }
+
+    public StringBuilder appendLines(boolean horizontal){
+        StringBuilder line= new StringBuilder();
+        line.append(ANSI_BLACK);
+        if(horizontal)
+            line.append("_");
+        else
+            line.append("|");
+
+        line.append(ANSI_RESET);
+
         return line;
     }
 
@@ -131,9 +136,7 @@ public class BoardCLI {
         StringBuilder line = new StringBuilder();
 
         if(indexTile == LENGTH *2) {
-            line.append(ANSI_BLACK);
-            line.append("_");
-            line.append(ANSI_RESET);
+            line.append(appendLines(true));
             return line;
         }
 
@@ -144,17 +147,12 @@ public class BoardCLI {
             } else {
                 if (tiles[i/ SIZECELL+indexTile].getDoors()[1])
                     line.append(colleague(true,i));
-                else{
-                    line.append(ANSI_BLACK);
-                    line.append("_");
-                    line.append(ANSI_RESET);
-                }
+                else
+                    line.append(appendLines(true));
             }
 
         }else {
-            line.append(ANSI_BLACK);
-            line.append("_");
-            line.append(ANSI_RESET);
+            line.append(appendLines(true));
         }
 
         return line;
@@ -177,25 +175,21 @@ public class BoardCLI {
 
     }
 
-    public StringBuilder firstline(Tile[] tiles){
+    public StringBuilder firstLine(Tile[] tiles){
         StringBuilder line = new StringBuilder();
         int indexLenght = LENGTH;
         if(tiles[LENGTH -1] == null )
             indexLenght = LENGTH -1;
 
         for (int i = 0; i <= SIZECELL * indexLenght; i++) {
-
-                line.append(ANSI_BLACK);
-                line.append("_");
-                line.append(ANSI_RESET);
-
+            line.append(appendLines(true));
         }
         line.append("\n");
 
         return line;
     }
 
-    public StringBuilder creaprima(int indexTile,Tile[] tiles) {
+    public StringBuilder createFirst(int indexTile, Tile[] tiles) {
         StringBuilder line = new StringBuilder();
 
         for (int j = 0; j <= HIGHCELL; j++) {
@@ -213,7 +207,7 @@ public class BoardCLI {
         return line;
     }
 
-    public StringBuilder ultimaLinea(int indexTile,Tile[] tiles){
+    public StringBuilder lastLine(int indexTile, Tile[] tiles){
         StringBuilder line = new StringBuilder();
         int indexValutation;
         for (int j = 0; j <= HIGHCELL; j++) {
@@ -235,16 +229,7 @@ public class BoardCLI {
     }
 
 
-    public StringBuilder valutation2(int i,int j,int indexTile,Tile[] tiles){
-        StringBuilder line = new StringBuilder();
-        if (  i/ SIZECELL + indexTile != tiles.length && tiles[ i/ SIZECELL + indexTile] != null) {
-            line.append(valutation(i,j,indexTile,tiles));
-        } else {
-            if ( i/ SIZECELL + indexTile == tiles.length)
-                line.append(makeLastWall());
-        }
-        return line;
-    }
+
 
     public StringBuilder valutation(int i,int j,int indexTile,Tile[] tiles){
         StringBuilder line = new StringBuilder();
@@ -261,24 +246,27 @@ public class BoardCLI {
         return line;
     }
 
+    public StringBuilder valutation2(int i,int j,int indexTile,Tile[] tiles){
+        StringBuilder line = new StringBuilder();
+        if (  i/ SIZECELL + indexTile != tiles.length && tiles[ i/ SIZECELL + indexTile] != null) {
+            line.append(valutation(i,j,indexTile,tiles));
+        } else {
+            if ( i/ SIZECELL + indexTile == tiles.length)
+                line.append(makeLastWall());
+        }
+        return line;
+    }
+
     public StringBuilder valutation3(int i,int j,int indexTile,Tile[] tiles ){
         StringBuilder line = new StringBuilder();
 
-
         if(j!=0 &&j% HIGHCELL ==0){
             line.append(getColorTile(tiles[i/ SIZECELL +indexTile].getColor().getPascalName()));
-            if(i% SIZECELL ==0){
-                line.append(ANSI_BLACK);
-                line.append("|");
-                line.append(ANSI_RESET);
-            }
-            else{
-                {
-                    line.append(ANSI_BLACK);
-                    line.append("_");
-                    line.append(ANSI_RESET);
-                }
-            }
+            if(i% SIZECELL ==0)
+                line.append(appendLines(false));
+            else
+                line.append(appendLines(true));
+
             line.append(ANSI_RESET);
         }
         else line.append(makeWall(i, tiles[i/ SIZECELL +indexTile].getColor().getPascalName()));
@@ -290,11 +278,8 @@ public class BoardCLI {
         StringBuilder line = new StringBuilder();
         line.append(getColorTile(color));
         if(j% HIGHCELL ==0){
-            if(i% SIZECELL == 0 ) {
-                line.append(ANSI_BLACK);
-                line.append("|");
-                line.append(ANSI_RESET);
-            }
+            if(i% SIZECELL == 0 )
+                line.append(appendLines(false));
             else{
                 if(j!=0){
 
@@ -304,11 +289,8 @@ public class BoardCLI {
                     line.append(" ");
             }
         }else{
-            if(i==0) {
-                line.append(ANSI_BLACK);
-                line.append("|");
-                line.append(ANSI_RESET);
-            }
+            if(i==0)
+                line.append(appendLines(false));
             else
                 line.append(" ");
         }
@@ -319,11 +301,8 @@ public class BoardCLI {
     public StringBuilder makeDoor(int i,int j, String color){
         StringBuilder line = new StringBuilder();
         line.append(getColorTile(color));
-        if(j!= HIGHCELL /2 && j!= HIGHCELL /2+1 && i% SIZECELL ==0) {
-            line.append(ANSI_BLACK);
-            line.append("|");
-            line.append(ANSI_RESET);
-        }
+        if(j!= HIGHCELL /2 && j!= HIGHCELL /2+1 && i% SIZECELL ==0)
+            line.append(appendLines(false));
         else
             line.append(" ");
         line.append(ANSI_RESET);
@@ -337,11 +316,8 @@ public class BoardCLI {
         if(i== SIZECELL * LENGTH)
             line.append("|\n");
         else{
-            if(i% SIZECELL ==0){
-                line.append(ANSI_BLACK);
-                line.append("|");
-                line.append(ANSI_RESET);
-            }
+            if(i% SIZECELL ==0)
+                line.append(appendLines(false));
             else
                 line.append(" ");
         }

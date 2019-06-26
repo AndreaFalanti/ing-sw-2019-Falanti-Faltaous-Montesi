@@ -281,17 +281,26 @@ public class CLIView extends View {
 
     @Override
     public void showDirectionSelectionView() {
-        notify(new DirectionSelectedRequest(pickDirection(), getOwnerColor()));
+        Direction direction = pickDirection();
+        if(direction == null)
+            return;
+        notify(new DirectionSelectedRequest(direction, getOwnerColor()));
     }
 
     @Override
     public void showPositionSelectionView(Set<Position> possiblePositions) {
-        notify(new PositionSelectedRequest(selectPosition(possiblePositions), getOwnerColor()));
+        Position pos = selectPosition(possiblePositions);
+        if(pos == null)
+            return;
+        notify(new PositionSelectedRequest(pos, getOwnerColor()));
     }
 
     @Override
     public void showTargetsSelectionView(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets) {
-        notify(new TargetsSelectedRequest(selectTargets(minToSelect,maxToSelect,possibleTargets), getOwnerColor()) );
+        Set<PlayerColor> targets = selectTargets(minToSelect,maxToSelect,possibleTargets);
+        if (targets == null)
+            return;
+        notify(new TargetsSelectedRequest(targets, getOwnerColor()) );
     }
 
     @Override
@@ -366,8 +375,7 @@ public class CLIView extends View {
                 "Weapons :   ");
                 for(String weapon: mCLIInfo.getOwner().getWeaponsInfo().keySet())
                     System.out.print(weapon + " "+ mCLIInfo.getOwner().getWeaponsInfo().get(weapon));
-                System.out.println("\n");
-                System.out.print(mCLIInfo.getOwner().getPlayerWeapons());
+        System.out.println();
     }
 
     public void infoPlayers(){
@@ -436,16 +444,20 @@ public class CLIView extends View {
 
     public Direction pickDirection() {
         System.out.println("Choose a direction: north, sud, est, ovest.");
-        String direciton= "";
+        String direction= "";
 
-        while(!direciton.equalsIgnoreCase("north")&&
-                !direciton.equalsIgnoreCase("south")&&
-                !direciton.equalsIgnoreCase("west")&&
-                !direciton.equalsIgnoreCase("east")){
+        while(!direction.equalsIgnoreCase("north")&&
+                !direction.equalsIgnoreCase("south")&&
+                !direction.equalsIgnoreCase("west")&&
+                !direction.equalsIgnoreCase("east")){
 
-            direciton = requestAdditionalInfo();
+            direction = requestAdditionalInfo();
+            if(direction.equalsIgnoreCase("undo")){
+                deleteRequest();
+                return null;
+            }
         }
-        switch(direciton){
+        switch(direction){
             case "north": return Direction.NORTH;
             case "south": return Direction.SOUTH;
             case "east":return Direction.EAST;
@@ -462,6 +474,10 @@ public class CLIView extends View {
             System.out.println(position.toString());
 
         String destination = requestAdditionalInfo();
+        if(destination.equalsIgnoreCase("undo")){
+            deleteRequest();
+            return null;
+        }
         return  parseDestination(destination);
     }
 
@@ -470,10 +486,14 @@ public class CLIView extends View {
         System.out.println("Choose " + minToSelect + " to a max of " + maxToSelect + " targets from:\n" +
                 "Pay attention will be considered only the name in the limits");
         for (PlayerColor possibleTarget : possibleTargets) {
-           System.out.println(mCLIInfo.getPlayersInfo().get(possibleTarget).getPlayerName() + " ");
+           System.out.println(mCLIInfo.getPlayersInfo().get(possibleTarget).getPlayerName() );
         }
-        System.out.println(" then press enter");
+        System.out.println("then press enter");
         String target = requestAdditionalInfo();
+        if(target.equalsIgnoreCase("undo")){
+            deleteRequest();
+            return choosen;
+        }
         String[] targets = target.split("\\s+");
         while(targets.length<minToSelect ){
             target = requestAdditionalInfo();
@@ -481,7 +501,7 @@ public class CLIView extends View {
         }
         for (String s : targets) {
             if(mCLIInfo.colorFromName(s)== null){
-                System.out.println("Please insert correctly the names\n");
+                System.out.println("\nPlease insert correctly the names");
                 return selectTargets(minToSelect,maxToSelect,possibleTargets);
             }
             else{
@@ -521,5 +541,6 @@ public class CLIView extends View {
         String command = requestAdditionalInfo();
         parseCommand(command);
     }
+
 
 }

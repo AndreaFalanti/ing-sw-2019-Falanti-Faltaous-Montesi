@@ -248,12 +248,12 @@ public class CLIPlayer {
                     if(!weapon.isLoaded()){
                         load = " to load cost: "+ Colors.findColor("red") + "Red " + Colors.ANSI_RESET + weapon.getReloadCost().getRed()+" "+
                                                   Colors.findColor("yellow") + "Yellow " +Colors.ANSI_RESET+ weapon.getReloadCost().getYellow()+" "+
-                                                  Colors.findColor("blue") + "Blue "+Colors.ANSI_RESET + weapon.getReloadCost().getBlue();
+                                                  Colors.findColor("blue") + "Blue "+Colors.ANSI_RESET + weapon.getReloadCost().getBlue()+", ";
                     }
 
                     actualWeapons.add(weapon.getName());
                     info.put(weapon.getName(),load);
-                    load ="load";
+                    load ="load, ";
                 }
             }
         }
