@@ -90,6 +90,7 @@ public class MainScreen extends Observable<Request> {
     private List<Effect> mMandatoryEffectsCache;
 
     private List<Button> mUndoWeaponButtons;
+    private EnumMap<TileColor, Button> mRoomButtons = new EnumMap<>(TileColor.class);
 
 
     public BoardPane getBoardController() {
@@ -561,6 +562,8 @@ public class MainScreen extends Observable<Request> {
         TileColor[] tileColors = TileColor.values();
         for (int i = 0; i < tileColors.length; i++) {
             final int index = i;
+            mRoomButtons.put(tileColors[i], (Button)roomColorButtonsPane.getChildren().get(i));
+
             roomColorButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
                 logToChat("Selected room: " + tileColors[index].toString());
                 notify(new RoomSelectedRequest(tileColors[index], mView.getOwnerColor()));
@@ -570,6 +573,17 @@ public class MainScreen extends Observable<Request> {
 
     public void activateDirectionTab () {
         tabPane.getSelectionModel().select(DIRECTION_TAB);
+    }
+
+    public void activateRoomTab (Set<TileColor> possibleColors) {
+        tabPane.getSelectionModel().select(ROOM_TAB);
+        TileColor[] tileColors = TileColor.values();
+
+        for (TileColor tileColor : tileColors) {
+            for (Button button : mRoomButtons.values()) {
+                button.setDisable(!possibleColors.contains(tileColor));
+            }
+        }
     }
 
     public void activateTargetsTab (Set<PlayerColor> possibleTargets, int minTargets, int maxTargets) {
@@ -632,7 +646,30 @@ public class MainScreen extends Observable<Request> {
         });
     }
 
-    public void activateEffectsTabForEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
+    public void activateEffectsTabForWeaponMode (Effect effect1, Effect effect2) {
+        tabPane.getSelectionModel().select(EFFECTS_TAB);
+        effectsBox.getChildren().clear();
+        effectsOkButton.setDisable(true);
+
+        ToggleGroup toggleGroup = new ToggleGroup();
+
+        for(Effect effect : new Effect[] {effect1, effect2}) {
+            AnchorPane child = createEffectPane(effect, true);
+
+            RadioButton radioButton = new RadioButton();
+            radioButton.setUserData(effect.getId());
+            radioButton.setToggleGroup(toggleGroup);
+
+            addToggleAndInsertInEffectsPane(child, radioButton);
+        }
+
+        effectsOkButton.setOnMouseClicked(event ->
+            notify(new WeaponModeSelectedRequest(
+                    (String) toggleGroup.getSelectedToggle().getUserData(), mView.getOwnerColor()))
+        );
+    }
+
+    public void activateEffectsTabForEffects(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
         tabPane.getSelectionModel().select(EFFECTS_TAB);
         effectsBox.getChildren().clear();
         effectsOkButton.setDisable(true);
@@ -642,7 +679,7 @@ public class MainScreen extends Observable<Request> {
         mMandatoryEffectsCache = new ArrayList<>();
 
         for (Map.Entry<Integer, Set<Effect>> entry : priorityMap.entrySet()) {
-            boolean enableEffectPane = entry.getKey() == currentPriority;
+            boolean enableEffectPane = true;//entry.getKey() == currentPriority;
 
             for (Effect effect : entry.getValue()) {
                 if (!effect.isOptional()) {
@@ -666,12 +703,7 @@ public class MainScreen extends Observable<Request> {
                     effectsOkButton.setDisable(!checkMandatoryEffectsAreSelected());
                 });
 
-                child.getChildren().add(checkBox);
-                AnchorPane.setBottomAnchor(checkBox, 5d);
-                AnchorPane.setRightAnchor(checkBox, 5d);
-
-                effectsBox.getChildren().add(child);
-                VBox.setVgrow(child, Priority.ALWAYS);
+                addToggleAndInsertInEffectsPane(child, checkBox);
             }
         }
 
@@ -684,6 +716,15 @@ public class MainScreen extends Observable<Request> {
             notify(new EffectsSelectedRequest(ids, mView.getOwnerColor()));
             returnToActionTab();
         });
+    }
+
+    private void addToggleAndInsertInEffectsPane(AnchorPane anchorPane, Node toggle) {
+        anchorPane.getChildren().add(toggle);
+        AnchorPane.setBottomAnchor(toggle, 5d);
+        AnchorPane.setRightAnchor(toggle, 5d);
+
+        effectsBox.getChildren().add(anchorPane);
+        VBox.setVgrow(anchorPane, Priority.ALWAYS);
     }
 
     private AnchorPane createEffectPane (Effect effect, boolean enabled) {

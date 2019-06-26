@@ -26,7 +26,7 @@ public class GraphicView extends View {
 
     @Override
     public void reportError(String error){
-
+        mMainFrameController.logToChat(error);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class GraphicView extends View {
 
     @Override
     public void showRoomColorSelectionView(Set<TileColor> possibleColors) {
-
+        mMainFrameController.activateRoomTab(possibleColors);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class GraphicView extends View {
 
     @Override
     public void showTargetsSelectionView(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets) {
-
+        mMainFrameController.activateTargetsTab(possibleTargets, minToSelect, maxToSelect);
     }
 
 
@@ -83,7 +83,7 @@ public class GraphicView extends View {
 
     @Override
     public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
-
+        mMainFrameController.activateEffectsTabForWeaponMode(effect1, effect2);
     }
 
 }
