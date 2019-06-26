@@ -1,10 +1,10 @@
 package it.polimi.se2019.controller.weapon.expression;
 
-import com.sun.media.sound.AbstractMidiDeviceProvider;
 import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.model.AmmoValue;
+import it.polimi.se2019.model.PowerUpCard;
 import it.polimi.se2019.model.action.AmmoPayment;
 import it.polimi.se2019.util.ArrayUtils;
 import it.polimi.se2019.view.View;
@@ -58,12 +58,15 @@ public class PickEffect extends Expression {
                 .reduce(new AmmoValue(0, 0, 0), AmmoValue::add);
 
         LOGGER.log(Level.INFO,
-                "proceeding with payment of {0} (total cost: {1})",
+                "proceeding with payment of {0}\n" +
+                        "Total cost to pay: {1}\n" +
+                        "Remaining ammo: {2}",
                 new Object[] {
-                        effectsToSelect.stream()
+                        effectsToPay.stream()
                                 .map(Effect::getId)
                                 .collect(Collectors.toList()),
-                        totalEffectsCost
+                        totalEffectsCost,
+                        context.getShooter().getAmmo()
                 }
         );
 
@@ -87,44 +90,41 @@ public class PickEffect extends Expression {
         else {
             LOGGER.log(Level.INFO, "starting poewrup discard interaction loop...");
 
-            List<Boolean> selectedPowerups = Stream.generate(() -> false).limit(4).collect(Collectors.toList());
-            while (context.getShooter().getNumOfPowerupsInHand() > selectedPowerups.size()) {
-                Optional<Integer> selectedPowerup =
-                        context.getInteraction().selectPowerupsForPayment(context.getView(), context.getShooterColor());
+            while (true) {
+                boolean[] selectedPowerupsMask =
+                        context.getInteraction().selectPowerupsForPayment(context.getView());
+                Set<Integer> selectedPowerupsIndices = IntStream.range(0, 4)
+                        .filter(i -> selectedPowerupsMask[i])
+                        .boxed()
+                        .collect(Collectors.toSet());
+                Set<PowerUpCard> selectedPowerups = selectedPowerupsIndices.stream()
+                        .map(i -> context.getShooter().getPowerUpCard(i))
+                        .collect(Collectors.toSet());
 
-                // no poewrup card is discarded when additional cost is still required
-                if (!selectedPowerup.isPresent()) {
-                    context.getView().reportError(
-                            "Not enough discarded powerups to pay for selected effects! " +
-                                    "Please select enough to satisfy the effect's cost..."
-                    );
+                // selection not valid
+                if (!AmmoPayment.isValid(
+                        context.getShooter(),
+                        totalEffectsCost,
+                        selectedPowerupsMask
+                )) {
+                    context.getView().reportError(String.format(
+                            "You cannot pay the selected effects (%s) with these powerups: %s",
+                            effectsToPay, selectedPowerups
+                    ));
                 }
 
+                // selection valid
                 else {
-                    selectedPowerups.set(selectedPowerup.get(), true);
+                    LOGGER.log(Level.INFO,
+                            "Player paying discarding powerups: {0}",
+                            selectedPowerups
+                    );
 
-                    if (AmmoPayment.isValid(
-                            context.getShooter(),
-                            totalEffectsCost,
-                            ArrayUtils.from(selectedPowerups)
-                    )) {
-                        // payment is valid with currently selected powerups, make player pay and exit
-                        LOGGER.log(Level.INFO, "Player paying discarding powerups: {0}",
-                                IntStream.range(0, 4)
-                                        .filter(selectedPowerups::get)
-                                        .mapToObj(i -> context.getShooter().getPowerUpCard(i))
-                        );
+                    AmmoPayment.payCost(context.getShooter(), totalEffectsCost, selectedPowerupsMask);
 
-                        AmmoPayment.payCost(context.getShooter(), totalEffectsCost, ArrayUtils.from(selectedPowerups));
-                        break;
-                    }
+                    break;
                 }
             }
-
-            // this should never happen... a check above ensures that the player has enough powerups to pay for
-            // the selected effects
-            throw new IllegalStateException("player should have enough powerups to pay for selected effects at this" +
-                    "point");
         }
     }
 

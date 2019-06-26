@@ -1,9 +1,8 @@
 package it.polimi.se2019.controller.weapon;
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 import it.polimi.se2019.controller.Controller;
-import it.polimi.se2019.controller.weapon.expression.*;
 import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.action.AmmoPayment;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
@@ -13,10 +12,7 @@ import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InOrder;
-import sun.plugin.security.PluginClassLoader;
 
-import java.lang.annotation.Target;
 import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -34,6 +30,8 @@ public class WeaponsTest {
 
     private Game mAllInOriginGame;
     private Game mLuigiHidesFromYellowParty;
+
+    private PowerUpCard mBlueTagback;
 
     private final Map<PlayerColor, View> mPlayerViewMocks = new EnumMap<>(PlayerColor.class);
 
@@ -72,9 +70,20 @@ public class WeaponsTest {
     private void assertPlayerStatus(Player affectedPlayer,
                                     List<PlayerColor> damageInflicted,
                                     List<Pair<PlayerColor, Integer>> inflictedMarks,
+                                    Position newPosition,
+                                    AmmoValue ammoValue) {
+        assertPlayerStatus(affectedPlayer, damageInflicted, inflictedMarks, newPosition);
+        assertPlayerAmmo(affectedPlayer, ammoValue);
+    }
+    private void assertPlayerStatus(Player affectedPlayer,
+                                    List<PlayerColor> damageInflicted,
+                                    List<Pair<PlayerColor, Integer>> inflictedMarks,
                                     Position newPosition) {
         assertPlayerDamage(affectedPlayer, damageInflicted, inflictedMarks);
         assertPlayerPosition(affectedPlayer, newPosition);
+    }
+    private void assertPlayerPowerups(Player player, List<PowerUpCard> powerUpCards) {
+        assertArrayEquals(powerUpCards.toArray(new PowerUpCard[4]), player.getPowerUps());
     }
 
     /**
@@ -175,8 +184,12 @@ public class WeaponsTest {
         Arrays.stream(PlayerColor.values()).forEach(color ->
                 mPlayerViewMocks.put(color, makePlayerViewMock.apply(color))
         );
-   }
+    }
 
+    @Before
+    public void intantiateTestPowerups() {
+        mBlueTagback = new PowerUpCard(PowerUpType.TAGBACK_GRENADE, new AmmoValue(0, 0, 1));
+    }
 
     @Test
     public void testWeaponsLoading() {
@@ -325,7 +338,7 @@ public class WeaponsTest {
 
     @Test
     public void testWhisperSmurfetteCannotSeeLuigiAndTheShootInteractionIsAutomaticallyUndone() {
-         // instantiate controller
+        // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
         // instantiate weapon
@@ -349,7 +362,7 @@ public class WeaponsTest {
 
     @Test
     public void testHellionStonesHurtsMarioAndThenNanoTracesMarioAndLuigi() {
-          // instantiate controller
+        // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
         // instantiate weapon
@@ -390,8 +403,52 @@ public class WeaponsTest {
     }
 
     @Test
+    public void testMachineGunNotEnoughAmmoToPayFragmentingWarheadSoPlayersUndoesShootInteraction() {
+        // instantiate controller
+        Controller testController = new Controller(mAllInOriginGame, mPlayerViewMocks);
+        mAllInOriginGame.getPlayerFromColor(PlayerColor.GREEN).setAmmo(new AmmoValue(0, 0, 1));
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("rocket_launcher");
+
+        PlayerColor shooterColor = PlayerColor.GREEN;
+
+        // mock selection
+        mockSelections(testController,
+                // move downwards to the other room with rocket jump
+                new EffectsSelectedRequest(Collections.singletonList("with_rocket_jump"), shooterColor),
+                new PositionSelectedRequest(new Position(0, 1), shooterColor),
+
+                // Shoot Mario as basic effect target
+                new EffectsSelectedRequest(Collections.singletonList("basic_effect"), shooterColor),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterColor),
+
+                // Use fragmenting warhead for extra mayhem
+                new EffectsSelectedRequest(Collections.singletonList("with_fragmenting_warhead"), shooterColor),
+
+                // realize you don't have to ammo and undo the shoot interaction...
+                new UndoWeaponInteractionRequest(shooterColor)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // assert that nobody was affected by Luigi's outburst (because of undo)
+        for (PlayerColor target : PlayerColor.values()) {
+            assertPlayerStatus(
+                    mAllInOriginGame.getPlayerFromColor(PlayerColor.PURPLE),
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    new Position(0, 0),
+                    new AmmoValue(3, 3, 3)
+            );
+        }
+    }
+
+    @Test
     public void testRocketLauncherLuigiSidestepsShootsMarioAndDecimatesOrigin() {
-           // instantiate controller
+        // instantiate controller
         Controller testController = new Controller(mAllInOriginGame, mPlayerViewMocks);
 
         // instantiate weapon
@@ -484,7 +541,7 @@ public class WeaponsTest {
 
     @Test
     public void testFlamethrowerBasicModeSmurfetteRoastsStonesAndLuigi() {
-         // instantiate controller
+        // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY).move(new Position(2, 1));
 
@@ -573,7 +630,7 @@ public class WeaponsTest {
 
     @Test
     public void testFlamethrowerPrematureUndoWhenPickingDirection() {
-         // instantiate controller
+        // instantiate controller
         Controller testController = new Controller(mAllInOriginGame, mPlayerViewMocks);
 
         // instantiate weapon
@@ -668,20 +725,19 @@ public class WeaponsTest {
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN).move(new Position(1, 0));
 
-        // reduce spending power and give out powerup to test its discard
-        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN)
-                .setAmmo(new AmmoValue(0, 0, 0))
-                .addPowerUp(new PowerUpCard(PowerUpType.TAGBACK_GRENADE, new AmmoValue(0, 0, 1)))
-                .addPowerUp(new PowerUpCard(PowerUpType.TARGETING_SCOPE, new AmmoValue(0, 0, 1)))
-                .addPowerUp(new PowerUpCard(PowerUpType.TAGBACK_GRENADE, new AmmoValue(0, 0, 1)));
 
         PlayerColor shooterColor = PlayerColor.PURPLE;
 
         // give out powerups
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.PURPLE)
+                .setAmmo(new AmmoValue(0, 0, 0))
+                .addPowerUp(mBlueTagback)
+                .addPowerUp(mBlueTagback)
+                .addPowerUp(mBlueTagback);
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.YELLOW)
-                .addPowerUp(new PowerUpCard(PowerUpType.TAGBACK_GRENADE, new AmmoValue(0, 0, 1)));
+                .addPowerUp(mBlueTagback);
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN)
-                .addPowerUp(new PowerUpCard(PowerUpType.TAGBACK_GRENADE, new AmmoValue(0, 1, 0)));
+                .addPowerUp(mBlueTagback);
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("thor");
@@ -695,8 +751,10 @@ public class WeaponsTest {
                 new PowerUpSelectedRequest(0, PlayerColor.YELLOW),
 
                 // damage Luigi with chain reaction
+                //  NB. A powerup needs to be discarded to pay for the effect
                 //  NB. Luigi cannot respond with his tagback since he can't see Mario
                 new EffectsSelectedRequest(Collections.singletonList("with_chain_reaction"), shooterColor),
+                new PowerUpDiscardedRequest(new boolean[] {true, false, false, false}, shooterColor),
                 new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), shooterColor),
 
                 // do not select high voltage
@@ -728,11 +786,21 @@ public class WeaponsTest {
                         new Pair<>(PlayerColor.YELLOW, 1)
                 )
         );
+
+        // verify discarded powerup
+        assertPlayerPowerups(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.PURPLE),
+                Arrays.asList(
+                        null,
+                        mBlueTagback,
+                        mBlueTagback
+                )
+        );
     }
 
     @Test
     public void testPlasmaGunSmurfettePicksWrongPositionWithPhaseGlide() {
-         // instantiate controller
+        // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
         PlayerColor shooterColor = PlayerColor.BLUE;
@@ -798,7 +866,7 @@ public class WeaponsTest {
 
     @Test
     public void testZX2SmurfetteUsesInScannerModeOnMarioAndDorian() {
-                // instantiate controller
+        // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
         PlayerColor shooterColor = PlayerColor.BLUE;
@@ -833,7 +901,7 @@ public class WeaponsTest {
 
     @Test
     public void testGrenadeLauncherSmurfetteUsesAdditionalGrenadeOnMarioAndDorianAndThenShootsStones() {
-                 // instantiate controller
+        // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
         PlayerColor shooterColor = PlayerColor.BLUE;
@@ -907,7 +975,7 @@ public class WeaponsTest {
 
     @Test
     public void testPowerGloveRocketFistModeLuigiPunchesSmurfetteOnly() {
-         // instantiate controller
+        // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
 
         PlayerColor shooterColor = PlayerColor.GREEN;
@@ -1029,7 +1097,7 @@ public class WeaponsTest {
 
     @Test
     public void testSledgehammerSmurfettePushesLuigiAlongFullLengthOfCorridor() {
-         // instantiate controller
+        // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.BLUE).move(new Position(0, 0));
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREEN).move(new Position(0, 0));
