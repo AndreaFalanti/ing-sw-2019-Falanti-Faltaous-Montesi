@@ -25,9 +25,11 @@ public interface RequestHandler {
 
     void handle(WeaponModeSelectedRequest request);
 
-    void handle(PowerUpSelectedRequest request);
+    void handle(PowerUpsSelectedRequest request);
 
     void handle(RoomSelectedRequest request);
 
     void handle(TurnEndRequest request);
+
+    void handle(RespawnPowerUpRequest request);
 }

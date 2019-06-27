@@ -9,7 +9,6 @@ import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -412,7 +411,7 @@ public class ShootInteraction {
                     mPlayerViews.get(activator),
                     Collections.singleton(index),
                     0, 1,
-                    req -> ((PowerUpSelectedRequest) req).getIndexes().stream(),
+                    req -> ((PowerUpsSelectedRequest) req).getIndexes().stream(),
                     powerupName
             )
                     .collect(Collectors.toSet());

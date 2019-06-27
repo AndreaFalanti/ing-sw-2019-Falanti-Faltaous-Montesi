@@ -4,9 +4,13 @@ package it.polimi.se2019.controller;
 import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.Game;
+import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.CostlyAction;
 import it.polimi.se2019.model.action.MoveGrabAction;
+import it.polimi.se2019.model.board.SpawnTile;
+import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.View;
@@ -173,7 +177,7 @@ public class Controller implements AbstractController {
     }
 
     @Override
-    public void handle(PowerUpSelectedRequest request) {
+    public void handle(PowerUpsSelectedRequest request) {
 
     }
 
@@ -185,7 +189,36 @@ public class Controller implements AbstractController {
     @Override
     public void handle(TurnEndRequest request) {
         mGame.onTurnEnd();
-        mGame.startNextTurn();
+
+        if (areAllPlayersAlive()) {
+            mGame.startNextTurn();
+        }
+    }
+
+    @Override
+    public void handle(RespawnPowerUpRequest request) {
+        Player respawningPlayer = mGame.getPlayerFromColor(request.getViewColor());
+        TileColor spawnColor = respawningPlayer.getPowerUpCard(request.getIndex()).getColor();
+        SpawnTile respawnTile = mGame.getBoard().getSpawnMap().get(spawnColor);
+        Position respawnPosition = mGame.getBoard().getTilePos(respawnTile);
+
+        respawningPlayer.respawn(respawnPosition);
+
+        if (areAllPlayersAlive()) {
+            mGame.startNextTurn();
+        }
+    }
+
+    private boolean areAllPlayersAlive () {
+        for (Player player : mGame.getPlayers()) {
+            if (player.isDead()) {
+                player.addPowerUp(mGame.getPowerUpDeck().drawCard(), true);
+                mPlayerViews.get(player.getColor()).showRespawnPowerUpDiscardView();
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /*****************************************/

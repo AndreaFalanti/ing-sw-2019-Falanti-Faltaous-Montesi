@@ -80,6 +80,7 @@ public class Game extends Observable<Update> {
         mPowerUpCardDeck = new Deck<>(powerUpCards);
 
         List<Weapon> weaponCards = Weapon.returnDeckFromJson(Jsons.get("WeaponDeck"));
+        //List<Weapon> weaponCards = Weapons.getAll();
         mWeaponDeck = new Deck<>(weaponCards, false);
 
         refillAmmoTiles();
@@ -163,14 +164,6 @@ public class Game extends Observable<Update> {
         if (isGameOver()) {
             distributeTotalKillsScore();
             return;
-        }
-
-        for (Player player : mPlayers) {
-            if (player.isDead()) {
-                //TODO: notify respawn to dead player, that will choose respawn position from
-                // its view and call controller
-                return;
-            }
         }
 
         if (mActivePlayerIndex >= mPlayers.size() - 1) {

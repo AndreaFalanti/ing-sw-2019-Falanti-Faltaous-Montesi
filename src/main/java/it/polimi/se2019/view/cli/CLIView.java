@@ -282,7 +282,7 @@ public class CLIView extends View {
     public void showPowerUpSelectionView(List<Integer> indexes) {
         List<Integer> powerUps= new ArrayList<>();
         powerUps.add(parseInteger());
-        notify(new PowerUpSelectedRequest(powerUps,mOwnerColor));
+        notify(new PowerUpsSelectedRequest(powerUps,mOwnerColor));
     }
 
     @Override
@@ -345,6 +345,11 @@ public class CLIView extends View {
         System.out.print("Choose one of these effects: "+effect1.getName()+" "+effect2.getName());
         String effect = requestAdditionalInfo();
         notify(new WeaponModeSelectedRequest(effect, getOwnerColor()));
+    }
+
+    @Override
+    public void showRespawnPowerUpDiscardView() {
+
     }
 
     public int parseInteger(){

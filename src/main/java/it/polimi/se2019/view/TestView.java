@@ -92,6 +92,11 @@ public class TestView extends View {
     }
 
     @Override
+    public void showRespawnPowerUpDiscardView() {
+
+    }
+
+    @Override
     public void reinitialize(InitializationInfo initiInfo) {
 
     }

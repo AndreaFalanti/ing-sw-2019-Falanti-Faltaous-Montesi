@@ -74,8 +74,9 @@ public interface RemoteView extends Observer<Update>, Remote {
      * @param effect1 First effect
      * @param effect2 Second effect
      */
-
     void showWeaponModeSelectionView(Effect effect1, Effect effect2);
+
+    void showRespawnPowerUpDiscardView();
 
     void reinitialize(InitializationInfo initializationInfo);
 

@@ -31,6 +31,8 @@ public class Board {
     @JsonAdapter(CustomTilesDeserializer.class)
     ArrayList<Tile> mTiles;
 
+    private EnumMap<TileColor, SpawnTile> mSpawnMap = new EnumMap<>(TileColor.class);
+
     // trivial getters
     public List<Tile> getTiles() {
         return mTiles;
@@ -46,6 +48,10 @@ public class Board {
 
     public int getSize() {
         return getWidth() * getHeight();
+    }
+
+    public EnumMap<TileColor, SpawnTile> getSpawnMap() {
+        return mSpawnMap;
     }
 
     /**
@@ -69,13 +75,23 @@ public class Board {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    private void initializeSpawnMap () {
+        for (Tile tile : mTiles) {
+            if (tile != null && tile.getTileType().equals("spawn")) {
+                mSpawnMap.put(tile.getColor(), (SpawnTile) tile);
+            }
+        }
+    }
+
     /**
      * Constructs a board parsing a json string
      * @param toParse the json string to parse
      * @return the constructed board object
      */
     public static Board fromJson(String toParse) {
-        return GSON.fromJson(toParse, Board.class);
+        Board result = GSON.fromJson(toParse, Board.class);
+        result.initializeSpawnMap();
+        return result;
     }
 
     /**
@@ -197,6 +213,21 @@ public class Board {
             );
 
         return mTiles.get(getIndexFromPosition(pos));
+    }
+
+    /**
+     * Get tile position
+     * @param tile Selected tile
+     * @return Position of tile
+     */
+    public Position getTilePos (Tile tile) {
+        for (int i = 0; i < mTiles.size(); i++) {
+            if (tile.equals(mTiles.get(i))) {
+                return new Position(i%4, i/4);
+            }
+        }
+
+        throw new IllegalArgumentException("Tile not found");
     }
 
     // TODO: write doc

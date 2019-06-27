@@ -42,4 +42,19 @@ public class WeaponTest {
             assertNotNull(weapon.getGrabCost());
         }
     }
+
+    @Test
+    public void testReturnDeckFromRealJson() {
+        List<Weapon> deck = Weapons.getAll();
+
+        assertEquals(EXPECTED_WEAPONS, deck.size());
+        for (Weapon weapon : deck) {
+            assertNotNull(weapon.getName());
+            assertNotNull(weapon.getReloadCost());
+            assertNotNull(weapon.getGrabCost());
+            assertNotNull(weapon.getGuiID());
+
+            System.out.println(weapon);
+        }
+    }
 }

@@ -77,6 +77,9 @@ public class MainScreen extends Observable<Request> {
     private static final double LOADED_OPACITY = 1;
     private static final double UNLOADED_OPACITY = 0.4;
 
+    private static final int POWER_UPS_GRID_ROWS = 2;
+    private static final int POWER_UPS_GRID_COLUMNS = 2;
+
     private GraphicView mView;
     private PlayerColor mClientColor;
 
@@ -485,6 +488,7 @@ public class MainScreen extends Observable<Request> {
     }
 
     private void initializePowerUpInteraction () {
+        tabPane.getSelectionModel().select(ACTIONS_TAB);
         GuiUtils.setBoxEnableStatus(powerUpGrid, true);
         setEnableStatusActionButtonBox(false);
         powerUpDiscardButton.setDisable(false);
@@ -497,6 +501,7 @@ public class MainScreen extends Observable<Request> {
         GuiUtils.setBoxEnableStatus(powerUpGrid, true);
         for (Node node : powerUpGrid.getChildren()) {
             node.setOpacity(LOADED_OPACITY);
+            //TODO: reset to default interaction (define an onClick)
         }
     }
 
@@ -529,7 +534,7 @@ public class MainScreen extends Observable<Request> {
         }
 
         powerUpDiscardButton.setOnMouseClicked(event -> {
-            notify(new PowerUpSelectedRequest(mPowerUpUsedCache, mView.getOwnerColor()));
+            notify(new PowerUpsSelectedRequest(mPowerUpUsedCache, mView.getOwnerColor()));
             powerUpDiscardButton.setText("Discard");
             finalizePowerUpInteraction();
         });
@@ -538,6 +543,25 @@ public class MainScreen extends Observable<Request> {
             powerUpDiscardButton.setText("Discard");
             finalizePowerUpInteraction();
         });
+    }
+
+    public void setupRespawnPowerUpSelection () {
+        initializePowerUpInteraction();
+
+        for (int x = 0; x < POWER_UPS_GRID_COLUMNS; x++) {
+            for (int y = 0; y < POWER_UPS_GRID_ROWS; y++) {
+                Node powerUp = GuiUtils.getNodeFromGridPane(powerUpGrid, x, y);
+
+                int i = x;
+                int j = y;
+                if (powerUp != null) {
+                    powerUp.setOnMouseClicked(event -> notify(new RespawnPowerUpRequest(
+                            i + j * POWER_UPS_GRID_COLUMNS, mView.getOwnerColor())));
+                }
+            }
+        }
+
+        finalizePowerUpInteraction();
     }
 
     /**

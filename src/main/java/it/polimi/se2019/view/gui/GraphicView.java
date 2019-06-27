@@ -86,6 +86,11 @@ public class GraphicView extends View {
     }
 
     @Override
+    public void showRespawnPowerUpDiscardView() {
+
+    }
+
+    @Override
     public void reinitialize(InitializationInfo initiInfo) {
 
     }

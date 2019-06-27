@@ -684,15 +684,15 @@ public class WeaponsTest {
 
                 // do even more damage to Mario with the targeting scope
                 //  NB. target selection is skipped since only Mario was damaged
-                new PowerUpSelectedRequest(Collections.singletonList(0), shooterColor),
-                new PowerUpSelectedRequest(null, shooterColor),
+                new PowerUpsSelectedRequest(Collections.singletonList(0), shooterColor),
+                new PowerUpsSelectedRequest(null, shooterColor),
 
                 // whack stones with slice and dice
                 // NB. selection is skipped
                 new EffectsSelectedRequest(Collections.singletonList("with_slice_and_dice"), shooterColor),
 
                 // use last targeting scope on Dorian
-                new PowerUpSelectedRequest(Collections.singletonList(1), shooterColor)
+                new PowerUpsSelectedRequest(Collections.singletonList(1), shooterColor)
         );
 
         // shoot through controller
@@ -747,7 +747,7 @@ public class WeaponsTest {
                 new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), shooterColor),
 
                 // Stones counters with tagback activation
-                new PowerUpSelectedRequest(Collections.singletonList(0), PlayerColor.YELLOW),
+                new PowerUpsSelectedRequest(Collections.singletonList(0), PlayerColor.YELLOW),
 
                 // damage Luigi with chain reaction
                 //  NB. A powerup needs to be discarded to pay for the effect
