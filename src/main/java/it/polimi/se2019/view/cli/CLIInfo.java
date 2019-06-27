@@ -17,12 +17,16 @@ public class CLIInfo {
     private PlayerColor mOwnerColorf;
     private String mOwnerColor;
     private CLIPlayer mOwner;
+    private List<PlayerColor> mKills;
+    private List<PlayerColor> mOverkills;
     private EnumMap<PlayerColor,CLIPlayer> mPlayersInfo = new EnumMap<>(PlayerColor.class);
     private String mKillTrack;
     private EnumMap<TileColor,String> spawnTiles = new EnumMap<>(TileColor.class);
     private Map<Position,String> normalTiles = new HashMap<>();
     private Map<TileColor,String> tilesColor = new EnumMap<>(TileColor.class);
     private BoardCLI mBoard ;
+    private int mTurn;
+
 
     public String                       getActivePlayer(){return mActivePlayer;}
     public Map<TileColor,String>        getSpawnTiles(){return spawnTiles;}
@@ -33,11 +37,13 @@ public class CLIInfo {
     public BoardCLI                     getBoard(){ return mBoard; }
     public Map<TileColor,String>        getTilesColor(){return tilesColor;}
 
-    public CLIInfo (List<Player> players, PlayerColor ownerColor, PlayerColor activePlayer, Board board){
+    public CLIInfo (List<Player> players, PlayerColor ownerColor, PlayerColor activePlayer, Board board,int turn,List<PlayerColor> kills, List<PlayerColor> overkills){
         Tile tile;
         initialization(players,ownerColor, activePlayer);
         mOwnerColorf=ownerColor;
-
+        mTurn = turn;
+        mKills = kills;
+        mOverkills = overkills;
         mBoard = new BoardCLI(board);
         for (int x = 0; x < BOARD_COLUMNS; x++) {
             for (int y = 0; y < BOARD_ROWS; y++) {

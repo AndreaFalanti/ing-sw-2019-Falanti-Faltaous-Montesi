@@ -1,29 +1,16 @@
 package it.polimi.se2019.view.cli;
 
-import it.polimi.se2019.controller.Controller;
-import it.polimi.se2019.controller.weapon.Weapon;
-import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.model.*;
-import it.polimi.se2019.model.action.MoveAction;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Jsons;
-import it.polimi.se2019.util.Pair;
-import it.polimi.se2019.view.View;
-import it.polimi.se2019.view.request.ActionRequest;
 
-import java.io.IOException;
-import java.rmi.NotBoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Main {
 
 
-    public static void main2(String[] args) throws IOException, NotBoundException {
+/*    public static void main2(String[] args) throws IOException, NotBoundException {
         // test
         List<Player> mPlayers = new ArrayList<>() ;
         PlayerColor activePlayer = PlayerColor.BLUE;
@@ -81,9 +68,9 @@ public class Main {
         CLIInfo cLIInfo = new CLIInfo(mPlayers,ownerColor,activePlayer,board);
         CLIView cliView = new CLIView(cLIInfo);
         cliView.availableCommands();
-    }
+    }*/
 
-    public static void main1(String[] args) {
+  /*  public static void main1(String[] args) {
         AmmoValue initialAmmo = new AmmoValue(3, 3, 3);
         Game game = new Game(
                 Board.fromJson(Jsons.get("boards/game/board1")),
@@ -127,27 +114,24 @@ public class Main {
         viewMap.get(PlayerColor.YELLOW).register(controller);
         viewMap.get(PlayerColor.YELLOW).notify(new ActionRequest(new MoveAction(PlayerColor.YELLOW,new Position(1, 1)),PlayerColor.YELLOW));
         System.out.println(controller.getGame().getActivePlayer().getPos());
-    }
+    }*/
 
     public static void main(String[] args) {
-        // players
-        List<Player> mPlayers = new ArrayList<>() ;
-        Player owner = new Player("Mario",PlayerColor.YELLOW,new Position(3, 2));
-        Player player1 = new Player("Luigi",PlayerColor.GREY,new Position(2, 0));
-        Player player2 = new Player("Smurfette",PlayerColor.GREEN,new Position(2, 0));
-        mPlayers.add(owner);
-        mPlayers.add(player1);
-        mPlayers.add(player2);
-
-        // board
-        Board board = Board.fromJson(Jsons.get("boards/game/board1"));
+        AmmoValue initialAmmo= new AmmoValue(3,3,3);
+        Game game = new Game(
+                Board.fromJson(Jsons.get("boards/game/board1")),
+                new ArrayList<>(Arrays.asList(
+                        new Player("Mario", PlayerColor.GREEN, new Position(3, 2), initialAmmo),
+                        new Player("Luigi", PlayerColor.YELLOW, new Position(2, 0), initialAmmo),
+                        new Player("Smurfette", PlayerColor.PURPLE, new Position(2, 0), initialAmmo)
+                )),
+                1
+        );
 
 
         //end test
         PlayerColor ownerColor = PlayerColor.YELLOW;
         PlayerColor activePlayer = PlayerColor.YELLOW;
-        CLIInfo cLIInfo = new CLIInfo(mPlayers,ownerColor,activePlayer,board);
-        CLIView cliView = new CLIView(cLIInfo);
-        cliView.availableCommands();
+        new CLIView(game.extractViewInitializationInfo(),ownerColor);
     }
 }

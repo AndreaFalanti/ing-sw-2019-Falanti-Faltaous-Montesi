@@ -3,21 +3,20 @@ package it.polimi.se2019.network.server;
 import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.controller.weapon.Weapons;
-import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.Game;
+import it.polimi.se2019.model.Player;
+import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Jsons;
-import it.polimi.se2019.view.TestView;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.ViewFactory;
-import it.polimi.se2019.view.cli.CLIInfo;
-import it.polimi.se2019.view.cli.CLIView;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GameThread extends Thread {
@@ -140,8 +139,7 @@ public class GameThread extends Thread {
                     break;
                 case RMI:
                     // TODO: make player select view type
-                    // TODO: make initialization possible
-                    playerConnection.setVirtualView(new TestView(PlayerColor.YELLOW));
+
                     View stub = null;
                     String viewColor = playerConnection.getColor().getPascalName();
                     try {
@@ -151,6 +149,7 @@ public class GameThread extends Thread {
                                 + viewColor + " view on server");
                     }
                     viewMap.put(playerConnection.getColor(), stub);
+                    playerConnection.setVirtualView(stub);
                     break;
                 default:
                     logger.severe("Invalid connection type");

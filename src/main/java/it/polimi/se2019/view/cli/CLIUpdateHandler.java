@@ -6,6 +6,10 @@ public class CLIUpdateHandler implements UpdateHandler {
 
     private CLIInfo mCLIInfo;
 
+    public CLIInfo getCLIInfo(){return mCLIInfo;}
+
+    public void setUpdateHandler(CLIInfo cliInfo){mCLIInfo = cliInfo;}
+
     public CLIUpdateHandler(CLIInfo cLIInfo){mCLIInfo=cLIInfo;}
 
     @Override
@@ -56,4 +60,5 @@ public class CLIUpdateHandler implements UpdateHandler {
     public void handle(PlayerRespawnUpdate update){
         mCLIInfo.updateOnRespawn(update.getPlayerColor());
     }
+
 }

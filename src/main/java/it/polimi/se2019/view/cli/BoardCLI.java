@@ -15,33 +15,19 @@ public class BoardCLI {
     public static final int HIGHCELL = 8;
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_CYAN = "\u001B[36m";
-    public static final String ANSI_WHITE = "\u001B[37m";
     public static final String ANSI_BLACK_BACKGROUND ="\u001B[40m";
     public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
     public static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
     public static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
     public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
     public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
-    public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
-    public static final String ANSI_BRED_BACKGROUND = "\u001B[41;1m";
-    public static final String ANSI_BGREEN_BACKGROUND = "\u001B[42;1m";
-    public static final String ANSI_BYELLOW_BACKGROUND = "\u001B[43;1m";
-    public static final String ANSI_BBLUE_BACKGROUND = "\u001B[44;1m";
-    public static final String ANSI_BPURPLE_BACKGROUND = "\u001B[45;1m";
-    public static final String ANSI_BCYAN_BACKGROUND = "\u001B[46;1m";
-    public static final String color1 = "RED";
-    public static final String color4 = "YELLOW";
-    public static final String color2 = "GREEN";
-    public static final String color3 = "BLUE";
-    public static final String color5 = "PURPLE";
-    public static final String color6 = "WHITE";
+    public static final String RED = "RED";
+    public static final String YELLOW = "YELLOW";
+    public static final String GREEN = "GREEN";
+    public static final String BLUE = "BLUE";
+    public static final String PURPLE = "PURPLE";
+    public static final String WHITE = "WHITE";
 
     public static final int BOARD_COLUMNS=4;
     public static final int BOARD_ROWS=3;
@@ -98,15 +84,19 @@ public class BoardCLI {
 
     public StringBuilder colleague(boolean door, int i){
         StringBuilder line = new StringBuilder();
+        boolean spaceDoor = false;
         if(door) {
-            for (int j=0 ; j<LENGTH ; j++){
-                if((i>SIZECELL*j+7 && i<SIZECELL*(j+1) -7)){
-                    line.append(" ");
-                    return line;
-                }else{
-                    line.append(appendLines(true));
-                    return line;
-                }
+            for (int j=0 ; j<LENGTH ; j++) {
+                if((i>SIZECELL*j+7 && i<SIZECELL*(j+1) -7))
+                    spaceDoor = true;
+            }
+
+            if(spaceDoor){
+                line.append(" ");
+                return line;
+            }else{
+                line.append(appendLines(true));
+                return line;
             }
         }
         else{
@@ -160,15 +150,15 @@ public class BoardCLI {
 
     public String getColorTile(String color){
 
-        if(color.equalsIgnoreCase(color1) )
+        if(color.equalsIgnoreCase(RED) )
             return ANSI_RED_BACKGROUND;
-        if(color.equalsIgnoreCase(color2))
+        if(color.equalsIgnoreCase(GREEN))
             return ANSI_GREEN_BACKGROUND;
-        if(color.equalsIgnoreCase(color3))
+        if(color.equalsIgnoreCase(BLUE))
             return ANSI_BLUE_BACKGROUND;
-        if(color.equalsIgnoreCase(color4))
+        if(color.equalsIgnoreCase(YELLOW))
             return ANSI_YELLOW_BACKGROUND;
-        if(color.equalsIgnoreCase(color5))
+        if(color.equalsIgnoreCase(PURPLE))
             return ANSI_PURPLE_BACKGROUND;
         else
             return ANSI_WHITE_BACKGROUND;

@@ -2,7 +2,6 @@ package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.model.*;
-import it.polimi.se2019.model.action.AmmoPayment;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
@@ -685,7 +684,7 @@ public class WeaponsTest {
 
                 // do even more damage to Mario with the targeting scope
                 //  NB. target selection is skipped since only Mario was damaged
-                new PowerUpSelectedRequest(0, shooterColor),
+                new PowerUpSelectedRequest(Collections.singletonList(0), shooterColor),
                 new PowerUpSelectedRequest(null, shooterColor),
 
                 // whack stones with slice and dice
@@ -693,7 +692,7 @@ public class WeaponsTest {
                 new EffectsSelectedRequest(Collections.singletonList("with_slice_and_dice"), shooterColor),
 
                 // use last targeting scope on Dorian
-                new PowerUpSelectedRequest(1, shooterColor)
+                new PowerUpSelectedRequest(Collections.singletonList(1), shooterColor)
         );
 
         // shoot through controller
@@ -748,7 +747,7 @@ public class WeaponsTest {
                 new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), shooterColor),
 
                 // Stones counters with tagback activation
-                new PowerUpSelectedRequest(0, PlayerColor.YELLOW),
+                new PowerUpSelectedRequest(Collections.singletonList(0), PlayerColor.YELLOW),
 
                 // damage Luigi with chain reaction
                 //  NB. A powerup needs to be discarded to pay for the effect
