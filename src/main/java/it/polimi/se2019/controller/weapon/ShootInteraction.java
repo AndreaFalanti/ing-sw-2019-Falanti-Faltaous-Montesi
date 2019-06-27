@@ -9,6 +9,7 @@ import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -248,9 +249,9 @@ public class ShootInteraction {
     }
 
     // wait for a particular selection request
-    private <T> Stream<T> waitForSelectionRequestSkippingObvious(View selectingView, Collection<T> possibleToSelect,
-                                                                 int min, int max, Function<Request, Stream<T>> selectionGetter,
-                                                                 String selectionDescriptor) {
+    private <T> Stream<T> waitForSelectionRequestCheckingInputBounds(View selectingView, Collection<T> possibleToSelect,
+                                                                     int min, int max, Function<Request, Stream<T>> selectionGetter,
+                                                                     String selectionDescriptor) {
         // undo if selection cannot be performed...
         if (possibleToSelect.size() < min) {
             selectingView.reportError(Controller.NO_ACTIONS_REMAINING_ERROR_MSG);
@@ -282,6 +283,26 @@ public class ShootInteraction {
                         selectionDescriptor, selection.size(), max
                 ));
         }
+    }
+
+
+    // wait for a particular selection request
+    private <T> Stream<T> waitForSelectionRequestSkippingObvious(View selectingView, Collection<T> possibleToSelect,
+                                                                 int min, int max, Function<Request, Stream<T>> selectionGetter,
+                                                                 String selectionDescriptor) {
+        // attempt to skip selection request
+        if (min == max && possibleToSelect.size() == min) {
+            selectingView.showMessage(String.format(
+                    "Skipping %s selection of %d",
+                    selectionDescriptor, min
+            ));
+            return possibleToSelect.stream();
+        }
+
+        return waitForSelectionRequestCheckingInputBounds(
+                selectingView, possibleToSelect, min, max,
+                selectionGetter, selectionDescriptor
+        );
     }
 
     // select targets
@@ -387,14 +408,19 @@ public class ShootInteraction {
         view.showPowerUpSelectionView(Collections.singletonList(index));
 
         while (true) {
-            Request request = waitForRequest(powerupName + " activation");
+            Set<Integer> selectedIndices = waitForSelectionRequestCheckingInputBounds(
+                    mPlayerViews.get(activator),
+                    Collections.singleton(index),
+                    0, 1,
+                    req -> ((PowerUpSelectedRequest) req).getIndexes().stream(),
+                    powerupName
+            )
+                    .collect(Collectors.toSet());
 
-            Optional<Integer> maybeSelectedIndex = ((PowerUpSelectedRequest) request).getIndexes();
-
-            if (!maybeSelectedIndex.isPresent())
+            if (selectedIndices.isEmpty())
                 return false;
 
-            int selectedIndex = maybeSelectedIndex.get();
+            int selectedIndex = selectedIndices.iterator().next();
 
             if (selectedIndex != index) {
                 view.reportError("You can't use a " +
