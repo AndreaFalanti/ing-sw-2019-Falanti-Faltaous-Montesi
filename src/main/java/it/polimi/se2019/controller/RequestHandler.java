@@ -28,4 +28,6 @@ public interface RequestHandler {
     void handle(PowerUpSelectedRequest request);
 
     void handle(RoomSelectedRequest request);
+
+    void handle(TurnEndRequest request);
 }

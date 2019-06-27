@@ -182,6 +182,12 @@ public class Controller implements AbstractController {
 
     }
 
+    @Override
+    public void handle(TurnEndRequest request) {
+        mGame.onTurnEnd();
+        mGame.startNextTurn();
+    }
+
     /*****************************************/
     /* update method from observer interface */
     /*****************************************/

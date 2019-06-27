@@ -851,4 +851,8 @@ public class MainScreen extends Observable<Request> {
         }
         tabPane.getSelectionModel().select(index);
     }
+
+    public void endTurn () {
+        notify(new TurnEndRequest(mView.getOwnerColor()));
+    }
 }
