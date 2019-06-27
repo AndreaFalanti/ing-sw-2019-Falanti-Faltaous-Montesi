@@ -1,6 +1,8 @@
 package it.polimi.se2019.resource_handler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -62,6 +64,10 @@ public class ResourceHandler {
             );
 
         return resource.get();
+    }
+
+    public List<Resource> getAll() {
+        return new ArrayList<>(mResources.values());
     }
 
     public Set<String> listResourceNames() {
