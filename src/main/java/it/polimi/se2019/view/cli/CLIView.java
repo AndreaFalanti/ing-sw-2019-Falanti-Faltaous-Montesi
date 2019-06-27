@@ -46,12 +46,31 @@ public class CLIView extends View {
     private static final String QUIT                     =  "QUIT" + " to quit the game";//to delete is only for test
     private static final Logger logger = Logger.getLogger(CLIView.class.getName());
 
-    private CLIInfo mCLIInfo;
+    private CLIInfo mCLIInfo = null;
 
 
     public CLIView(CLIInfo cLIInfo) {
         super(new CLIUpdateHandler(cLIInfo));
         mCLIInfo = cLIInfo;
+    }
+
+
+    public  CLIView(InitializationInfo info,PlayerColor ownerColor){
+
+        super(new CLIUpdateHandler(new CLIInfo(info.getPlayers(),ownerColor,info.getActivePlayerColor(),info.getBoard(),info.getTurnNumber(),info.getKills(),
+                info.getOverkills())));
+
+        mCLIInfo = ((CLIUpdateHandler)mUpdateHandler).getCLIInfo();
+    }
+
+
+    @Override
+    public void reinitialize(InitializationInfo info){
+
+        mCLIInfo = new CLIInfo(info.getPlayers(),mOwnerColor,info.getActivePlayerColor(),info.getBoard(),info.getTurnNumber(),info.getKills(),
+                info.getOverkills());
+
+        ((CLIUpdateHandler)mUpdateHandler).setUpdateHandler(mCLIInfo);
     }
 
     public void actionCommand(){
@@ -115,8 +134,8 @@ public class CLIView extends View {
             case "teleport":
                 pos=parseDestination(otherCommandPart);
                 System.out.println(mCLIInfo.getOwner().getPlayerPowerUps());
-               // index = ();<--- to complete
-                action = new TeleportAction(pos,0);//<--to change
+                index = parseInteger();
+                action = new TeleportAction(pos,index);
                 logger.log(Level.INFO,"Action: SHOOT  Pos: {0}",pos);
                 break;
             case "reloadshoot":
@@ -261,7 +280,9 @@ public class CLIView extends View {
 
     @Override
     public void showPowerUpSelectionView(List<Integer> indexes) {
-        notify(new PowerUpSelectedRequest(parseInteger(),mOwnerColor));
+        List<Integer> powerUps= new ArrayList<>();
+        powerUps.add(parseInteger());
+        notify(new PowerUpSelectedRequest(powerUps,mOwnerColor));
     }
 
     @Override
@@ -324,11 +345,6 @@ public class CLIView extends View {
         System.out.print("Choose one of these effects: "+effect1.getName()+" "+effect2.getName());
         String effect = requestAdditionalInfo();
         notify(new WeaponModeSelectedRequest(effect, getOwnerColor()));
-    }
-
-    @Override
-    public void reinitialize(InitializationInfo initiInfo) {
-
     }
 
     public int parseInteger(){
