@@ -38,7 +38,7 @@ public interface RemoteView extends Observer<Update>, Remote {
 
     void showWeaponModeSelectionView(Effect effect1, Effect effect2);
 
-    void reinitialize(InitializationInfo initiInfo);
+    void reinitialize(InitializationInfo initializationInfo);
 
     @Override
     void update(Update update);

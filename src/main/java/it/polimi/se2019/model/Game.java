@@ -10,6 +10,7 @@ import it.polimi.se2019.model.update.KillScoredUpdate;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
+import it.polimi.se2019.view.InitializationInfo;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -439,5 +440,13 @@ public class Game extends Observable<Update> {
                 }
             }
         }
+    }
+
+    /**
+     * Produces info required to initialize a view with the state of this game
+     * @return info required to initialize a view with the state of this game
+     */
+    public InitializationInfo extractViewInitializationInfo() {
+        return new InitializationInfo(this);
     }
 }

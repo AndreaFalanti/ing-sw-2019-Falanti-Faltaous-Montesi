@@ -42,20 +42,26 @@ public abstract class View extends Observable<Request> implements Observer<Updat
     // Actually handled in ResponseHandler, will be called directly from controller on view
 
     // ACTIONS related
+    @Override
     public abstract void showMessage(String message);
 
+    @Override
     public abstract void reportError(String error);
 
+    @Override
     public abstract void showPowerUpsDiscardView();
 
     /**
      * Activate weapon selection in spawn or player hand
      * @param spawnColor Spawn color in which choose the weapon, null if choosing in player hand
      */
+    @Override
     public abstract void showWeaponSelectionView(TileColor spawnColor);
 
+    @Override
     public abstract void showValidPositions(List<Position> positions);
 
+    @Override
     public abstract void showPowerUpSelectionView(List<Integer> indexes);
 
     // WEAPONS related
@@ -64,11 +70,13 @@ public abstract class View extends Observable<Request> implements Observer<Updat
      * Ask a player to pick a room color
      * @param possibleColors
      */
+    @Override
     public abstract void showRoomColorSelectionView(Set<TileColor> possibleColors);
 
     /**
      * Ask player a cardinal direction
      */
+    @Override
     public abstract void showDirectionSelectionView();
 
     /**
@@ -76,6 +84,7 @@ public abstract class View extends Observable<Request> implements Observer<Updat
      * @param possiblePositions possible selectable positions (any position selected from outside this range should be
      *                          considered an input error by the controller)
      */
+    @Override
     public abstract void showPositionSelectionView(Set<Position> possiblePositions);
 
     /**
@@ -85,6 +94,7 @@ public abstract class View extends Observable<Request> implements Observer<Updat
      * @param possibleTargets possible selectable targets (any target selected from outside this group should be
      *                        considered an input error by the controller)
      */
+    @Override
     public abstract void showTargetsSelectionView(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets);
 
     /**
@@ -94,6 +104,7 @@ public abstract class View extends Observable<Request> implements Observer<Updat
      *                    controller should consider the call an input error.
      * @param possibleEffects TODO complete this doc
      */
+    @Override
     public abstract void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap,
                                                   Set<Effect> possibleEffects);
 
@@ -102,7 +113,11 @@ public abstract class View extends Observable<Request> implements Observer<Updat
      * @param effect1 First effect
      * @param effect2 Second effect
      */
+    @Override
     public abstract void showWeaponModeSelectionView(Effect effect1, Effect effect2);
+
+    @Override
+    public abstract void reinitialize(InitializationInfo initializationInfo);
 
     @Override
     public void update(Update update) {
