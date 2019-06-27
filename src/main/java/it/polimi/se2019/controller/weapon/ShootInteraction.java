@@ -17,7 +17,6 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class ShootInteraction {
@@ -390,7 +389,7 @@ public class ShootInteraction {
         while (true) {
             Request request = waitForRequest(powerupName + " activation");
 
-            Optional<Integer> maybeSelectedIndex = ((PowerUpSelectedRequest) request).getIndex();
+            Optional<Integer> maybeSelectedIndex = ((PowerUpSelectedRequest) request).getIndexes();
 
             if (!maybeSelectedIndex.isPresent())
                 return false;

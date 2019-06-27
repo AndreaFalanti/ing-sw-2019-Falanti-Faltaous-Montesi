@@ -3,19 +3,19 @@ package it.polimi.se2019.view.request;
 import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.model.PlayerColor;
 
-import java.util.Optional;
+import java.util.List;
 
 public class PowerUpSelectedRequest implements Request {
-    private Integer mIndex;
+    private List<Integer> mIndexes;
     private PlayerColor mViewColor;
 
-    public PowerUpSelectedRequest(Integer index, PlayerColor viewColor) {
-        mIndex = index;
+    public PowerUpSelectedRequest(List<Integer> indexes, PlayerColor viewColor) {
+        mIndexes = indexes;
         mViewColor = viewColor;
     }
 
-    public Optional<Integer> getIndex() {
-        return Optional.ofNullable(mIndex);
+    public List<Integer> getIndexes() {
+        return mIndexes;
     }
 
     @Override

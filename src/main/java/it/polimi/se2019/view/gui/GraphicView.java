@@ -47,12 +47,12 @@ public class GraphicView extends View {
 
     @Override
     public void showValidPositions(List<Position> positions) {
-
+        //TODO maybe implement later
     }
 
     @Override
     public void showPowerUpSelectionView(List<Integer> indexes) {
-
+        mMainFrameController.setupPowerUpSelection(indexes);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class GraphicView extends View {
 
     @Override
     public void showPositionSelectionView(Set<Position> possiblePositions) {
-
+        mMainFrameController.activatePositionSelection(possiblePositions);
     }
 
     @Override
@@ -75,11 +75,9 @@ public class GraphicView extends View {
         mMainFrameController.activateTargetsTab(possibleTargets, minToSelect, maxToSelect);
     }
 
-
-
     @Override
     public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
-
+        mMainFrameController.activateEffectsTabForEffects(priorityMap, possibleEffects);
     }
 
     @Override
@@ -91,5 +89,4 @@ public class GraphicView extends View {
     public void reinitialize(InitializationInfo initiInfo) {
 
     }
-
 }

@@ -87,7 +87,7 @@ public class MainScreen extends Observable<Request> {
     private boolean[] mTargetSelectedCache;
     private int mActualEffectIndex;
     private List<Effect> mEffectsCache;
-    private List<Effect> mMandatoryEffectsCache;
+    private List<Integer> mPowerUpUsedCache;
 
     private List<Button> mUndoWeaponButtons;
     private EnumMap<TileColor, Button> mRoomButtons = new EnumMap<>(TileColor.class);
@@ -454,39 +454,89 @@ public class MainScreen extends Observable<Request> {
      * Enable powerUp box for sending notification about what powerUps players want to discard
      */
     public void enablePowerUpBoxForSendingDiscardedIndex () {
-        GuiUtils.setBoxEnableStatus(powerUpGrid, true);
-        setEnableStatusActionButtonBox(false);
-        powerUpDiscardButton.setDisable(false);
+        initializePowerUpInteraction();
 
         for (int i = 0; i < mDiscardedPowerUpsCache.length; i++) {
             mDiscardedPowerUpsCache[i] = false;
             final int index = i;
 
-            Node powerUp = powerUpGrid.getChildren().get(i);
-            powerUp.setOpacity(UNLOADED_OPACITY);
+            if (i < powerUpGrid.getChildren().size()) {
+                Node powerUp = powerUpGrid.getChildren().get(i);
+                powerUp.setOpacity(UNLOADED_OPACITY);
 
-            powerUp.setOnMouseClicked(event -> {
-                mDiscardedPowerUpsCache[index] = !mDiscardedPowerUpsCache[index];
-                if (powerUp.getOpacity() == LOADED_OPACITY) {
-                    powerUp.setOpacity(UNLOADED_OPACITY);
-                }
-                else {
-                    powerUp.setOpacity(LOADED_OPACITY);
-                }
-            });
+                powerUp.setOnMouseClicked(event -> {
+                    mDiscardedPowerUpsCache[index] = !mDiscardedPowerUpsCache[index];
+                    if (powerUp.getOpacity() == LOADED_OPACITY) {
+                        powerUp.setOpacity(UNLOADED_OPACITY);
+                    }
+                    else {
+                        powerUp.setOpacity(LOADED_OPACITY);
+                    }
+                });
+            }
         }
 
         powerUpDiscardButton.setOnMouseClicked(event -> {
             notify(new PowerUpDiscardedRequest(mDiscardedPowerUpsCache, mView.getOwnerColor()));
-            powerUpDiscardButton.setDisable(true);
+            finalizePowerUpInteraction();
+        });
+
+        undoButton.setOnMouseClicked(event -> finalizePowerUpInteraction());
+    }
+
+    private void initializePowerUpInteraction () {
+        GuiUtils.setBoxEnableStatus(powerUpGrid, true);
+        setEnableStatusActionButtonBox(false);
+        powerUpDiscardButton.setDisable(false);
+    }
+
+    private void finalizePowerUpInteraction () {
+        GuiUtils.setBoxEnableStatus(powerUpGrid,false);
+        setEnableStatusActionButtonBox(true);
+        powerUpDiscardButton.setDisable(true);
+        GuiUtils.setBoxEnableStatus(powerUpGrid, true);
+        for (Node node : powerUpGrid.getChildren()) {
+            node.setOpacity(LOADED_OPACITY);
+        }
+    }
+
+    public void setupPowerUpSelection (List<Integer> indexes) {
+        initializePowerUpInteraction();
+        powerUpDiscardButton.setText("Use");
+        mPowerUpUsedCache = new ArrayList<>();
+
+        for (Node node : powerUpGrid.getChildren()) {
+            node.setOpacity(UNLOADED_OPACITY);
+        }
+
+        for (Integer index : indexes) {
+            Node powerUp = GuiUtils.getNodeFromGridPane(powerUpGrid, index%2, index/2);
+            if (powerUp != null) {
+                powerUp.setDisable(false);
+                powerUp.setOnMouseClicked(event -> {
+                    if (powerUp.getOpacity() == LOADED_OPACITY) {
+                        powerUp.setOpacity(UNLOADED_OPACITY);
+                        mPowerUpUsedCache.remove(index);
+                    }
+                    else {
+                        powerUp.setOpacity(LOADED_OPACITY);
+                        mPowerUpUsedCache.add(index);
+                    }
+
+                    powerUpDiscardButton.setDisable(mPowerUpUsedCache.isEmpty());
+                });
+            }
+        }
+
+        powerUpDiscardButton.setOnMouseClicked(event -> {
+            notify(new PowerUpSelectedRequest(mPowerUpUsedCache, mView.getOwnerColor()));
+            powerUpDiscardButton.setText("Discard");
+            finalizePowerUpInteraction();
         });
 
         undoButton.setOnMouseClicked(event -> {
-            GuiUtils.setBoxEnableStatus(powerUpGrid,false);
-            setEnableStatusActionButtonBox(true);
-            for (Node node : powerUpGrid.getChildren()) {
-                node.setOpacity(LOADED_OPACITY);
-            }
+            powerUpDiscardButton.setText("Discard");
+            finalizePowerUpInteraction();
         });
     }
 
@@ -672,19 +722,14 @@ public class MainScreen extends Observable<Request> {
     public void activateEffectsTabForEffects(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
         tabPane.getSelectionModel().select(EFFECTS_TAB);
         effectsBox.getChildren().clear();
-        effectsOkButton.setDisable(true);
+        //effectsOkButton.setDisable(true);
 
         mActualEffectIndex = 0;
         mEffectsCache = new ArrayList<>();
-        mMandatoryEffectsCache = new ArrayList<>();
 
         for (Map.Entry<Integer, Set<Effect>> entry : priorityMap.entrySet()) {
-            boolean enableEffectPane = true;//entry.getKey() == currentPriority;
-
             for (Effect effect : entry.getValue()) {
-                if (!effect.isOptional()) {
-                    mMandatoryEffectsCache.add(effect);
-                }
+                boolean enableEffectPane = possibleEffects.contains(effect);
 
                 AnchorPane child = createEffectPane(effect, enableEffectPane);
 
@@ -698,9 +743,12 @@ public class MainScreen extends Observable<Request> {
                     else {
                         checkBox.setText("");
                         mEffectsCache.remove(effect);
+                        if (mEffectsCache.isEmpty()) {
+                            mActualEffectIndex = 0;
+                        }
                     }
 
-                    effectsOkButton.setDisable(!checkMandatoryEffectsAreSelected());
+                    //effectsOkButton.setDisable(!checkMandatoryEffectsAreSelected());
                 });
 
                 addToggleAndInsertInEffectsPane(child, checkBox);
@@ -755,6 +803,11 @@ public class MainScreen extends Observable<Request> {
         return anchorPane;
     }
 
+    public void activatePositionSelection (Set<Position> possiblePositions) {
+        logToChat("Choose a position for weapon effect");
+        mBoardController.setupInteractiveGridForChoosingPosition(possiblePositions);
+    }
+
     private boolean canSelectAnotherTarget (int max) {
         return getCurrentTargetCount() < max;
     }
@@ -784,7 +837,7 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
-    private void returnToActionTab() {
+    public void returnToActionTab() {
         for (int i = 0; i < tabPane.getTabs().size(); i++) {
             tabPane.getTabs().get(i).setDisable(i != ACTIONS_TAB && i != PLAYERS_TAB);
         }
@@ -797,9 +850,5 @@ public class MainScreen extends Observable<Request> {
             tabPane.getTabs().get(i).setDisable(i != index);
         }
         tabPane.getSelectionModel().select(index);
-    }
-
-    private boolean checkMandatoryEffectsAreSelected () {
-        return mEffectsCache.containsAll(mMandatoryEffectsCache);
     }
 }

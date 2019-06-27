@@ -114,13 +114,17 @@ public class LoginScreen {
 
             SortedMap<Integer, Set<Effect>> sortedMap = new TreeMap<>();
             Set<Effect> effectsSet1 = new HashSet<>();
-            effectsSet1.add(new Effect("Effect1", 0, false, new AmmoValue(0,0,0)));
-            effectsSet1.add(new Effect("Effect2", 0, true, new AmmoValue(1,0,1)));
+            Effect effect1 = new Effect("Effect1", 0, false, new AmmoValue(0,0,0));
+            Effect effect2 = new Effect("Effect2", 0, true, new AmmoValue(1,0,1));
+            Effect effect3 = new Effect("Effect3", 1, true, new AmmoValue(0,0,1));
+
+            effectsSet1.add(effect1);
+            effectsSet1.add(effect2);
             sortedMap.put(0, effectsSet1);
             Set<Effect> effectsSet2 = new HashSet<>();
-            effectsSet2.add(new Effect("Effect3", 1, true, new AmmoValue(0,0,1)));
+            effectsSet2.add(effect3);
             sortedMap.put(1, effectsSet2);
-            controller.activateEffectsTabForEffects(sortedMap, 0);
+            controller.activateEffectsTabForEffects(sortedMap, effectsSet1);
 
             infoPane.getScene().getWindow().hide();
         }
