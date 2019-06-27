@@ -1,22 +1,25 @@
 package it.polimi.se2019.network.client;
 
 import it.polimi.se2019.network.server.RegistrationRemote;
+import it.polimi.se2019.view.RemoteView;
+import it.polimi.se2019.view.View;
 
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
 public class RmiClient extends Client {
     private RegistrationRemote mServerRemote;
-    //private RemoteController mRemoteController;
 
     public RmiClient(String serverIp, int serverPort) throws RemoteException, NotBoundException {
         super(serverIp, serverPort);
 
+        // initialize server for registration
         Registry registry = LocateRegistry.getRegistry(mServerIp, mServerPort);
-
         for (String name : registry.list()) {
             System.out.println("Registry bindings: " + name);
         }

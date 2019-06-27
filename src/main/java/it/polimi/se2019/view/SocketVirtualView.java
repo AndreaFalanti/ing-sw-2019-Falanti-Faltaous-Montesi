@@ -127,6 +127,11 @@ public class SocketVirtualView extends View {
         sendResponse(new PickWeaponModeResponse(effect1, effect2));
     }
 
+    @Override
+    public void reinitialize(InitializationInfo initiInfo) {
+
+    }
+
     private void sendResponse (Response response) {
         logger.log(Level.INFO, "Sending {0}...", response.getClass().getSimpleName());
         mOut.print(mGson.toJson(response));

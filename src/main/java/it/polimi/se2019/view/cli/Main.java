@@ -24,7 +24,7 @@ public class Main {
 
 
     public static void main2(String[] args) throws IOException, NotBoundException {
-        //test
+        // test
         List<Player> mPlayers = new ArrayList<>() ;
         PlayerColor activePlayer = PlayerColor.BLUE;
         Player owner = new Player("Owner",PlayerColor.GREEN,new Position(3,1));
@@ -83,7 +83,7 @@ public class Main {
         cliView.availableCommands();
     }
 
-    public static void main(String[] args) {
+    public static void main1(String[] args) {
         AmmoValue initialAmmo = new AmmoValue(3, 3, 3);
         Game game = new Game(
                 Board.fromJson(Jsons.get("boards/game/board1")),
@@ -125,7 +125,29 @@ public class Main {
         Controller controller = new Controller(game, viewMap);
         game.register(viewMap.get(PlayerColor.YELLOW));
         viewMap.get(PlayerColor.YELLOW).register(controller);
-        viewMap.get(PlayerColor.YELLOW).notify(new ActionRequest(new MoveAction(PlayerColor.YELLOW,new Position(0,2)),PlayerColor.YELLOW));
+        viewMap.get(PlayerColor.YELLOW).notify(new ActionRequest(new MoveAction(PlayerColor.YELLOW,new Position(1, 1)),PlayerColor.YELLOW));
         System.out.println(controller.getGame().getActivePlayer().getPos());
+    }
+
+    public static void main(String[] args) {
+        // players
+        List<Player> mPlayers = new ArrayList<>() ;
+        Player owner = new Player("Mario",PlayerColor.YELLOW,new Position(3, 2));
+        Player player1 = new Player("Luigi",PlayerColor.GREY,new Position(2, 0));
+        Player player2 = new Player("Smurfette",PlayerColor.GREEN,new Position(2, 0));
+        mPlayers.add(owner);
+        mPlayers.add(player1);
+        mPlayers.add(player2);
+
+        // board
+        Board board = Board.fromJson(Jsons.get("boards/game/board1"));
+
+
+        //end test
+        PlayerColor ownerColor = PlayerColor.YELLOW;
+        PlayerColor activePlayer = PlayerColor.YELLOW;
+        CLIInfo cLIInfo = new CLIInfo(mPlayers,ownerColor,activePlayer,board);
+        CLIView cliView = new CLIView(cLIInfo);
+        cliView.availableCommands();
     }
 }

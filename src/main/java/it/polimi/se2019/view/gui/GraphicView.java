@@ -4,6 +4,7 @@ import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.TileColor;
+import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
 
 import java.util.List;
@@ -84,6 +85,11 @@ public class GraphicView extends View {
     @Override
     public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
         mMainFrameController.activateEffectsTabForWeaponMode(effect1, effect2);
+    }
+
+    @Override
+    public void reinitialize(InitializationInfo initiInfo) {
+
     }
 
 }

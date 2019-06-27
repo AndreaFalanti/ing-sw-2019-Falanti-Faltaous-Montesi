@@ -27,7 +27,7 @@ public class ShootInteraction {
     // constants
     private final int MAX_POWERUP_DISCARDS = 3;
     private final int MAX_POWERUPS_IN_HAND = 3;
-    private static final int REQUEST_ACCEPTANCE_TIMEOUT = 1; // amount of time spent waiting for a request in seconds
+    private static final int REQUEST_ACCEPTANCE_TIMEOUT = 1000; // amount of time spent waiting for a request in seconds
 
     // fields
     private boolean mOccupied = false;
@@ -184,8 +184,11 @@ public class ShootInteraction {
             request = getRequestQueue().poll(REQUEST_ACCEPTANCE_TIMEOUT, TimeUnit.SECONDS);
 
             // interrupt if timeout is too long
-            if (request == null)
+            if (request == null) {
+                mLogger.log(Level.SEVERE, "Request acceptance timeout exceeded while waiting for " +
+                        "request in shoot interaction");
                 throw new InterruptedException();
+            }
         } catch (InterruptedException e) {
             // handle interruption
             mLogger.log(Level.WARNING,

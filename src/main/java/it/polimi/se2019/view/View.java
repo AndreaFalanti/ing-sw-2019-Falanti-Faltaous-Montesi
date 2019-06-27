@@ -10,11 +10,12 @@ import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.request.Request;
 
+import java.rmi.Remote;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
-public abstract class View extends Observable<Request> implements Observer<Update> {
+public abstract class View extends Observable<Request> implements Observer<Update>, RemoteView {
     // fields
     protected PlayerColor mOwnerColor;
     protected UpdateHandler mUpdateHandler;

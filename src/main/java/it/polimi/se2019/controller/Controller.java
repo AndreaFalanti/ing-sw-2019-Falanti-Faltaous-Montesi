@@ -75,8 +75,7 @@ public class Controller implements AbstractController {
 
     private void continueShootInteraction(Request request) {
         // shoot info is useless without the shooting
-        if (isHandlingShootInteraction()) {
-            //request.getViewColor()
+        if (!isHandlingShootInteraction()) {
             mPlayerViews.get(request.getViewColor()).reportError("You can't provide shoot info with no shooting going on...");
             return;
         }

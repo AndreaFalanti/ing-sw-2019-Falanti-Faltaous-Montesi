@@ -1,5 +1,7 @@
 package it.polimi.se2019.network.server;
 
+import it.polimi.se2019.model.PlayerColor;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.rmi.RemoteException;
@@ -15,7 +17,8 @@ import java.util.logging.Logger;
 
 public class RegistrationServer implements ConnectionRegister, RegistrationRemote {
     private static final Logger logger = Logger.getLogger(RegistrationServer.class.getName());
-    
+
+    private int mRmiPort;
     private List<GameThread> mGames = new ArrayList<>();
     private List<PlayerConnection> mWaitingPlayers = new ArrayList<>();
     private List<PlayerConnection> mPlayersOnline = new ArrayList<>();
@@ -23,6 +26,8 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
     private Timer mTimer;
 
     public RegistrationServer(int rmiPort) throws IOException {
+        mRmiPort = rmiPort;
+
         Registry registry = LocateRegistry.createRegistry(rmiPort);
         UnicastRemoteObject.exportObject(this, rmiPort);
         registry.rebind("rmiServer", this);
@@ -76,7 +81,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
 
         // if 3 or more players are connected, initialize game values and start timer for game creation
         if (mWaitingPlayers.size() >= 3) {
-            GameThread gameThread = new GameThread(mWaitingPlayers);
+            GameThread gameThread = new GameThread(mWaitingPlayers, mRmiPort);
             mGames.add(gameThread);
 
             mWaitingPlayers.clear();

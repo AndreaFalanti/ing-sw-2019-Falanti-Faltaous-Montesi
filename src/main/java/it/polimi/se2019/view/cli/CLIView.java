@@ -7,6 +7,7 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
+import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
@@ -323,6 +324,11 @@ public class CLIView extends View {
         System.out.print("Choose one of these effects: "+effect1.getName()+" "+effect2.getName());
         String effect = requestAdditionalInfo();
         notify(new WeaponModeSelectedRequest(effect, getOwnerColor()));
+    }
+
+    @Override
+    public void reinitialize(InitializationInfo initiInfo) {
+
     }
 
     public int parseInteger(){

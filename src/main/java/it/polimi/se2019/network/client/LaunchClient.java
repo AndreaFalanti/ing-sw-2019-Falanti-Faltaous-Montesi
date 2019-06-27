@@ -53,8 +53,8 @@ public class LaunchClient {
                 client = new SocketClient(host, socketPort);
                 break;
             case 2:
-                client = new RmiClient(host, rmiPort);
-                break;
+                // client = new RmiClient(host, rmiPort);
+                throw new UnsupportedOperationException("WIP");
             default:
                 throw new IllegalStateException("invalid client selected");
         }
