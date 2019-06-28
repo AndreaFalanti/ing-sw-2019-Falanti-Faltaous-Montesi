@@ -8,9 +8,7 @@ import it.polimi.se2019.model.action.ReloadAction;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.util.GameTestCaseBuilder;
 import it.polimi.se2019.view.View;
-import it.polimi.se2019.view.request.ActionRequest;
-import it.polimi.se2019.view.request.PowerUpDiscardedRequest;
-import it.polimi.se2019.view.request.WeaponSelectedRequest;
+import it.polimi.se2019.view.request.*;
 import org.junit.Test;
 
 import java.util.EnumMap;
@@ -106,5 +104,51 @@ public class ControllerTest {
         assertEquals(new AmmoValue(0, 0, 0), activePlayer.getAmmo());
 
         //System.out.println(activePlayer.getWeapon(0));
+    }
+
+    @Test
+    public void testRespawnInteraction () {
+        Game game = GameTestCaseBuilder.generateBaseGame();
+        View viewMock1 = mock(View.class);
+        View viewMock2 = mock(View.class);
+        View viewMock3 = mock(View.class);
+        EnumMap<PlayerColor, View> mViewMap = new EnumMap<>(PlayerColor.class);
+
+        mViewMap.put(PlayerColor.BLUE, viewMock1);
+        mViewMap.put(PlayerColor.YELLOW, viewMock2);
+        mViewMap.put(PlayerColor.GREY, viewMock3);
+        Controller controller = new Controller(game, mViewMap);
+
+        // kill yellow and grey players
+        Player yellowPlayer = game.getPlayerFromColor(PlayerColor.YELLOW);
+        Player greyPlayer = game.getPlayerFromColor(PlayerColor.GREY);
+        yellowPlayer.onDamageTaken(new Damage(12, 0), PlayerColor.BLUE);
+        greyPlayer.onDamageTaken(new Damage(12, 0), PlayerColor.BLUE);
+
+        assertTrue(yellowPlayer.isDead());
+        assertTrue(greyPlayer.isDead());
+        assertEquals(1, game.getTurnNumber());
+        // they should not have powerUpCards
+        assertNull(yellowPlayer.getPowerUpCard(0));
+        assertNull(greyPlayer.getPowerUpCard(0));
+
+        controller.handle(new TurnEndRequest(PlayerColor.BLUE));
+        assertEquals(1, game.getTurnNumber());
+        // they should be asked for respawn, giving them a powerUp card
+        assertNotNull(yellowPlayer.getPowerUpCard(0));
+        assertNotNull(greyPlayer.getPowerUpCard(0));
+
+        controller.handle(new RespawnPowerUpRequest(0, PlayerColor.GREY));
+        assertNull(greyPlayer.getPowerUpCard(0));
+        // still waiting for yellowPlayer respawn
+        assertEquals(1, game.getTurnNumber());
+
+
+        controller.handle(new RespawnPowerUpRequest(0, PlayerColor.YELLOW));
+        assertNull(yellowPlayer.getPowerUpCard(0));
+
+        // new turn started because all player have respawned
+        assertEquals(2, game.getTurnNumber());
+        assertEquals(yellowPlayer, game.getActivePlayer());
     }
 }

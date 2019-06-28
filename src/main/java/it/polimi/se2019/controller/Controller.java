@@ -193,6 +193,9 @@ public class Controller implements AbstractController {
         if (areAllPlayersAlive()) {
             mGame.startNextTurn();
         }
+        else {
+            sendRespawnNotificationToDeadPlayers();
+        }
     }
 
     @Override
@@ -203,6 +206,7 @@ public class Controller implements AbstractController {
         Position respawnPosition = mGame.getBoard().getTilePos(respawnTile);
 
         respawningPlayer.respawn(respawnPosition);
+        respawningPlayer.discard(request.getIndex());
 
         if (areAllPlayersAlive()) {
             mGame.startNextTurn();
@@ -212,13 +216,20 @@ public class Controller implements AbstractController {
     private boolean areAllPlayersAlive () {
         for (Player player : mGame.getPlayers()) {
             if (player.isDead()) {
-                player.addPowerUp(mGame.getPowerUpDeck().drawCard(), true);
-                mPlayerViews.get(player.getColor()).showRespawnPowerUpDiscardView();
                 return false;
             }
         }
 
         return true;
+    }
+
+    private void sendRespawnNotificationToDeadPlayers () {
+        for (Player player : mGame.getPlayers()) {
+            if (player.isDead()) {
+                player.addPowerUp(mGame.getPowerUpDeck().drawCard(), true);
+                mPlayerViews.get(player.getColor()).showRespawnPowerUpDiscardView();
+            }
+        }
     }
 
     /*****************************************/
