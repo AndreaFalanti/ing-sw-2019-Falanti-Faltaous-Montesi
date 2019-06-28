@@ -439,7 +439,7 @@ public class Game extends Observable<Update> {
      * Produces info required to initialize a view with the state of this game
      * @return info required to initialize a view with the state of this game
      */
-    public InitializationInfo extractViewInitializationInfo() {
-        return new InitializationInfo(this);
+    public InitializationInfo extractViewInitializationInfo(PlayerColor ownerColor) {
+        return new InitializationInfo(this, ownerColor);
     }
 }

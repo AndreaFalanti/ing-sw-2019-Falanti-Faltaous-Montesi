@@ -132,6 +132,6 @@ public class Main {
         //end test
         PlayerColor ownerColor = PlayerColor.YELLOW;
         PlayerColor activePlayer = PlayerColor.YELLOW;
-        new CLIView(game.extractViewInitializationInfo(),ownerColor);
+        new CLIView(game.extractViewInitializationInfo(ownerColor), ownerColor);
     }
 }
