@@ -133,7 +133,7 @@ public class SocketVirtualView extends View {
     }
 
     @Override
-    public void reinitialize(InitializationInfo initiInfo) {
+    public void reinitialize(InitializationInfo initInfo) {
 
     }
 

@@ -65,10 +65,10 @@ public class CLIView extends View {
 
 
     @Override
-    public void reinitialize(InitializationInfo info){
+    public void reinitialize(InitializationInfo initInfo){
 
-        mCLIInfo = new CLIInfo(info.getPlayers(),mOwnerColor,info.getActivePlayerColor(),info.getBoard(),info.getTurnNumber(),info.getKills(),
-                info.getOverkills());
+        mCLIInfo = new CLIInfo(initInfo.getPlayers(),mOwnerColor, initInfo.getActivePlayerColor(), initInfo.getBoard(), initInfo.getTurnNumber(), initInfo.getKills(),
+                initInfo.getOverkills());
 
         ((CLIUpdateHandler)mUpdateHandler).setUpdateHandler(mCLIInfo);
     }

@@ -23,6 +23,11 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
 
+        LoginScreen controller = loader.getController();
+        GraphicView guiView = new GraphicView(null, null);
+        guiView.setActuallyDisplayedScene(scene);
+        controller.setView(guiView);
+
         primaryStage.show();
     }
 

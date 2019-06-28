@@ -30,6 +30,9 @@ public abstract class View extends Observable<Request> implements Observer<Updat
         return mOwnerColor;
     }
 
+    public void setOwnerColor(PlayerColor ownerColor) {
+        mOwnerColor = ownerColor;
+    }
 
     // Actually handled in ResponseHandler, will be called directly from controller on view
 

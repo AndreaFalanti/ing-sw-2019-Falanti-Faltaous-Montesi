@@ -1,21 +1,9 @@
 package it.polimi.se2019.view.gui;
 
-import it.polimi.se2019.controller.weapon.Effect;
-import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.model.PlayerColor;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
-import javafx.stage.Stage;
+import javafx.scene.layout.Pane;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +22,16 @@ public class LoginScreen {
     private static final Logger logger = Logger.getLogger(LoginScreen.class.getName());
     private static final String USERNAME_ERROR = "Insert a username before logging";
     private static final String CONNECTION_ERROR = "Select a connection before logging";
+
+    private GraphicView mView;
+
+    public GraphicView getView() {
+        return mView;
+    }
+
+    public void setView(GraphicView view) {
+        mView = view;
+    }
 
     public void login () {
         String username = usernameTextField.getText();
@@ -69,7 +67,7 @@ public class LoginScreen {
     }
 
     private void openMainScreen () {
-        try {
+        /*try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/mainScreen.fxml"));
             Stage stage = new Stage();
 
@@ -130,6 +128,6 @@ public class LoginScreen {
         }
         catch (IOException e) {
             logger.severe(e.getMessage());
-        }
+        }*/
     }
 }

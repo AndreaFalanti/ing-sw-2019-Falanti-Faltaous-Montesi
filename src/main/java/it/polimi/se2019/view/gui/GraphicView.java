@@ -1,23 +1,39 @@
 package it.polimi.se2019.view.gui;
 
 import it.polimi.se2019.controller.weapon.Effect;
+import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
 public class GraphicView extends View {
     private MainScreen mMainFrameController;
+    private Scene mActuallyDisplayedScene;
 
 
     public GraphicView(PlayerColor color, MainScreen mainFrameController) {
         super(color, new GraphicUpdateHandler(mainFrameController));
         mMainFrameController = mainFrameController;
+    }
+
+    public void setMainFrameController(MainScreen mainFrameController) {
+        mMainFrameController = mainFrameController;
+    }
+
+    public void setActuallyDisplayedScene(Scene actuallyDisplayedScene) {
+        mActuallyDisplayedScene = actuallyDisplayedScene;
     }
 
     @Override
@@ -87,11 +103,82 @@ public class GraphicView extends View {
 
     @Override
     public void showRespawnPowerUpDiscardView() {
-
+        mMainFrameController.setupRespawnPowerUpSelection();
     }
 
     @Override
-    public void reinitialize(InitializationInfo initiInfo) {
+    public void reinitialize(InitializationInfo initInfo) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/mainScreen.fxml"));
+            Stage stage = new Stage();
 
+            Pane root = loader.load();
+            stage.setTitle("Adrenalina");
+            stage.setResizable(false);
+            stage.setAlwaysOnTop(true);
+
+            BackgroundImage backgroundImage = new BackgroundImage(new Image(GuiResourcePaths.BACKGROUND + "bg.jpg"),
+                    BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+            root.setBackground(new Background(backgroundImage));
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/css/button.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/css/tabPaneBar.css").toExternalForm());
+            stage.setScene(scene);
+            stage.centerOnScreen();
+
+            MainScreen controller = loader.getController();
+            // TODO: need an actual color here
+            PlayerColor clientColor = PlayerColor.GREEN;
+            setMainFrameController(controller);
+            setOwnerColor(clientColor);
+            controller.setView(this);
+            controller.setClientColor(clientColor);
+
+
+            controller.loadPlayerBoards(clientColor, initInfo.getPlayers());
+            controller.initializeBoardAndInfo(initInfo.getBoard(), initInfo.getSkullNum(),
+                    initInfo.getActivePlayerColor(), initInfo.getRemainingActions(), initInfo.getTurnNumber(),
+                    initInfo.getPlayers());
+
+            Player owner = getOwnerPlayerFromList(initInfo.getPlayers());
+            String[] ids = new String[3];
+            for (int i = 0; i < owner.getWeapons().length; i++) {
+                if (owner.getWeapon(i) != null) {
+                    ids[i] = owner.getWeapon(i).getGuiID();
+                }
+                else {
+                    ids[i] = null;
+                }
+            }
+            controller.updateWeaponBox(ids);
+
+            for (int i = 0; i < owner.getPowerUps().length; i++) {
+                if (owner.getPowerUpCard(i) != null) {
+                    ids[i] = owner.getPowerUpCard(i).getGuiID();
+                }
+                else {
+                    ids[i] = null;
+                }
+            }
+            controller.updatePowerUpGrid(ids);
+
+            mActuallyDisplayedScene.getWindow().hide();
+            stage.show();
+            mActuallyDisplayedScene = scene;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Player getOwnerPlayerFromList (List<Player> players) {
+        for (Player player : players) {
+            if (player.getColor() == mOwnerColor) {
+                return player;
+            }
+        }
+
+        throw new IllegalArgumentException("Player that own this view is not present in the list!");
     }
 }

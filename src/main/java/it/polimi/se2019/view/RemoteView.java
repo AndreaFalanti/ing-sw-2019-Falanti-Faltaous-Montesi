@@ -78,7 +78,7 @@ public interface RemoteView extends Observer<Update>, Remote {
 
     void showRespawnPowerUpDiscardView();
 
-    void reinitialize(InitializationInfo initializationInfo);
+    void reinitialize(InitializationInfo initInfo);
 
     @Override
     void update(Update update);

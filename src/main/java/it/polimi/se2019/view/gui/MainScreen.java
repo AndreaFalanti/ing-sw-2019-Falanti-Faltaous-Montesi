@@ -1,12 +1,15 @@
 package it.polimi.se2019.view.gui;
 
 import it.polimi.se2019.controller.weapon.Effect;
-import it.polimi.se2019.controller.weapon.Weapon;
-import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.Player;
+import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.PowerUpCard;
 import it.polimi.se2019.model.action.MoveShootAction;
 import it.polimi.se2019.model.action.ReloadAction;
-import it.polimi.se2019.model.board.*;
-import it.polimi.se2019.util.Jsons;
+import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.board.Direction;
+import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.view.request.*;
 import javafx.fxml.FXML;
@@ -141,63 +144,81 @@ public class MainScreen extends Observable<Request> {
 
     /**
      * Load player board of given color
-     * @param color Player color
+     * @param ownerColor Player color
      * @throws IOException Thrown if fxml is not found
      */
-    public void loadPlayerBoard(PlayerColor color) throws IOException {
+    public void loadPlayerBoards(PlayerColor ownerColor, List<Player> players) throws IOException {
+        for (Player player : players) {
+            if (player.getColor() == ownerColor) {
+                initializeMainPlayerBoard(ownerColor, player);
+            }
+            else {
+                initializeOpponentPlayerBoard(player);
+            }
+        }
+    }
+
+    private void initializeMainPlayerBoard (PlayerColor ownerColor, Player player) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/playerPane.fxml"));
         Pane newLoadedPane =  loader.load();
 
         PlayerPane playerController = loader.getController();
-        mPlayerControllers.put(color, playerController);
-
+        mPlayerControllers.put(ownerColor, playerController);
         playerController.setMainScreen(this);
-        playerController.setupBoardImage(color);
-        //testing various methods, they will be used in observer update methods
-        playerController.addDamageTokens(PlayerColor.PURPLE, 3);
-        playerController.addDeath();
-        playerController.setPlayerName("Aldo");
-        playerController.updateAmmo(new AmmoValue(1, 2, 3));
-        playerController.setScore(3);
-        playerController.updateMarkLabel(PlayerColor.YELLOW, 3);
-        playerController.updateMarkLabel(PlayerColor.BLUE, 1);
-        //playerController.flipBoard();
-        //playerController.eraseDamage();
+
+        playerController.setupBoardImage(ownerColor);
+        playerController.setPlayerName(player.getName());
+        playerController.updateAmmo(player.getAmmo());
+        playerController.setScore(player.getScore());
+
+        if (player.isBoardFlipped()) {
+            playerController.flipBoard();
+        }
+
+        // update damage, marks and deaths
+        updateDamageMarksAndDeaths(player, playerController);
 
         playerPane.getChildren().add(newLoadedPane);
+    }
 
-        // second tab testing
-        List<Player> players = new ArrayList<>();
-        players.add(new Player("aaa", PlayerColor.YELLOW));
-        players.add(new Player("bbb", PlayerColor.GREY));
-        players.add(new Player("ccc", PlayerColor.BLUE));
+    private void initializeOpponentPlayerBoard (Player player) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/otherPlayerPane.fxml"));
+        Pane newLoadedPane =  loader.load();
 
-        for (Player player : players) {
-            loader = new FXMLLoader(getClass().getResource("/fxml/otherPlayerPane.fxml"));
-            newLoadedPane =  loader.load();
+        PlayerPane otherPlayerController = loader.getController();
+        mPlayerControllers.put(player.getColor(), otherPlayerController);
 
-            PlayerPane otherPlayerController = loader.getController();
-            mPlayerControllers.put(player.getColor(), otherPlayerController);
+        otherPlayerController.setMainScreen(this);
+        otherPlayerController.setupBoardImage(player.getColor());
+        otherPlayerBoardsBox.getChildren().add(newLoadedPane);
 
-            otherPlayerController.setMainScreen(this);
-            otherPlayerController.setupBoardImage(player.getColor());
-            otherPlayerBoardsBox.getChildren().add(newLoadedPane);
+        // test methods
+        otherPlayerController.updateAmmo(player.getAmmo());
 
-            // test methods
-            otherPlayerController.updateAmmo(new AmmoValue(2,1,1));
-            otherPlayerController.addDamageTokens(PlayerColor.YELLOW, 5);
+        updateDamageMarksAndDeaths(player, otherPlayerController);
 
-            Weapon[] weapons = {
-                    new Weapon(),
-                    new Weapon(),
-                    null
-            };
-            weapons[0].setLoaded(true);
-            weapons[0].setGuiID("022");
-            weapons[1].setGuiID("023");
+        ((OtherPlayerPane)otherPlayerController).updatePlayerWeapons(player.getWeapons());
 
-            ((OtherPlayerPane)otherPlayerController).updatePlayerWeapons(weapons);
-            ((OtherPlayerPane)otherPlayerController).updatePowerUpNum(3);
+        int actualCardsNum = 0;
+        for (PowerUpCard powerUpCard : player.getPowerUps()) {
+            if (powerUpCard != null) {
+                actualCardsNum++;
+            }
+        }
+        ((OtherPlayerPane)otherPlayerController).updatePowerUpNum(actualCardsNum);
+    }
+
+    private void updateDamageMarksAndDeaths (Player player, PlayerPane playerController) {
+        for (PlayerColor color : player.getDamageTaken()) {
+            playerController.addDamageTokens(color, 1);
+        }
+        for (int i = 0; i < player.getDeathsNum(); i++) {
+            playerController.addDeath();
+        }
+
+        Map<PlayerColor, Integer> marksMap = player.getMarks();
+        for (Map.Entry<PlayerColor, Integer> entry : marksMap.entrySet()) {
+            playerController.updateMarkLabel(entry.getKey(), entry.getValue());
         }
     }
 
@@ -205,44 +226,28 @@ public class MainScreen extends Observable<Request> {
      * Load game board
      * @throws IOException Thrown if fxml is not found
      */
-    public void loadBoard () throws IOException {
+    public void initializeBoardAndInfo(Board board, int kills, PlayerColor activePlayerColor,
+                                       int remainingActions, int turnNumber, List<Player> players) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/boardPane.fxml"));
         Pane newLoadedPane =  loader.load();
 
         mBoardController = loader.getController();
         mBoardController.setMainController(this);
 
-        Board board = Board.fromJson(Jsons.get("boards/game/board1"));
         mBoardController.initialize(board);
-        mBoardController.addTargetDeath(4);
-        mBoardController.updateActivePlayerText(PlayerColor.PURPLE);
-        mBoardController.updateRemainingActionsText(2);
-        mBoardController.updateTurnText(15);
-        mBoardController.addKillToKilltrack(PlayerColor.YELLOW, true);
-        mBoardController.addKillToKilltrack(PlayerColor.BLUE, false);
-        mBoardController.addKillToKilltrack(PlayerColor.BLUE, true);
+        mBoardController.addTargetDeath(kills);
+        mBoardController.updateActivePlayerText(activePlayerColor);
+        mBoardController.updateRemainingActionsText(remainingActions);
+        mBoardController.updateTurnText(turnNumber);
 
-        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.BLUE);
-        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.PURPLE);
-        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.YELLOW);
-        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.GREY);
-        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.GREEN);
+        //TODO: update kills and overkills
 
-        mBoardController.movePawnToCoordinate(new Position(2), PlayerColor.PURPLE);
-
-        // Tile update test
-        NormalTile normalTile = new NormalTile();
-        AmmoCard ammoCard = new AmmoCard();
-        ammoCard.setGuiID("043");
-        normalTile.setAmmoCard(ammoCard);
-
-        SpawnTile spawnTile = new SpawnTile();
-        Weapon weapon = new Weapon();
-        weapon.setGuiID("026");
-        spawnTile.addWeapon(weapon);
-
-        mBoardController.updateBoardTile(normalTile, new Position(2, 1));
-        mBoardController.updateBoardTile(spawnTile, new Position(2, 0));
+        // update player positions
+        for (Player player : players) {
+            if (player.getPos() != null) {
+                mBoardController.movePawnToCoordinate(player.getPos(), player.getColor());
+            }
+        }
 
         boardPane.getChildren().add(newLoadedPane);
     }

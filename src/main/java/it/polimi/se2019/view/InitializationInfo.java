@@ -8,7 +8,6 @@ import it.polimi.se2019.model.board.Board;
 import java.util.List;
 
 public class InitializationInfo {
-
     private Board mBoard;
     private List<Player> mPlayers;
     private int mTurnNumber;
@@ -64,7 +63,7 @@ public class InitializationInfo {
         mKills = game.getKills();
         mOverkills = game.getOverkills();
         mFinalFrenzy = game.isFinalFrenzy();
-        mActivePlayerColor = mPlayers.get(game.getActivePlayerIndex()).getColor();
+        mActivePlayerColor = game.getActivePlayer().getColor();
         mRemainingActions = game.getRemainingActions();
     }
 }
