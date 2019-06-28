@@ -1,5 +1,6 @@
 {
   "name": "Furnace",
+  "guiID": "0214",
   "grabCost": "1b",
   "reloadCost": "1r1b",
   "behaviour": {

@@ -1,5 +1,6 @@
 {
   "name": "Plasma Gun",
+  "guiID": "0219",
   "grabCost": "1y",
   "reloadCost": "1y1b",
   "behaviour": {

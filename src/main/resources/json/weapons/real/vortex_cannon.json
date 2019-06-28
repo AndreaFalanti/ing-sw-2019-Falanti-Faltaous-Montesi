@@ -1,8 +1,8 @@
 {
   "name": "Vortex Cannon",
   "guiID": "029",
-  "shootCost": "1b",
-  "grabCost": "1r1b",
+  "grabCost": "1b",
+  "reloadCost": "1r1b",
   "behaviour": {
     "expr": "PickEffect",
     "effects": [
