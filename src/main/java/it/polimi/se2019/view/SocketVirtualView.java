@@ -8,7 +8,6 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
-import it.polimi.se2019.network.server.PlayerThread;
 import it.polimi.se2019.view.request.Request;
 
 import java.io.BufferedReader;
@@ -23,7 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SocketVirtualView extends View {
-    private static final Logger logger = Logger.getLogger(PlayerThread.class.getName());
+    private static final Logger logger = Logger.getLogger(SocketVirtualView.class.getName());
 
     private Socket mSocket;
     private PrintWriter mOut;

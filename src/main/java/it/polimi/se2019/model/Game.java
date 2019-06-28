@@ -1,6 +1,7 @@
 package it.polimi.se2019.model;
 
 import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
@@ -79,8 +80,8 @@ public class Game extends Observable<Update> {
         List<PowerUpCard> powerUpCards = PowerUpCard.returnDeckFromJson(Jsons.get("PowerUpCardDeck"));
         mPowerUpCardDeck = new Deck<>(powerUpCards);
 
-        List<Weapon> weaponCards = Weapon.returnDeckFromJson(Jsons.get("WeaponDeck"));
-        //List<Weapon> weaponCards = Weapons.getAll();
+        //List<Weapon> weaponCards = Weapon.returnDeckFromJson(Jsons.get("WeaponDeck"));
+        List<Weapon> weaponCards = Weapons.getAll();
         mWeaponDeck = new Deck<>(weaponCards, false);
 
         refillAmmoTiles();

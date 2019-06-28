@@ -5,6 +5,7 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.TileColor;
+import it.polimi.se2019.network.client.ClientNetworkHandler;
 import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +23,8 @@ public class GraphicView extends View {
     private MainScreen mMainFrameController;
     private Scene mActuallyDisplayedScene;
 
+    private ClientNetworkHandler mNetworkHandler;
+
 
     public GraphicView(PlayerColor color, MainScreen mainFrameController) {
         super(color, new GraphicUpdateHandler(mainFrameController));
@@ -34,6 +37,11 @@ public class GraphicView extends View {
 
     public void setActuallyDisplayedScene(Scene actuallyDisplayedScene) {
         mActuallyDisplayedScene = actuallyDisplayedScene;
+    }
+
+    public void setNetworkHandler(ClientNetworkHandler networkHandler) {
+        mNetworkHandler = networkHandler;
+        register(mNetworkHandler);
     }
 
     @Override

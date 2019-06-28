@@ -13,6 +13,7 @@ import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
 import it.polimi.se2019.util.Jsons;
+import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
@@ -21,7 +22,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Controller implements AbstractController {
+public class Controller implements Observer<Request>, RequestHandler {
     // messages constants
     public static final String NO_ACTIONS_REMAINING_ERROR_MSG = "No actions remaining! Undo and try again...";
 

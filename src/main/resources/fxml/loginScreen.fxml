@@ -28,7 +28,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <RadioButton mnemonicParsing="false" prefHeight="48.0" prefWidth="155.0" text="Socket">
+                  <RadioButton fx:id="socketRadioButton" mnemonicParsing="false" prefHeight="48.0" prefWidth="155.0" text="Socket">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -36,14 +36,14 @@
                         <ToggleGroup fx:id="network" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton layoutX="186.0" layoutY="10.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="155.0" text="Rmi" toggleGroup="$network">
+                  <RadioButton fx:id="rmiRadioButton" layoutX="186.0" layoutY="10.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="155.0" text="Rmi" toggleGroup="$network">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </RadioButton>
                </children>
             </HBox>
-            <Button fx:id="loginButton" layoutX="288.0" layoutY="182.0" mnemonicParsing="false" onAction="#login" prefHeight="48.0" prefWidth="93.0" text="LOGIN">
+            <Button layoutX="288.0" layoutY="182.0" mnemonicParsing="false" onAction="#login" prefHeight="48.0" prefWidth="93.0" text="LOGIN">
                <font>
                   <Font size="15.0" />
                </font>
