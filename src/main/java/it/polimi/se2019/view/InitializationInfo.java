@@ -8,6 +8,7 @@ import it.polimi.se2019.model.board.Board;
 import java.util.List;
 
 public class InitializationInfo {
+    private PlayerColor mOwnerColor;
     private Board mBoard;
     private List<Player> mPlayers;
     private int mTurnNumber;
@@ -54,8 +55,13 @@ public class InitializationInfo {
         return mRemainingActions;
     }
 
+    public PlayerColor getOwnerColor() {
+        return mOwnerColor;
+    }
 
-    public InitializationInfo(Game game) {
+
+    public InitializationInfo(Game game, PlayerColor ownerColor) {
+        mOwnerColor = ownerColor;
         mBoard = game.getBoard();
         mPlayers = game.getPlayers();
         mTurnNumber = game.getTurnNumber();

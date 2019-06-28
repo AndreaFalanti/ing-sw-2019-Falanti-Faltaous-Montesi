@@ -9,6 +9,7 @@ import it.polimi.se2019.model.serialization.AmmoValueDeserializer;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
+import it.polimi.se2019.view.InitializationInfo;
 
 public class ExpressionFactory {
     // GSON used to deal with serialization
@@ -35,8 +36,18 @@ public class ExpressionFactory {
                 .registerSubtype(Union.class, "Union")
                 .registerSubtype(All.class, "All")
                 .registerSubtype(LastSelected.class, "LastSelected")
+                .registerSubtype(AllInRoom.class, "AllInRoom")
                 .registerSubtype(GetTargets.class, "GetTargets")
+                .registerSubtype(Others.class, "Others")
+                .registerSubtype(Chain.class, "Chain")
                 .registerSubtype(Do.class, "Do")
+                .registerSubtype(SelectOneColor.class, "SelectOneColor")
+                .registerSubtype(GetVisibleRange.class, "GetVisibleRange")
+                .registerSubtype(Line.class, "Line")
+                .registerSubtype(Intersect.class, "Intersect")
+                .registerSubtype(Neighbours.class, "Neighbours")
+                .registerSubtype(SelectOneDirection.class, "SelectOneDirection")
+                .registerSubtype(InfLiteral.class, "InfLiteral")
                 .registerSubtype(You.class, "You")
                 .registerSubtype(IntLiteral.class, "IntLiteral")
                 .registerSubtype(NegateTargets.class, "NegateSelection")

@@ -78,6 +78,8 @@ public class Weapons {
     }
 
     public static List<Weapon> getAll() {
+        loadResources();
+
         return resourceHandler.getAll().stream()
                 .map(Resource::get)
                 .map(weapon -> (Weapon) weapon)
