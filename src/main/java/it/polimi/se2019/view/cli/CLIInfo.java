@@ -17,10 +17,9 @@ public class CLIInfo {
     private PlayerColor mOwnerColorf;
     private String mOwnerColor;
     private CLIPlayer mOwner;
-    private List<PlayerColor> mKills;
-    private List<PlayerColor> mOverkills;
+    private List<String> mKills;
+    private List<String> mOverkills;
     private EnumMap<PlayerColor,CLIPlayer> mPlayersInfo = new EnumMap<>(PlayerColor.class);
-    private String mKillTrack;
     private EnumMap<TileColor,String> spawnTiles = new EnumMap<>(TileColor.class);
     private Map<Position,String> normalTiles = new HashMap<>();
     private Map<TileColor,String> tilesColor = new EnumMap<>(TileColor.class);
@@ -35,6 +34,8 @@ public class CLIInfo {
     public Map<PlayerColor, CLIPlayer>  getPlayersInfo() { return mPlayersInfo; }
     public Map<Position, String>        getNormalTiles(){ return normalTiles; }
     public BoardCLI                     getBoard(){ return mBoard; }
+    public int                          getmTurn(){ return mTurn;}
+
     public Map<TileColor,String>        getTilesColor(){return tilesColor;}
 
     public CLIInfo (List<Player> players, PlayerColor ownerColor, PlayerColor activePlayer, Board board,int turn,List<PlayerColor> kills, List<PlayerColor> overkills){
@@ -42,8 +43,7 @@ public class CLIInfo {
         initialization(players,ownerColor, activePlayer);
         mOwnerColorf=ownerColor;
         mTurn = turn;
-        mKills = kills;
-        mOverkills = overkills;
+        setKillTrack(kills,overkills);
         mBoard = new BoardCLI(board);
         for (int x = 0; x < BOARD_COLUMNS; x++) {
             for (int y = 0; y < BOARD_ROWS; y++) {
@@ -141,23 +141,29 @@ public class CLIInfo {
         mPlayersInfo.get(playerColor).setDamageTakenToZero();
     }
 
-    public void updateKillTrak(PlayerColor killedColor,PlayerColor killerColor,
+    public void setKillTrack(List<PlayerColor> kills, List<PlayerColor> overkills){
+
+        for (PlayerColor kill : kills) {
+            mKills.add(kill.getPascalName());
+        }
+        for(PlayerColor overkill: overkills){
+            mOverkills.add(overkill.getPascalName());
+        }
+    }
+
+    public void updateKillTrack(PlayerColor killedColor,PlayerColor killerColor,
                                 boolean overkill, Map<PlayerColor,Integer> scores){
-        StringBuilder killTrack = new StringBuilder();
-        killTrack.append(mKillTrack);
         mPlayersInfo.get(killedColor).setDeathNums();
         mPlayersInfo.get(killedColor).setDead(true);
         for(Map.Entry<PlayerColor,Integer> entry: scores.entrySet()){
             mPlayersInfo.get(entry.getKey()).setScore(scores.get(entry.getKey()));
         }
 
-        killTrack.append(mPlayersInfo.get(killerColor).getPlayerName());
+        mKills.add(killerColor.getPascalName());
         if(overkill){
             mPlayersInfo.get(killedColor).setOverkilled(true);
-            killTrack.append(" with overkill");
+            mOverkills.add(killerColor.getPascalName());
         }
-        killTrack.append("\n");
-        mKillTrack=killTrack.toString();
     }
 
 

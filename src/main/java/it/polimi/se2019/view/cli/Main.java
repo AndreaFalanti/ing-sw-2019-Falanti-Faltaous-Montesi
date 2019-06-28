@@ -1,16 +1,21 @@
 package it.polimi.se2019.view.cli;
 
+import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Jsons;
 
+import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Main {
 
 
-/*    public static void main2(String[] args) throws IOException, NotBoundException {
+    public static void main(String[] args) throws IOException, NotBoundException {
         // test
         List<Player> mPlayers = new ArrayList<>() ;
         PlayerColor activePlayer = PlayerColor.BLUE;
@@ -60,15 +65,21 @@ public class Main {
         mPlayers.add(player3);
         mPlayers.add(player4);
         PlayerColor ownerColor = PlayerColor.GREEN;
-        Board board = Board.fromJson(Jsons.get("boards/game/board1"));
+
+        Game game = new Game(
+                Board.fromJson(Jsons.get("boards/game/board1")),
+                new ArrayList<>(Arrays.asList(
+                        owner,player1,player2,player3,player4
+                )),
+                1
+        );
 
 
         //end test
         LoginCLI.log();
-        CLIInfo cLIInfo = new CLIInfo(mPlayers,ownerColor,activePlayer,board);
-        CLIView cliView = new CLIView(cLIInfo);
+        CLIView cliView = new CLIView(game.extractViewInitializationInfo(),ownerColor);
         cliView.availableCommands();
-    }*/
+    }
 
   /*  public static void main1(String[] args) {
         AmmoValue initialAmmo = new AmmoValue(3, 3, 3);
@@ -116,7 +127,7 @@ public class Main {
         System.out.println(controller.getGame().getActivePlayer().getPos());
     }*/
 
-    public static void main(String[] args) {
+    public static void main1(String[] args) {
         AmmoValue initialAmmo= new AmmoValue(3,3,3);
         Game game = new Game(
                 Board.fromJson(Jsons.get("boards/game/board1")),

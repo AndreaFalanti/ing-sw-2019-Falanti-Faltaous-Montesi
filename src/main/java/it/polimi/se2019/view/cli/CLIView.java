@@ -54,6 +54,11 @@ public class CLIView extends View {
         mCLIInfo = cLIInfo;
     }
 
+    public CLIView(){
+        super(new CLIUpdateHandler());
+    }
+
+
 
     public  CLIView(InitializationInfo info,PlayerColor ownerColor){
 
@@ -349,6 +354,10 @@ public class CLIView extends View {
 
     @Override
     public void showRespawnPowerUpDiscardView() {
+        System.out.println("Choose an index of one power up to discard (from 0)");
+        System.out.println(mCLIInfo.getOwner().getPlayerPowerUps());
+
+        notify(new RespawnPowerUpRequest(parseInteger(),mOwnerColor));
 
     }
 

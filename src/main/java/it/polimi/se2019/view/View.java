@@ -13,6 +13,8 @@ public abstract class View extends Observable<Request> implements Observer<Updat
     protected UpdateHandler mUpdateHandler;
 
     // constructors
+    public View(){}
+
     public View(UpdateHandler updateHandler) {
         mUpdateHandler = updateHandler;
     }
