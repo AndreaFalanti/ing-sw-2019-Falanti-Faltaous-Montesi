@@ -65,6 +65,9 @@ public class GameThread extends Thread {
             entry.getValue().reinitialize(initInfo);
         }
 
+        // start first turn, with proper message flow allow to go to game end.
+        mController.handleNextTurn();
+
         /*
         mGame.getPlayers().stream().filter(pl -> pl.getName().equals("Mario")).findAny().get()
                 .move(new Position(3, 2));

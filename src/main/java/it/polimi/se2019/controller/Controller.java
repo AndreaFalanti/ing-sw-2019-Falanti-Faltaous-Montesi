@@ -36,12 +36,17 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     private WeaponIndexStrategy mWeaponIndexStrategy;
 
+    private int mPlayerNotSpawnedCounter;
+    private boolean mActivePlayerSpawnedThisTurn = false;
+
     // constructors
     public Controller(Game game, Map<PlayerColor, View> playerViews) {
         mGame = game;
         mPlayerViews = playerViews;
         mPlayerActionController = new PlayerActionController(this);
         mShootInteraction = new ShootInteraction(mGame, mPlayerViews);
+
+        mPlayerNotSpawnedCounter = playerViews.size();
     }
 
     // trivial getters
@@ -70,6 +75,14 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     public boolean isHandlingShootInteraction() {
         return mShootInteraction.isOccupied();
+    }
+
+    public int getPlayerNotSpawnedCounter() {
+        return mPlayerNotSpawnedCounter;
+    }
+
+    public boolean isActivePlayerSpawnedThisTurn() {
+        return mActivePlayerSpawnedThisTurn;
     }
 
     // Setters
@@ -197,10 +210,11 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void handle(TurnEndRequest request) {
+        mActivePlayerSpawnedThisTurn = false;
         mGame.onTurnEnd();
 
         if (areAllPlayersAlive()) {
-            mGame.startNextTurn();
+            handleNextTurn();
         }
         else {
             sendRespawnNotificationToDeadPlayers();
@@ -218,6 +232,29 @@ public class Controller implements Observer<Request>, RequestHandler {
         respawningPlayer.discard(request.getIndex());
 
         if (areAllPlayersAlive()) {
+            handleNextTurn();
+        }
+    }
+
+    public void handleNextTurn () {
+        // prevent another turn start if called after an initial spawn
+        if (mActivePlayerSpawnedThisTurn) {
+            return;
+        }
+
+        if (mPlayerNotSpawnedCounter > 0) {
+            mGame.startNextTurn();
+            Player player = mGame.getActivePlayer();
+
+            // handle initial spawn
+            player.addPowerUp(mGame.getPowerUpDeck().drawCard(), true);
+            player.addPowerUp(mGame.getPowerUpDeck().drawCard(), true);
+            mPlayerViews.get(player.getColor()).showRespawnPowerUpDiscardView();
+
+            mActivePlayerSpawnedThisTurn = true;
+            mPlayerNotSpawnedCounter--;
+        }
+        else {
             mGame.startNextTurn();
         }
     }

@@ -151,4 +151,57 @@ public class ControllerTest {
         assertEquals(2, game.getTurnNumber());
         assertEquals(yellowPlayer, game.getActivePlayer());
     }
+
+    @Test
+    public void testInitialSpawnHandling () {
+        Game game = GameTestCaseBuilder.generateNotStartedBaseGame();
+        View viewMock1 = mock(View.class);
+        View viewMock2 = mock(View.class);
+        View viewMock3 = mock(View.class);
+        EnumMap<PlayerColor, View> mViewMap = new EnumMap<>(PlayerColor.class);
+
+        mViewMap.put(PlayerColor.BLUE, viewMock1);
+        mViewMap.put(PlayerColor.YELLOW, viewMock2);
+        mViewMap.put(PlayerColor.GREY, viewMock3);
+        Controller controller = new Controller(game, mViewMap);
+
+        // 3 players, so 3 players need to spawn
+        assertEquals(3, controller.getPlayerNotSpawnedCounter());
+
+        //first turn, player need to spawn
+        controller.handleNextTurn();
+        assertEquals(1, game.getTurnNumber());
+        // this player is spawning, so it decrease counter
+        assertEquals(2, controller.getPlayerNotSpawnedCounter());
+        // even if not already spawned, the flag is set to true
+        assertTrue(controller.isActivePlayerSpawnedThisTurn());
+
+        PowerUpCard[] cards = game.getActivePlayer().getPowerUps();
+        assertNotNull(cards[0]);
+        assertNotNull(cards[1]);
+        assertNull(cards[2]);
+        assertNull(cards[3]);
+
+        controller.handle(new RespawnPowerUpRequest(1, PlayerColor.BLUE));
+        // discard selected power up for spawning
+        assertNull(cards[1]);
+        // now player complete its spawn, flag remains to true
+        assertTrue(controller.isActivePlayerSpawnedThisTurn());
+        // and skip an erroneous turn start
+        assertEquals(1, game.getTurnNumber());
+
+        // pass turn, same thing for yellow player
+        controller.handle(new TurnEndRequest(PlayerColor.BLUE));
+        assertEquals(2, game.getTurnNumber());
+        assertEquals(PlayerColor.YELLOW, game.getActivePlayer().getColor());
+
+        cards = game.getActivePlayer().getPowerUps();
+        assertNotNull(cards[0]);
+        assertNotNull(cards[1]);
+        assertNull(cards[2]);
+        assertNull(cards[3]);
+
+        assertEquals(1, controller.getPlayerNotSpawnedCounter());
+        assertTrue(controller.isActivePlayerSpawnedThisTurn());
+    }
 }

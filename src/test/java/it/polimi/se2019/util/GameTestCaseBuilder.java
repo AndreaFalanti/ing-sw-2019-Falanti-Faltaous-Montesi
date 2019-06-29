@@ -45,7 +45,20 @@ public final class GameTestCaseBuilder {
     }
 
     /**
-     * Generate game in normal status with player with no cards in hand (typical game start). [Turn: 1]
+     * Generate a not started game in normal status with players without cards in hand. [Turn: 0]
+     * @return A not started base game
+     */
+    public static Game generateNotStartedBaseGame() {
+        Board board = Board.fromJson(Jsons.get("boards/game/board1"));
+        List<Player> players = generatePlayerList();
+
+        Game game = new Game(board, players, 5);
+
+        return game;
+    }
+
+    /**
+     * Generate game in normal status with players without cards in hand (typical game start). [Turn: 1]
      * @return A base game
      */
     public static Game generateBaseGame () {
