@@ -1,0 +1,89 @@
+{
+  "width": 4,
+  "height": 3,
+  "tiles": [
+    {
+      "type": "normal",
+      "doors": [
+        "east"
+      ],
+      "color": "RED"
+    },
+    {
+      "type": "normal",
+      "doors": [
+        "west",
+        "south"
+      ],
+      "color": "BLUE"
+    },
+    {
+      "type": "spawn",
+      "doors": [
+        "south"
+      ],
+      "color": "BLUE"
+    },
+    {
+      "type": "empty"
+    },
+    {
+      "type": "spawn",
+      "doors": [
+        "south"
+      ],
+      "color": "RED"
+    },
+    {
+      "type": "normal",
+      "doors": [
+        "south",
+        "north"
+      ],
+      "color": "PURPLE"
+    },
+    {
+      "type": "normal",
+      "doors": [
+        "north",
+        "east"
+      ],
+      "color": "PURPLE"
+    },
+    {
+      "type": "normal",
+      "doors": [
+        "west"
+      ],
+      "color": "YELLOW"
+    },
+    {
+      "type": "normal",
+      "doors": [
+        "north"
+      ],
+      "color": "WHITE"
+    },
+    {
+      "type": "normal",
+      "doors": [
+        "north"
+      ],
+      "color": "WHITE"
+    },
+    {
+      "type": "normal",
+      "doors": [
+        "east"
+      ],
+      "color": "WHITE"
+    },
+    {
+      "type": "spawn",
+      "doors": [
+        "west"
+      ],
+      "color": "YELLOW"
+    }
+  ]
+}
