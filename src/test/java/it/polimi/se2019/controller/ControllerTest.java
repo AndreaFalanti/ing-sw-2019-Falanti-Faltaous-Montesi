@@ -12,6 +12,8 @@ import it.polimi.se2019.view.request.*;
 import org.junit.Test;
 
 import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -203,5 +205,39 @@ public class ControllerTest {
 
         assertEquals(1, controller.getPlayerNotSpawnedCounter());
         assertTrue(controller.isActivePlayerSpawnedThisTurn());
+    }
+
+    @Test
+    public void testPowerUpCompletion () {
+        Game game = GameTestCaseBuilder.generateGameWithAllPowerUpsToPlayers();
+        View viewMock1 = mock(View.class);
+        View viewMock2 = mock(View.class);
+        View viewMock3 = mock(View.class);
+        EnumMap<PlayerColor, View> mViewMap = new EnumMap<>(PlayerColor.class);
+
+        mViewMap.put(PlayerColor.BLUE, viewMock1);
+        mViewMap.put(PlayerColor.YELLOW, viewMock2);
+        mViewMap.put(PlayerColor.GREY, viewMock3);
+        Controller controller = new Controller(game, mViewMap);
+
+        // use teleport powerUp
+        controller.handle(new UsePowerUpRequest(0, PlayerColor.BLUE));
+        // expect a position
+        Position targetPosition = new Position(2, 0);
+        controller.handle(new PositionSelectedRequest(targetPosition, PlayerColor.BLUE));
+
+        assertEquals(targetPosition, game.getActivePlayer().getPos());
+
+        // use newton powerUp
+        controller.handle(new UsePowerUpRequest(1, PlayerColor.BLUE));
+        // expect a target
+        Set<PlayerColor> target = new HashSet<>();
+        target.add(PlayerColor.YELLOW);
+        controller.handle(new TargetsSelectedRequest(target, PlayerColor.BLUE));
+        // expect a position
+        targetPosition = new Position(1, 0);
+        controller.handle(new PositionSelectedRequest(targetPosition, PlayerColor.BLUE));
+
+        assertEquals(targetPosition, game.getPlayerFromColor(PlayerColor.YELLOW).getPos());
     }
 }

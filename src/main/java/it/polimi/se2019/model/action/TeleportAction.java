@@ -11,17 +11,25 @@ public class TeleportAction implements Action {
     private Position mDestination;
     private int mTeleportIndex;
 
-    public TeleportAction (Position destination, int index) {
+    public TeleportAction(int index) {
         if (index < 0 || index >= 3) {
             throw new IllegalArgumentException("invalid powerUp index");
         }
 
-        mDestination = destination;
         mTeleportIndex = index;
+    }
+
+    public TeleportAction (Position destination, int index) {
+        this(index);
+        mDestination = destination;
     }
 
     public int getTeleportIndex() {
         return mTeleportIndex;
+    }
+
+    public void setDestination(Position destination) {
+        mDestination = destination;
     }
 
     @Override

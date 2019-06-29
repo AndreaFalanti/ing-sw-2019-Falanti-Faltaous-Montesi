@@ -3,12 +3,11 @@ package it.polimi.se2019.controller;
 
 import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.controller.weapon.expression.Expression;
-import it.polimi.se2019.model.Game;
-import it.polimi.se2019.model.Player;
-import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.CostlyAction;
 import it.polimi.se2019.model.action.MoveGrabAction;
+import it.polimi.se2019.model.action.NewtonAction;
+import it.polimi.se2019.model.action.TeleportAction;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
@@ -122,7 +121,17 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void handle(TargetsSelectedRequest request) {
-        continueShootInteraction(request);
+        if (isHandlingShootInteraction()) {
+            continueShootInteraction(request);
+        }
+        else {
+            // only one target is needed, not hacked view should send only one anyway
+            PlayerColor targetColor = (PlayerColor)request.getSelectedTargets().toArray()[0];
+            mPlayerActionController.getCompletableNewtonAction().setTarget(targetColor);
+            mPlayerViews.get(request.getViewColor()).showMessage("Select position in which move target");
+            mPlayerViews.get(request.getViewColor()).showPositionSelectionView(
+                    mPlayerActionController.getPositionsForNewton(targetColor));
+        }
     }
 
     @Override
@@ -180,7 +189,22 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void handle(PositionSelectedRequest request) {
-        continueShootInteraction(request);
+        if (isHandlingShootInteraction()) {
+            continueShootInteraction(request);
+        }
+        else {
+            TeleportAction teleportAction = mPlayerActionController.getCompletableTeleportAction();
+
+            if (teleportAction != null) {
+                teleportAction.setDestination(request.getPosition());
+                mPlayerActionController.executeAction(teleportAction, mPlayerViews.get(request.getViewColor()));
+            }
+            else {
+                NewtonAction newtonAction = mPlayerActionController.getCompletableNewtonAction();
+                newtonAction.setDestination(request.getPosition());
+                mPlayerActionController.executeAction(newtonAction, mPlayerViews.get(request.getViewColor()));
+            }
+        }
     }
 
     @Override
@@ -233,6 +257,37 @@ public class Controller implements Observer<Request>, RequestHandler {
 
         if (areAllPlayersAlive()) {
             handleNextTurn();
+        }
+    }
+
+    @Override
+    public void handle(UsePowerUpRequest request) {
+        PowerUpType powerUpType = mGame.getActivePlayer().getPowerUpCard(request.getPowerUpIndex()).getType();
+        View playerView = mPlayerViews.get(request.getViewColor());
+
+        switch (powerUpType) {
+            case TELEPORT:
+                mPlayerActionController.setCompletableTeleportAction(new TeleportAction(request.getPowerUpIndex()));
+                playerView.showMessage("Select a position for teleport");
+                playerView.showPositionSelectionView(mPlayerActionController.getPositionsForTeleport());
+                break;
+            case NEWTON:
+                mPlayerActionController.setCompletableNewtonAction(new NewtonAction(request.getPowerUpIndex()));
+                playerView.showMessage("Select target for newton");
+                playerView.showTargetsSelectionView(1, 1,
+                        mPlayerActionController.getAllTargetsExceptActivePlayer());
+                break;
+            case TAGBACK_GRENADE:
+                logger.info("Tagback grenade can't be handled without proper event");
+                playerView.showMessage("Can't use tagback without taking damage");
+                break;
+            case TARGETING_SCOPE:
+                logger.info("Targeting scope can't be handled without proper event");
+                playerView.showMessage("Can't use targeting scope outside a shooting interaction");
+                break;
+            default:
+                logger.severe("Unknown powerUp type");
+                break;
         }
     }
 
