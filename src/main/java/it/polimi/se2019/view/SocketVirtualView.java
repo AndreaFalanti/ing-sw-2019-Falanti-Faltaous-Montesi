@@ -128,28 +128,29 @@ public class SocketVirtualView extends View {
 
     @Override
     public void showRespawnPowerUpDiscardView() {
-
+        sendResponse(new PickRespawnPowerUpResponse());
     }
 
     @Override
     public void reinitialize(InitializationInfo initInfo) {
-
+        sendResponse(new InitializationInfoResponse(initInfo));
     }
 
     private void sendResponse (Response response) {
         logger.log(Level.INFO, "Sending {0}...", response.getClass().getSimpleName());
-        mOut.print(mGson.toJson(response));
+        mOut.println(mGson.toJson(response));
     }
 
-    public void getRequest () {
-        logger.info("Waiting for a request...");
-        try {
-            String json = mIn.readLine();
-            Request request = mGson.fromJson(json, Request.class);
-            notify(request);
-        }
-        catch (IOException e) {
-            logger.severe(e.getMessage());
+    public void getRequests () {
+        while (!mSocket.isClosed()) {
+            logger.info("Waiting for a request...");
+            try {
+                String json = mIn.readLine();
+                Request request = mGson.fromJson(json, Request.class);
+                notify(request);
+            } catch (IOException e) {
+                logger.severe(e.getMessage());
+            }
         }
     }
 }

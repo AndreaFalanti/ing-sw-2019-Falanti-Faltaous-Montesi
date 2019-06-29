@@ -60,8 +60,11 @@ public class InitializationInfo {
     }
 
 
-    public InitializationInfo(Game game, PlayerColor ownerColor) {
+    public void setOwnerColor(PlayerColor ownerColor) {
         mOwnerColor = ownerColor;
+    }
+
+    public InitializationInfo(Game game) {
         mBoard = game.getBoard();
         mPlayers = game.getPlayers();
         mTurnNumber = game.getTurnNumber();

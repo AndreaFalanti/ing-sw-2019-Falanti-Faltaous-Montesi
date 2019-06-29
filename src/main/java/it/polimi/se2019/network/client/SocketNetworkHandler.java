@@ -42,10 +42,10 @@ public class SocketNetworkHandler implements ClientNetworkHandler, ResponseHandl
     }
 
     public void activateGameMessageReception () {
-        new Thread(this::receiveResponse).start();
+        new Thread(this::receiveResponses).start();
     }
 
-    private void receiveResponse() {
+    private void receiveResponses() {
         while (!mSocket.isClosed()) {
             logger.info("Waiting for a request...");
             try {
@@ -116,16 +116,26 @@ public class SocketNetworkHandler implements ClientNetworkHandler, ResponseHandl
     }
 
     @Override
+    public void handle(PickRespawnPowerUpResponse response) {
+        mView.showRespawnPowerUpDiscardView();
+    }
+
+    @Override
+    public void handle(InitializationInfoResponse response) {
+        mView.reinitialize(response.getInitializationInfo());
+    }
+
+    @Override
     public boolean sendUsername(String username) {
         mOut.println(username);
         String message = null;
         try {
             message = mIn.readLine();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe(e.getMessage());
         }
         if (message == null || !message.equals("ok")) {
-            System.out.println(message);
+            logger.info(message);
             return false;
         }
 

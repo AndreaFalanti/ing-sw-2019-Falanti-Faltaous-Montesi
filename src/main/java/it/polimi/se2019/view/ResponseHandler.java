@@ -14,4 +14,6 @@ public interface ResponseHandler {
     void handle(PickEffectsResponse response);
     void handle(PickWeaponModeResponse response);
     void handle(PickRoomColorResponse response);
+    void handle(PickRespawnPowerUpResponse response);
+    void handle(InitializationInfoResponse response);
 }

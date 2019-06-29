@@ -1,14 +1,12 @@
 package it.polimi.se2019.network.server;
 
 import it.polimi.se2019.controller.Controller;
-import it.polimi.se2019.controller.weapon.ShootInteraction;
-import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Jsons;
+import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.ViewFactory;
 
@@ -59,8 +57,15 @@ public class GameThread extends Thread {
     @Override
     public void run() {
         // announce start of game thread
-        System.out.println("The game thread has begun!!");
+        logger.info("The game thread has begun!!");
 
+        InitializationInfo initInfo = mGame.extractViewInitializationInfo();
+        for (Map.Entry<PlayerColor, View> entry : mController.getPlayerViews().entrySet()) {
+            initInfo.setOwnerColor(entry.getKey());
+            entry.getValue().reinitialize(initInfo);
+        }
+
+        /*
         mGame.getPlayers().stream().filter(pl -> pl.getName().equals("Mario")).findAny().get()
                 .move(new Position(3, 2));
         mGame.getPlayers().stream().filter(pl -> pl.getName().equals("Luigi")).findAny().get()
@@ -89,7 +94,7 @@ public class GameThread extends Thread {
                     Thread.currentThread().interrupt();
                 }
             }
-        }
+        }*/
 
         // announce end of game thread
         System.out.println("The game thread has ended!");

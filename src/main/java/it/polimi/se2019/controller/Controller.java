@@ -49,6 +49,14 @@ public class Controller implements Observer<Request>, RequestHandler {
         return mGame;
     }
 
+    public PlayerActionController getPlayerActionController() {
+        return mPlayerActionController;
+    }
+
+    public Map<PlayerColor, View> getPlayerViews() {
+        return mPlayerViews;
+    }
+
     public ShootInteraction getShootInteraction() {
         return mShootInteraction;
     }
