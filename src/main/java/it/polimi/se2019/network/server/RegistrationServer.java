@@ -1,7 +1,5 @@
 package it.polimi.se2019.network.server;
 
-import it.polimi.se2019.model.PlayerColor;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.rmi.RemoteException;

@@ -5,7 +5,6 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PowerUpCard;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 
 public final class AmmoPayment {
     // private constructor, avoids class instantiation

@@ -2,10 +2,8 @@ package it.polimi.se2019.controller.weapon.expression;
 
 import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;

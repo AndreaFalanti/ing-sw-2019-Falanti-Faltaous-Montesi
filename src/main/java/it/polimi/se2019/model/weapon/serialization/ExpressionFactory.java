@@ -9,7 +9,6 @@ import it.polimi.se2019.model.serialization.AmmoValueDeserializer;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
-import it.polimi.se2019.view.InitializationInfo;
 
 public class ExpressionFactory {
     // GSON used to deal with serialization

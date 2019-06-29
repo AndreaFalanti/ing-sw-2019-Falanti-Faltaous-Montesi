@@ -12,22 +12,31 @@ import java.util.Scanner;
 public class LoginCLI {
     private static int SOCKETPORT = 4567;
     private static int RMIPORT = 4568;
+
+    private static void printLineToConsole(String message) {
+        System.out.println(message);
+    }
+
+    private static void printToConsole(String message) {
+        System.out.print(message);
+    }
+    
     public static void log() throws IOException, NotBoundException {
 
         String username="";
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Choose a username:");
-        System.out.print(">> ");
+        printLineToConsole("Choose a username:");
+        printToConsole(">> ");
         while (username.equals("")) {
             username = scanner.nextLine();
         }
 
 
-        System.out.println("Choose client connection type: ");
-        System.out.println("Press 1 for socket");
-        System.out.println("Press 2 for rmi");
-        System.out.print(">> ");
+        printLineToConsole("Choose client connection type: ");
+        printLineToConsole("Press 1 for socket");
+        printLineToConsole("Press 2 for rmi");
+        printToConsole(">> ");
 
         int result = -1;
         boolean validCmd;
@@ -35,15 +44,15 @@ public class LoginCLI {
             try {
                 result = scanner.nextInt();
                 if (result < 1 || result > 2) {
-                    System.out.println("Invalid input");
-                    System.out.print("\n>> ");
+                    printLineToConsole("Invalid input");
+                    printToConsole("\n>> ");
                     validCmd = false;
                 } else {
                     validCmd = true;
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Choose a number please");
-                System.out.print("\n>> ");
+                printLineToConsole("Choose a number please");
+                printToConsole("\n>> ");
                 // flush remaining \n in buffer
                 scanner.next();
                 validCmd = false;

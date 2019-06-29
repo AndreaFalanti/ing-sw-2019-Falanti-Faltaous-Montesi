@@ -5,7 +5,6 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;

@@ -21,11 +21,19 @@ public class SocketClient extends Client {
         mOut = new PrintWriter(mSocket.getOutputStream(), true);
     }
 
+    private static void printLineToConsole(String message) {
+        System.out.println(message);
+    }
+
+    private static void printToConsole(String message) {
+        System.out.print(message);
+    }
+
     private String receive () {
         try {
             return mIn.readLine();
         } catch (IOException e) {
-            System.out.println("Critical error while reading from socket");
+            printLineToConsole("Critical error while reading from socket");
             return null;
         }
     }
@@ -36,24 +44,24 @@ public class SocketClient extends Client {
 
     @Override
     public void run() {
-        System.out.println("Running socket client");
+        printLineToConsole("Running socket client");
         Scanner scanner = new Scanner(System.in);
         String message;
         boolean validUsername;
 
-        System.out.println("Insert username: ");
+        printLineToConsole("Insert username: ");
 
         do {
-            System.out.print(">>");
+            printToConsole(">>");
             mOut.println(scanner.nextLine());
             message = receive();
             if (message == null || !message.equals("ok")) {
                 validUsername = false;
-                System.out.println(message);
+                printLineToConsole(message);
             }
             else {
                 validUsername = true;
-                System.out.println("Username is valid");
+                printLineToConsole("Username is valid");
             }
         } while (!validUsername);
     }

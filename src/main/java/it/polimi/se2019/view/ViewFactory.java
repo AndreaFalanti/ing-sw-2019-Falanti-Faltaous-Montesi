@@ -13,7 +13,7 @@ public final class ViewFactory {
         socketVirtualView.setupUpdateHandler();
         socketVirtualView.setupSocket(socket);
 
-        new Thread(() -> socketVirtualView.getRequests()).start();
+        new Thread(socketVirtualView::getRequests).start();
 
         return socketVirtualView;
     }

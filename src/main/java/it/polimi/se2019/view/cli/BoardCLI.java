@@ -34,6 +34,10 @@ public class BoardCLI {
     private List<StringBuilder> board = new ArrayList<>();
     private boolean thirdNull= false;
 
+    private static void printToConsole(StringBuilder message) {
+        System.out.print(message);
+    }
+
     public BoardCLI(Board realBoard) {
         Tile tile;
         List<Tile> tBoard = new ArrayList<>();
@@ -349,10 +353,10 @@ public class BoardCLI {
                 }
            }
         }
-        System.out.print(board.get(0));
-        System.out.print(firstLineSostitution);
-        System.out.print(secondLineSostitution);
-        System.out.print(thirdLineSostitution);
+        printToConsole(board.get(0));
+        printToConsole(firstLineSostitution);
+        printToConsole(secondLineSostitution);
+        printToConsole(thirdLineSostitution);
     }
 
     public static void addPlayer(StringBuilder line , String horizontal,String color,int numberPlayer){

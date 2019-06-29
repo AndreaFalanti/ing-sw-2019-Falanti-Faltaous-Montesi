@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Damage {
-    private static Pattern PATTERN  = Pattern.compile("^(?!$)(?:(\\d+)d)?(?:(\\d+)m)?$");
+    private static final Pattern PATTERN  = Pattern.compile("^(?!$)(?:(\\d+)d)?(?:(\\d+)m)?$");
 
     private int mDamage;
     private int mMarksNum;

@@ -36,8 +36,7 @@ public class SocketVirtualView extends View {
                 new UpdateHandler() {
                     @Override
                     public void fallbackHandle(Update update) {
-                        /*String json = gson.toJson(update);
-                        mOut.print(json);*/
+                        throw new UnsupportedOperationException("Custom update handler not set");
                     }
                 }
         );

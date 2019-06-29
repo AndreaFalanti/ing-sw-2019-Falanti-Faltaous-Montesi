@@ -18,8 +18,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.logging.Logger;
 
 public class GraphicView extends View {
+    private static final Logger logger = Logger.getLogger(GraphicView.class.getName());
+
     private MainScreen mMainFrameController;
     private Scene mActuallyDisplayedScene;
 
@@ -176,7 +179,7 @@ public class GraphicView extends View {
             mActuallyDisplayedScene = scene;
         }
         catch (IOException e) {
-            e.printStackTrace();
+            logger.severe(e.getMessage());
         }
     }
 

@@ -6,9 +6,17 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class LaunchClient {
+    private static void printLineToConsole(String message) {
+        System.out.println(message);
+    }
+
+    private static void printToConsole(String message) {
+        System.out.print(message);
+    }
+
     public static void main(String[] args) throws IOException, NotBoundException {
         if (args.length != 3) {
-            System.out.println("Provide host and ports in cmd");
+            printLineToConsole("Provide host and ports in cmd");
             return;
         }
 
@@ -17,10 +25,10 @@ public class LaunchClient {
         int rmiPort = Integer.parseInt(args[2]);
 
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Choose client connection type: ");
-        System.out.println("Press 1 for socket");
-        System.out.println("Press 2 for rmi");
-        System.out.print(">> ");
+        printLineToConsole("Choose client connection type: ");
+        printLineToConsole("Press 1 for socket");
+        printLineToConsole("Press 2 for rmi");
+        printToConsole(">> ");
 
         int result = -1;
         boolean validCmd;
@@ -28,8 +36,8 @@ public class LaunchClient {
             try {
                 result = scanner.nextInt();
                 if (result < 1 || result > 2) {
-                    System.out.println("Invalid input");
-                    System.out.print("\n>> ");
+                    printLineToConsole("Invalid input");
+                    printToConsole("\n>> ");
                     validCmd = false;
                 }
                 else {
@@ -37,8 +45,8 @@ public class LaunchClient {
                 }
             }
             catch (InputMismatchException e) {
-                System.out.println("Choose a number please");
-                System.out.print("\n>> ");
+                printLineToConsole("Choose a number please");
+                printToConsole("\n>> ");
                 // flush remaining \n in buffer
                 scanner.next();
                 validCmd = false;
@@ -53,8 +61,9 @@ public class LaunchClient {
                 client = new SocketClient(host, socketPort);
                 break;
             case 2:
-                // client = new RmiClient(host, rmiPort);
-                throw new UnsupportedOperationException("WIP");
+                client = new RmiClient(host, rmiPort);
+                break;
+                //throw new UnsupportedOperationException("WIP");
             default:
                 throw new IllegalStateException("invalid client selected");
         }

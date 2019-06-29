@@ -5,7 +5,10 @@ import it.polimi.se2019.model.update.*;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Pair;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -407,7 +410,7 @@ public class Player extends Observable<Update> {
      * Returns all the indices for the powerups that this player has
      * @return all the wanted indices
      */
-    public Set<Integer> getPowerupIndices() {
+    public Set<Integer> getAllPowerUpIndices() {
         return IntStream.range(0, getPowerUps().length)
                 .mapToObj(i -> new Pair<>(i, getPowerUps()[i]))
                 .filter(pair -> pair.getSecond() != null)
