@@ -2,13 +2,16 @@ package it.polimi.se2019.view;
 
 import com.google.gson.Gson;
 import it.polimi.se2019.controller.response.*;
+import it.polimi.se2019.controller.response.serialization.ResponseFactory;
 import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
+import it.polimi.se2019.model.update.serialization.UpdateFactory;
 import it.polimi.se2019.view.request.Request;
+import it.polimi.se2019.view.request.serialization.RequestFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,8 +31,6 @@ public class SocketVirtualView extends View {
     private PrintWriter mOut;
     private BufferedReader mIn;
 
-    private Gson mGson = new Gson();
-
     public SocketVirtualView(PlayerColor ownerColor) {
         super(
                 ownerColor,
@@ -48,7 +49,7 @@ public class SocketVirtualView extends View {
         mUpdateHandler = new UpdateHandler() {
             @Override
             public void fallbackHandle(Update update) {
-                        String json = mGson.toJson(update);
+                        String json = UpdateFactory.toJson(update);
                         mOut.print(json);
             }
         };
@@ -137,7 +138,7 @@ public class SocketVirtualView extends View {
 
     private void sendResponse (Response response) {
         logger.log(Level.INFO, "Sending {0}...", response.getClass().getSimpleName());
-        mOut.println(mGson.toJson(response));
+        mOut.println(ResponseFactory.toJson(response));
     }
 
     public void getRequests () {
@@ -145,7 +146,7 @@ public class SocketVirtualView extends View {
             logger.info("Waiting for a request...");
             try {
                 String json = mIn.readLine();
-                Request request = mGson.fromJson(json, Request.class);
+                Request request = RequestFactory.fromJson(json);
                 notify(request);
             } catch (IOException e) {
                 logger.severe(e.getMessage());

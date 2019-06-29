@@ -2,9 +2,11 @@ package it.polimi.se2019.network.client;
 
 import com.google.gson.Gson;
 import it.polimi.se2019.controller.response.*;
+import it.polimi.se2019.controller.response.serialization.ResponseFactory;
 import it.polimi.se2019.view.ResponseHandler;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.Request;
+import it.polimi.se2019.view.request.serialization.RequestFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,7 +23,6 @@ public class SocketNetworkHandler implements ClientNetworkHandler, ResponseHandl
     private Socket mSocket;
     private PrintWriter mOut;
     private BufferedReader mIn;
-    private Gson mGson = new Gson();
 
     public SocketNetworkHandler(View view, Socket socket) {
         mView = view;
@@ -38,7 +39,7 @@ public class SocketNetworkHandler implements ClientNetworkHandler, ResponseHandl
     @Override
     public void update(Request request) {
         logger.log(Level.INFO, "Sending a request of type: {0}", request.getClass().getSimpleName());
-        mOut.print(mGson.toJson(request));
+        mOut.print(RequestFactory.toJson(request));
     }
 
     public void activateGameMessageReception () {
@@ -50,7 +51,7 @@ public class SocketNetworkHandler implements ClientNetworkHandler, ResponseHandl
             logger.info("Waiting for a request...");
             try {
                 String json = mIn.readLine();
-                Response response = mGson.fromJson(json, Response.class);
+                Response response = ResponseFactory.fromJson(json);
                 logger.info("Handling request...");
                 response.handleMe(this);
             } catch (IOException e) {
