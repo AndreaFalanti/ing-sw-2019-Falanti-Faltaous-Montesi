@@ -67,10 +67,13 @@ public class CLIView extends View {
     @Override
     public void reinitialize(InitializationInfo initInfo){
 
-        mCLIInfo = new CLIInfo(initInfo.getPlayers(),mOwnerColor, initInfo.getActivePlayerColor(), initInfo.getBoard(), initInfo.getTurnNumber(), initInfo.getKills(),
+        System.out.println("arrivato");
+
+        mCLIInfo = new CLIInfo(initInfo.getPlayers(),initInfo.getOwnerColor(), initInfo.getActivePlayerColor(), initInfo.getBoard(), initInfo.getTurnNumber(), initInfo.getKills(),
                 initInfo.getOverkills());
 
-        ((CLIUpdateHandler)mUpdateHandler).setUpdateHandler(mCLIInfo);
+        ((CLIUpdateHandler)mUpdateHandler).setUpdateHandlerCLIInfo(mCLIInfo);
+        System.out.println("arrivato");
     }
 
     public void actionCommand(){
@@ -112,51 +115,53 @@ public class CLIView extends View {
         Action action = null;
         int index;
         Position pos;
+     //   if(mCLIInfo.getActivePlayer().equalsIgnoreCase(mOwnerColor.getPascalName())) {
+            switch (command) {
+                case "move":
+                    pos = parseDestination(otherCommandPart);
+                    action = new MoveAction(mCLIInfo.getOwnerColorf(), pos);
+                    logger.log(Level.INFO, "Action: MOVE  Pos: {0}", pos);
+                    break;
+                case "grab":
+                    pos = parseDestination(otherCommandPart);
+                    action = new MoveGrabAction(mCLIInfo.getOwnerColorf(), pos);
+                    logger.log(Level.INFO, "Action: GRAB  Pos: {0}", pos);
+                    break;
+                case "shoot":
+                    pos = parseDestination(otherCommandPart);
+                    index = parseWeaponToAct(true);
 
-        switch (command) {
-            case "move":
-                pos=parseDestination(otherCommandPart);
-                action = new MoveAction(mCLIInfo.getOwnerColorf(),pos);
-                logger.log(Level.INFO,"Action: MOVE  Pos: {0}",pos);
-                break;
-            case "grab":
-                pos=parseDestination(otherCommandPart);
-                action = new MoveGrabAction(mCLIInfo.getOwnerColorf(), pos);
-                logger.log(Level.INFO,"Action: GRAB  Pos: {0}",pos);
-                break;
-            case "shoot":
-                pos=parseDestination(otherCommandPart);
-                index=parseWeaponToAct(true);
-
-                action = new MoveShootAction(mCLIInfo.getOwnerColorf(), pos , index);
-                logger.log(Level.INFO,"Action: SHOOT  Pos: {0} ",pos);
-                break;
-            case "teleport":
-                pos=parseDestination(otherCommandPart);
-                System.out.println(mCLIInfo.getOwner().getPlayerPowerUps());
-                index = parseInteger();
-                action = new TeleportAction(pos,index);
-                logger.log(Level.INFO,"Action: SHOOT  Pos: {0}",pos);
-                break;
-            case "reloadshoot":
-                pos=parseDestination(otherCommandPart);
-                int indexReload = parseWeaponToAct(false);
-                index = parseWeaponToAct(true);
-                action = new MoveReloadShootAction(mCLIInfo.getOwnerColorf(), pos, indexReload, index);
-                logger.log(Level.INFO,"Action: RELOADSHOOT  Pos: {0}  ",pos );
-                break;
-            case "reload" :
-                index = parseWeaponToAct(false);
-                action = new ReloadAction(index);
-                logger.log(Level.INFO,"Action: RELOAD  index: {0}",index);
-                break;
-            default:
-                availableCommands();
-                break;
-        }
+                    action = new MoveShootAction(mCLIInfo.getOwnerColorf(), pos, index);
+                    logger.log(Level.INFO, "Action: SHOOT  Pos: {0} ", pos);
+                    break;
+                case "teleport":
+                    pos = parseDestination(otherCommandPart);
+                    System.out.println(mCLIInfo.getOwner().getPlayerPowerUps());
+                    index = parseInteger();
+                    action = new TeleportAction(pos, index);
+                    logger.log(Level.INFO, "Action: SHOOT  Pos: {0}", pos);
+                    break;
+                case "reloadshoot":
+                    pos = parseDestination(otherCommandPart);
+                    int indexReload = parseWeaponToAct(false);
+                    index = parseWeaponToAct(true);
+                    action = new MoveReloadShootAction(mCLIInfo.getOwnerColorf(), pos, indexReload, index);
+                    logger.log(Level.INFO, "Action: RELOADSHOOT  Pos: {0}  ", pos);
+                    break;
+                case "reload":
+                    index = parseWeaponToAct(false);
+                    action = new ReloadAction(index);
+                    logger.log(Level.INFO, "Action: RELOAD  index: {0}", index);
+                    break;
+                default:
+                    availableCommands();
+                    break;
+            }
 
 
-        notify(new ActionRequest(action, getOwnerColor()));
+            notify(new ActionRequest(action, getOwnerColor()));
+   //     }else System.out.println("Is not your turn!\n");
+
         availableCommands();
     }
 
@@ -349,7 +354,8 @@ public class CLIView extends View {
 
     @Override
     public void showRespawnPowerUpDiscardView() {
-
+        System.out.println(mCLIInfo.getOwner().getPlayerPowerUps());
+        notify(new RespawnPowerUpRequest(parseInteger(), mOwnerColor));
     }
 
     public int parseInteger(){

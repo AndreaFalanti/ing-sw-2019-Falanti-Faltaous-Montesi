@@ -8,7 +8,7 @@ public class CLIUpdateHandler implements UpdateHandler {
 
     public CLIInfo getCLIInfo(){return mCLIInfo;}
 
-    public void setUpdateHandler(CLIInfo cliInfo){mCLIInfo = cliInfo;}
+    public void setUpdateHandlerCLIInfo(CLIInfo cliInfo){mCLIInfo = cliInfo;}
 
     public CLIUpdateHandler(CLIInfo cLIInfo){mCLIInfo=cLIInfo;}
 
