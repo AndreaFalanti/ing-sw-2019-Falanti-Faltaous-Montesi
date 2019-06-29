@@ -1,6 +1,7 @@
 package it.polimi.se2019.model.board.serialization;
 
 import com.google.gson.*;
+import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.Tile;
 
 import java.lang.reflect.Type;
@@ -28,6 +29,10 @@ public class CustomTilesDeserializer implements JsonDeserializer<List<Tile>>, Js
     @Override
     public JsonElement serialize(List<Tile> tiles, Type type, JsonSerializationContext jsonSerializationContext) {
         return tiles.stream()
+                .peek(tile -> {
+                    if (tile != null && tile instanceof SpawnTile)
+                        System.out.println(jsonSerializationContext.serialize(tile, Tile.class));
+                })
                 .map(tile -> {
                     if (tile == null) {
                         JsonObject jTile = new JsonObject();

@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import it.polimi.se2019.controller.response.*;
+import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.board.serialization.CustomBoardAdapter;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
@@ -30,8 +32,10 @@ public final class ResponseFactory {
                         .registerSubtype(ValidMoveResponse.class)
                 )
                 //.setPrettyPrinting()
+                .registerTypeAdapter(Board.class, new CustomBoardAdapter())
                 .setFieldNamingStrategy(new CustomFieldNamingStrategy())
                 .addSerializationExclusionStrategy(new AnnotationExclusionStrategy())
+                .addDeserializationExclusionStrategy(new AnnotationExclusionStrategy())
                 .create();
     }
 

@@ -50,6 +50,7 @@ public class SocketNetworkHandler implements ClientNetworkHandler, ResponseHandl
             logger.info("Waiting for a response...");
             try {
                 String json = mIn.readLine();
+                logger.log(Level.INFO, "Received response to deserialize: {0}", json);
                 Response response = ResponseFactory.fromJson(json);
                 logger.info("Handling response...");
                 response.handleMe(this);

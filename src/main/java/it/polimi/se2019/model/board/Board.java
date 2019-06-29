@@ -2,10 +2,14 @@ package it.polimi.se2019.model.board;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.board.serialization.CustomBoardDeserializer;
 import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
+import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
+import it.polimi.se2019.util.Exclude;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 import java.util.*;
@@ -14,13 +18,14 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Board {
-
     // GSON used to deal with serialization/deserialization
     private static Gson GSON = new GsonBuilder()
             .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Tile.class, "type")
                 .registerSubtype(NormalTile.class, "normal")
                 .registerSubtype(SpawnTile.class, "spawn"))
             .setFieldNamingStrategy(new CustomFieldNamingStrategy())
+            .addDeserializationExclusionStrategy(new AnnotationExclusionStrategy())
+            .addSerializationExclusionStrategy(new AnnotationExclusionStrategy())
             .create();
 
     // width and height
@@ -31,6 +36,7 @@ public class Board {
     @JsonAdapter(CustomTilesDeserializer.class)
     ArrayList<Tile> mTiles;
 
+    @Exclude
     private EnumMap<TileColor, SpawnTile> mSpawnMap = new EnumMap<>(TileColor.class);
 
     // trivial getters
@@ -89,6 +95,11 @@ public class Board {
      * @return the constructed board object
      */
     public static Board fromJson(String toParse) {
+        return fromJson(new Gson().fromJson(toParse, JsonElement.class));
+    }
+
+    // TODO: add doc
+    public static Board fromJson(JsonElement toParse) {
         Board result = GSON.fromJson(toParse, Board.class);
         result.initializeSpawnMap();
         return result;
@@ -101,6 +112,9 @@ public class Board {
     public String toJson() {
         return GSON.toJson(this);
     }
+
+    // TODO: add doc
+    public JsonElement toJsonTree() { return GSON.toJsonTree(this); }
 
     /**
      *
