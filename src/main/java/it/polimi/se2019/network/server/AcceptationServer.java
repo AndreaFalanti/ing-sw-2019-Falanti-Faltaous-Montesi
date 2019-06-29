@@ -26,7 +26,7 @@ public class AcceptationServer {
             try {
                 Socket socket = mServerSocket.accept();
                 logger.log(Level.INFO, "Connection accepted: {0}", socket.getRemoteSocketAddress());
-                new PlayerThread(socket, mRegistrationServer).start();
+                new PlayerRegistrationThread(socket, mRegistrationServer).start();
             } catch (IOException e) {
                 logger.severe("Connection error");
                 block = true;

@@ -136,8 +136,8 @@ public class GraphicView extends View {
             stage.centerOnScreen();
 
             MainScreen controller = loader.getController();
-            // TODO: need an actual color here
-            PlayerColor clientColor = PlayerColor.GREEN;
+
+            PlayerColor clientColor = initInfo.getOwnerColor();
             setMainFrameController(controller);
             setOwnerColor(clientColor);
             controller.setView(this);

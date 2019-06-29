@@ -7,8 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.logging.Logger;
 
-public class PlayerThread extends Thread {
-    private static final Logger logger = Logger.getLogger(PlayerThread.class.getName());
+public class PlayerRegistrationThread extends Thread {
+    private static final Logger logger = Logger.getLogger(PlayerRegistrationThread.class.getName());
 
     private Socket mSocket;
     private PrintWriter mOut;
@@ -17,7 +17,7 @@ public class PlayerThread extends Thread {
 
     private boolean mInGame = false;
 
-    public PlayerThread(Socket socket, ConnectionRegister register) {
+    public PlayerRegistrationThread(Socket socket, ConnectionRegister register) {
         mSocket = socket;
         try {
             mOut = new PrintWriter(socket.getOutputStream(), true);

@@ -651,11 +651,11 @@ public class MainScreen extends Observable<Request> {
     }
 
     public void activateDirectionTab () {
-        tabPane.getSelectionModel().select(DIRECTION_TAB);
+        activateWeaponRelatedTab(DIRECTION_TAB);
     }
 
     public void activateRoomTab (Set<TileColor> possibleColors) {
-        tabPane.getSelectionModel().select(ROOM_TAB);
+        activateWeaponRelatedTab(ROOM_TAB);
         TileColor[] tileColors = TileColor.values();
 
         for (TileColor tileColor : tileColors) {
@@ -666,8 +666,9 @@ public class MainScreen extends Observable<Request> {
     }
 
     public void activateTargetsTab (Set<PlayerColor> possibleTargets, int minTargets, int maxTargets) {
-        tabPane.getSelectionModel().select(TARGETS_TAB);
+        activateWeaponRelatedTab(TARGETS_TAB);
         targetsBox.getChildren().clear();
+
         List<PlayerColor> playerTargets = new ArrayList<>(possibleTargets);
         // all false by default value
         mTargetSelectedCache = new boolean[possibleTargets.size()];
@@ -726,7 +727,7 @@ public class MainScreen extends Observable<Request> {
     }
 
     public void activateEffectsTabForWeaponMode (Effect effect1, Effect effect2) {
-        tabPane.getSelectionModel().select(EFFECTS_TAB);
+        activateWeaponRelatedTab(EFFECTS_TAB);
         effectsBox.getChildren().clear();
         effectsOkButton.setDisable(true);
 
@@ -749,9 +750,8 @@ public class MainScreen extends Observable<Request> {
     }
 
     public void activateEffectsTabForEffects(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
-        tabPane.getSelectionModel().select(EFFECTS_TAB);
+        activateWeaponRelatedTab(EFFECTS_TAB);
         effectsBox.getChildren().clear();
-        //effectsOkButton.setDisable(true);
 
         mActualEffectIndex = 0;
         mEffectsCache = new ArrayList<>();
@@ -776,8 +776,6 @@ public class MainScreen extends Observable<Request> {
                             mActualEffectIndex = 0;
                         }
                     }
-
-                    //effectsOkButton.setDisable(!checkMandatoryEffectsAreSelected());
                 });
 
                 addToggleAndInsertInEffectsPane(child, checkBox);

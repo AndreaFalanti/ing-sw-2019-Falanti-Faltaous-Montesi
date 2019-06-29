@@ -77,10 +77,12 @@ public class LoginScreen {
                 if (mNetworkHandler == null || mActualType != SOCKET_TYPE) {
                     mNetworkHandler = new SocketNetworkHandler(mView,
                             new Socket("localhost", 4567));
+                    mActualType = SOCKET_TYPE;
                 }
 
                 if (mNetworkHandler.sendUsername(username)) {
                     mView.setNetworkHandler(mNetworkHandler);
+                    ((SocketNetworkHandler)mNetworkHandler).activateGameMessageReception();
                     waitingForPlayers();
                 }
                 else {

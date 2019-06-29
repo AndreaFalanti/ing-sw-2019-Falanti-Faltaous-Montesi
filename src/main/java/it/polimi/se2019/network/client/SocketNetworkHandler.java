@@ -33,8 +33,6 @@ public class SocketNetworkHandler implements ClientNetworkHandler, ResponseHandl
         } catch (IOException e) {
             logger.severe(e.getMessage());
         }
-
-        //new Thread(this::receiveResponse).start();
     }
 
     @Override
@@ -43,12 +41,17 @@ public class SocketNetworkHandler implements ClientNetworkHandler, ResponseHandl
         mOut.print(mGson.toJson(request));
     }
 
+    public void activateGameMessageReception () {
+        new Thread(this::receiveResponse).start();
+    }
+
     private void receiveResponse() {
         while (!mSocket.isClosed()) {
             logger.info("Waiting for a request...");
             try {
                 String json = mIn.readLine();
                 Response response = mGson.fromJson(json, Response.class);
+                logger.info("Handling request...");
                 response.handleMe(this);
             } catch (IOException e) {
                 logger.severe(e.getMessage());
