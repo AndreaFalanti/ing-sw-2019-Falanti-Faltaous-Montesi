@@ -3,14 +3,15 @@ package it.polimi.se2019.view.request.serialization;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.sun.scenario.effect.impl.prism.sw.PSWRenderer;
-import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 import it.polimi.se2019.view.request.*;
 
-public class RequestFactory {
+public final class RequestFactory {
+    private RequestFactory() {
+    }
+
     // GSON used to deal with serialization/deserialization
     static Gson makeGsonSerializerDeserializer() {
         return new GsonBuilder()
@@ -32,7 +33,7 @@ public class RequestFactory {
                         .registerSubtype(WeaponModeSelectedRequest.class)
                         .registerSubtype(WeaponSelectedRequest.class)
                 )
-                .setPrettyPrinting()
+                //.setPrettyPrinting()
                 .setFieldNamingStrategy(new CustomFieldNamingStrategy())
                 .addSerializationExclusionStrategy(new AnnotationExclusionStrategy())
                 .create();

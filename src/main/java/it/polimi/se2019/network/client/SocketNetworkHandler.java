@@ -1,6 +1,5 @@
 package it.polimi.se2019.network.client;
 
-import com.google.gson.Gson;
 import it.polimi.se2019.controller.response.*;
 import it.polimi.se2019.controller.response.serialization.ResponseFactory;
 import it.polimi.se2019.view.ResponseHandler;
@@ -48,11 +47,11 @@ public class SocketNetworkHandler implements ClientNetworkHandler, ResponseHandl
 
     private void receiveResponses() {
         while (!mSocket.isClosed()) {
-            logger.info("Waiting for a request...");
+            logger.info("Waiting for a response...");
             try {
                 String json = mIn.readLine();
                 Response response = ResponseFactory.fromJson(json);
-                logger.info("Handling request...");
+                logger.info("Handling response...");
                 response.handleMe(this);
             } catch (IOException e) {
                 logger.severe(e.getMessage());

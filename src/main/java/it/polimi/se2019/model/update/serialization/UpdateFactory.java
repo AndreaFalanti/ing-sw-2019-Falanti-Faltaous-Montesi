@@ -8,7 +8,10 @@ import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
-public class UpdateFactory {
+public final class UpdateFactory {
+    private UpdateFactory () {
+    }
+
     // GSON used to deal with serialization/deserialization
     static Gson makeGsonSerializerDeserializer() {
         return new GsonBuilder()
@@ -25,7 +28,7 @@ public class UpdateFactory {
                         .registerSubtype(PlayerRespawnUpdate.class)
                         .registerSubtype(PlayerWeaponsUpdate.class)
                 )
-                .setPrettyPrinting()
+                //.setPrettyPrinting()
                 .setFieldNamingStrategy(new CustomFieldNamingStrategy())
                 .addSerializationExclusionStrategy(new AnnotationExclusionStrategy())
                 .create();
