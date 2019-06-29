@@ -139,6 +139,8 @@ public class MainScreen extends Observable<Request> {
         setupDirectionButtonsBehaviour();
         setupRoomColorButtonsBehaviour();
         setWeaponTabsUndoButtonsBehaviour();
+
+        resetAllPowerUpsBehaviourToDefault();
     }
 
 
@@ -226,8 +228,9 @@ public class MainScreen extends Observable<Request> {
      * Load game board
      * @throws IOException Thrown if fxml is not found
      */
-    public void initializeBoardAndInfo(Board board, int kills, PlayerColor activePlayerColor,
-                                       int remainingActions, int turnNumber, List<Player> players) throws IOException {
+    public void initializeBoardAndInfo(Board board, int targetKills, PlayerColor activePlayerColor,
+                                       int remainingActions, int turnNumber, List<Player> players,
+                                       List<PlayerColor> kills, List<PlayerColor> overkills) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/boardPane.fxml"));
         Pane newLoadedPane =  loader.load();
 
@@ -235,12 +238,24 @@ public class MainScreen extends Observable<Request> {
         mBoardController.setMainController(this);
 
         mBoardController.initialize(board);
-        mBoardController.addTargetDeath(kills);
+        mBoardController.addTargetDeath(targetKills);
         mBoardController.updateActivePlayerText(activePlayerColor);
         mBoardController.updateRemainingActionsText(remainingActions);
         mBoardController.updateTurnText(turnNumber);
 
-        //TODO: update kills and overkills
+        int overkillsCounter = 0;
+        for (PlayerColor kill : kills) {
+            // assign overkill to first kill that is valid (less fidelity but same result). This could be
+            // easily adjusted with a refactor in game class, replacing the two lists with a single custom list.
+            if (overkills.get(overkillsCounter) == kill) {
+                mBoardController.addKillToKilltrack(kill, true);
+                overkillsCounter++;
+            }
+            else {
+                mBoardController.addKillToKilltrack(kill, false);
+            }
+
+        }
 
         // update player positions
         for (Player player : players) {
@@ -296,17 +311,13 @@ public class MainScreen extends Observable<Request> {
      * @param ids PowerUp ids
      */
     public void updatePowerUpGrid (String[] ids) {
-        if (ids.length != 3) {
-            throw new IllegalArgumentException("need 3 powerUp ids to update");
-        }
-
         for (int i = 0; i < ids.length; i++) {
             ImageView powerUpImageView = (ImageView)powerUpGrid.getChildren().get(i);
 
             if (ids[i] != null) {
                 Image powerUpImage = new Image(GuiResourcePaths.POWER_UP_CARD + ids[i] + ".png");
                 powerUpImageView.setImage(powerUpImage);
-                setPowerUpBehaviour(powerUpImageView, i);
+                setPowerUpDefaultBehaviour(powerUpImageView, i);
                 powerUpImageView.setDisable(false);
             }
             else {
@@ -316,16 +327,24 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    private void resetAllPowerUpsBehaviourToDefault () {
+        for (int i = 0; i < powerUpGrid.getChildren().size(); i++) {
+            setPowerUpDefaultBehaviour((ImageView) powerUpGrid.getChildren().get(i), i);
+        }
+    }
+
     /**
-     * Set correct behaviours on powerUp images
+     * Set default behaviour on powerUp images
      * @param powerUp PowerUp image
      * @param index PowerUp index
      */
-    private void setPowerUpBehaviour (ImageView powerUp, int index) {
+    private void setPowerUpDefaultBehaviour(ImageView powerUp, int index) {
         powerUp.setOnMouseClicked(event -> {
-            logToChat("Using powerUp with index: " + index);
-            powerUp.setImage(null);
-            powerUp.setDisable(true);
+            if (powerUp.getImage() != null) {
+                logToChat("Using powerUp with index: " + index);
+                notify(new UsePowerUpRequest(index, mView.getOwnerColor()));
+                powerUp.setDisable(true);
+            }
         });
     }
 
@@ -501,12 +520,13 @@ public class MainScreen extends Observable<Request> {
 
     private void finalizePowerUpInteraction () {
         GuiUtils.setBoxEnableStatus(powerUpGrid,false);
+        powerUpGrid.setDisable(false);
         setEnableStatusActionButtonBox(true);
+        resetAllPowerUpsBehaviourToDefault();
         powerUpDiscardButton.setDisable(true);
         GuiUtils.setBoxEnableStatus(powerUpGrid, true);
         for (Node node : powerUpGrid.getChildren()) {
             node.setOpacity(LOADED_OPACITY);
-            //TODO: reset to default interaction (define an onClick)
         }
     }
 
@@ -675,12 +695,10 @@ public class MainScreen extends Observable<Request> {
         targetsOkButton.setDisable(true);
 
         Label title;
-        if (minTargets == maxTargets) {
-            title = new Label("Select " + minTargets + "target");
-        }
-        else {
-            title = new Label("Select from " + minTargets + " to " + maxTargets + " targets");
-        }
+        String labelText = (minTargets == maxTargets) ? "Select " + minTargets + "target" :
+                "Select from " + minTargets + " to " + maxTargets + " targets";
+        title = new Label(labelText);
+
         title.setTextFill(Paint.valueOf("white"));
         title.setStyle("-fx-font: 20 segoe; -fx-font-weight: bold");
         targetsBox.getChildren().add(title);
@@ -871,7 +889,6 @@ public class MainScreen extends Observable<Request> {
         tabPane.getSelectionModel().selectFirst();
     }
 
-    // TODO: use this in weapon tabs activation after testing is over
     private void activateWeaponRelatedTab (int index) {
         for (int i = 0; i < tabPane.getTabs().size(); i++) {
             tabPane.getTabs().get(i).setDisable(i != index);

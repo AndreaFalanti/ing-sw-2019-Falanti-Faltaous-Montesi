@@ -147,7 +147,7 @@ public class GraphicView extends View {
             controller.loadPlayerBoards(clientColor, initInfo.getPlayers());
             controller.initializeBoardAndInfo(initInfo.getBoard(), initInfo.getSkullNum(),
                     initInfo.getActivePlayerColor(), initInfo.getRemainingActions(), initInfo.getTurnNumber(),
-                    initInfo.getPlayers());
+                    initInfo.getPlayers(), initInfo.getKills(), initInfo.getOverkills());
 
             Player owner = getOwnerPlayerFromList(initInfo.getPlayers());
             String[] ids = new String[3];

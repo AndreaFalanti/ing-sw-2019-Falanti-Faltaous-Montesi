@@ -27,6 +27,7 @@ public class ControllerTest {
 
         mViewMap.put(PlayerColor.BLUE, viewMock);
         Controller controller = new Controller(game, mViewMap);
+        controller.setPlayerNotSpawnedCounter(0);
         Player activePlayer = game.getActivePlayer();
 
         // move to spawn
@@ -58,6 +59,7 @@ public class ControllerTest {
 
         mViewMap.put(PlayerColor.BLUE, viewMock);
         Controller controller = new Controller(game, mViewMap);
+        controller.setPlayerNotSpawnedCounter(0);
         Player activePlayer = game.getActivePlayer();
 
         // move to spawn
@@ -120,6 +122,7 @@ public class ControllerTest {
         mViewMap.put(PlayerColor.YELLOW, viewMock2);
         mViewMap.put(PlayerColor.GREY, viewMock3);
         Controller controller = new Controller(game, mViewMap);
+        controller.setPlayerNotSpawnedCounter(0);
 
         // kill yellow and grey players
         Player yellowPlayer = game.getPlayerFromColor(PlayerColor.YELLOW);
@@ -219,6 +222,7 @@ public class ControllerTest {
         mViewMap.put(PlayerColor.YELLOW, viewMock2);
         mViewMap.put(PlayerColor.GREY, viewMock3);
         Controller controller = new Controller(game, mViewMap);
+        controller.setPlayerNotSpawnedCounter(0);
 
         // use teleport powerUp
         controller.handle(new UsePowerUpRequest(0, PlayerColor.BLUE));
