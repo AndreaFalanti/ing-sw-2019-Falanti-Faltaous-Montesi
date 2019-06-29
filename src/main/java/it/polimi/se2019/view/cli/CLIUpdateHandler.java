@@ -45,7 +45,7 @@ public class CLIUpdateHandler implements UpdateHandler {
     }
     @Override
     public void handle(KillScoredUpdate update) {
-        mCLIInfo.updateKillTrak(update.getPlayerKilledColor(),update.getKillerColor(),
+        mCLIInfo.updateKillTrack(update.getPlayerKilledColor(),update.getKillerColor(),
                 update.isOverkill(),update.getScores());
     }
     @Override

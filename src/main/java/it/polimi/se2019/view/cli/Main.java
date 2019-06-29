@@ -19,20 +19,59 @@ import java.util.stream.Stream;
 public class Main {
 
 
-    public static void main2(String[] args) throws IOException, NotBoundException {
+    public static void main(String[] args) throws IOException, NotBoundException {
         // test
 
+        AmmoValue initialAmmo = new AmmoValue(3, 3, 3);
+        Game game = new Game(
+                Board.fromJson(Jsons.get("boards/game/board1")),
+                new ArrayList<>(Arrays.asList(
 
+                        new Player("Luigi", PlayerColor.GREEN, new Position(2, 0), initialAmmo),
 
+                        new Player("Smurfette", PlayerColor.BLUE, new Position(2, 2), initialAmmo),
+                        new Player("Stones", PlayerColor.YELLOW, new Position(2, 1), initialAmmo)
+                )),
+                1
+        );
+
+        Map<PlayerColor, View> viewMap = Stream.of(
+                new Pair<>(
+                        PlayerColor.PURPLE,
+                        new CLIView(
+                                game.extractViewInitializationInfo(),PlayerColor.PURPLE
+                        )
+                ),
+                new Pair<>(
+                        PlayerColor.BLUE,
+                        new CLIView(
+                                game.extractViewInitializationInfo(),PlayerColor.BLUE
+                        )
+                ),
+                new Pair<>(
+                        PlayerColor.YELLOW,
+                        new CLIView(
+                                game.extractViewInitializationInfo(),PlayerColor.YELLOW
+                        )
+                )
+        )
+                .collect(Collectors.toMap(
+                        p -> p.getFirst(),
+                        p -> p.getSecond()
+                ));
+
+        Controller controller = new Controller(game, viewMap);
+        game.register(viewMap.get(PlayerColor.YELLOW));
+        viewMap.get(PlayerColor.YELLOW).register(controller);
         //end test
         LoginCLI.log();
-      //  CLIInfo cLIInfo = new CLIInfo(mPlayers,ownerColor,activePlayer,board);
-
-        CLIView cliView = new CLIView(null);
-        cliView.availableCommands();
+ //       CLIView cliView = new CLIView(game.extractViewInitializationInfo(),ownerColor);
+   //     cliView.availableCommands();
+      //  owner.onDamageTaken(new Damage(3,0), PlayerColor.YELLOW);
+      //  owner.onDamageTaken(new Damage(3,2), PlayerColor.GREY);
     }
 
-    public static void main(String[] args) {
+    public static void main3(String[] args) {
         AmmoValue initialAmmo = new AmmoValue(3, 3, 3);
         Game game = new Game(
                 Board.fromJson(Jsons.get("boards/game/board1")),
@@ -76,7 +115,7 @@ public class Main {
         viewMap.get(PlayerColor.YELLOW).register(controller);
         viewMap.get(PlayerColor.YELLOW).notify(new ShootRequest(PlayerColor.YELLOW, "plasma_gun" ,PlayerColor.YELLOW));
         System.out.println(controller.getGame().getActivePlayer().getPos());
-  //      viewMap.get(PlayerColor.YELLOW).reinitialize(game.extractViewInitializationInfo().setOwnerColor(PlayerColor.YELLOW));
+      //  viewMap.get(PlayerColor.YELLOW).reinitialize(game.extractViewInitializationInfo().setOwnerColor(PlayerColor.YELLOW));
         CLIView cli = (CLIView)viewMap.get(PlayerColor.YELLOW);
         cli.availableCommands();
       //  System.out.println(controller.getGame().getPlayerFromColor(PlayerColor.BLUE).getDamageTaken());

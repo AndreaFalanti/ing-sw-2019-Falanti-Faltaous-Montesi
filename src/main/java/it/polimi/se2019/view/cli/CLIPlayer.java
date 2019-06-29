@@ -1,3 +1,4 @@
+
 package it.polimi.se2019.view.cli;
 
 import it.polimi.se2019.controller.weapon.Weapon;
@@ -18,39 +19,39 @@ public class CLIPlayer {
     private Map<String,String> weaponsInfo =new HashMap<>();
     private String mPlayerPos;
     private Map<String,Integer> mPlayerMarks = new HashMap<>();
-    private String mDamageTaken;
+    private List<String> mDamageTaken = new ArrayList<>();
     private String mPlayerPowerUps;
     private String mDeathNum;
     private String mPlayerAmmo;
     private String mBoardFlipped;
 
     public CLIPlayer(Player player,PlayerColor ownerColor){
-    int count=0;
-            mPlayerName = player.getName();
-            mPlayerColor = player.getColor().getPascalName();
-            setScore(player.getScore());
-            setAmmo(player.getAmmo());
-            setDead(player.isDead());
-            setOverkilled(player.isOverkilled());
-            mDeathNum = String.valueOf(player.getDeathsNum());
-            setPosition(player.getPos());
-            setScore(player.getScore());
-            if(player.getColor().getPascalName().equals(ownerColor.getPascalName())){
-                setWeaponOwner(player.getWeapons());
-                setPowerUpsOwnerPlayer(player.getPowerUps());
-            }
-            else{
-                setWeaponOtherPlayer(player.getWeapons());
-                for(int i = 0;i<player.getPowerUps().length;i++)
-                    if(player.getPowerUps()[i]!=null)
-                        count+=1;
-                setPowerUpsOtherPlayers(count);
-            }
-            for(Map.Entry<PlayerColor,Integer> entry: player.getMarks().entrySet()){
-                setMarks(entry.getValue(),entry.getKey());
-            }
-            setAllDamageTaken(player.getDamageTaken());
-            setBoardFlipped(player.isBoardFlipped());
+        int count=0;
+        mPlayerName = player.getName();
+        mPlayerColor = player.getColor().getPascalName();
+        setScore(player.getScore());
+        setAmmo(player.getAmmo());
+        setDead(player.isDead());
+        setOverkilled(player.isOverkilled());
+        mDeathNum = String.valueOf(player.getDeathsNum());
+        setPosition(player.getPos());
+        setScore(player.getScore());
+        if(player.getColor().getPascalName().equals(ownerColor.getPascalName())){
+            setWeaponOwner(player.getWeapons());
+            setPowerUpsOwnerPlayer(player.getPowerUps());
+        }
+        else{
+            setWeaponOtherPlayer(player.getWeapons());
+            for(int i = 0;i<player.getPowerUps().length;i++)
+                if(player.getPowerUps()[i]!=null)
+                    count+=1;
+            setPowerUpsOtherPlayers(count);
+        }
+        for(Map.Entry<PlayerColor,Integer> entry: player.getMarks().entrySet()){
+            setMarks(entry.getValue(),entry.getKey());
+        }
+        setAllDamageTaken(player.getDamageTaken());
+        setBoardFlipped(player.isBoardFlipped());
 
     }
 
@@ -64,7 +65,7 @@ public class CLIPlayer {
 
     public String getPlayerDeaths(){return mDeathNum;}
 
-    public String getPlayerDamage(){return mDamageTaken;}
+    public List<String> getPlayerDamage(){return mDamageTaken;}
 
     public Map<String, Integer> getPlayerMarks(){return mPlayerMarks;}
 
@@ -105,8 +106,8 @@ public class CLIPlayer {
     public void setAmmo(AmmoValue ammo){
 
         mPlayerAmmo =   Colors.findColor("red") + "Red " + Colors.ANSI_RESET + ammo.getRed()+" "+
-                        Colors.findColor("yellow") + "Yellow " +Colors.ANSI_RESET+ ammo.getYellow()+" "+
-                        Colors.findColor("blue") + "Blue "+Colors.ANSI_RESET + ammo.getBlue();
+                Colors.findColor("yellow") + "Yellow " +Colors.ANSI_RESET+ ammo.getYellow()+" "+
+                Colors.findColor("blue") + "Blue "+Colors.ANSI_RESET + ammo.getBlue();
     }
 
     public void setPowerUpsOtherPlayers(int i){
@@ -158,13 +159,15 @@ public class CLIPlayer {
     }
 
     public void setDamageTakenToZero(){
-        mDamageTaken = "Has not suffered Damage";
+        List<String> noDamage =new ArrayList<>();
+        noDamage.add("Has not suffered Damage");
+        mDamageTaken = noDamage;
     }
 
 
     public void setAllDamageTaken(PlayerColor[] damage){
         StringBuilder shooter = new StringBuilder();
-
+        List<String> damageInfo = new ArrayList<>();
         int size = Arrays.asList(damage).size();
         if(damage[0]==null) {
             setDamageTakenToZero();
@@ -178,15 +181,17 @@ public class CLIPlayer {
             shooter.append(damage[0].getPascalName());
             shooter.append(Colors.ANSI_RESET);
             shooter.append("\n\t\t\t\t\t ");
-            mDamageTaken = shooter.append(countDamage(colorPlayerThatDamage,size,damage))
-                    .toString();
+            damageInfo.add(shooter.toString());
+            damageInfo.addAll(countDamage(colorPlayerThatDamage,size,damage));
         }
+        mDamageTaken = damageInfo;
     }
 
-    public StringBuilder countDamage(List<PlayerColor> colorPlayerThatDamage,int size,PlayerColor[] damage){
-        StringBuilder shooter = new StringBuilder();
+    public List<String> countDamage(List<PlayerColor> colorPlayerThatDamage,int size,PlayerColor[] damage){
+        List<String> damageInfo = new ArrayList<>();
         int count;
         for (PlayerColor color : colorPlayerThatDamage) {
+            StringBuilder shooter = new StringBuilder();
             count = 0;
             if (color != null) {
                 for (int i = 0; i < size; i++) {
@@ -197,23 +202,39 @@ public class CLIPlayer {
 
             }
             if(color !=null){
-                shooter.append(count);
-                shooter.append("<-");
-                shooter.append(Colors.findColor(color.getPascalName()));
-                shooter.append(color.getPascalName());
-                shooter.append(Colors.ANSI_RESET);
-                shooter.append(" ");
+                shooter.append(createSingleStringDamage(count,color));
             }
+            damageInfo.add(shooter.toString());
         }
+        return damageInfo;
+    }
+
+    public StringBuilder createSingleStringDamage(int count,PlayerColor color){
+        StringBuilder shooter = new StringBuilder();
+
+        shooter.append(count);
+        shooter.append("<-");
+        shooter.append(Colors.findColor(color.getPascalName()));
+        shooter.append(color.getPascalName());
+        shooter.append(Colors.ANSI_RESET);
+        shooter.append(" ");
+
         return shooter;
     }
 
     public void setDamageTaken(int damageTaken, PlayerColor shooterPlayerColor){
-        StringBuilder damage = new StringBuilder();
-        damage.append(mDamageTaken);
-        for(int i=0 ; i<damageTaken; i++)
-            damage.append(shooterPlayerColor.getPascalName());
-        mDamageTaken = damage.toString();
+
+        int i = 0;
+        for(String s: mDamageTaken){
+            if(i!=0 && s.contains(shooterPlayerColor.getPascalName())){
+                String damageString = s.replaceAll("[0-9]",String.valueOf(Integer.parseInt(s.replaceAll("\\D","")) + damageTaken));
+                mDamageTaken.set(i,damageString);
+                return;
+            }
+            i++;
+        }
+
+        mDamageTaken.add(createSingleStringDamage(damageTaken,shooterPlayerColor).toString());
     }
 
     public void setWeaponOtherPlayer(Weapon[] weapons){
@@ -225,7 +246,7 @@ public class CLIPlayer {
         else{
             for(Weapon weapon: weapons){
                 if(weapon!=null && !weapon.isLoaded()){
-                        actualWeapons.add(weapon.getName());
+                    actualWeapons.add(weapon.getName());
                 }
             }
         }
@@ -247,8 +268,8 @@ public class CLIPlayer {
                 if(weapon!= null){
                     if(!weapon.isLoaded()){
                         load = " to load cost: "+ Colors.findColor("red") + "Red " + Colors.ANSI_RESET + weapon.getReloadCost().getRed()+" "+
-                                                  Colors.findColor("yellow") + "Yellow " +Colors.ANSI_RESET+ weapon.getReloadCost().getYellow()+" "+
-                                                  Colors.findColor("blue") + "Blue "+Colors.ANSI_RESET + weapon.getReloadCost().getBlue()+", ";
+                                Colors.findColor("yellow") + "Yellow " +Colors.ANSI_RESET+ weapon.getReloadCost().getYellow()+" "+
+                                Colors.findColor("blue") + "Blue "+Colors.ANSI_RESET + weapon.getReloadCost().getBlue()+", ";
                     }
 
                     actualWeapons.add(weapon.getName());
@@ -272,3 +293,5 @@ public class CLIPlayer {
     }
 
 }
+
+
