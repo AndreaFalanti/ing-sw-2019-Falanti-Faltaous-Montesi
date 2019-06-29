@@ -2,12 +2,9 @@ package it.polimi.se2019.model.board;
 
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.util.Jsons;
-import it.polimi.se2019.util.PrettyJsonElement;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -105,11 +102,11 @@ public class BoardTest {
         assertEquals(expectedBoard, Board.fromJson(testJsonString));
     }
 
-    @Test
+    /*@Test
     public void testToJsonBoardWithOneTile() {
         assertEquals(new PrettyJsonElement(mExampleBoardJsonString),
                      new PrettyJsonElement(mExampleUnitBoard.toJson()));
-    }
+    }*/
 
     @Test
     public void testEqualsSameDeserializedStringYieldsEqualBoard() {

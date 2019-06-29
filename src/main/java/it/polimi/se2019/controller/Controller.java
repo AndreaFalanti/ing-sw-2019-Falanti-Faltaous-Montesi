@@ -89,6 +89,9 @@ public class Controller implements Observer<Request>, RequestHandler {
         mWeaponIndexStrategy = weaponIndexStrategy;
     }
 
+    public void setPlayerNotSpawnedCounter(int playerNotSpawnedCounter) {
+        mPlayerNotSpawnedCounter = playerNotSpawnedCounter;
+    }
 
     /*******************/
     /* control methods */
