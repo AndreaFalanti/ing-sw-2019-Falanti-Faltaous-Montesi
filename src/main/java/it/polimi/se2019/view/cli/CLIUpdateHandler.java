@@ -61,4 +61,8 @@ public class CLIUpdateHandler implements UpdateHandler {
         mCLIInfo.updateOnRespawn(update.getPlayerColor());
     }
 
+    @Override
+    public void handle(RemainingActionsUpdate update) {
+        //TODO
+    }
 }

@@ -216,12 +216,12 @@ public class Player extends Observable<Update> {
 
     public void addAmmo (AmmoValue ammoValue) {
         mAmmo.add(ammoValue);
-        notify(new PlayerAmmoUpdate(mColor, ammoValue));
+        notify(new PlayerAmmoUpdate(mColor, mAmmo));
     }
 
     public void payAmmo (AmmoValue ammoValue) {
         mAmmo.subtract(ammoValue);
-        notify(new PlayerAmmoUpdate(mColor, ammoValue));
+        notify(new PlayerAmmoUpdate(mColor, mAmmo));
     }
 
     /**

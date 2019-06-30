@@ -106,12 +106,16 @@ public class GraphicUpdateHandler implements UpdateHandler {
     @Override
     public void handle(ActivePlayerUpdate update) {
         mMainController.getBoardController().updateActivePlayerText(update.getPlayerColor());
-        mMainController.getBoardController().updateRemainingActionsText(update.getRemainingActions());
         mMainController.getBoardController().updateTurnText(update.getTurnNumber());
     }
 
     @Override
     public void handle(PlayerRespawnUpdate update) {
         mMainController.getPlayerControllerFromColor(update.getPlayerColor()).eraseDamage();
+    }
+
+    @Override
+    public void handle(RemainingActionsUpdate update) {
+        mMainController.getBoardController().updateRemainingActionsText(update.getRemainingActions());
     }
 }

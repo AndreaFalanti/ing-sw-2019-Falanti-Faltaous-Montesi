@@ -8,6 +8,7 @@ import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.Tile;
 import it.polimi.se2019.model.update.ActivePlayerUpdate;
 import it.polimi.se2019.model.update.KillScoredUpdate;
+import it.polimi.se2019.model.update.RemainingActionsUpdate;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
@@ -175,7 +176,8 @@ public class Game extends Observable<Update> {
 
         mRemainingActions = calculateTurnActions();
 
-        notify(new ActivePlayerUpdate(getActivePlayer().getColor(), mRemainingActions, mTurnNumber));
+        notify(new ActivePlayerUpdate(getActivePlayer().getColor(), mTurnNumber));
+        notify(new RemainingActionsUpdate(mRemainingActions));
     }
 
     /**
@@ -407,6 +409,7 @@ public class Game extends Observable<Update> {
 
     public void decreaseActionCounter () {
         mRemainingActions--;
+        notify(new RemainingActionsUpdate(mRemainingActions));
     }
 
     private void refillAmmoTiles () {
