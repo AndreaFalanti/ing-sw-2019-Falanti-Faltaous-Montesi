@@ -46,6 +46,13 @@ public class Controller implements Observer<Request>, RequestHandler {
         mShootInteraction = new ShootInteraction(mGame, mPlayerViews);
 
         mPlayerNotSpawnedCounter = playerViews.size();
+
+        // observe view (Request)
+        playerViews.values().stream()
+                // observe views (Request)
+                .peek(view -> view.register(this))
+                // make views observe game (Update)
+                .forEach(mGame::registerAll);
     }
 
     // trivial getters

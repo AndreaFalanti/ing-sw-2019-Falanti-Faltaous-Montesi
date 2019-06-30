@@ -2,6 +2,7 @@ package it.polimi.se2019.view.gui;
 
 import it.polimi.se2019.network.client.ClientNetworkHandler;
 import it.polimi.se2019.network.client.SocketNetworkHandler;
+import it.polimi.se2019.network.server.SocketConnection;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -75,14 +76,17 @@ public class LoginScreen {
         switch ((int)radioButton.getUserData()) {
             case SOCKET_TYPE:
                 if (mNetworkHandler == null || mActualType != SOCKET_TYPE) {
-                    mNetworkHandler = new SocketNetworkHandler(mView,
-                            new Socket("localhost", 4567));
+                    mNetworkHandler = new SocketNetworkHandler(
+                            mView,
+                            SocketConnection.establish("localhost", 4567)
+                    );
                     mActualType = SOCKET_TYPE;
                 }
 
                 if (mNetworkHandler.sendUsername(username)) {
                     mView.setNetworkHandler(mNetworkHandler);
-                    ((SocketNetworkHandler)mNetworkHandler).activateGameMessageReception();
+                    // TODO: replace this with Fala's help
+                    // ((SocketNetworkHandler) mNetworkHandler).startReceivingResponses();
                     waitingForPlayers();
                 }
                 else {

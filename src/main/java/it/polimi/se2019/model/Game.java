@@ -11,6 +11,7 @@ import it.polimi.se2019.model.update.KillScoredUpdate;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
+import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.InitializationInfo;
 
 import java.util.*;
@@ -441,5 +442,14 @@ public class Game extends Observable<Update> {
      */
     public InitializationInfo extractViewInitializationInfo() {
         return new InitializationInfo(this);
+    }
+
+    /**
+     * Registers an observer to all observable components
+     * @param observer observer to register
+     */
+    public void registerAll(Observer<Update> observer) {
+        register(observer);
+        mPlayers.forEach(pl -> pl.register(observer));
     }
 }

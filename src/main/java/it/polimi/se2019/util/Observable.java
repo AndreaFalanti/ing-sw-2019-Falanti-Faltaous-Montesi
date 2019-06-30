@@ -13,7 +13,13 @@ public class Observable<Message> {
         mObservers.remove(toUnregister);
     }
 
+    public List<Observer<Message>> getObservers() {
+        return mObservers;
+    }
+
     public void notify(Message message) {//TODO change in protect
-        mObservers.forEach(observer -> observer.update(message));
+        mObservers.stream()
+                .peek(observer -> System.out.println(getClass().getSimpleName() + " is notifying " + observer.getClass().getSimpleName() + ": " + message))
+                .forEach(observer -> observer.update(message));
     }
 }
