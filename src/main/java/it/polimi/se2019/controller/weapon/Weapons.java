@@ -1,16 +1,15 @@
 package it.polimi.se2019.controller.weapon;
 
-import it.polimi.se2019.resource_handler.BadLoadException;
-import it.polimi.se2019.resource_handler.NonExistentResourceException;
-import it.polimi.se2019.resource_handler.ResourceHandler;
-import it.polimi.se2019.resource_handler.WeaponResource;
+import it.polimi.se2019.resource_handler.*;
 import it.polimi.se2019.util.Jsons;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -76,6 +75,15 @@ public class Weapons {
         loadResources();
 
         return resourceHandler.listResourceNames();
+    }
+
+    public static List<Weapon> getAll() {
+        loadResources();
+
+        return resourceHandler.getAll().stream()
+                .map(Resource::get)
+                .map(weapon -> (Weapon) weapon)
+                .collect(Collectors.toList());
     }
 }
 

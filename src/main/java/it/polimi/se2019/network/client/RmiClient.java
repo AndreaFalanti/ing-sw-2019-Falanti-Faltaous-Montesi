@@ -10,34 +10,41 @@ import java.util.Scanner;
 
 public class RmiClient extends Client {
     private RegistrationRemote mServerRemote;
-    //private RemoteController mRemoteController;
 
     public RmiClient(String serverIp, int serverPort) throws RemoteException, NotBoundException {
         super(serverIp, serverPort);
 
+        // initialize server for registration
         Registry registry = LocateRegistry.getRegistry(mServerIp, mServerPort);
-
         for (String name : registry.list()) {
-            System.out.println("Registry bindings: " + name);
+            printLineToConsole("Registry bindings: " + name);
         }
-        System.out.println("\n");
+        printLineToConsole("\n");
 
         // gets a reference for the remote server
         mServerRemote = (RegistrationRemote) registry.lookup("rmiServer");
     }
 
+    private static void printLineToConsole(String message) {
+        System.out.println(message);
+    }
+
+    private static void printToConsole(String message) {
+        System.out.print(message);
+    }
+
     @Override
     public void run() {
-        System.out.println("Running rmi client");
+        printLineToConsole("Running rmi client");
 
         Scanner scanner = new Scanner(System.in);
         String username;
-        Boolean validUsername;
+        boolean validUsername;
 
-        System.out.println("Insert username: ");
+        printLineToConsole("Insert username: ");
         do {
             try {
-                System.out.print(">> ");
+                printToConsole(">> ");
                 username = scanner.nextLine();
                 validUsername = mServerRemote.registerPlayerRemote(username);
             } catch (RemoteException e) {

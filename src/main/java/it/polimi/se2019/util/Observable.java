@@ -13,7 +13,7 @@ public class Observable<Message> {
         mObservers.remove(toUnregister);
     }
 
-    protected void notify(Message message) {
+    public void notify(Message message) {//TODO change in protect
         mObservers.forEach(observer -> observer.update(message));
     }
 }

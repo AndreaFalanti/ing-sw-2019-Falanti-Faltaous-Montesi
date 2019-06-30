@@ -58,9 +58,10 @@
                   <Image url="@../images/cards/AD_powerups_IT_022.png" />
                </image>
             </ImageView>
-            <Button fx:id="powerUpDiscardButton" disable="true" mnemonicParsing="false" text="Discard" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ImageView fitHeight="110.0" fitWidth="80.0" layoutX="11.0" layoutY="123.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
+      <Button fx:id="powerUpDiscardButton" disable="true" mnemonicParsing="false" text="Discard" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="18.0" />
       <TabPane fx:id="tabPane" layoutX="793.0" layoutY="5.0" prefHeight="500.0" prefWidth="546.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
         <tabs>
           <Tab text="Actions">
@@ -78,7 +79,7 @@
                               <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForGrab" prefHeight="55.0" prefWidth="100.0" text="GRAB" />
                               <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForShoot" prefHeight="55.0" prefWidth="100.0" text="SHOOT" />
                               <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#setReloadOnWeapon" prefHeight="55.0" prefWidth="100.0" text="RELOAD" />
-                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#disableBoardButtonGrid" prefHeight="55.0" prefWidth="100.0" text="END TURN" />
+                              <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#endTurn" prefHeight="55.0" prefWidth="100.0" text="END TURN" />
                            </children>
                         </VBox>
                         <Button fx:id="undoButton" layoutX="4.0" layoutY="349.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="UNDO" />

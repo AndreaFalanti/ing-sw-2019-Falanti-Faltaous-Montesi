@@ -1,7 +1,7 @@
 {
   "name": "Hellion",
   "guiID": "0215",
-  "grabCost": "1r",
+  "grabCost": "1y",
   "reloadCost": "1r1y",
   "behaviour": {
     "expr": "XorEffect",

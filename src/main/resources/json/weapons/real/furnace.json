@@ -1,6 +1,7 @@
 {
   "name": "Furnace",
-  "grabCost": "1r",
+  "guiID": "0214",
+  "grabCost": "1b",
   "reloadCost": "1r1b",
   "behaviour": {
     "expr": "XorEffect",
@@ -10,19 +11,9 @@
         "expr": "InflictDamage",
         "amount": "1d",
         "to": {
-          "expr": "All",
-          "from": {
-            "expr": "SelectOnePosition",
-            "from": {
-              "expr": "Difference",
-              "lhs": {
-                "expr": "CanSee"
-              },
-              "rhs": {
-                "expr": "Distance",
-                "amount": 1
-              }
-            }
+          "expr": "AllInRoom",
+          "color": {
+            "expr": "SelectOneColor"
           }
         }
       }

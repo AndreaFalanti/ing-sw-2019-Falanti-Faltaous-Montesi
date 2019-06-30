@@ -2,11 +2,21 @@ package it.polimi.se2019.model.action;
 
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Player;
+import it.polimi.se2019.model.PowerUpCard;
+
+import java.util.Arrays;
 
 public final class AmmoPayment {
+    // private constructor, avoids class instantiation
     private AmmoPayment() {
     }
 
+    /**
+     * Handle ammo payment interaction
+     * @param player Player that is paying an ammo cost
+     * @param cost Total cost to pay
+     * @param discardedCards Array of discarded powerUps
+     */
     public static void payCost (Player player, AmmoValue cost, boolean[] discardedCards) {
         if (player == null || cost == null || discardedCards == null) {
             throw new IllegalArgumentException("null values in method payCost");
@@ -16,6 +26,13 @@ public final class AmmoPayment {
         player.payAmmo(cost);
     }
 
+    /**
+     * Check that ammo payment is valid
+     * @param player Player that need to pay a cost
+     * @param cost Total cost to pay
+     * @param discardedCards Array of discarded powerUps
+     * @return true if can pay, false otherwise
+     */
     public static boolean isValid (Player player, AmmoValue cost, boolean[] discardedCards) {
         if (player == null || cost == null || discardedCards == null) {
             throw new IllegalArgumentException("null values in method getErrorResponse");
@@ -45,7 +62,7 @@ public final class AmmoPayment {
     }
 
     /**
-     * Get total ammo considering also power up card discarded
+     * Get total ammo considering also power up cards discarded
      * @param player Player that is performing the reload
      * @param discardedCards Boolean array that indicate discarded cards
      * @return Total ammo with power up bonus ones
@@ -54,13 +71,20 @@ public final class AmmoPayment {
         AmmoValue ammo = player.getAmmo().deepCopy();
         for (int i = 0; i < discardedCards.length; i++) {
             if (discardedCards[i]) {
-                ammo.add(player.getPowerUpCard(i).getAmmoValue());
+                PowerUpCard powerup = player.getPowerUpCard(i);
+                if (powerup != null)
+                    ammo.add(powerup.getAmmoValue());
             }
         }
 
         return ammo;
     }
 
+    /**
+     * Discard selected powerUps and give ammo to player
+     * @param player Player that discard powerUps
+     * @param discardedCards Array of discarded powerUps
+     */
     public static void addAmmoAndDiscard (Player player, boolean[] discardedCards) {
         if (player == null || discardedCards == null) {
             throw new IllegalArgumentException("null values in method addAmmoAndDiscard");
@@ -73,5 +97,19 @@ public final class AmmoPayment {
                 player.discard(i);
             }
         }
+    }
+
+    /**
+     * Check if player can pay an additional ammo cost not covered by his actual ammo, discarding the
+     * powerUps in his hand.
+     * @param player Player that pay the cost
+     * @param remainingCost Remaining cost to pay
+     * @return True if can pay, false otherwise
+     */
+    public static boolean canPayWithPowerUps (Player player, AmmoValue remainingCost) {
+        boolean[] mask = new boolean[4];
+        Arrays.fill(mask, true);
+
+        return getAmmoTotalWithPowerUpDiscard(player, mask).isBiggerOrEqual(remainingCost);
     }
 }

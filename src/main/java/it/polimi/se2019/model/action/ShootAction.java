@@ -36,4 +36,9 @@ public class ShootAction implements Action {
     public boolean consumeAction() {
         return true;
     }
+
+    @Override
+    public boolean isComposite() {
+        return false;
+    }
 }

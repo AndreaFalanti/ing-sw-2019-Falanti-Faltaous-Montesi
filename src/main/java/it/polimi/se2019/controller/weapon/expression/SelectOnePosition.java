@@ -16,7 +16,7 @@ public class SelectOnePosition extends Behaviour {
 
     @Override
     public final Expression eval(ShootContext context) {
-        ShootInteraction interaction = context.getShootInteraction();
+        ShootInteraction interaction = context.getInteraction();
         View view = context.getView();
 
         Position selectedPosition = interaction.selectPosition(view, getSub("from").eval(context).asRange());

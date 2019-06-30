@@ -1,7 +1,7 @@
 {
   "name": "Flame Thrower",
   "guiID": "0213",
-  "grabCost": "1r",
+  "grabCost": "0r",
   "reloadCost": "1r",
   "behaviour": {
     "expr": "XorEffect",

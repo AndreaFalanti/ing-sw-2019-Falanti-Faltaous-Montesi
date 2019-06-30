@@ -12,14 +12,19 @@ public class NewtonAction implements Action {
     private Position mDestination;
     private int mNewtonIndex;
 
-    public NewtonAction(PlayerColor target, Position destination, int index) {
+    public NewtonAction(int index) {
         if (index < 0 || index >= 3) {
             throw new IllegalArgumentException("invalid powerUp index");
         }
 
+        mNewtonIndex = index;
+    }
+
+    public NewtonAction(PlayerColor target, Position destination, int index) {
+        this(index);
+
         mTarget = target;
         mDestination = destination;
-        mNewtonIndex = index;
     }
 
     public PlayerColor getTarget() {
@@ -32,6 +37,14 @@ public class NewtonAction implements Action {
 
     public int getNewtonIndex() {
         return mNewtonIndex;
+    }
+
+    public void setTarget(PlayerColor target) {
+        mTarget = target;
+    }
+
+    public void setDestination(Position destination) {
+        mDestination = destination;
     }
 
     @Override
@@ -60,6 +73,11 @@ public class NewtonAction implements Action {
 
     @Override
     public boolean consumeAction() {
+        return false;
+    }
+
+    @Override
+    public boolean isComposite() {
         return false;
     }
 }

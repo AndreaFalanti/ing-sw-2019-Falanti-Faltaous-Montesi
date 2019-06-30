@@ -15,7 +15,7 @@ public class XorEffect extends Expression {
 
     @Override
     public final Expression eval(ShootContext context) {
-        ShootInteraction interaction = context.getShootInteraction();
+        ShootInteraction interaction = context.getInteraction();
         View view = context.getView();
 
         // get input

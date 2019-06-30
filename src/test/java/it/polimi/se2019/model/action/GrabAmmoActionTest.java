@@ -40,7 +40,7 @@ public class GrabAmmoActionTest {
         assertFalse(action.getErrorResponse(game).isPresent());
 
         // spawn tile
-        game.getActivePlayer().move(new Position(0, 2));
+        game.getActivePlayer().move(new Position(2, 0));
         assertTrue(action.getErrorResponse(game).isPresent());
     }
 }

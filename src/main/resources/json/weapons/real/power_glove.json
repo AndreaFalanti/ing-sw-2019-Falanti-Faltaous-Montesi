@@ -1,7 +1,7 @@
 {
   "name": "Power glove",
   "guiID": "024",
-  "grabCost": "1y",
+  "grabCost": "1b",
   "reloadCost": "1y1b",
   "behaviour": {
     "expr": "XorEffect",
@@ -11,10 +11,17 @@
         "expr": "Do",
         "list": [
           {
-            "expr": "SelectOneTarget",
-            "from": {
-              "expr": "Distance",
-              "amount": 1
+            "expr": "InflictDamage",
+            "amount": "1d2m",
+            "to": {
+              "expr": "SelectOneTarget",
+              "from": {
+                "expr": "All",
+                "from": {
+                  "expr": "Distance",
+                  "amount": 1
+                }
+              }
             }
           },
           {
@@ -28,13 +35,6 @@
                 "expr": "LastSelected"
               }
             }
-          },
-          {
-            "expr": "InflictDamage",
-            "amount": "1d1m",
-            "to": {
-              "expr": "LastSelected"
-            }
           }
         ]
       }
@@ -46,58 +46,46 @@
         "expr": "PickEffect",
         "effects": [
           {
+            "name": "Punch direction selection",
             "priority": 0,
             "behaviour": {
-              "expr": "Move",
-              "to": {
-                "expr": "Line",
-                "direction": {
-                  "expr": "SelectOneDirection",
-                  "store": "punch_direction"
-                },
-                "length": 1
-              }
+              "store": "punch_direction",
+              "expr": "SelectOneDirection"
             }
           },
           {
+            "name": "First jump",
             "priority": 1,
-            "optional": true,
             "behaviour": {
-              "expr": "InflictDamage",
-              "amount": "2d",
+              "expr": "Move",
+              "from": {
+                "expr": "You"
+              },
               "to": {
-                "expr": "SelectOneTarget",
+                "expr": "SelectOnePosition",
+                "store": "first_jump_destination",
                 "from": {
-                  "expr": "All",
-                  "from": {
-                    "expr": "Pos",
-                    "who": {
-                      "expr": "You"
+                  "expr": "Intersect",
+                  "lhs": {
+                    "expr": "Line",
+                    "direction": {
+                      "expr": "Load",
+                      "name": "punch_direction"
                     }
+                  },
+                  "rhs": {
+                    "expr": "Distance",
+                    "amount": 1
                   }
                 }
               }
             }
           },
           {
+            "name": "First punch",
             "priority": 2,
             "optional": true,
             "behaviour": {
-              "expr": "Move",
-              "to": {
-                "expr": "Line",
-                "direction": {
-                  "expr": "Load",
-                  "name": "punch_direction"
-                },
-                "length": 1
-              }
-            }
-          },
-          {
-            "priority": 3,
-            "optional": true,
-            "behaviour": {
               "expr": "InflictDamage",
               "amount": "2d",
               "to": {
@@ -105,17 +93,72 @@
                 "from": {
                   "expr": "All",
                   "from": {
-                    "expr": "Pos",
-                    "who": {
-                      "expr": "You"
-                    }
+                    "expr": "Load",
+                    "name": "first_jump_destination"
                   }
                 }
               }
             }
+          },
+          {
+            "name": "Second rocket jump",
+            "priority": 3,
+            "optional": true,
+            "behaviour": {
+              "expr": "PickEffect",
+              "effects": [
+                {
+                  "name": "Second jump",
+                  "priority": 0,
+                  "behaviour": {
+                    "expr": "Move",
+                    "from": {
+                      "expr": "You"
+                    },
+                    "to": {
+                      "expr": "SelectOnePosition",
+                      "store": "second_jump_destination",
+                      "from": {
+                        "expr": "Intersect",
+                        "lhs": {
+                          "expr": "Line",
+                          "direction": {
+                            "expr": "Load",
+                            "name": "punch_direction"
+                          }
+                        },
+                        "rhs": {
+                          "expr": "Distance",
+                          "amount": 1
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "Second punch",
+                  "priority": 1,
+                  "optional": true,
+                  "behaviour": {
+                    "expr": "InflictDamage",
+                    "amount": "2d",
+                    "to": {
+                      "expr": "SelectOneTarget",
+                      "from": {
+                        "expr": "All",
+                        "from": {
+                          "expr": "Load",
+                          "name": "second_jump_destination"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
           }
         ]
-      }
+      } 
     }
   }
 }

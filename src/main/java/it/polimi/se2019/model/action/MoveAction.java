@@ -109,4 +109,9 @@ public class MoveAction implements Action {
     public boolean consumeAction() {
         return mNormalMove;
     }
+
+    @Override
+    public boolean isComposite() {
+        return false;
+    }
 }

@@ -10,6 +10,7 @@ import it.polimi.se2019.model.board.*;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.view.request.ActionRequest;
 import it.polimi.se2019.view.request.Request;
+import it.polimi.se2019.view.request.UndoWeaponInteractionRequest;
 import it.polimi.se2019.view.request.WeaponSelectedRequest;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Set;
 
 public class BoardPane extends Observable<Request> {
     @FXML
@@ -403,7 +405,7 @@ public class BoardPane extends Observable<Request> {
 
                         notify(new ActionRequest(
                                 new MoveAction(mMainController.getClientColor(), new Position(x, y), true),
-                                mMainController.getView()));
+                                mMainController.getView().getOwnerColor()));
                     });
                 }
             }
@@ -424,7 +426,7 @@ public class BoardPane extends Observable<Request> {
 
                         notify(new ActionRequest(
                                 new MoveGrabAction(mMainController.getClientColor(), new Position(x, y)),
-                                mMainController.getView()));
+                                mMainController.getView().getOwnerColor()));
                     });
                 }
             }
@@ -442,13 +444,43 @@ public class BoardPane extends Observable<Request> {
                         mMainController.logToChat("Shoot Action pos set to: (" + x + ", " + y + ")");
                         switchButtonGridEnableStatus(false);
                         mMainController.setShootOnWeapon(new Position(x, y));
-
-                        mMainController.getUndoButton().setOnMouseClicked(event1 -> {
-                            GuiUtils.setBoxEnableStatus(weaponBox, false);
-                            mMainController.setEnableStatusActionButtonBox(true);
-                        });
                     });
                 }
+
+                mMainController.getUndoButton().setOnMouseClicked(event -> {
+                    GuiUtils.setBoxEnableStatus(weaponBox, false);
+                    mMainController.setEnableStatusActionButtonBox(true);
+                });
+            }
+        }
+    }
+
+    public void setupInteractiveGridForChoosingPosition (Set<Position> possiblePosition) {
+        switchButtonGridEnableStatus(true);
+
+        for (int i = 0; i < BOARD_COLUMNS; i++) {
+            for (int j = 0; j < BOARD_ROWS; j++) {
+                int x = i;
+                int y = j;
+
+                if (mInteractiveButtons[i][j] != null) {
+                    mInteractiveButtons[i][j].setDisable(!possiblePosition.contains(new Position(i, j)));
+
+                    mInteractiveButtons[i][j].setOnMouseClicked(event -> {
+                        mMainController.logToChat("Selected position: (" + x + ", " + y + ")");
+                        switchButtonGridEnableStatus(false);
+                        for (Button[] buttons : mInteractiveButtons) {
+                            for (Button button : buttons) {
+                                button.setDisable(false);
+                            }
+                        }
+                    });
+                }
+
+                mMainController.getUndoButton().setOnMouseClicked(event -> {
+                    mMainController.returnToActionTab();
+                    notify(new UndoWeaponInteractionRequest(mMainController.getView().getOwnerColor()));
+                });
             }
         }
     }
@@ -462,7 +494,7 @@ public class BoardPane extends Observable<Request> {
         for (int i = 0; i < selectedSpawn.getChildren().size(); i++) {
             final int index = i;
             selectedSpawn.getChildren().get(i).setOnMouseClicked(event -> notify(
-                    new WeaponSelectedRequest(index, mMainController.getView())));
+                    new WeaponSelectedRequest(index, mMainController.getView().getOwnerColor())));
         }
 
         mMainController.getUndoButton().setOnMouseClicked(event -> {

@@ -7,8 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.logging.Logger;
 
-public class PlayerThread extends Thread {
-    private static final Logger logger = Logger.getLogger(PlayerThread.class.getName());
+public class PlayerRegistrationThread extends Thread {
+    private static final Logger logger = Logger.getLogger(PlayerRegistrationThread.class.getName());
 
     private Socket mSocket;
     private PrintWriter mOut;
@@ -17,7 +17,7 @@ public class PlayerThread extends Thread {
 
     private boolean mInGame = false;
 
-    public PlayerThread(Socket socket, ConnectionRegister register) {
+    public PlayerRegistrationThread(Socket socket, ConnectionRegister register) {
         mSocket = socket;
         try {
             mOut = new PrintWriter(socket.getOutputStream(), true);
@@ -61,23 +61,17 @@ public class PlayerThread extends Thread {
         String username = null;
         boolean logged = false;
 
-        while (!isInterrupted()) {
-            while (!logged && !isInterrupted()) {
-                username = receive();
-                if (mRegister.isUsernameAvailable(username)) {
-                    logged = mRegister.registerPlayer(username, ConnectionType.SOCKET);
-                    send("ok");
-                } else {
-                    send("Username is already used");
-                }
-            }
-
-            while (mInGame && !isInterrupted()) {
-                logger.info("I'm in a game");
+        while (!logged && !isInterrupted()) {
+            username = receive();
+            if (mRegister.isUsernameAvailable(username)) {
+                logged = mRegister.registerPlayer(username, ConnectionType.SOCKET, mSocket);
+                send("ok");
+            } else {
+                send("Username is already used");
             }
         }
 
-        logger.info("Closing thread " + getId());
+        logger.info("Closing registration thread " + getId());
     }
 
     public Socket getSocket() {

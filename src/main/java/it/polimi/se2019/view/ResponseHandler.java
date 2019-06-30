@@ -1,25 +1,19 @@
 package it.polimi.se2019.view;
 
 import it.polimi.se2019.controller.response.*;
-import it.polimi.se2019.util.AbstractHandler;
 
-public interface ResponseHandler extends AbstractHandler<Response> {
-    default void handle(MessageResponse response) {
-        fallbackHandle(response);
-    }
-    default void handle(PickWeaponResponse response) {
-        fallbackHandle(response);
-    }
-    default void handle(ValidMoveResponse response) {
-        fallbackHandle(response);
-    }
-    default void handle(DiscardPowerUpResponse response) {
-        fallbackHandle(response);
-    }
-    default void handle(PickDirectionResponse response) {
-        fallbackHandle(response);
-    }
-    default void handle(PickPositionResponse response) {
-        fallbackHandle(response);
-    }
+public interface ResponseHandler {
+    void handle(MessageResponse response);
+    void handle(PickWeaponResponse response) ;
+    void handle(ValidMoveResponse response);
+    void handle(DiscardPowerUpResponse response);
+    void handle(PickDirectionResponse response);
+    void handle(PickPositionResponse response);
+    void handle(PickPowerUpsResponse response);
+    void handle(PickTargetsResponse response);
+    void handle(PickEffectsResponse response);
+    void handle(PickWeaponModeResponse response);
+    void handle(PickRoomColorResponse response);
+    void handle(PickRespawnPowerUpResponse response);
+    void handle(InitializationInfoResponse response);
 }

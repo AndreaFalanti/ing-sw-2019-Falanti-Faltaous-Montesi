@@ -1,9 +1,9 @@
 package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
-import it.polimi.se2019.view.View;
+import it.polimi.se2019.model.PlayerColor;
 
 public interface Request {
-    View getView();
+    PlayerColor getViewColor();
     void handleMe(RequestHandler handler);
 }

@@ -70,6 +70,11 @@ public class WeaponAction implements Action {
         return false;
     }
 
+    @Override
+    public boolean isComposite() {
+        return true;
+    }
+
     // add action to be executed
     public void add(Action action) {
         if (action == null)

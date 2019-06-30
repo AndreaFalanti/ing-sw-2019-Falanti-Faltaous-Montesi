@@ -1,6 +1,7 @@
 package it.polimi.se2019.network.server;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -14,7 +15,8 @@ import java.util.logging.Logger;
 
 public class RegistrationServer implements ConnectionRegister, RegistrationRemote {
     private static final Logger logger = Logger.getLogger(RegistrationServer.class.getName());
-    
+
+    private int mRmiPort;
     private List<GameThread> mGames = new ArrayList<>();
     private List<PlayerConnection> mWaitingPlayers = new ArrayList<>();
     private List<PlayerConnection> mPlayersOnline = new ArrayList<>();
@@ -22,6 +24,8 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
     private Timer mTimer;
 
     public RegistrationServer(int rmiPort) throws IOException {
+        mRmiPort = rmiPort;
+
         Registry registry = LocateRegistry.createRegistry(rmiPort);
         UnicastRemoteObject.exportObject(this, rmiPort);
         registry.rebind("rmiServer", this);
@@ -75,7 +79,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
 
         // if 3 or more players are connected, initialize game values and start timer for game creation
         if (mWaitingPlayers.size() >= 3) {
-            GameThread gameThread = new GameThread(mWaitingPlayers);
+            GameThread gameThread = new GameThread(mWaitingPlayers, mRmiPort);
             mGames.add(gameThread);
 
             mWaitingPlayers.clear();
@@ -105,9 +109,9 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
     }
 
     @Override
-    public boolean registerPlayer(String username, ConnectionType type) {
+    public boolean registerPlayer(String username, ConnectionType type, Socket socket) {
         if (isUsernameAvailable(username)) {
-            PlayerConnection connection = new PlayerConnection(username, type);
+            PlayerConnection connection = new PlayerConnection(username, type, socket);
             registerConnection(connection);
             return true;
         }
@@ -126,7 +130,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
 
     @Override
     public boolean registerPlayerRemote(String username) throws RemoteException {
-        return registerPlayer(username, ConnectionType.RMI);
+        return registerPlayer(username, ConnectionType.RMI, null);
     }
 
     @Override

@@ -1,12 +1,15 @@
 package it.polimi.se2019.view.gui;
 
 import it.polimi.se2019.controller.weapon.Effect;
-import it.polimi.se2019.controller.weapon.Weapon;
-import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.Player;
+import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.PowerUpCard;
 import it.polimi.se2019.model.action.MoveShootAction;
 import it.polimi.se2019.model.action.ReloadAction;
-import it.polimi.se2019.model.board.*;
-import it.polimi.se2019.util.Jsons;
+import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.board.Direction;
+import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.view.request.*;
 import javafx.fxml.FXML;
@@ -77,6 +80,9 @@ public class MainScreen extends Observable<Request> {
     private static final double LOADED_OPACITY = 1;
     private static final double UNLOADED_OPACITY = 0.4;
 
+    private static final int POWER_UPS_GRID_ROWS = 2;
+    private static final int POWER_UPS_GRID_COLUMNS = 2;
+
     private GraphicView mView;
     private PlayerColor mClientColor;
 
@@ -87,9 +93,10 @@ public class MainScreen extends Observable<Request> {
     private boolean[] mTargetSelectedCache;
     private int mActualEffectIndex;
     private List<Effect> mEffectsCache;
-    private List<Effect> mMandatoryEffectsCache;
+    private List<Integer> mPowerUpUsedCache;
 
     private List<Button> mUndoWeaponButtons;
+    private EnumMap<TileColor, Button> mRoomButtons = new EnumMap<>(TileColor.class);
 
 
     public BoardPane getBoardController() {
@@ -132,68 +139,88 @@ public class MainScreen extends Observable<Request> {
         setupDirectionButtonsBehaviour();
         setupRoomColorButtonsBehaviour();
         setWeaponTabsUndoButtonsBehaviour();
+
+        resetAllPowerUpsBehaviourToDefault();
     }
 
 
     /**
      * Load player board of given color
-     * @param color Player color
+     * @param ownerColor Player color
      * @throws IOException Thrown if fxml is not found
      */
-    public void loadPlayerBoard(PlayerColor color) throws IOException {
+    public void loadPlayerBoards(PlayerColor ownerColor, List<Player> players) throws IOException {
+        for (Player player : players) {
+            if (player.getColor() == ownerColor) {
+                initializeMainPlayerBoard(ownerColor, player);
+            }
+            else {
+                initializeOpponentPlayerBoard(player);
+            }
+        }
+    }
+
+    private void initializeMainPlayerBoard (PlayerColor ownerColor, Player player) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/playerPane.fxml"));
         Pane newLoadedPane =  loader.load();
 
         PlayerPane playerController = loader.getController();
-        mPlayerControllers.put(color, playerController);
-
+        mPlayerControllers.put(ownerColor, playerController);
         playerController.setMainScreen(this);
-        playerController.setupBoardImage(color);
-        //testing various methods, they will be used in observer update methods
-        playerController.addDamageTokens(PlayerColor.PURPLE, 3);
-        playerController.addDeath();
-        playerController.setPlayerName("Aldo");
-        playerController.updateAmmo(new AmmoValue(1, 2, 3));
-        playerController.setScore(3);
-        playerController.updateMarkLabel(PlayerColor.YELLOW, 3);
-        playerController.updateMarkLabel(PlayerColor.BLUE, 1);
-        //playerController.flipBoard();
-        //playerController.eraseDamage();
+
+        playerController.setupBoardImage(ownerColor);
+        playerController.setPlayerName(player.getName());
+        playerController.updateAmmo(player.getAmmo());
+        playerController.setScore(player.getScore());
+
+        if (player.isBoardFlipped()) {
+            playerController.flipBoard();
+        }
+
+        // update damage, marks and deaths
+        updateDamageMarksAndDeaths(player, playerController);
 
         playerPane.getChildren().add(newLoadedPane);
+    }
 
-        // second tab testing
-        List<Player> players = new ArrayList<>();
-        players.add(new Player("aaa", PlayerColor.YELLOW));
-        players.add(new Player("bbb", PlayerColor.GREY));
-        players.add(new Player("ccc", PlayerColor.BLUE));
+    private void initializeOpponentPlayerBoard (Player player) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/otherPlayerPane.fxml"));
+        Pane newLoadedPane =  loader.load();
 
-        for (Player player : players) {
-            loader = new FXMLLoader(getClass().getResource("/fxml/otherPlayerPane.fxml"));
-            newLoadedPane =  loader.load();
+        PlayerPane otherPlayerController = loader.getController();
+        mPlayerControllers.put(player.getColor(), otherPlayerController);
 
-            PlayerPane otherPlayerController = loader.getController();
-            mPlayerControllers.put(player.getColor(), otherPlayerController);
+        otherPlayerController.setMainScreen(this);
+        otherPlayerController.setupBoardImage(player.getColor());
+        otherPlayerBoardsBox.getChildren().add(newLoadedPane);
 
-            otherPlayerController.setMainScreen(this);
-            otherPlayerController.setupBoardImage(player.getColor());
-            otherPlayerBoardsBox.getChildren().add(newLoadedPane);
+        // test methods
+        otherPlayerController.updateAmmo(player.getAmmo());
 
-            // test methods
-            otherPlayerController.updateAmmo(new AmmoValue(2,1,1));
-            otherPlayerController.addDamageTokens(PlayerColor.YELLOW, 5);
+        updateDamageMarksAndDeaths(player, otherPlayerController);
 
-            Weapon[] weapons = {
-                    new Weapon(),
-                    new Weapon(),
-                    null
-            };
-            weapons[0].setLoaded(true);
-            weapons[0].setGuiID("022");
-            weapons[1].setGuiID("023");
+        ((OtherPlayerPane)otherPlayerController).updatePlayerWeapons(player.getWeapons());
 
-            ((OtherPlayerPane)otherPlayerController).updatePlayerWeapons(weapons);
-            ((OtherPlayerPane)otherPlayerController).updatePowerUpNum(3);
+        int actualCardsNum = 0;
+        for (PowerUpCard powerUpCard : player.getPowerUps()) {
+            if (powerUpCard != null) {
+                actualCardsNum++;
+            }
+        }
+        ((OtherPlayerPane)otherPlayerController).updatePowerUpNum(actualCardsNum);
+    }
+
+    private void updateDamageMarksAndDeaths (Player player, PlayerPane playerController) {
+        for (PlayerColor color : player.getDamageTaken()) {
+            playerController.addDamageTokens(color, 1);
+        }
+        for (int i = 0; i < player.getDeathsNum(); i++) {
+            playerController.addDeath();
+        }
+
+        Map<PlayerColor, Integer> marksMap = player.getMarks();
+        for (Map.Entry<PlayerColor, Integer> entry : marksMap.entrySet()) {
+            playerController.updateMarkLabel(entry.getKey(), entry.getValue());
         }
     }
 
@@ -201,44 +228,41 @@ public class MainScreen extends Observable<Request> {
      * Load game board
      * @throws IOException Thrown if fxml is not found
      */
-    public void loadBoard () throws IOException {
+    public void initializeBoardAndInfo(Board board, int targetKills, PlayerColor activePlayerColor,
+                                       int remainingActions, int turnNumber, List<Player> players,
+                                       List<PlayerColor> kills, List<PlayerColor> overkills) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/boardPane.fxml"));
         Pane newLoadedPane =  loader.load();
 
         mBoardController = loader.getController();
         mBoardController.setMainController(this);
 
-        Board board = Board.fromJson(Jsons.get("boards/game/board1"));
         mBoardController.initialize(board);
-        mBoardController.addTargetDeath(4);
-        mBoardController.updateActivePlayerText(PlayerColor.PURPLE);
-        mBoardController.updateRemainingActionsText(2);
-        mBoardController.updateTurnText(15);
-        mBoardController.addKillToKilltrack(PlayerColor.YELLOW, true);
-        mBoardController.addKillToKilltrack(PlayerColor.BLUE, false);
-        mBoardController.addKillToKilltrack(PlayerColor.BLUE, true);
+        mBoardController.addTargetDeath(targetKills);
+        mBoardController.updateActivePlayerText(activePlayerColor);
+        mBoardController.updateRemainingActionsText(remainingActions);
+        mBoardController.updateTurnText(turnNumber);
 
-        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.BLUE);
-        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.PURPLE);
-        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.YELLOW);
-        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.GREY);
-        mBoardController.movePawnToCoordinate(new Position(1), PlayerColor.GREEN);
+        int overkillsCounter = 0;
+        for (PlayerColor kill : kills) {
+            // assign overkill to first kill that is valid (less fidelity but same result). This could be
+            // easily adjusted with a refactor in game class, replacing the two lists with a single custom list.
+            if (overkills.get(overkillsCounter) == kill) {
+                mBoardController.addKillToKilltrack(kill, true);
+                overkillsCounter++;
+            }
+            else {
+                mBoardController.addKillToKilltrack(kill, false);
+            }
 
-        mBoardController.movePawnToCoordinate(new Position(2), PlayerColor.PURPLE);
+        }
 
-        // Tile update test
-        NormalTile normalTile = new NormalTile();
-        AmmoCard ammoCard = new AmmoCard();
-        ammoCard.setGuiID("043");
-        normalTile.setAmmoCard(ammoCard);
-
-        SpawnTile spawnTile = new SpawnTile();
-        Weapon weapon = new Weapon();
-        weapon.setGuiID("026");
-        spawnTile.addWeapon(weapon);
-
-        mBoardController.updateBoardTile(normalTile, new Position(2, 1));
-        mBoardController.updateBoardTile(spawnTile, new Position(2, 0));
+        // update player positions
+        for (Player player : players) {
+            if (player.getPos() != null) {
+                mBoardController.movePawnToCoordinate(player.getPos(), player.getColor());
+            }
+        }
 
         boardPane.getChildren().add(newLoadedPane);
     }
@@ -287,17 +311,13 @@ public class MainScreen extends Observable<Request> {
      * @param ids PowerUp ids
      */
     public void updatePowerUpGrid (String[] ids) {
-        if (ids.length != 3) {
-            throw new IllegalArgumentException("need 3 powerUp ids to update");
-        }
-
         for (int i = 0; i < ids.length; i++) {
             ImageView powerUpImageView = (ImageView)powerUpGrid.getChildren().get(i);
 
             if (ids[i] != null) {
                 Image powerUpImage = new Image(GuiResourcePaths.POWER_UP_CARD + ids[i] + ".png");
                 powerUpImageView.setImage(powerUpImage);
-                setPowerUpBehaviour(powerUpImageView, i);
+                setPowerUpDefaultBehaviour(powerUpImageView, i);
                 powerUpImageView.setDisable(false);
             }
             else {
@@ -307,16 +327,24 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    private void resetAllPowerUpsBehaviourToDefault () {
+        for (int i = 0; i < powerUpGrid.getChildren().size(); i++) {
+            setPowerUpDefaultBehaviour((ImageView) powerUpGrid.getChildren().get(i), i);
+        }
+    }
+
     /**
-     * Set correct behaviours on powerUp images
+     * Set default behaviour on powerUp images
      * @param powerUp PowerUp image
      * @param index PowerUp index
      */
-    private void setPowerUpBehaviour (ImageView powerUp, int index) {
+    private void setPowerUpDefaultBehaviour(ImageView powerUp, int index) {
         powerUp.setOnMouseClicked(event -> {
-            logToChat("Using powerUp with index: " + index);
-            powerUp.setImage(null);
-            powerUp.setDisable(true);
+            if (powerUp.getImage() != null) {
+                logToChat("Using powerUp with index: " + index);
+                notify(new UsePowerUpRequest(index, mView.getOwnerColor()));
+                powerUp.setDisable(true);
+            }
         });
     }
 
@@ -453,40 +481,112 @@ public class MainScreen extends Observable<Request> {
      * Enable powerUp box for sending notification about what powerUps players want to discard
      */
     public void enablePowerUpBoxForSendingDiscardedIndex () {
-        GuiUtils.setBoxEnableStatus(powerUpGrid, true);
-        setEnableStatusActionButtonBox(false);
-        powerUpDiscardButton.setDisable(false);
+        initializePowerUpInteraction();
 
         for (int i = 0; i < mDiscardedPowerUpsCache.length; i++) {
             mDiscardedPowerUpsCache[i] = false;
             final int index = i;
 
-            Node powerUp = powerUpGrid.getChildren().get(i);
-            powerUp.setOpacity(UNLOADED_OPACITY);
+            if (i < powerUpGrid.getChildren().size()) {
+                Node powerUp = powerUpGrid.getChildren().get(i);
+                powerUp.setOpacity(UNLOADED_OPACITY);
 
-            powerUp.setOnMouseClicked(event -> {
-                mDiscardedPowerUpsCache[index] = !mDiscardedPowerUpsCache[index];
-                if (powerUp.getOpacity() == LOADED_OPACITY) {
-                    powerUp.setOpacity(UNLOADED_OPACITY);
-                }
-                else {
-                    powerUp.setOpacity(LOADED_OPACITY);
-                }
-            });
+                powerUp.setOnMouseClicked(event -> {
+                    mDiscardedPowerUpsCache[index] = !mDiscardedPowerUpsCache[index];
+                    if (powerUp.getOpacity() == LOADED_OPACITY) {
+                        powerUp.setOpacity(UNLOADED_OPACITY);
+                    }
+                    else {
+                        powerUp.setOpacity(LOADED_OPACITY);
+                    }
+                });
+            }
         }
 
         powerUpDiscardButton.setOnMouseClicked(event -> {
-            notify(new PowerUpDiscardedRequest(mDiscardedPowerUpsCache, mView));
-            powerUpDiscardButton.setDisable(true);
+            notify(new PowerUpDiscardedRequest(mDiscardedPowerUpsCache, mView.getOwnerColor()));
+            finalizePowerUpInteraction();
+        });
+
+        undoButton.setOnMouseClicked(event -> finalizePowerUpInteraction());
+    }
+
+    private void initializePowerUpInteraction () {
+        tabPane.getSelectionModel().select(ACTIONS_TAB);
+        GuiUtils.setBoxEnableStatus(powerUpGrid, true);
+        setEnableStatusActionButtonBox(false);
+        powerUpDiscardButton.setDisable(false);
+    }
+
+    private void finalizePowerUpInteraction () {
+        GuiUtils.setBoxEnableStatus(powerUpGrid,false);
+        powerUpGrid.setDisable(false);
+        setEnableStatusActionButtonBox(true);
+        resetAllPowerUpsBehaviourToDefault();
+        powerUpDiscardButton.setDisable(true);
+        GuiUtils.setBoxEnableStatus(powerUpGrid, true);
+        for (Node node : powerUpGrid.getChildren()) {
+            node.setOpacity(LOADED_OPACITY);
+        }
+    }
+
+    public void setupPowerUpSelection (List<Integer> indexes) {
+        initializePowerUpInteraction();
+        powerUpDiscardButton.setText("Use");
+        mPowerUpUsedCache = new ArrayList<>();
+
+        for (Node node : powerUpGrid.getChildren()) {
+            node.setOpacity(UNLOADED_OPACITY);
+        }
+
+        for (Integer index : indexes) {
+            Node powerUp = GuiUtils.getNodeFromGridPane(powerUpGrid, index%2, index/2);
+            if (powerUp != null) {
+                powerUp.setDisable(false);
+                powerUp.setOnMouseClicked(event -> {
+                    if (powerUp.getOpacity() == LOADED_OPACITY) {
+                        powerUp.setOpacity(UNLOADED_OPACITY);
+                        mPowerUpUsedCache.remove(index);
+                    }
+                    else {
+                        powerUp.setOpacity(LOADED_OPACITY);
+                        mPowerUpUsedCache.add(index);
+                    }
+
+                    powerUpDiscardButton.setDisable(mPowerUpUsedCache.isEmpty());
+                });
+            }
+        }
+
+        powerUpDiscardButton.setOnMouseClicked(event -> {
+            notify(new PowerUpsSelectedRequest(mPowerUpUsedCache, mView.getOwnerColor()));
+            powerUpDiscardButton.setText("Discard");
+            finalizePowerUpInteraction();
         });
 
         undoButton.setOnMouseClicked(event -> {
-            GuiUtils.setBoxEnableStatus(powerUpGrid,false);
-            setEnableStatusActionButtonBox(true);
-            for (Node node : powerUpGrid.getChildren()) {
-                node.setOpacity(LOADED_OPACITY);
-            }
+            powerUpDiscardButton.setText("Discard");
+            finalizePowerUpInteraction();
         });
+    }
+
+    public void setupRespawnPowerUpSelection () {
+        initializePowerUpInteraction();
+
+        for (int x = 0; x < POWER_UPS_GRID_COLUMNS; x++) {
+            for (int y = 0; y < POWER_UPS_GRID_ROWS; y++) {
+                Node powerUp = GuiUtils.getNodeFromGridPane(powerUpGrid, x, y);
+
+                int i = x;
+                int j = y;
+                if (powerUp != null) {
+                    powerUp.setOnMouseClicked(event -> notify(new RespawnPowerUpRequest(
+                            i + j * POWER_UPS_GRID_COLUMNS, mView.getOwnerColor())));
+                }
+            }
+        }
+
+        finalizePowerUpInteraction();
     }
 
     /**
@@ -503,7 +603,7 @@ public class MainScreen extends Observable<Request> {
                 GuiUtils.setBoxEnableStatus(weaponBox,false);
                 setEnableStatusActionButtonBox(true);
 
-                notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index), mView));
+                notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index), mView.getOwnerColor()));
             }
             else {
                 logToChat("Can't shoot with unloaded weapon");
@@ -524,7 +624,7 @@ public class MainScreen extends Observable<Request> {
                 GuiUtils.setBoxEnableStatus(weaponBox,false);
                 setEnableStatusActionButtonBox(true);
 
-                notify(new ActionRequest(new ReloadAction(index), mView));
+                notify(new ActionRequest(new ReloadAction(index), mView.getOwnerColor()));
             }
             else {
                 logToChat("Can't reload an already loaded weapon");
@@ -539,7 +639,7 @@ public class MainScreen extends Observable<Request> {
      */
     private void setIndexForwardingOnWeapon(Node weapon, int index) {
         weapon.setOnMouseClicked(event ->
-            notify(new WeaponSelectedRequest(index, mView))
+            notify(new WeaponSelectedRequest(index, mView.getOwnerColor()))
         );
     }
 
@@ -552,7 +652,7 @@ public class MainScreen extends Observable<Request> {
             final int index = i;
             directionButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
                 logToChat("Selected direction: " + directions[index].toString());
-                notify(new DirectionSelectedRequest(directions[index], mView));
+                notify(new DirectionSelectedRequest(directions[index], mView.getOwnerColor()));
             });
         }
     }
@@ -561,32 +661,44 @@ public class MainScreen extends Observable<Request> {
         TileColor[] tileColors = TileColor.values();
         for (int i = 0; i < tileColors.length; i++) {
             final int index = i;
+            mRoomButtons.put(tileColors[i], (Button)roomColorButtonsPane.getChildren().get(i));
+
             roomColorButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
                 logToChat("Selected room: " + tileColors[index].toString());
-                notify(new RoomSelectedRequest(tileColors[index], mView));
+                notify(new RoomSelectedRequest(tileColors[index], mView.getOwnerColor()));
             });
         }
     }
 
     public void activateDirectionTab () {
-        tabPane.getSelectionModel().select(DIRECTION_TAB);
+        activateWeaponRelatedTab(DIRECTION_TAB);
+    }
+
+    public void activateRoomTab (Set<TileColor> possibleColors) {
+        activateWeaponRelatedTab(ROOM_TAB);
+        TileColor[] tileColors = TileColor.values();
+
+        for (TileColor tileColor : tileColors) {
+            for (Button button : mRoomButtons.values()) {
+                button.setDisable(!possibleColors.contains(tileColor));
+            }
+        }
     }
 
     public void activateTargetsTab (Set<PlayerColor> possibleTargets, int minTargets, int maxTargets) {
-        tabPane.getSelectionModel().select(TARGETS_TAB);
+        activateWeaponRelatedTab(TARGETS_TAB);
         targetsBox.getChildren().clear();
+
         List<PlayerColor> playerTargets = new ArrayList<>(possibleTargets);
         // all false by default value
         mTargetSelectedCache = new boolean[possibleTargets.size()];
         targetsOkButton.setDisable(true);
 
         Label title;
-        if (minTargets == maxTargets) {
-            title = new Label("Select " + minTargets + "target");
-        }
-        else {
-            title = new Label("Select from " + minTargets + " to " + maxTargets + " targets");
-        }
+        String labelText = (minTargets == maxTargets) ? "Select " + minTargets + "target" :
+                "Select from " + minTargets + " to " + maxTargets + " targets";
+        title = new Label(labelText);
+
         title.setTextFill(Paint.valueOf("white"));
         title.setStyle("-fx-font: 20 segoe; -fx-font-weight: bold");
         targetsBox.getChildren().add(title);
@@ -627,27 +739,44 @@ public class MainScreen extends Observable<Request> {
                 }
             }
 
-            notify(new TargetsSelectedRequest(set, mView));
+            notify(new TargetsSelectedRequest(set, mView.getOwnerColor()));
             returnToActionTab();
         });
     }
 
-    public void activateEffectsTabForEffects(SortedMap<Integer, Set<Effect>> priorityMap, int currentPriority) {
-        tabPane.getSelectionModel().select(EFFECTS_TAB);
+    public void activateEffectsTabForWeaponMode (Effect effect1, Effect effect2) {
+        activateWeaponRelatedTab(EFFECTS_TAB);
         effectsBox.getChildren().clear();
         effectsOkButton.setDisable(true);
 
+        ToggleGroup toggleGroup = new ToggleGroup();
+
+        for(Effect effect : new Effect[] {effect1, effect2}) {
+            AnchorPane child = createEffectPane(effect, true);
+
+            RadioButton radioButton = new RadioButton();
+            radioButton.setUserData(effect.getId());
+            radioButton.setToggleGroup(toggleGroup);
+
+            addToggleAndInsertInEffectsPane(child, radioButton);
+        }
+
+        effectsOkButton.setOnMouseClicked(event ->
+            notify(new WeaponModeSelectedRequest(
+                    (String) toggleGroup.getSelectedToggle().getUserData(), mView.getOwnerColor()))
+        );
+    }
+
+    public void activateEffectsTabForEffects(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
+        activateWeaponRelatedTab(EFFECTS_TAB);
+        effectsBox.getChildren().clear();
+
         mActualEffectIndex = 0;
         mEffectsCache = new ArrayList<>();
-        mMandatoryEffectsCache = new ArrayList<>();
 
         for (Map.Entry<Integer, Set<Effect>> entry : priorityMap.entrySet()) {
-            boolean enableEffectPane = entry.getKey() == currentPriority;
-
             for (Effect effect : entry.getValue()) {
-                if (!effect.isOptional()) {
-                    mMandatoryEffectsCache.add(effect);
-                }
+                boolean enableEffectPane = possibleEffects.contains(effect);
 
                 AnchorPane child = createEffectPane(effect, enableEffectPane);
 
@@ -661,17 +790,13 @@ public class MainScreen extends Observable<Request> {
                     else {
                         checkBox.setText("");
                         mEffectsCache.remove(effect);
+                        if (mEffectsCache.isEmpty()) {
+                            mActualEffectIndex = 0;
+                        }
                     }
-
-                    effectsOkButton.setDisable(!checkMandatoryEffectsAreSelected());
                 });
 
-                child.getChildren().add(checkBox);
-                AnchorPane.setBottomAnchor(checkBox, 5d);
-                AnchorPane.setRightAnchor(checkBox, 5d);
-
-                effectsBox.getChildren().add(child);
-                VBox.setVgrow(child, Priority.ALWAYS);
+                addToggleAndInsertInEffectsPane(child, checkBox);
             }
         }
 
@@ -681,9 +806,18 @@ public class MainScreen extends Observable<Request> {
                 ids.add(effect.getId());
             }
 
-            notify(new EffectsSelectedRequest(ids, mView));
+            notify(new EffectsSelectedRequest(ids, mView.getOwnerColor()));
             returnToActionTab();
         });
+    }
+
+    private void addToggleAndInsertInEffectsPane(AnchorPane anchorPane, Node toggle) {
+        anchorPane.getChildren().add(toggle);
+        AnchorPane.setBottomAnchor(toggle, 5d);
+        AnchorPane.setRightAnchor(toggle, 5d);
+
+        effectsBox.getChildren().add(anchorPane);
+        VBox.setVgrow(anchorPane, Priority.ALWAYS);
     }
 
     private AnchorPane createEffectPane (Effect effect, boolean enabled) {
@@ -714,6 +848,11 @@ public class MainScreen extends Observable<Request> {
         return anchorPane;
     }
 
+    public void activatePositionSelection (Set<Position> possiblePositions) {
+        logToChat("Choose a position for weapon effect");
+        mBoardController.setupInteractiveGridForChoosingPosition(possiblePositions);
+    }
+
     private boolean canSelectAnotherTarget (int max) {
         return getCurrentTargetCount() < max;
     }
@@ -738,19 +877,18 @@ public class MainScreen extends Observable<Request> {
         for (Button button : mUndoWeaponButtons) {
             button.setOnMouseClicked(event -> {
                 returnToActionTab();
-                notify(new UndoWeaponInteractionRequest(mView));
+                notify(new UndoWeaponInteractionRequest(mView.getOwnerColor()));
             });
         }
     }
 
-    private void returnToActionTab() {
+    public void returnToActionTab() {
         for (int i = 0; i < tabPane.getTabs().size(); i++) {
             tabPane.getTabs().get(i).setDisable(i != ACTIONS_TAB && i != PLAYERS_TAB);
         }
         tabPane.getSelectionModel().selectFirst();
     }
 
-    // TODO: use this in weapon tabs activation after testing is over
     private void activateWeaponRelatedTab (int index) {
         for (int i = 0; i < tabPane.getTabs().size(); i++) {
             tabPane.getTabs().get(i).setDisable(i != index);
@@ -758,7 +896,7 @@ public class MainScreen extends Observable<Request> {
         tabPane.getSelectionModel().select(index);
     }
 
-    private boolean checkMandatoryEffectsAreSelected () {
-        return mEffectsCache.containsAll(mMandatoryEffectsCache);
+    public void endTurn () {
+        notify(new TurnEndRequest(mView.getOwnerColor()));
     }
 }

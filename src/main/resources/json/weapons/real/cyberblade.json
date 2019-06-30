@@ -1,8 +1,8 @@
 {
   "name": "Cyberblade",
   "guiID": "023",
-  "grabCost": "1r1y",
-  "reloadCost": "1y",
+  "grabCost": "1y",
+  "reloadCost": "1r1y",
   "behaviour": {
     "expr": "PickEffect",
     "effects": [

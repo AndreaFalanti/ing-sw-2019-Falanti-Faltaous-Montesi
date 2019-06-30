@@ -1,7 +1,7 @@
 {
   "name": "Electroscythe",
   "guiID": "0222",
-  "grabCost": "1b",
+  "grabCost": "0b",
   "reloadCost": "1b",
   "behaviour": {
     "expr": "XorEffect",

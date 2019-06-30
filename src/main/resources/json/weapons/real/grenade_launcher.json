@@ -1,7 +1,7 @@
 {
   "name": "Grenade Launcher",
   "guiID": "0212",
-  "grabCost": "1r",
+  "grabCost": "0r",
   "reloadCost": "1r",
   "behaviour": {
     "expr": "PickEffect",
@@ -32,15 +32,18 @@
             "name": "basic_target"
           },
           "to": {
-            "expr": "Distance",
-            "origin": {
-              "expr": "Pos",
-              "who": {
-                "expr": "Load",
-                "name": "basic_target"
-              }
-            },
-            "amount": 1
+            "expr": "SelectOnePosition",
+            "from": {
+              "expr": "Distance",
+              "origin": {
+                "expr": "Pos",
+                "who": {
+                  "expr": "Load",
+                  "name": "basic_target"
+                }
+              },
+              "amount": 1
+            }
           }
         }
       },
@@ -57,7 +60,7 @@
             "from": {
               "expr": "SelectOnePosition",
               "from": {
-                "expr": "CanSee"
+                "expr": "GetVisibleRange"
               }
             }
           }

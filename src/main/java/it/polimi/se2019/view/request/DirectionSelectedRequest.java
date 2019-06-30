@@ -1,16 +1,16 @@
 package it.polimi.se2019.view.request;
 
 import it.polimi.se2019.controller.RequestHandler;
+import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.board.Direction;
-import it.polimi.se2019.view.View;
 
 public class DirectionSelectedRequest implements Request {
     private Direction mDirection;
-    private View mView;
+    private PlayerColor mViewColor;
 
-    public DirectionSelectedRequest(Direction direction, View view) {
+    public DirectionSelectedRequest(Direction direction, PlayerColor viewColor) {
         mDirection = direction;
-        mView = view;
+        mViewColor = viewColor;
     }
 
     public Direction getDirection() {
@@ -18,8 +18,8 @@ public class DirectionSelectedRequest implements Request {
     }
 
     @Override
-    public View getView() {
-        return mView;
+    public PlayerColor getViewColor() {
+        return mViewColor;
     }
 
     @Override

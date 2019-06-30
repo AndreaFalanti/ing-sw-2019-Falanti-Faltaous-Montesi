@@ -61,9 +61,10 @@ public class GraphicUpdateHandler implements UpdateHandler {
 
     @Override
     public void handle(PlayerPowerUpsUpdate update) {
+        int powerUpsNum = 4;
         if (update.getPlayerColor() == mMainController.getClientColor()) {
-            String[] ids = new String[3];
-            for (int i = 0; i < 3; i++) {
+            String[] ids = new String[powerUpsNum];
+            for (int i = 0; i < powerUpsNum; i++) {
                 ids[i] = update.getPowerUpCards()[i].getGuiID();
             }
             mMainController.updatePowerUpGrid(ids);

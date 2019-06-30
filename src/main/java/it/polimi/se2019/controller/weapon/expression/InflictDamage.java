@@ -23,7 +23,7 @@ public class InflictDamage extends Behaviour {
     public final Expression eval(ShootContext context) {
         PlayerColor inflicter = context.getShooterColor();
         Game game = context.getGame();
-        ShootInteraction interaction = context.getShootInteraction();
+        ShootInteraction interaction = context.getInteraction();
 
         // remove shooter to inflicted players
         Set<PlayerColor> targets = getSub("to").eval(context).asTargets().stream()

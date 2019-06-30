@@ -1,6 +1,8 @@
 package it.polimi.se2019.model.action;
 
+import it.polimi.se2019.controller.WeaponIndexStrategy;
 import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.Position;
@@ -10,7 +12,7 @@ import it.polimi.se2019.model.board.Tile;
 
 import java.util.Optional;
 
-public class GrabWeaponAction implements GrabAction {
+public class GrabWeaponAction implements GrabAction, CostlyAction {
     private int mWeaponGrabbedIndex;
     private Integer mWeaponToExchangeIndex;
     private boolean[] mDiscardedCards = {false, false, false};
@@ -65,8 +67,18 @@ public class GrabWeaponAction implements GrabAction {
         return mWeaponToExchangeIndex;
     }
 
+    @Override
     public boolean[] getDiscardedCards() {
         return mDiscardedCards;
+    }
+
+    @Override
+    public void setDiscardedCards(boolean[] discardedCards) {
+        mDiscardedCards = discardedCards;
+    }
+
+    public void setWeaponToExchangeIndex(Integer weaponToExchangeIndex) {
+        mWeaponToExchangeIndex = weaponToExchangeIndex;
     }
 
     @Override
@@ -74,6 +86,8 @@ public class GrabWeaponAction implements GrabAction {
         SpawnTile spawnTile = (SpawnTile) game.getBoard().getTileAt(game.getActivePlayer().getPos());
         Weapon grabbedWeapon = spawnTile.grabWeapon(mWeaponGrabbedIndex);
         Player player = game.getActivePlayer();
+
+        grabbedWeapon.setLoaded(true);
 
         // if can't add weapon because hand is full, perform an exchange (catch block)
         if (mWeaponToExchangeIndex == null) {
@@ -99,6 +113,11 @@ public class GrabWeaponAction implements GrabAction {
     }
 
     @Override
+    public boolean isComposite() {
+        return false;
+    }
+
+    @Override
     public Optional<InvalidActionResponse> getErrorMessageAtPos(Game game, Position pos) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {
@@ -116,7 +135,10 @@ public class GrabWeaponAction implements GrabAction {
             }
 
             if (!AmmoPayment.isValid(player, weapon.getGrabCost(), mDiscardedCards)) {
-                return Optional.of(new DiscardRequiredActionResponse(ActionResponseStrings.DISCARD_MESSAGE));
+                AmmoValue remainingCost = weapon.getGrabCost().subtract(player.getAmmo(), true);
+                return AmmoPayment.canPayWithPowerUps(player, remainingCost) ?
+                        Optional.of(new DiscardRequiredActionResponse(ActionResponseStrings.DISCARD_MESSAGE, this)) :
+                        Optional.of(new MessageActionResponse(ActionResponseStrings.NOT_ENOUGH_AMMO));
             }
 
             // player is grabbing a weapon but it has space in hand
@@ -124,14 +146,15 @@ public class GrabWeaponAction implements GrabAction {
                 return !player.isFullOfWeapons() ?
                         Optional.empty() :
                         Optional.of(
-                                new SelectWeaponRequiredActionResponse("Your hand is full, select a weapon to exchange")
+                                new SelectWeaponRequiredActionResponse("Your hand is full, select a weapon" +
+                                        " to exchange", null, WeaponIndexStrategy.exchangeWeapon(), this)
                         );
             }
             // player is trying to exchange one of his weapon with spawn's one
             else {
                 return player.isFullOfWeapons() ?
                         Optional.empty() :
-                        Optional.of(new MessageActionResponse("Can't exchange weapon if your hand is full"));
+                        Optional.of(new MessageActionResponse("Can't exchange weapon if your hand is not full"));
             }
         }
 

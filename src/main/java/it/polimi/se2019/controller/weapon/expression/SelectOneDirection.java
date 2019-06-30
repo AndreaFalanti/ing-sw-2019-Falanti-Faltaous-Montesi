@@ -7,7 +7,7 @@ import it.polimi.se2019.view.View;
 public class SelectOneDirection extends Behaviour {
     @Override
     public final Expression eval(ShootContext context) {
-        ShootInteraction interaction = context.getShootInteraction();
+        ShootInteraction interaction = context.getInteraction();
         View view = context.getView();
 
         return new DirectionLiteral(interaction.pickDirection(view));

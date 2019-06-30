@@ -1,8 +1,8 @@
 {
   "name": "Thor",
   "guiID": "0216",
-  "grabCost": "1r1b",
-  "reloadCost": "1b",
+  "grabCost": "1r",
+  "reloadCost": "1r1b",
   "behaviour": {
     "expr": "PickEffect",
     "effects": [

@@ -12,4 +12,6 @@ public interface Action {
     Optional<InvalidActionResponse> getErrorResponse(Game game);
 
     boolean consumeAction();
+
+    boolean isComposite();
 }

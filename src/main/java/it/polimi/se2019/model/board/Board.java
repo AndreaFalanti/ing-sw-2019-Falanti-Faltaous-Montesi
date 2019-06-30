@@ -8,10 +8,7 @@ import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -34,6 +31,8 @@ public class Board {
     @JsonAdapter(CustomTilesDeserializer.class)
     ArrayList<Tile> mTiles;
 
+    private EnumMap<TileColor, SpawnTile> mSpawnMap = new EnumMap<>(TileColor.class);
+
     // trivial getters
     public List<Tile> getTiles() {
         return mTiles;
@@ -49,6 +48,10 @@ public class Board {
 
     public int getSize() {
         return getWidth() * getHeight();
+    }
+
+    public EnumMap<TileColor, SpawnTile> getSpawnMap() {
+        return mSpawnMap;
     }
 
     /**
@@ -72,13 +75,23 @@ public class Board {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    private void initializeSpawnMap () {
+        for (Tile tile : mTiles) {
+            if (tile != null && tile.getTileType().equals("spawn")) {
+                mSpawnMap.put(tile.getColor(), (SpawnTile) tile);
+            }
+        }
+    }
+
     /**
      * Constructs a board parsing a json string
      * @param toParse the json string to parse
      * @return the constructed board object
      */
     public static Board fromJson(String toParse) {
-        return GSON.fromJson(toParse, Board.class);
+        Board result = GSON.fromJson(toParse, Board.class);
+        result.initializeSpawnMap();
+        return result;
     }
 
     /**
@@ -200,6 +213,21 @@ public class Board {
             );
 
         return mTiles.get(getIndexFromPosition(pos));
+    }
+
+    /**
+     * Get tile position
+     * @param tile Selected tile
+     * @return Position of tile
+     */
+    public Position getTilePos (Tile tile) {
+        for (int i = 0; i < mTiles.size(); i++) {
+            if (tile.equals(mTiles.get(i))) {
+                return new Position(i%4, i/4);
+            }
+        }
+
+        throw new IllegalArgumentException("Tile not found");
     }
 
     // TODO: write doc
@@ -385,5 +413,62 @@ public class Board {
     public Stream<Position> posStream() {
         return IntStream.range(0, getWidth() * getHeight())
                 .mapToObj(i -> new Position(i / getWidth(), i % getWidth()));
+    }
+
+    /**
+     * Get a list of the colors of all the rooms
+     * @return the result of the operation
+     */
+    public Stream<TileColor> getRoomColors() {
+        return posStream()
+                .filter(pos -> !isOutOfBounds(pos))
+
+                .map(this::getTileAt)
+                .filter(Objects::nonNull)
+
+                .map(Tile::getColor)
+
+                .distinct();
+    }
+
+    /**
+     * Get a room from a position contained in that room
+     * @return the result of the operation
+     */
+    public Stream<Position> getRoom(Position randomPosInsideRoom) {
+        return getRoom(randomPosInsideRoom, new HashSet<>());
+    }
+    // helper
+    private Stream<Position> getRoom(Position randomPosInsideRoom, Set<Position> visited) {
+        visited.add(randomPosInsideRoom);
+        return Stream.concat(
+                Stream.of(randomPosInsideRoom),
+                Arrays.stream(Direction.values())
+                        .map(randomPosInsideRoom::directionalIncrement)
+                        .filter(pos -> !visited.contains(pos))
+                        .filter(pos -> !isOutOfBounds(pos))
+                        .filter(pos -> getTileAt(pos) != null)
+                        .filter(pos -> getTileAt(pos).getColor().equals(
+                                getTileAt(randomPosInsideRoom).getColor()
+                        ))
+                        .flatMap(pos -> getRoom(pos, visited))
+        );
+    }
+
+    /**
+     * Get a room corresponding with a particular color
+     * @return the result of the operation
+     */
+    public Stream<Position> getRoom(TileColor color) {
+        Position randomRoomPos = posStream()
+                .filter(pos -> !isOutOfBounds(pos))
+                .filter(pos -> getTileAt(pos) != null)
+                .filter(pos -> getTileAt(pos).getColor().equals(color))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException(
+                        "This board contains no room with color " + color
+                ));
+
+        return getRoom(randomRoomPos);
     }
 }

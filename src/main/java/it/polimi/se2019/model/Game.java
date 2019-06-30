@@ -1,6 +1,7 @@
 package it.polimi.se2019.model;
 
 import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
@@ -10,6 +11,7 @@ import it.polimi.se2019.model.update.KillScoredUpdate;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
+import it.polimi.se2019.view.InitializationInfo;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -78,7 +80,7 @@ public class Game extends Observable<Update> {
         List<PowerUpCard> powerUpCards = PowerUpCard.returnDeckFromJson(Jsons.get("PowerUpCardDeck"));
         mPowerUpCardDeck = new Deck<>(powerUpCards);
 
-        List<Weapon> weaponCards = Weapon.returnDeckFromJson(Jsons.get("WeaponDeck"));
+        List<Weapon> weaponCards = Weapons.getAll();
         mWeaponDeck = new Deck<>(weaponCards, false);
 
         refillAmmoTiles();
@@ -162,14 +164,6 @@ public class Game extends Observable<Update> {
         if (isGameOver()) {
             distributeTotalKillsScore();
             return;
-        }
-
-        for (Player player : mPlayers) {
-            if (player.isDead()) {
-                //TODO: notify respawn to dead player, that will choose respawn position from
-                // its view and call controller
-                return;
-            }
         }
 
         if (mActivePlayerIndex >= mPlayers.size() - 1) {
@@ -439,5 +433,13 @@ public class Game extends Observable<Update> {
                 }
             }
         }
+    }
+
+    /**
+     * Produces info required to initialize a view with the state of this game
+     * @return info required to initialize a view with the state of this game
+     */
+    public InitializationInfo extractViewInitializationInfo() {
+        return new InitializationInfo(this);
     }
 }
