@@ -13,9 +13,8 @@ public class CLIInfo {
 
     private static final int BOARD_COLUMNS =4;
     private static final int BOARD_ROWS=3;
-    private String mActivePlayer;
-    private PlayerColor mOwnerColorf;
-    private String mOwnerColor;
+    private PlayerColor mActivePlayer;
+    private PlayerColor mOwnerColor;
     private CLIPlayer mOwner;
     private List<String> mKills;
     private List<String> mOverkills;
@@ -27,21 +26,22 @@ public class CLIInfo {
     private int mTurn;
 
 
-    public String                       getActivePlayer(){return mActivePlayer;}
+    public PlayerColor                  getActivePlayer(){return mActivePlayer;}
     public Map<TileColor,String>        getSpawnTiles(){return spawnTiles;}
     public CLIPlayer                    getOwner(){return mOwner;}
-    public PlayerColor                  getOwnerColorf(){return mOwnerColorf;}
+    public PlayerColor                  getOwnerColor(){return mOwnerColor;}
     public Map<PlayerColor, CLIPlayer>  getPlayersInfo() { return mPlayersInfo; }
     public Map<Position, String>        getNormalTiles(){ return normalTiles; }
     public BoardCLI                     getBoard(){ return mBoard; }
-    public int                          getmTurn(){ return mTurn;}
-
+    public List<String>                 getKills(){ return mKills;}
+    public List<String>                 getOverkills(){ return mOverkills;}
+    public int                          getTurn(){ return mTurn;}
     public Map<TileColor,String>        getTilesColor(){return tilesColor;}
 
     public CLIInfo (List<Player> players, PlayerColor ownerColor, PlayerColor activePlayer, Board board,int turn,List<PlayerColor> kills, List<PlayerColor> overkills){
         Tile tile;
         initialization(players,ownerColor, activePlayer);
-        mOwnerColorf=ownerColor;
+        mOwnerColor = ownerColor;
         mTurn = turn;
         setKillTrack(kills,overkills);
         mBoard = new BoardCLI(board);
@@ -63,11 +63,11 @@ public class CLIInfo {
     public void initialization(List<Player> players,PlayerColor ownerColor,PlayerColor activePlayerColor){
         CLIPlayer playerInfo;
         setActivePlayer(activePlayerColor);
-        mOwnerColor = ownerColor.getPascalName();
+        mOwnerColor = ownerColor;
         for (Player player : players) {
             if(player!=null){
                 playerInfo = new CLIPlayer(player,ownerColor);
-                if(player.getColor().getPascalName().equals(mOwnerColor)){
+                if(player.getColor().getPascalName().equals(mOwnerColor.getPascalName())){
                     mOwner = playerInfo;
                 }
                 mPlayersInfo.put(player.getColor(),playerInfo);
@@ -77,7 +77,7 @@ public class CLIInfo {
     }
 
     public void setActivePlayer(PlayerColor playerColor){
-        mActivePlayer = playerColor.getPascalName();
+        mActivePlayer = playerColor;
     }
 
     public void setSpawnTiles(Tile tile){
@@ -97,7 +97,7 @@ public class CLIInfo {
     }
 
     public void updatePowerUps(PlayerColor playerColor, PowerUpCard[] powerUpCards){
-        if(playerColor.getPascalName().equals(mOwnerColor)){
+        if(playerColor.getPascalName().equals(mOwnerColor.getPascalName())){
             mOwner.setPowerUpsOwnerPlayer(powerUpCards);
             return;
         }
@@ -112,7 +112,7 @@ public class CLIInfo {
     }
 
     public void updateWeapon(PlayerColor playerColor, Weapon[] weapons){
-        if(playerColor.getPascalName().equals(mOwnerColor)) {
+        if(playerColor.getPascalName().equals(mOwnerColor.getPascalName())) {
             mOwner.setWeaponOwner(weapons);
             return;
         }

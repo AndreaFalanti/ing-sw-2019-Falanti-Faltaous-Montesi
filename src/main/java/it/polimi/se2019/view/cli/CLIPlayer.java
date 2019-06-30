@@ -21,7 +21,7 @@ public class CLIPlayer {
     private Map<String,Integer> mPlayerMarks = new HashMap<>();
     private List<String> mDamageTaken = new ArrayList<>();
     private String mPlayerPowerUps;
-    private String mDeathNum;
+    private int mDeathNum;
     private String mPlayerAmmo;
     private String mBoardFlipped;
 
@@ -33,7 +33,7 @@ public class CLIPlayer {
         setAmmo(player.getAmmo());
         setDead(player.isDead());
         setOverkilled(player.isOverkilled());
-        mDeathNum = String.valueOf(player.getDeathsNum());
+        mDeathNum = player.getDeathsNum();
         setPosition(player.getPos());
         setScore(player.getScore());
         if(player.getColor().getPascalName().equals(ownerColor.getPascalName())){
@@ -63,7 +63,7 @@ public class CLIPlayer {
 
     public String getPlayerAmmo(){return mPlayerAmmo;}
 
-    public String getPlayerDeaths(){return mDeathNum;}
+    public int getPlayerDeaths(){return mDeathNum;}
 
     public List<String> getPlayerDamage(){return mDamageTaken;}
 
@@ -89,14 +89,14 @@ public class CLIPlayer {
     }
 
     public void setDeathNums(){
-        mDeathNum = String.valueOf(Integer.parseInt(mDeathNum) + 1);
+        mDeathNum = mDeathNum + 1;
     }
 
     public void setBoardFlipped(boolean flipped){
         if(flipped)
-            mBoardFlipped = "Is flipped";
+            mBoardFlipped = "true";
         else
-            mBoardFlipped = "Is not flipped";
+            mBoardFlipped = "false";
     }
 
     public void setBoardFlipped(){
@@ -159,7 +159,7 @@ public class CLIPlayer {
     }
 
     public void setDamageTakenToZero(){
-        List<String> noDamage =new ArrayList<>();
+        List<String> noDamage = new ArrayList<>();
         noDamage.add("Has not suffered Damage");
         mDamageTaken = noDamage;
     }
@@ -183,8 +183,9 @@ public class CLIPlayer {
             shooter.append("\n\t\t\t\t\t ");
             damageInfo.add(shooter.toString());
             damageInfo.addAll(countDamage(colorPlayerThatDamage,size,damage));
+            mDamageTaken = damageInfo;
         }
-        mDamageTaken = damageInfo;
+
     }
 
     public List<String> countDamage(List<PlayerColor> colorPlayerThatDamage,int size,PlayerColor[] damage){
