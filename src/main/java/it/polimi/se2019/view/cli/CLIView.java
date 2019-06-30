@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 public class CLIView extends View {
 
 
-    private static final String[] COMMAND_ACTION         =  {"move","grab","shoot","reload","reloadshoot","teleport","tagback","target","back"};
+    private static final String[] COMMAND_ACTION         =  {"move","grab","turn","shoot","reload","reloadshoot","teleport","tagback","target","back"};
     private static final String[] COMMAND_SIMPLE_REQUEST =  {"myinfo","players","weapons","power","ammo","board","undo","showg","help","quit","back"} ;
     private static final String POSITION_REQUEST_COMMAND =  " and the position where you want " ;
     private static final String PLAYER_TARGET_REQUEST    =  "  the name of target player" ;
@@ -74,13 +74,13 @@ public class CLIView extends View {
 
     @Override
     public void reinitialize(InitializationInfo initInfo){
-        printLineToConsole("arrivato");
+        mOwnerColor = initInfo.getOwnerColor();
 
         mCLIInfo = new CLIInfo(initInfo.getPlayers(),initInfo.getOwnerColor(), initInfo.getActivePlayerColor(), initInfo.getBoard(), initInfo.getTurnNumber(), initInfo.getKills(),
                 initInfo.getOverkills());
 
         ((CLIUpdateHandler)mUpdateHandler).setUpdateHandlerCLIInfo(mCLIInfo);
-        printLineToConsole("arrivato");
+        printLineToConsole("reinitialize CLI");
     }
 
     public void actionCommand(){
@@ -126,7 +126,7 @@ public class CLIView extends View {
             switch (command) {
                 case "move":
                     pos = parseDestination(otherCommandPart);
-                    action = new MoveAction(mCLIInfo.getOwnerColorf(), pos);
+                    action = new MoveAction(mCLIInfo.getOwnerColorf(), pos, true);
                     logger.log(Level.INFO, "Action: MOVE  Pos: {0}", pos);
                     break;
                 case "grab":
@@ -159,6 +159,9 @@ public class CLIView extends View {
                     index = parseWeaponToAct(false);
                     action = new ReloadAction(index);
                     logger.log(Level.INFO, "Action: RELOAD  index: {0}", index);
+                    break;
+                case "turn":
+                    notify(new TurnEndRequest(mCLIInfo.getOwnerColorf()));
                     break;
                 default:
                     availableCommands();
@@ -277,8 +280,13 @@ public class CLIView extends View {
 
     @Override
     public void showWeaponSelectionView(TileColor spawnColor) {
-        if(spawnColor!=null)
-            notify(new WeaponSelectedRequest(parseWeaponInformation(spawnColor), mOwnerColor));
+        System.out.println("CIAO CIAO");
+        if(spawnColor!=null) {
+            System.out.println("CIAO CIAO CIAO");
+            int weaponInfo = parseWeaponInformation(spawnColor);
+            System.out.println("THIS IS WEAPON INFO: " + weaponInfo);
+            notify(new WeaponSelectedRequest(weaponInfo, mOwnerColor));
+        }
         else
             notify(new WeaponSelectedRequest(parseWeaponInformation(), mOwnerColor));
     }

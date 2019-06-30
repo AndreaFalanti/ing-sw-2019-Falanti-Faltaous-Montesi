@@ -61,7 +61,7 @@ public final class ServerMessageFactory {
     }
 
     public static Update getAsUpdate(String rawMessage) {
-        JsonElement jMessage = new Gson().toJsonTree(rawMessage);
+        JsonElement jMessage = new Gson().fromJson(rawMessage, JsonElement.class);
 
         if (!getMessageType(jMessage).equals(ServerMessageType.Update))
             throw new IllegalArgumentException("Not an update!");

@@ -3,6 +3,7 @@ package it.polimi.se2019.view.request.serialization;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
@@ -31,6 +32,23 @@ public final class RequestFactory {
                         .registerSubtype(ValidPositionRequest.class)
                         .registerSubtype(WeaponModeSelectedRequest.class)
                         .registerSubtype(WeaponSelectedRequest.class)
+                )
+                .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Action.class, "type")
+                        .registerSubtype(GrabAmmoAction.class)
+                        .registerSubtype(GrabWeaponAction.class)
+                        .registerSubtype(MoveAction.class)
+                        .registerSubtype(MoveGrabAction.class)
+                        .registerSubtype(MoveReloadShootAction.class)
+                        .registerSubtype(MoveShootAction.class)
+                        .registerSubtype(NewtonAction.class)
+                        .registerSubtype(ReloadAction.class)
+                        .registerSubtype(ShootAction.class)
+                        .registerSubtype(TeleportAction.class)
+                        .registerSubtype(WeaponAction.class)
+                )
+                .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(GrabAction.class, "type")
+                        .registerSubtype(GrabAmmoAction.class)
+                        .registerSubtype(GrabWeaponAction.class)
                 )
                 //.setPrettyPrinting()
                 .setFieldNamingStrategy(new CustomFieldNamingStrategy())

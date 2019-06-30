@@ -58,9 +58,8 @@ public class GameThread extends Thread {
         // announce start of game thread
         logger.info("The game thread has begun!!");
 
-        InitializationInfo initInfo = mGame.extractViewInitializationInfo();
         for (Map.Entry<PlayerColor, View> entry : mController.getPlayerViews().entrySet()) {
-            initInfo.setOwnerColor(entry.getKey());
+            InitializationInfo initInfo = mGame.extractViewInitializationInfo(entry.getKey());
             entry.getValue().reinitialize(initInfo);
         }
 

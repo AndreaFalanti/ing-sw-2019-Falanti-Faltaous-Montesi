@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Observable<Message> {
+    @Exclude
     private final List<Observer<Message>> mObservers = new ArrayList<>();
 
     public void register(Observer<Message> toRegister) {

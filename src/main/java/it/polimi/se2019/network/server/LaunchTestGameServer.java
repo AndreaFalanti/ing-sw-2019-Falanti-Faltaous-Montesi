@@ -7,10 +7,15 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.model.update.ActivePlayerUpdate;
+import it.polimi.se2019.model.update.Update;
+import it.polimi.se2019.model.update.UpdateHandler;
 import it.polimi.se2019.util.Jsons;
+import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.VirtualView;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.cli.CLIView;
+import sun.management.counter.perf.PerfLongCounter;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -19,6 +24,7 @@ import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class LaunchTestGameServer {
@@ -50,23 +56,26 @@ public class LaunchTestGameServer {
             controller = new Controller(
                     testGame,
                     Stream.of(
-                            new CLIView(
-                                    testGame.extractViewInitializationInfo(),
-                                    PlayerColor.PURPLE
+                            new Pair<>(
+                                    PlayerColor.PURPLE,
+                                    new CLIView(null)
                             ),
-                            new CLIView(
-                                    testGame.extractViewInitializationInfo(),
-                                    PlayerColor.GREEN
+                            new Pair<>(
+                                    PlayerColor.GREEN,
+                                    new CLIView(null)
                             ),
-                            new VirtualView(
+                            new Pair<>(
                                     PlayerColor.BLUE,
-                                    // RmiConnection.create(RMI_PORT, PlayerColor.BLUE.getPascalName())
-                                    SocketConnection.accept(serverSocket)
+                                    new VirtualView(
+                                            PlayerColor.BLUE,
+                                            RmiConnection.create(RMI_PORT, PlayerColor.BLUE.getPascalName())
+                                            // SocketConnection.accept(serverSocket)
+                                    )
                             )
                     )
                             .collect(Collectors.toMap(
-                                    View::getOwnerColor,
-                                    view -> view
+                                    Pair::getFirst,
+                                    Pair::getSecond
                             ))
             );
         } catch (IOException e) {
@@ -75,6 +84,14 @@ public class LaunchTestGameServer {
 
         ((VirtualView) controller.getPlayerViews().get(PlayerColor.BLUE)).startReceivingRequests();
 
+        controller.getPlayerViews().entrySet()
+                .forEach(entry -> entry.getValue().reinitialize(testGame.extractViewInitializationInfo(entry.getKey())));
+
+        testGame.startNextTurn();
+        testGame.startNextTurn();
+        testGame.startNextTurn();
+
+        /*
         controller.startShootInteraction(PlayerColor.BLUE, Weapons.get("heatseeker").getBehaviour());
         while(controller.isHandlingShootInteraction()) {
             synchronized (controller.getShootInteraction().getLock()) {
@@ -85,5 +102,9 @@ public class LaunchTestGameServer {
                 }
             }
         }
+
+        System.out.println(Arrays.stream(testGame.getPlayerFromColor(PlayerColor.GREEN).getDamageTaken())
+                .collect(Collectors.toList()));
+                */
     }
 }

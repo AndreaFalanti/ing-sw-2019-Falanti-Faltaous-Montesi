@@ -2,6 +2,7 @@ package it.polimi.se2019.controller;
 
 
 import it.polimi.se2019.controller.weapon.ShootInteraction;
+import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.CostlyAction;
@@ -187,8 +188,7 @@ public class Controller implements Observer<Request>, RequestHandler {
     public void handle(ShootRequest request) {
         startShootInteraction(
                 request.getShooterColor(),
-                // TODO: substitute with Weapons.get() call
-                WeaponFactory.fromJson(Jsons.get("weapons/real/" + request.getWeaponID())).getBehaviour()
+                Weapons.get(request.getWeaponID()).getBehaviour()
         );
     }
 
@@ -224,22 +224,22 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void handle(UndoWeaponInteractionRequest request) {
-
+        continueShootInteraction(request);
     }
 
     @Override
     public void handle(WeaponModeSelectedRequest request) {
-
+        continueShootInteraction(request);
     }
 
     @Override
     public void handle(PowerUpsSelectedRequest request) {
-
+        continueShootInteraction(request);
     }
 
     @Override
     public void handle(RoomSelectedRequest request) {
-
+        continueShootInteraction(request);
     }
 
     @Override

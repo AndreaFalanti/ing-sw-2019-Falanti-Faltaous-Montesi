@@ -12,6 +12,9 @@ public class SocketConnection implements Connection {
     private PrintWriter mOut;
     private BufferedReader mIn;
 
+    private final Object mReadLock = new Object();
+    private final Object mWriteLock = new Object();
+
     private SocketConnection(Socket socket) {
         mSocket = socket;
 
@@ -56,27 +59,31 @@ public class SocketConnection implements Connection {
 
     @Override
     public void sendMessage(String message) {
-        if (mSocket.isClosed())
-            throw new IllegalStateException("Socket is closed!");
+        synchronized (mWriteLock) {
+            if (mSocket.isClosed())
+                throw new IllegalStateException("Socket is closed!");
 
-        System.out.println("sending message: " + message);
-        mOut.println(message);
-        mOut.flush();
+            System.out.println("sending message: " + message);
+            mOut.println(message);
+            mOut.flush();
+        }
     }
 
     @Override
     public String waitForMessage() {
-        if (mSocket.isClosed())
-            throw new IllegalStateException("Socket is closed!");
+        synchronized (mReadLock) {
+            if (mSocket.isClosed())
+                throw new IllegalStateException("Socket is closed!");
 
-        String result = null;
-        try {
-            result = mIn.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
+            String result = null;
+            try {
+                result = mIn.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return result;
         }
-
-        return result;
     }
 
     @Override
