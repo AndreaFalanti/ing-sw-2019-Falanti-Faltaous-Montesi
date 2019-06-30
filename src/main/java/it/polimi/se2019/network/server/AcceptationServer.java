@@ -19,7 +19,9 @@ public class AcceptationServer {
         logger.log(Level.INFO, "Created server socket on port: {0}", socketPort);
     }
 
-
+    /**
+     * Start acceptation server, using a server socket for accepting all entering connections for proper registration
+     */
     public void startServer () {
         boolean block = false;
         while (!block) {

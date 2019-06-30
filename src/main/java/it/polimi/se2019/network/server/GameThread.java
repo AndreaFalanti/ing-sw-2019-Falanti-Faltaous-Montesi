@@ -53,7 +53,9 @@ public class GameThread extends Thread {
         return mStarted;
     }
 
-    // TODO: change this to handle the whole game
+    /**
+     * Initialize all client views and start first turn of the game
+     */
     @Override
     public void run() {
         // announce start of game thread
@@ -68,41 +70,13 @@ public class GameThread extends Thread {
         // start first turn, with proper message flow allow to go to game end.
         mController.handleNextTurn();
 
-        /*
-        mGame.getPlayers().stream().filter(pl -> pl.getName().equals("Mario")).findAny().get()
-                .move(new Position(3, 2));
-        mGame.getPlayers().stream().filter(pl -> pl.getName().equals("Luigi")).findAny().get()
-                .move(new Position(2, 0));
-        mGame.getPlayers().stream().filter(pl -> pl.getName().equals("Smurfette")).findAny().get()
-                .move(new Position(2, 0));
-
-        // start random shoot interaction
-        mController.startShootInteraction(
-                mPlayerConnections.stream()
-                        .filter(pc -> pc.getUsername().equals("Mario"))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("Mario is needed to test server..."))
-                        .getColor(),
-                Weapons.get("heatseeker").getBehaviour()
-        );
-
-        // wait for shoot interaction to be done
-        ShootInteraction interaction = mController.getShootInteraction();
-        while (interaction.isOccupied()) {
-            synchronized (interaction.getLock()) {
-                try {
-                    interaction.getLock().wait();
-                } catch (InterruptedException e) {
-                    System.out.println("Test thread interrupted while waiting for shoot interaction to finish...");
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }*/
-
         // announce end of game thread
-        System.out.println("The game thread has ended!");
+        logger.info("The game thread has ended!");
     }
 
+    /**
+     * Create new game, inserting all connected players and initializing their virtual views
+     */
     public synchronized void startGameCreation () {
         mStarted = true;
         logger.info("Starting game creation ...");
@@ -124,6 +98,12 @@ public class GameThread extends Thread {
         initializeGame(board, players, killsTarget);
     }
 
+    /**
+     * Initialize game with given parameters
+     * @param board Selected board
+     * @param players Connected players
+     * @param killsTarget Kills target of the game
+     */
     private void initializeGame (Board board, List<Player> players, int killsTarget) {
         Registry registry = null;
         try {
@@ -172,10 +152,18 @@ public class GameThread extends Thread {
         start();
     }
 
+    /**
+     * Add player to game initialization
+     * @param playerConnection Player data
+     */
     public void addPlayer (PlayerConnection playerConnection) {
         mPlayerConnections.add(playerConnection);
     }
 
+    /**
+     * Remove player from game
+     * @param playerConnection Player data
+     */
     public void removePlayer (PlayerConnection playerConnection) {
         mPlayerConnections.remove(playerConnection);
     }

@@ -372,6 +372,10 @@ public class Game extends Observable<Update> {
         refillAmmoTiles();
     }
 
+    /**
+     * Get all players' score paired with their colors
+     * @return Map with all player scores
+     */
     private Map<PlayerColor, Integer> getScoreMap () {
         Map<PlayerColor, Integer> playerScores = new EnumMap<>(PlayerColor.class);
         for (Player p : mPlayers) {
@@ -407,11 +411,17 @@ public class Game extends Observable<Update> {
         return winner;
     }
 
+    /**
+     * Decrease action counter
+     */
     public void decreaseActionCounter () {
         mRemainingActions--;
         notify(new RemainingActionsUpdate(mRemainingActions));
     }
 
+    /**
+     * Add ammo tile to all normal tiles that are empty
+     */
     private void refillAmmoTiles () {
         for (Tile tile : mBoard.getTiles()){
             if (tile != null && tile.getTileType().equals("normal")) {

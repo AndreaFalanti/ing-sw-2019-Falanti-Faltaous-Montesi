@@ -41,6 +41,9 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         },10000, 10000);
     }
 
+    /**
+     * Print all connected players on the server and evidence players still in waiting queue.
+     */
     private void printConnectedPlayers () {
         StringBuilder log = new StringBuilder("Connected players:");
         for (PlayerConnection connection : mPlayersOnline) {
@@ -55,6 +58,11 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         logger.info(log.toString());
     }
 
+    /**
+     * Check if username is not already picked
+     * @param username Username to check
+     * @return True if available, false otherwise
+     */
     @Override
     public boolean isUsernameAvailable(String username) {
         if (username == null) {
@@ -70,6 +78,11 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         return true;
     }
 
+    /**
+     * Register a player connection to proper queues. If a starting game is not full of players, add this new player
+     * to it instead of adding it to waiting queue.
+     * @param connection Connection to register
+     */
     @Override
     public synchronized void registerConnection(PlayerConnection connection) {
         mWaitingPlayers.add(connection);
@@ -102,12 +115,23 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         }
     }
 
+    /**
+     * Deregister a player connection from the server queues
+     * @param connection PlayerConnection to deregister
+     */
     @Override
     public void deregisterConnection(PlayerConnection connection) {
         mWaitingPlayers.remove(connection);
         mPlayersOnline.remove(connection);
     }
 
+    /**
+     * Register a player to the server queues if username is valid
+     * @param username Player's username
+     * @param type Connection type
+     * @param socket Socket used
+     * @return true if successfully registered, false if not
+     */
     @Override
     public boolean registerPlayer(String username, ConnectionType type, Socket socket) {
         if (isUsernameAvailable(username)) {
@@ -119,6 +143,10 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         return false;
     }
 
+    /**
+     * Deregister a player from the server
+     * @param username Player's username
+     */
     @Override
     public void deregisterPlayer(String username) {
         for (PlayerConnection connection : mPlayersOnline) {
@@ -128,11 +156,22 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         }
     }
 
+    /**
+     * [RMI ONLY] Register a player to the server
+     * @param username Player's username
+     * @return true if successfully registered, false if not
+     * @throws RemoteException
+     */
     @Override
     public boolean registerPlayerRemote(String username) throws RemoteException {
         return registerPlayer(username, ConnectionType.RMI, null);
     }
 
+    /**
+     * [RMI ONLY] Deregister a player from the server
+     * @param username Player's username
+     * @throws RemoteException
+     */
     @Override
     public void deregisterPlayerRemote(String username) throws RemoteException {
         deregisterPlayer(username);

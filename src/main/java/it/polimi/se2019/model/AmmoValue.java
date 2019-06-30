@@ -66,6 +66,11 @@ public class AmmoValue {
         return mBlue;
     }
 
+    /**
+     * Check that ammo value is between 0 and MAX_AMMO
+     * @param value value to check
+     * @return true if in the interval, false otherwise
+     */
     private boolean isValueValid (int value) {
         return value <= MAX_AMMO && value >= 0;
     }

@@ -25,6 +25,10 @@ public class Deck<T> {
         mReshuffleable = canBeReshuffled;
     }
 
+    /**
+     * Draw a card from deck
+     * @return Drawn card
+     */
     public T drawCard() {
         T drawnCard;
 
@@ -42,6 +46,9 @@ public class Deck<T> {
         }
     }
 
+    /**
+     * Recreate deck from discarded cards and shuffle all cards in random order
+     */
     public void shuffle() {
         mDeck = copyCard();
         Collections.shuffle(mDeck);

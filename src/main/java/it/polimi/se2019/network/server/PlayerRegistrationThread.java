@@ -15,8 +15,6 @@ public class PlayerRegistrationThread extends Thread {
     private BufferedReader mIn;
     private ConnectionRegister mRegister;
 
-    private boolean mInGame = false;
-
     public PlayerRegistrationThread(Socket socket, ConnectionRegister register) {
         mSocket = socket;
         try {
@@ -41,6 +39,10 @@ public class PlayerRegistrationThread extends Thread {
         }
     }
 
+    /**
+     * Receive username
+     * @return Received username
+     */
     private String receive () {
         try {
             return mIn.readLine();
@@ -52,10 +54,18 @@ public class PlayerRegistrationThread extends Thread {
         }
     }
 
+    /**
+     * Send a message to client
+     * @param message Message to send
+     */
     private void send (String message) {
         mOut.println(message);
     }
 
+    /**
+     * Handle player registration from socket, it asks for a username and inform client if it's valid or is already
+     * picked. If valid, create a PlayerConnection, than close itself.
+     */
     @Override
     public void run () {
         String username = null;
@@ -84,13 +94,5 @@ public class PlayerRegistrationThread extends Thread {
 
     public BufferedReader getIn() {
         return mIn;
-    }
-
-    public boolean isInGame() {
-        return mInGame;
-    }
-
-    public void setInGame(boolean inGame) {
-        mInGame = inGame;
     }
 }
