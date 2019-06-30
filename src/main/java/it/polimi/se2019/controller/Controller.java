@@ -217,22 +217,22 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void handle(UndoWeaponInteractionRequest request) {
-
+        continueShootInteraction(request);
     }
 
     @Override
     public void handle(WeaponModeSelectedRequest request) {
-
+        continueShootInteraction(request);
     }
 
     @Override
     public void handle(PowerUpsSelectedRequest request) {
-
+        continueShootInteraction(request);
     }
 
     @Override
     public void handle(RoomSelectedRequest request) {
-
+        continueShootInteraction(request);
     }
 
     @Override

@@ -660,7 +660,7 @@ public class WeaponsTest {
         );
     }
 
-    @Test
+    /*@Test
     public void testCyberbladeSmurfetteShadowStepsAndCutsMarioAndGreyUsingATargetingScopeOnEach() {
         // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
@@ -721,7 +721,7 @@ public class WeaponsTest {
                     ),
                     Collections.emptyList()
             );
-    }
+    }*/
 
     @Test
     public void testThorMarioUsesChainToZapHiddenLuigiThroughStonesAlsoStonesUsesATagbackAndLuigiCannotBecauseHeCantSeeMario() {
