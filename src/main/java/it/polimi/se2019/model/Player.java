@@ -283,6 +283,7 @@ public class Player extends Observable<Update> {
             i++;
         if(i <= mWeapons.length -1) {
             mWeapons[i] = value;
+            notify(new PlayerWeaponsUpdate(mColor, mWeapons));
         }
         else {
             throw new FullHandException("You have reached the maximum number of weapons in your hand");
@@ -329,6 +330,7 @@ public class Player extends Observable<Update> {
         for (int i = 0; i < mPowerUpCards.length; i++) {
             if (mPowerUpCards[i] == card) {
                 mPowerUpCards[i] = null;
+                notify(new PlayerPowerUpsUpdate(mColor, mPowerUpCards));
                 return ;
             }
         }
