@@ -48,6 +48,7 @@ public class CLIView extends View {
 
     private CLIInfo mCLIInfo = null;
 
+
     private static void printLineToConsole(String message) {
         System.out.println(message);
     }
@@ -172,7 +173,7 @@ public class CLIView extends View {
             notify(new ActionRequest(action, getOwnerColor()));
    //     }else printLineToConsole("Is not your turn!\n");
 
-        availableCommands();
+
     }
 
     public Position parseDestination(String destination){
@@ -245,8 +246,8 @@ public class CLIView extends View {
 
     public int parseWeaponInformation(TileColor tileColor){
 
-        printToConsole("Type the index of the weapon you want between 0 and 2" +
-                mCLIInfo.getSpawnTiles().get(tileColor));
+        printToConsole("Type the index of the weapon you want between 0 and 2\n" +
+                mCLIInfo.getSpawnTiles().get(tileColor)+"\n");
 
         return parseInteger();
     }
@@ -289,6 +290,7 @@ public class CLIView extends View {
         }
         else
             notify(new WeaponSelectedRequest(parseWeaponInformation(), mOwnerColor));
+        availableCommands();
     }
 
     @Override

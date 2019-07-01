@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static it.polimi.se2019.view.cli.Colors.ANSI_RESET;
+import static it.polimi.se2019.view.cli.Colors.findColor;
+
 public class CLIInfo {
 
     private static final int BOARD_COLUMNS =4;
@@ -176,10 +179,28 @@ public class CLIInfo {
             if(weapon!=null){
                 stringWeapons.append(weapon.getName());
                 stringWeapons.append("  Cost: ");
-                stringWeapons.append(weapon.getGrabCost().toString());
+                stringWeapons.append(cost(weapon.getGrabCost().getRed(),"red"));
+                stringWeapons.append(cost(weapon.getGrabCost().getYellow(),"yellow"));
+                stringWeapons.append(cost(weapon.getGrabCost().getBlue(),"blue"));
+                stringWeapons.append(";");
             }
         }
+
         return stringWeapons.toString();
+    }
+
+    public String cost(int value,String color){
+        StringBuilder cost = new StringBuilder();
+        cost.append(findColor(color));
+        if(color.equalsIgnoreCase("red"))
+            cost.append("Red : ");
+        if(color.equalsIgnoreCase("yellow"))
+            cost.append("Yellow : ");
+        if(color.equalsIgnoreCase("blue"))
+            cost.append("Blue : ");
+        cost.append(value+" ");
+        cost.append(ANSI_RESET);
+        return cost.toString();
     }
 
 
