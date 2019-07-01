@@ -1,8 +1,7 @@
 package it.polimi.se2019.view.cli;
 
-import it.polimi.se2019.network.client.ClientInterface;
-import it.polimi.se2019.network.client.RmiClient;
-import it.polimi.se2019.network.client.SocketClient;
+import it.polimi.se2019.network.client.*;
+import it.polimi.se2019.network.server.SocketConnection;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -13,6 +12,7 @@ public class LoginCLI {
     private static int SOCKETPORT = 4567;
     private static int RMIPORT = 4568;
 
+
     private static void printLineToConsole(String message) {
         System.out.println(message);
     }
@@ -21,9 +21,11 @@ public class LoginCLI {
         System.out.print(message);
     }
     
-    public static void log() throws IOException, NotBoundException {
+    public static void log(CLIView view) throws IOException, NotBoundException {
 
         Scanner scanner = new Scanner(System.in);
+        printLineToConsole("Choose your username: ");
+        String username = scanner.nextLine();
 
         printLineToConsole("Choose client connection type: ");
         printLineToConsole("Press 1 for socket");
@@ -55,7 +57,19 @@ public class LoginCLI {
         switch (result) {
             case 1:
                 client = new SocketClient("localhost", SOCKETPORT);
+                ClientNetworkHandler mNetworkHandler = new NetworkHandler(
+                        view,
+                        SocketConnection.establish("localhost", 4567)
+                );
 
+                if (mNetworkHandler.sendUsername(username)) {
+                    view.setNetworkHandler(mNetworkHandler);
+                    ((NetworkHandler) mNetworkHandler).startReceivingMessages();
+
+                }
+                else {
+                    System.out.print("username already used");
+                }
                 break;
             case 2:
                 client = new RmiClient("localhost", RMIPORT);
@@ -64,7 +78,7 @@ public class LoginCLI {
                 throw new IllegalStateException("invalid client selected");
         }
 
-        client.run();
     }
+
 }
 

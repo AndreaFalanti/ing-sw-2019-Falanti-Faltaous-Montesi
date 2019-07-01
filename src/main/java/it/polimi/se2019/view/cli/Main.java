@@ -4,16 +4,14 @@ import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.network.client.ClientInterface;
+import it.polimi.se2019.network.client.ClientNetworkHandler;
 import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.network.client.RmiClient;
-import it.polimi.se2019.network.client.SocketClient;
-import it.polimi.se2019.network.server.Connection;
 import it.polimi.se2019.network.server.SocketConnection;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.ShootRequest;
-import it.polimi.se2019.view.request.serialization.RequestFactory;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -84,6 +82,7 @@ public class Main {
         CLIView view = new CLIView(null);
         Scanner scanner = new Scanner(System.in);
 
+
         System.out.println("Choose client connection type: ");
         System.out.println(("Press 1 for socket"));
         System.out.println(("Press 2 for rmi"));
@@ -110,10 +109,31 @@ public class Main {
             }
         } while (!validCmd);
 
+        ClientNetworkHandler mNetworkHandler;
         ClientInterface client;
+        boolean isValid=false;
         switch (result) {
+
             case 1:
-                client = new SocketClient("localhost", 4567);
+
+                mNetworkHandler = new NetworkHandler(
+                        view,
+                        SocketConnection.establish("localhost", 4567)
+                );
+                String username;
+                Scanner scanner1 = new Scanner(System.in);
+                while(!isValid){
+                    System.out.println("Choose username");
+                    username=scanner1.nextLine();
+                    if (mNetworkHandler.sendUsername(username)) {
+                        view.setNetworkHandler(mNetworkHandler);
+                        ((NetworkHandler)mNetworkHandler).startReceivingMessages();
+                        isValid=true;
+                    }
+                    else {
+                        System.out.print("username already used");
+                    }
+                }
 
                 break;
             case 2:
@@ -123,24 +143,11 @@ public class Main {
                 throw new IllegalStateException("invalid client selected");
         }
 
-        client.run();
-
-        Connection connection = SocketConnection.establish("localhost", 4567);
-        // Connection connection = RmiConnection.establish(
-        // LaunchTestGameServer.RMI_PORT,
-        // PlayerColor.BLUE.getPascalName()
-        // );
-
-        view.register(request ->
-                connection.sendMessage(RequestFactory.toJson(request))
-        );
-
-        NetworkHandler networkHandler = new NetworkHandler(view, connection);
-        view.setNetworkHandler(networkHandler);
 
 
-        view.availableCommands();
+
     }
+
 
 
 

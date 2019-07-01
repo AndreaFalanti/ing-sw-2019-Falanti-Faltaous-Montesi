@@ -336,22 +336,24 @@ public class BoardCLI {
     StringBuilder secondLineSostitution = new StringBuilder(lines.get(2));
     StringBuilder thirdLineSostitution = new StringBuilder(lines.get(3));
         for(CLIPlayer player: players.values()){
-            numberPlayer +=2;
-            String[] coord = player.getPlayerPosition()
-                            .replaceAll("\\D","")
-                            .split("");
-           if(coord[1].equals("0"))
-                    addPlayer(firstLineSostitution,coord[0],player.getPlayerColor(),numberPlayer);
-             else{
-               if(coord[1].equals("1"))
-                    addPlayer(secondLineSostitution,coord[0],player.getPlayerColor(),numberPlayer);
-                else{
-                    if(!thirdNull)
-                        addPlayer(thirdLineSostitution,coord[0],player.getPlayerColor(),numberPlayer);
-                    else
-                        addPlayerLastLine(thirdLineSostitution,coord[0],player.getPlayerColor(),numberPlayer);
-                }
-           }
+            if(!player.getPlayerPosition().equalsIgnoreCase("not respawned")){
+                numberPlayer +=2;
+                String[] coord = player.getPlayerPosition()
+                                .replaceAll("\\D","")
+                                .split("");
+               if(coord[1].equals("0"))
+                        addPlayer(firstLineSostitution,coord[0],player.getPlayerColor(),numberPlayer);
+                     else{
+                       if(coord[1].equals("1"))
+                            addPlayer(secondLineSostitution,coord[0],player.getPlayerColor(),numberPlayer);
+                            else{
+                                if(!thirdNull)
+                                    addPlayer(thirdLineSostitution,coord[0],player.getPlayerColor(),numberPlayer);
+                                else
+                                    addPlayerLastLine(thirdLineSostitution,coord[0],player.getPlayerColor(),numberPlayer);
+                            }
+               }
+            }
         }
         printToConsole(board.get(0));
         printToConsole(firstLineSostitution);

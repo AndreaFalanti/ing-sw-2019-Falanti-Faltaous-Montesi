@@ -8,7 +8,6 @@ import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.network.client.ClientNetworkHandler;
-import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
@@ -54,7 +53,9 @@ public class CLIView extends View {
 
     public void setNetworkHandler(ClientNetworkHandler networkHandler) {
         this.networkHandler = networkHandler;
-        ((NetworkHandler)networkHandler).startReceivingMessages();
+       //((NetworkHandler)this.networkHandler).startReceivingMessages();
+        this.networkHandler.registerObservablesFromView();
+
     }
 
     private static void printLineToConsole(String message) {
@@ -96,6 +97,7 @@ public class CLIView extends View {
     @Override
     public void registerAll(Observer<Request> observer) {
         register(observer);
+
     }
 
     public void actionCommand(){
@@ -387,9 +389,11 @@ public class CLIView extends View {
 
     @Override
     public void showRespawnPowerUpDiscardView() {
-        printLineToConsole(mCLIInfo.getOwner().getPlayerPowerUps());
-        notify(new RespawnPowerUpRequest(parseInteger(), mOwnerColor));
-        availableCommands();
+
+            printLineToConsole(mCLIInfo.getOwner().getPlayerPowerUps());
+            notify(new RespawnPowerUpRequest(parseInteger(), mOwnerColor));
+            availableCommands();
+
     }
 
     public int parseInteger(){
