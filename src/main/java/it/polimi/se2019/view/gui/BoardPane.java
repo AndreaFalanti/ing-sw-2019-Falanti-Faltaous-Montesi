@@ -485,6 +485,7 @@ public class BoardPane extends Observable<Request> {
                 }
 
                 mMainController.getUndoButton().setOnMouseClicked(event -> {
+                    switchButtonGridEnableStatus(false);
                     mMainController.returnToActionTab();
                     notify(new UndoWeaponInteractionRequest(mMainController.getView().getOwnerColor()));
                 });
@@ -500,13 +501,17 @@ public class BoardPane extends Observable<Request> {
 
         for (int i = 0; i < selectedSpawn.getChildren().size(); i++) {
             final int index = i;
-            selectedSpawn.getChildren().get(i).setOnMouseClicked(event -> notify(
-                    new WeaponSelectedRequest(index, mMainController.getView().getOwnerColor())));
+            selectedSpawn.getChildren().get(i).setOnMouseClicked(event -> {
+                notify(new WeaponSelectedRequest(index, mMainController.getView().getOwnerColor()));
+                resetWeaponBoxToDefault(selectedSpawn);
+            });
         }
 
-        mMainController.getUndoButton().setOnMouseClicked(event -> {
-            GuiUtils.setBoxEnableStatus(selectedSpawn,false);
-            mMainController.setEnableStatusActionButtonBox(true);
-        });
+        mMainController.getUndoButton().setOnMouseClicked(event -> resetWeaponBoxToDefault(selectedSpawn));
+    }
+
+    private void resetWeaponBoxToDefault (Node weaponBox) {
+        GuiUtils.setBoxEnableStatus(weaponBox,false);
+        mMainController.setEnableStatusActionButtonBox(true);
     }
 }

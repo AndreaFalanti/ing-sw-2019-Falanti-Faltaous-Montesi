@@ -1,6 +1,7 @@
 package it.polimi.se2019.view.gui;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -37,6 +38,14 @@ public class BoardSquare {
     }
 
     public void addPawn (Circle circle) {
+        // check if selected pawn is already in this square, in that case do nothing
+        for (Node node : squareGrid.getChildren()) {
+            if (circle.equals(node)) {
+                return;
+            }
+        }
+
+
         for (int y = 0; y < GRID_ROWS; y++) {
             for (int x = 1; x < GRID_COLUMNS; x++) {
                 // avoid cell (2,1)

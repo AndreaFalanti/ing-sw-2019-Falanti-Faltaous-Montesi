@@ -6,9 +6,9 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<Pane fx:id="smallPlayerBoard" prefHeight="110.0" prefWidth="546.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.se2019.view.gui.OtherPlayerPane">
+<AnchorPane maxWidth="546.0" prefHeight="111.0" prefWidth="546.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.se2019.view.gui.OtherPlayerPane">
     <children>
-        <AnchorPane fx:id="boardPane" prefHeight="110.0" prefWidth="448.0">
+        <AnchorPane fx:id="boardPane" prefHeight="110.0" prefWidth="448.0" AnchorPane.leftAnchor="0.0">
             <children>
                 <ImageView fx:id="playerBoard" fitHeight="111.0" fitWidth="448.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0">
                     <image>
@@ -75,24 +75,24 @@
             </children>
         </AnchorPane>
         <Button fx:id="switchButton" layoutX="455.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#switchDetailPane" prefHeight="31.0" prefWidth="85.0" text="Weapons" />
-        <HBox fx:id="cardDetailBox" prefHeight="110.0" prefWidth="448.0" spacing="10.0" visible="false">
+        <HBox fx:id="cardDetailBox" maxWidth="448.0" prefHeight="110.0" prefWidth="448.0" spacing="10.0" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="98.0">
             <children>
-                <ImageView fitHeight="110.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="110.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
                     <image>
                         <Image url="@../images/cards/AD_weapons_IT_0213.png" />
                     </image>
                 </ImageView>
-                <ImageView fitHeight="110.0" fitWidth="200.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="110.0" fitWidth="65.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
                     <image>
                         <Image url="@../images/cards/AD_weapons_IT_0213.png" />
                     </image>
                 </ImageView>
-                <ImageView fitHeight="110.0" fitWidth="200.0" layoutX="76.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="110.0" fitWidth="65.0" layoutX="76.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
                     <image>
                         <Image url="@../images/cards/AD_weapons_IT_0213.png" />
                     </image>
                 </ImageView>
-            <StackPane>
+            <StackPane prefHeight="110.0" prefWidth="65.0" HBox.hgrow="NEVER">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
@@ -112,4 +112,4 @@
             </children>
         </HBox>
     </children>
-</Pane>
+</AnchorPane>
