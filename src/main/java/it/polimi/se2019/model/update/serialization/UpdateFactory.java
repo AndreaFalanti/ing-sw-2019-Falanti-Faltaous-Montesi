@@ -3,6 +3,9 @@ package it.polimi.se2019.model.update.serialization;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import it.polimi.se2019.model.board.NormalTile;
+import it.polimi.se2019.model.board.SpawnTile;
+import it.polimi.se2019.model.board.Tile;
 import it.polimi.se2019.model.update.*;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
@@ -27,8 +30,10 @@ public final class UpdateFactory {
                         .registerSubtype(PlayerPowerUpsUpdate.class)
                         .registerSubtype(PlayerRespawnUpdate.class)
                         .registerSubtype(PlayerWeaponsUpdate.class)
-                        .registerSubtype(RemainingActionsUpdate.class)
-                )
+                        .registerSubtype(RemainingActionsUpdate.class))
+                .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Tile.class, "type")
+                        .registerSubtype(SpawnTile.class)
+                        .registerSubtype(NormalTile.class))
                 //.setPrettyPrinting()
                 .setFieldNamingStrategy(new CustomFieldNamingStrategy())
                 .addSerializationExclusionStrategy(new AnnotationExclusionStrategy())
