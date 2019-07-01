@@ -81,6 +81,8 @@ public class SpawnTile extends Tile {
     public Weapon grabWeapon(int index) {
         Weapon grabbedCard = mWeapons[index];
         mWeapons[index] = null;
+        // TODO
+        //notify(new BoardTileUpdate(this,));
         return grabbedCard;
     }
 

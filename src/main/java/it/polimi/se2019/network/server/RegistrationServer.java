@@ -2,14 +2,12 @@ package it.polimi.se2019.network.server;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +29,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         registry.rebind("rmiServer", this);
         logger.log(Level.INFO, "RMI initialized on port {0}\nexported modules:\nrmiServer", rmiPort);
 
+        /*
         // print every 10 seconds the list of players connected
         mTimer = new Timer();
         mTimer.scheduleAtFixedRate(new TimerTask() {
@@ -39,6 +38,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
                 printConnectedPlayers();
             }
         },10000, 10000);
+        */
     }
 
     /**
@@ -160,7 +160,6 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
      * [RMI ONLY] Register a player to the server
      * @param username Player's username
      * @return true if successfully registered, false if not
-     * @throws RemoteException
      */
     @Override
     public boolean registerPlayerRemote(String username) {
@@ -170,7 +169,6 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
     /**
      * [RMI ONLY] Deregister a player from the server
      * @param username Player's username
-     * @throws RemoteException
      */
     @Override
     public void deregisterPlayerRemote(String username) {

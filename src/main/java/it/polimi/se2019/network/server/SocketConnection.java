@@ -83,6 +83,7 @@ public class SocketConnection implements Connection {
             String result = null;
             try {
                 result = mIn.readLine();
+                logger.log(Level.INFO, "Received request: {0}", result);
             } catch (IOException e) {
                 logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
             }

@@ -30,7 +30,7 @@ public class VirtualView extends View {
                 new UpdateHandler() {
                     @Override
                     public void fallbackHandle(Update update) {
-                        logger.log(Level.INFO, "Sending update: {0}", update);
+                        logger.log(Level.INFO, "Sending update: {0}", update.getClass().getSimpleName());
                         connection.sendMessage(ServerMessageFactory.toJson(update));
                     }
                 }
@@ -121,8 +121,7 @@ public class VirtualView extends View {
     private void sendResponse(Response response) {
         String rawMessage = ServerMessageFactory.toJson(response);
 
-        logger.log(Level.INFO, "Sending {0}... [json: {1}]",
-                new Object[]{ response.getClass().getSimpleName(), rawMessage });
+        logger.log(Level.INFO, "Sending response: {0}", response.getClass().getSimpleName());
 
         mConnection.sendMessage(rawMessage);
     }
@@ -130,8 +129,11 @@ public class VirtualView extends View {
     public void startReceivingRequests() {
         new Thread(() -> {
             while (true) {
+                logger.info("Waiting for requests...");
                 String rawRequest = mConnection.waitForMessage();
-                notify(RequestFactory.fromJson(rawRequest));
+                Request request = RequestFactory.fromJson(rawRequest);
+                logger.log(Level.INFO, "Handling {0}...", request.getClass().getSimpleName());
+                notify(request);
             }
         }).start();
     }

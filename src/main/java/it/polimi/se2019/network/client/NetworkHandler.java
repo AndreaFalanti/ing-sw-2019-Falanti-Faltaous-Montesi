@@ -36,7 +36,7 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
         new Thread(() -> {
             while (true) {
                 // wait for message to be sent
-                logger.info("Waiting for server messsage");
+                logger.info("Waiting for server message");
                 String rawMessage = mConnection.waitForMessage();
 
                 // receive it and unwrap it

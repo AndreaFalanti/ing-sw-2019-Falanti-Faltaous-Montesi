@@ -99,6 +99,8 @@ public class NormalTile extends Tile {
     public AmmoCard grabAmmo() {
         AmmoCard grabbedItem = mAmmoCard;
         mAmmoCard = null;
+        // TODO
+        //notify(new BoardTileUpdate(this, ));
         return grabbedItem;
     }
 

@@ -476,7 +476,9 @@ public class BoardPane extends Observable<Request> {
                         switchButtonGridEnableStatus(false);
                         for (Button[] buttons : mInteractiveButtons) {
                             for (Button button : buttons) {
-                                button.setDisable(false);
+                                if (button != null) {
+                                    button.setDisable(false);
+                                }
                             }
                         }
                     });

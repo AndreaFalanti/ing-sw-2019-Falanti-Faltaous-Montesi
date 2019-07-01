@@ -1,14 +1,15 @@
 package it.polimi.se2019.model.board;
 
 import com.google.gson.annotations.JsonAdapter;
-import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
 import it.polimi.se2019.model.board.serialization.DoorsDeserializer;
+import it.polimi.se2019.model.update.Update;
+import it.polimi.se2019.util.Observable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class Tile {
+public abstract class Tile extends Observable<Update> {
     private TileColor mColor = TileColor.BLUE;
 
     @JsonAdapter(DoorsDeserializer.class)

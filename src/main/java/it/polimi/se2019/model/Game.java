@@ -468,5 +468,10 @@ public class Game extends Observable<Update> {
     public void registerAll(Observer<Update> observer) {
         register(observer);
         mPlayers.forEach(pl -> pl.register(observer));
+        mBoard.getTiles().forEach(tile -> {
+            if (tile != null) {
+                tile.register(observer);
+            }
+        });
     }
 }

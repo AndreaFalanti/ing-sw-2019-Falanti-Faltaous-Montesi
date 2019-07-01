@@ -7,8 +7,8 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.InitializationInfo;
-import it.polimi.se2019.view.VirtualView;
 import it.polimi.se2019.view.View;
+import it.polimi.se2019.view.VirtualView;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -62,6 +62,7 @@ public class GameThread extends Thread {
         logger.info("The game thread has begun!!");
 
         for (Map.Entry<PlayerColor, View> entry : mController.getPlayerViews().entrySet()) {
+            ((VirtualView)entry.getValue()).startReceivingRequests();
             InitializationInfo initInfo = mGame.extractViewInitializationInfo(entry.getKey());
             entry.getValue().reinitialize(initInfo);
         }

@@ -323,7 +323,6 @@ public class MainScreen extends Observable<Request> {
             if (ids[i] != null) {
                 Image powerUpImage = new Image(GuiResourcePaths.POWER_UP_CARD + ids[i] + ".png");
                 powerUpImageView.setImage(powerUpImage);
-                setPowerUpDefaultBehaviour(powerUpImageView, i);
                 powerUpImageView.setDisable(false);
             }
             else {
@@ -582,17 +581,17 @@ public class MainScreen extends Observable<Request> {
         for (int x = 0; x < POWER_UPS_GRID_COLUMNS; x++) {
             for (int y = 0; y < POWER_UPS_GRID_ROWS; y++) {
                 Node powerUp = GuiUtils.getNodeFromGridPane(powerUpGrid, x, y);
-
-                int i = x;
-                int j = y;
                 if (powerUp != null) {
-                    powerUp.setOnMouseClicked(event -> notify(new RespawnPowerUpRequest(
-                            i + j * POWER_UPS_GRID_COLUMNS, mView.getOwnerColor())));
+                    int index = x + y * POWER_UPS_GRID_COLUMNS;
+
+                    powerUp.setOnMouseClicked(event -> {
+                        logToChat("Using powerUp of index " + index + " for respawn");
+                        notify(new RespawnPowerUpRequest(index, mView.getOwnerColor()));
+                        finalizePowerUpInteraction();
+                    });
                 }
             }
         }
-
-        finalizePowerUpInteraction();
     }
 
     /**
