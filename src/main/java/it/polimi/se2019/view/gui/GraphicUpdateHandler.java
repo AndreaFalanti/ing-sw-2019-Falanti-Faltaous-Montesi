@@ -15,6 +15,10 @@ public class GraphicUpdateHandler implements UpdateHandler {
         mMainController = mainController;
     }
 
+    public void setMainController(MainScreen mainController) {
+        mMainController = mainController;
+    }
+
     @Override
     public void handle(PlayerPositionUpdate update) {
         Platform.runLater(() -> mMainController.getBoardController().movePawnToCoordinate(update.getPlayerPos(), update.getPlayerColor()));
@@ -69,7 +73,8 @@ public class GraphicUpdateHandler implements UpdateHandler {
             if (update.getPlayerColor() == mMainController.getClientColor()) {
                 String[] ids = new String[powerUpsNum];
                 for (int i = 0; i < powerUpsNum; i++) {
-                    ids[i] = update.getPowerUpCards()[i].getGuiID();
+                    PowerUpCard powerUpCard = update.getPowerUpCards()[i];
+                    ids[i] = (powerUpCard != null) ? update.getPowerUpCards()[i].getGuiID() : null;
                 }
                 mMainController.updatePowerUpGrid(ids);
             }

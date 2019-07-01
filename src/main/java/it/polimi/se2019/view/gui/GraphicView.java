@@ -39,6 +39,7 @@ public class GraphicView extends View {
 
     public void setMainFrameController(MainScreen mainFrameController) {
         mMainFrameController = mainFrameController;
+        ((GraphicUpdateHandler)mUpdateHandler).setMainController(mainFrameController);
     }
 
     public void setActuallyDisplayedScene(Scene actuallyDisplayedScene) {
