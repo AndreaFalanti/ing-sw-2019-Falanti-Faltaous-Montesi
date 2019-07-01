@@ -3,11 +3,7 @@ package it.polimi.se2019.view.cli;
 import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.network.client.ClientInterface;
-import it.polimi.se2019.network.client.ClientNetworkHandler;
 import it.polimi.se2019.network.client.NetworkHandler;
-import it.polimi.se2019.network.client.RmiClient;
-import it.polimi.se2019.network.server.SocketConnection;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
@@ -15,7 +11,9 @@ import it.polimi.se2019.view.request.ShootRequest;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -80,72 +78,8 @@ public class Main {
         //end test
 
         CLIView view = new CLIView(null);
-        Scanner scanner = new Scanner(System.in);
-
-
-        System.out.println("Choose client connection type: ");
-        System.out.println(("Press 1 for socket"));
-        System.out.println(("Press 2 for rmi"));
-        System.out.println((">> "));
-
-        int result = -1;
-        boolean validCmd;
-        do {
-            try {
-                result = scanner.nextInt();
-                if (result < 1 || result > 2) {
-                    System.out.println(("Invalid input"));
-                    System.out.println(("\n>> "));
-                    validCmd = false;
-                } else {
-                    validCmd = true;
-                }
-            } catch (InputMismatchException e) {
-                System.out.println(("Choose a number please"));
-                System.out.println(("\n>> "));
-                // flush remaining \n in buffer
-                scanner.next();
-                validCmd = false;
-            }
-        } while (!validCmd);
-
-        ClientNetworkHandler mNetworkHandler;
-        ClientInterface client;
-        boolean isValid=false;
-        switch (result) {
-
-            case 1:
-
-                mNetworkHandler = new NetworkHandler(
-                        view,
-                        SocketConnection.establish("localhost", 4567)
-                );
-                String username;
-                Scanner scanner1 = new Scanner(System.in);
-                while(!isValid){
-                    System.out.println("Choose username");
-                    username=scanner1.nextLine();
-                    if (mNetworkHandler.sendUsername(username)) {
-                        view.setNetworkHandler(mNetworkHandler);
-                        ((NetworkHandler)mNetworkHandler).startReceivingMessages();
-                        isValid=true;
-                    }
-                    else {
-                        System.out.print("username already used");
-                    }
-                }
-
-                break;
-            case 2:
-                client = new RmiClient("localhost", 4568);
-                break;
-            default:
-                throw new IllegalStateException("invalid client selected");
-        }
-
-
-
-
+        LoginCLI.log(view);
+        ((NetworkHandler)view.getNetworkHandler()).startReceivingMessages();
     }
 
 

@@ -1,6 +1,9 @@
 package it.polimi.se2019.view.cli;
 
-import it.polimi.se2019.network.client.*;
+import it.polimi.se2019.network.client.ClientInterface;
+import it.polimi.se2019.network.client.ClientNetworkHandler;
+import it.polimi.se2019.network.client.NetworkHandler;
+import it.polimi.se2019.network.client.RmiClient;
 import it.polimi.se2019.network.server.SocketConnection;
 
 import java.io.IOException;
@@ -22,15 +25,13 @@ public class LoginCLI {
     }
     
     public static void log(CLIView view) throws IOException, NotBoundException {
-
         Scanner scanner = new Scanner(System.in);
-        printLineToConsole("Choose your username: ");
-        String username = scanner.nextLine();
+
 
         printLineToConsole("Choose client connection type: ");
         printLineToConsole("Press 1 for socket");
         printLineToConsole("Press 2 for rmi");
-        printToConsole(">> ");
+        printLineToConsole(">> ");
 
         int result = -1;
         boolean validCmd;
@@ -53,22 +54,28 @@ public class LoginCLI {
             }
         } while (!validCmd);
 
+        ClientNetworkHandler mNetworkHandler;
         ClientInterface client;
+        boolean isValid=false;
         switch (result) {
             case 1:
-                client = new SocketClient("localhost", SOCKETPORT);
-                ClientNetworkHandler mNetworkHandler = new NetworkHandler(
+                mNetworkHandler = new NetworkHandler(
                         view,
                         SocketConnection.establish("localhost", 4567)
                 );
-
-                if (mNetworkHandler.sendUsername(username)) {
-                    view.setNetworkHandler(mNetworkHandler);
-                    ((NetworkHandler) mNetworkHandler).startReceivingMessages();
-
-                }
-                else {
-                    System.out.print("username already used");
+                String username;
+                Scanner scanner1 = new Scanner(System.in);
+                while(!isValid){
+                    printLineToConsole("Choose username");
+                    username=scanner1.nextLine();
+                    if (mNetworkHandler.sendUsername(username)) {
+                        view.setNetworkHandler(mNetworkHandler);
+                       // ((NetworkHandler)mNetworkHandler).startReceivingMessages();
+                        isValid=true;
+                    }
+                    else {
+                        printLineToConsole("username already used");
+                    }
                 }
                 break;
             case 2:

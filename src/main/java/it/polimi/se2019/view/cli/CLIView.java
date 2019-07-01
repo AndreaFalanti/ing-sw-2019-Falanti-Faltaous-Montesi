@@ -53,10 +53,13 @@ public class CLIView extends View {
 
     public void setNetworkHandler(ClientNetworkHandler networkHandler) {
         this.networkHandler = networkHandler;
-       //((NetworkHandler)this.networkHandler).startReceivingMessages();
-        this.networkHandler.registerObservablesFromView();
+        //((NetworkHandler)this.networkHandler).startReceivingMessages();
+         this.networkHandler.registerObservablesFromView();
 
     }
+
+
+    public ClientNetworkHandler getNetworkHandler(){return networkHandler;}
 
     private static void printLineToConsole(String message) {
         System.out.println(message);
@@ -148,6 +151,7 @@ public class CLIView extends View {
                     }
                     action = new MoveAction(mCLIInfo.getOwnerColor(), pos);
                     logger.log(Level.INFO, "Action: MOVE  Pos: {0}", pos);
+                    availableCommands();
                     break;
                 case "grab":
                     pos = parseDestination(otherCommandPart);
@@ -203,7 +207,6 @@ public class CLIView extends View {
             notify(new ActionRequest(action, getOwnerColor()));
    //     }else printLineToConsole("Is not your turn!\n");
 
-        availableCommands();
     }
 
     public Position parseDestination(String destination){
