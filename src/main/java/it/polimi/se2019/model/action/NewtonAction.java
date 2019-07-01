@@ -80,4 +80,9 @@ public class NewtonAction implements Action {
     public boolean isComposite() {
         return false;
     }
+
+    @Override
+    public boolean leadToAShootInteraction() {
+        return false;
+    }
 }

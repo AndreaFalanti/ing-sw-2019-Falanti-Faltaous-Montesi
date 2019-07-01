@@ -1,5 +1,6 @@
 package it.polimi.se2019.model.action;
 
+import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
@@ -9,7 +10,7 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
-public class MoveReloadShootAction implements Action {
+public class MoveReloadShootAction implements ShootLeadingAction {
     private MoveShootAction mMoveShootAction;
     private ReloadAction mReloadAction;
 
@@ -59,5 +60,15 @@ public class MoveReloadShootAction implements Action {
     @Override
     public boolean isComposite() {
         return true;
+    }
+
+    @Override
+    public boolean leadToAShootInteraction() {
+        return true;
+    }
+
+    @Override
+    public Expression getShotBehaviour(Game game) {
+        return game.getActivePlayer().getWeapon(mMoveShootAction.getShootAction().getWeaponIndex()).getBehaviour();
     }
 }

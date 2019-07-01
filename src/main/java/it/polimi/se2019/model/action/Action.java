@@ -14,4 +14,6 @@ public interface Action {
     boolean consumeAction();
 
     boolean isComposite();
+
+    boolean leadToAShootInteraction ();
 }

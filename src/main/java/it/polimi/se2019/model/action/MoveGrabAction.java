@@ -96,4 +96,9 @@ public class MoveGrabAction implements Action {
     public boolean isComposite() {
         return true;
     }
+
+    @Override
+    public boolean leadToAShootInteraction() {
+        return false;
+    }
 }

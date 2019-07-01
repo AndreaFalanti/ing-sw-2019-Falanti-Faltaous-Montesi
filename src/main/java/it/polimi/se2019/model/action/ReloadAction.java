@@ -91,4 +91,9 @@ public class ReloadAction implements CostlyAction {
     public boolean isComposite() {
         return false;
     }
+
+    @Override
+    public boolean leadToAShootInteraction() {
+        return false;
+    }
 }

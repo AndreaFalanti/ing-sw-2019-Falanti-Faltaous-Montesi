@@ -43,6 +43,11 @@ public class GrabAmmoAction implements GrabAction {
     }
 
     @Override
+    public boolean leadToAShootInteraction() {
+        return false;
+    }
+
+    @Override
     public Optional<InvalidActionResponse> getErrorMessageAtPos(Game game, Position pos) {
         // can't perform "costly" actions if they are no more available in this turn
         if (game.getRemainingActions() == 0) {

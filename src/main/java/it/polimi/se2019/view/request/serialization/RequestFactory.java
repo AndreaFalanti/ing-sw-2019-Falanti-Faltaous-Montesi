@@ -44,7 +44,6 @@ public final class RequestFactory {
                         .registerSubtype(ReloadAction.class)
                         .registerSubtype(ShootAction.class)
                         .registerSubtype(TeleportAction.class)
-                        .registerSubtype(WeaponAction.class)
                 )
                 .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(GrabAction.class, "type")
                         .registerSubtype(GrabAmmoAction.class)

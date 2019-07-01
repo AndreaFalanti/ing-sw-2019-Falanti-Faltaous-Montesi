@@ -114,4 +114,9 @@ public class MoveAction implements Action {
     public boolean isComposite() {
         return false;
     }
+
+    @Override
+    public boolean leadToAShootInteraction() {
+        return false;
+    }
 }

@@ -81,12 +81,14 @@ public class PlayerActionController implements InvalidActionResponseHandler {
         Optional<InvalidActionResponse> response = action.getErrorResponse(mMainController.getGame());
         if(!response.isPresent()) {
             action.perform(mMainController.getGame());
-            // NEW CODE BEGIN
-            // if (action.endsInShootInteraction())
-                // mMainController.startShootInteraction(action.getShootInfo());
-            // NEW CODE END
-            if(action.consumeAction())
+
+            if (action.leadToAShootInteraction()) {
+                mMainController.startShootInteraction(requestingView.getOwnerColor(),
+                        ((ShootLeadingAction) action).getShotBehaviour(mMainController.getGame()));
+            }
+            if (action.consumeAction()) {
                 mMainController.getGame().decreaseActionCounter();
+            }
         }
         else {
             mCachedAction = action;
