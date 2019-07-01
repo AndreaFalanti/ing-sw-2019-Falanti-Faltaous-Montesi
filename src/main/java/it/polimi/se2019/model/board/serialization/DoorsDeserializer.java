@@ -13,16 +13,16 @@ public class DoorsDeserializer implements JsonDeserializer<Integer>, JsonSeriali
                 .map(String.class::cast)
                 .mapToInt(strDoor -> {
                     if (strDoor.equals("north")) {
-                        return 0b1000;
+                        return 0b0001;
                     }
                     else if (strDoor.equals("east")) {
-                        return 0b0100;
-                    }
-                    else if (strDoor.equals("south")) {
                         return 0b0010;
                     }
+                    else if (strDoor.equals("south")) {
+                        return 0b0100;
+                    }
                     else if (strDoor.equals("west")) {
-                        return 0b0001;
+                        return 0b1000;
                     }
                     else return 0b0000;
                 })
@@ -36,9 +36,9 @@ public class DoorsDeserializer implements JsonDeserializer<Integer>, JsonSeriali
         JsonArray result = new JsonArray();
 
         IntStream.range(0, 4)
-                .mapToObj(i -> ((src & i) != src) ? directions[i] : "none")
+                .mapToObj(i -> ((src & i) == 0) ? directions[i] : "none")
                 .filter(strDir -> !strDir.equals("none"))
-                .forEach(strDir -> result.add(strDir));
+                .forEach(result::add);
 
         return result;
     }
