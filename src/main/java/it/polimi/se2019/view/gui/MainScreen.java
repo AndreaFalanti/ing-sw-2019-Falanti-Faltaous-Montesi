@@ -529,7 +529,7 @@ public class MainScreen extends Observable<Request> {
         setEnableStatusActionButtonBox(true);
         resetAllPowerUpsBehaviourToDefault();
         powerUpDiscardButton.setDisable(true);
-        GuiUtils.setBoxEnableStatus(powerUpGrid, true);
+
         for (Node node : powerUpGrid.getChildren()) {
             node.setOpacity(LOADED_OPACITY);
         }

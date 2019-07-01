@@ -186,6 +186,8 @@ public class GraphicView extends View {
                 stage.show();
                 mActuallyDisplayedScene = scene;
 
+                mMainFrameController.returnToActionTab();
+
                 mNetworkHandler.registerObservablesFromView();
             }
             catch (IOException e) {

@@ -5,12 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.board.serialization.CustomBoardDeserializer;
 import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.Exclude;
-import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 import java.util.*;
@@ -227,21 +225,6 @@ public class Board {
             );
 
         return mTiles.get(getIndexFromPosition(pos));
-    }
-
-    /**
-     * Get tile position
-     * @param tile Selected tile
-     * @return Position of tile
-     */
-    public Position getTilePos (Tile tile) {
-        for (int i = 0; i < mTiles.size(); i++) {
-            if (tile.equals(mTiles.get(i))) {
-                return new Position(i%4, i/4);
-            }
-        }
-
-        throw new IllegalArgumentException("Tile not found");
     }
 
     // TODO: write doc

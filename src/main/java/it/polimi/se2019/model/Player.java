@@ -342,6 +342,7 @@ public class Player extends Observable<Update> {
      */
     public void discard (int powerUpIndex) {
         mPowerUpCards[powerUpIndex] = null;
+        notify(new PlayerPowerUpsUpdate(mColor, mPowerUpCards));
     }
 
     /**

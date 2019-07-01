@@ -11,8 +11,6 @@ import it.polimi.se2019.model.action.NewtonAction;
 import it.polimi.se2019.model.action.TeleportAction;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.TileColor;
-import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
-import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
@@ -260,7 +258,7 @@ public class Controller implements Observer<Request>, RequestHandler {
         Player respawningPlayer = mGame.getPlayerFromColor(request.getViewColor());
         TileColor spawnColor = respawningPlayer.getPowerUpCard(request.getIndex()).getColor();
         SpawnTile respawnTile = mGame.getBoard().getSpawnMap().get(spawnColor);
-        Position respawnPosition = mGame.getBoard().getTilePos(respawnTile);
+        Position respawnPosition = respawnTile.getPosition();
 
         respawningPlayer.respawn(respawnPosition);
         respawningPlayer.discard(request.getIndex());
