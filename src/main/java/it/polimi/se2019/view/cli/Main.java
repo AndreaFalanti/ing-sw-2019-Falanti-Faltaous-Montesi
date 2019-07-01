@@ -79,7 +79,7 @@ public class Main {
         );
         //end test
         LoginCLI.log();
-        CLIView cliView = new CLIView(game.extractViewInitializationInfo(),ownerColor);
+        CLIView cliView = new CLIView(game.extractViewInitializationInfo(PlayerColor.GREEN),ownerColor);
         cliView.availableCommands();
       //  owner.onDamageTaken(new Damage(3,0), PlayerColor.YELLOW);
       //  owner.onDamageTaken(new Damage(3,2), PlayerColor.GREY);
@@ -103,19 +103,19 @@ public class Main {
                 new Pair<>(
                         PlayerColor.PURPLE,
                         new CLIView(
-                            game.extractViewInitializationInfo(),PlayerColor.PURPLE
+                            game.extractViewInitializationInfo(PlayerColor.PURPLE),PlayerColor.PURPLE
                         )
                 ),
                 new Pair<>(
                         PlayerColor.BLUE,
                         new CLIView(
-                                game.extractViewInitializationInfo(),PlayerColor.BLUE
+                                game.extractViewInitializationInfo(PlayerColor.PURPLE),PlayerColor.BLUE
                         )
                 ),
                 new Pair<>(
                         PlayerColor.YELLOW,
                         new CLIView(
-                                game.extractViewInitializationInfo(),PlayerColor.YELLOW
+                                game.extractViewInitializationInfo(PlayerColor.YELLOW),PlayerColor.YELLOW
                         )
                 )
         )

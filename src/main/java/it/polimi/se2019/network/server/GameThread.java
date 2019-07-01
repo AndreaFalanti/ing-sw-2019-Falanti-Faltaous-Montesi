@@ -134,16 +134,6 @@ public class GameThread extends Thread {
                     logger.severe("Invalid connection type");
                     throw new IllegalArgumentException("Invalid connection type");
             }
-
-            // TODO: think about this
-            // connect game to virtual view to send updates to client view
-            mGame.register(playerConnection.getVirtualView());
-
-            // connect virtual view to controller to receive requests from client and notify them to controller
-            playerConnection.getVirtualView().register(mController);
-
-            // start virtual view thread that listens to requests from client view
-            playerConnection.getVirtualView().startReceivingRequests();
         }
 
         logger.info("Game created successfully");

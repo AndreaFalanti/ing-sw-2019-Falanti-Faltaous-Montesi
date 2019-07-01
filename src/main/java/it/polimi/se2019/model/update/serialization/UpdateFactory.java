@@ -27,6 +27,7 @@ public final class UpdateFactory {
                         .registerSubtype(PlayerPowerUpsUpdate.class)
                         .registerSubtype(PlayerRespawnUpdate.class)
                         .registerSubtype(PlayerWeaponsUpdate.class)
+                        .registerSubtype(RemainingActionsUpdate.class)
                 )
                 //.setPrettyPrinting()
                 .setFieldNamingStrategy(new CustomFieldNamingStrategy())

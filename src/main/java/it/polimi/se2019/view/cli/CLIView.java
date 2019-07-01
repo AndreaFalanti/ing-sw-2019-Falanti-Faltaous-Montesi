@@ -175,7 +175,7 @@ public class CLIView extends View {
                     logger.log(Level.INFO, "Action: RELOAD  index: {0}", index);
                     break;
                 case "turn":
-                    notify(new TurnEndRequest(mCLIInfo.getOwnerColorf()));
+                    notify(new TurnEndRequest(mCLIInfo.getOwnerColor()));
                     break;
                 default:
                     availableCommands();
