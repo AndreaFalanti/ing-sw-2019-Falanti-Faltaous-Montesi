@@ -7,6 +7,7 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
+import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
@@ -81,6 +82,11 @@ public class CLIView extends View {
 
         ((CLIUpdateHandler)mUpdateHandler).setUpdateHandlerCLIInfo(mCLIInfo);
         printLineToConsole("reinitialize CLI");
+    }
+
+    @Override
+    public void registerAll(Observer<Request> observer) {
+        register(observer);
     }
 
     public void actionCommand(){

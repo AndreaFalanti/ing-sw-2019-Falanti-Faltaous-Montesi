@@ -68,8 +68,8 @@ public class LaunchTestGameServer {
                                     PlayerColor.BLUE,
                                     new VirtualView(
                                             PlayerColor.BLUE,
-                                            RmiConnection.create(RMI_PORT, PlayerColor.BLUE.getPascalName())
-                                            // SocketConnection.accept(serverSocket)
+                                            // RmiConnection.create(RMI_PORT, PlayerColor.BLUE.getPascalName())
+                                            SocketConnection.accept(serverSocket)
                                     )
                             )
                     )

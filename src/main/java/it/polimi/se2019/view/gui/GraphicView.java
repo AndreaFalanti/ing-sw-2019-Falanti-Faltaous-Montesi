@@ -6,8 +6,10 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.network.client.ClientNetworkHandler;
+import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
+import it.polimi.se2019.view.request.Request;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -181,6 +183,12 @@ public class GraphicView extends View {
         catch (IOException e) {
             logger.severe(e.getMessage());
         }
+    }
+
+    @Override
+    public void registerAll(Observer<Request> observer) {
+        // TODO: implement this
+        throw new UnsupportedOperationException("WIP");
     }
 
     private Player getOwnerPlayerFromList (List<Player> players) {

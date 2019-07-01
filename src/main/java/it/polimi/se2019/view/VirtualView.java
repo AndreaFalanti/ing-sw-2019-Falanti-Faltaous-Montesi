@@ -9,6 +9,8 @@ import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
 import it.polimi.se2019.network.server.Connection;
 import it.polimi.se2019.network.server.serialization.ServerMessageFactory;
+import it.polimi.se2019.util.Observer;
+import it.polimi.se2019.view.request.Request;
 import it.polimi.se2019.view.request.serialization.RequestFactory;
 
 import java.util.List;
@@ -109,6 +111,11 @@ public class VirtualView extends View {
     @Override
     public void reinitialize(InitializationInfo initInfo) {
         sendResponse(new InitializationInfoResponse(initInfo));
+    }
+
+    @Override
+    public void registerAll(Observer<Request> observer) {
+        register(observer);
     }
 
     private void sendResponse(Response response) {

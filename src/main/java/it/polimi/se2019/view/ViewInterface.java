@@ -6,13 +6,14 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.util.Observer;
+import it.polimi.se2019.view.request.Request;
 
 import java.rmi.Remote;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
-public interface RemoteView extends Observer<Update>, Remote {
+public interface ViewInterface extends Observer<Update> {
 
      void showMessage(String message);
 
@@ -82,4 +83,10 @@ public interface RemoteView extends Observer<Update>, Remote {
 
     @Override
     void update(Update update);
+
+    /**
+     * Register {@code observer} to all subcomponents of the View of type {@code Observable<Request>}
+     * @param observer observer to register
+     */
+    void registerAll(Observer<Request> observer);
 }

@@ -87,7 +87,7 @@ public class LoginScreen {
                     // TODO: Fala era questo il metodo. è uguale a prima nel senso che si mette ad accettare
                     // Response dal server, ma adesso gestisce anche Update (ServerMessage se vai a vedere è
                     // una cosa che rappresenta tutt'e due le cose)
-                    ((NetworkHandler) mNetworkHandler).startRecievingServerMessages();
+                    ((NetworkHandler) mNetworkHandler).startReceivingMessages();
                     waitingForPlayers();
                 }
                 else {

@@ -7,6 +7,7 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
+import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.request.Request;
 import it.polimi.se2019.view.request.TargetsSelectedRequest;
 
@@ -106,5 +107,10 @@ public class TestView extends View {
     public void reinitialize(InitializationInfo initInfo) {
         throw new UnsupportedOperationException();
 
+    }
+
+    @Override
+    public void registerAll(Observer<Request> observer) {
+        register(observer);
     }
 }

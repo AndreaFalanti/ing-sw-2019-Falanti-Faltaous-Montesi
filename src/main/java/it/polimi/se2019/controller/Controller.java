@@ -51,7 +51,7 @@ public class Controller implements Observer<Request>, RequestHandler {
         // observe view (Request)
         playerViews.values().stream()
                 // observe views (Request)
-                .peek(view -> view.register(this))
+                .peek(view -> view.registerAll(this))
                 // make views observe game (Update)
                 .forEach(mGame::registerAll);
     }

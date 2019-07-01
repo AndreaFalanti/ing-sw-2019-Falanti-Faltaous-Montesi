@@ -32,7 +32,7 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
         mConnection.sendMessage(rawRequest);
     }
 
-    public void startRecievingServerMessages() {
+    public void startReceivingMessages() {
         new Thread(() -> {
             while (true) {
                 // wait for message to be sent
