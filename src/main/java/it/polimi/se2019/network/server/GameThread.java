@@ -15,6 +15,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class GameThread extends Thread {
     private static final Logger logger = Logger.getLogger(GameThread.class.getName());
@@ -112,29 +113,32 @@ public class GameThread extends Thread {
 
         mGame = new Game(board, players, killsTarget);
 
-        final EnumMap<PlayerColor, View> viewMap = new EnumMap<>(PlayerColor.class);
-
-        mController = new Controller(mGame, viewMap);
-
-        // initialize the view of every player that has connected
-        for (PlayerConnection playerConnection : mPlayerConnections) {
-            switch (playerConnection.getType()) {
-                case SOCKET:
-                    playerConnection.setVirtualView(new VirtualView(
-                            playerConnection.getColor(), SocketConnection.from(playerConnection.getSocket())
-                    ));
-                    viewMap.put(playerConnection.getColor(), playerConnection.getVirtualView());
-                    break;
-                case RMI:
-                    playerConnection.setVirtualView(new VirtualView(
-                            playerConnection.getColor(), RmiConnection.create(mRmiPort, "connection")
-                    ));
-                    break;
-                default:
-                    logger.severe("Invalid connection type");
-                    throw new IllegalArgumentException("Invalid connection type");
-            }
-        }
+        mController = new Controller(
+                mGame,
+                mPlayerConnections.stream()
+                        .peek(pc -> {
+                            switch (pc.getType()) {
+                                case SOCKET:
+                                    pc.setVirtualView(new VirtualView(
+                                            pc.getColor(), SocketConnection.from(pc.getSocket())
+                                    ));
+                                    break;
+                                case RMI:
+                                    pc.setVirtualView(new VirtualView(
+                                            pc.getColor(), RmiConnection.create(mRmiPort, "connection")
+                                    ));
+                                    break;
+                                default:
+                                    logger.severe("Invalid connection type");
+                                    throw new IllegalArgumentException("Invalid connection type");
+                            }
+                        })
+                        .map(PlayerConnection::getVirtualView)
+                        .collect(Collectors.toMap(
+                                View::getOwnerColor,
+                                view -> view
+                        ))
+        );
 
         logger.info("Game created successfully");
         start();
