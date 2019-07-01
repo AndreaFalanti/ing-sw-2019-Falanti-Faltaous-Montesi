@@ -3,6 +3,7 @@ package it.polimi.se2019.view.gui;
 import it.polimi.se2019.network.client.ClientNetworkHandler;
 import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.network.server.SocketConnection;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -84,10 +85,10 @@ public class LoginScreen {
 
                 if (mNetworkHandler.sendUsername(username)) {
                     mView.setNetworkHandler(mNetworkHandler);
-                    // TODO: Fala era questo il metodo. è uguale a prima nel senso che si mette ad accettare
-                    // Response dal server, ma adesso gestisce anche Update (ServerMessage se vai a vedere è
-                    // una cosa che rappresenta tutt'e due le cose)
-                    ((NetworkHandler) mNetworkHandler).startReceivingMessages();
+                    Platform.runLater(() ->
+                        ((NetworkHandler) mNetworkHandler).ReceiveMessages()
+                    );
+
                     waitingForPlayers();
                 }
                 else {

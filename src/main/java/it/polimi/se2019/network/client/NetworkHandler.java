@@ -32,29 +32,31 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
         mConnection.sendMessage(rawRequest);
     }
 
-    public void startReceivingMessages() {
-        new Thread(() -> {
-            while (true) {
-                // wait for message to be sent
-                logger.info("Waiting for server messsage");
-                String rawMessage = mConnection.waitForMessage();
+    public void ReceiveMessages() {
+        while (true) {
+            // wait for message to be sent
+            logger.info("Waiting for server messsage");
+            String rawMessage = mConnection.waitForMessage();
 
-                // receive it and unwrap it
-                logger.log(Level.INFO, "Received server message: {0}", rawMessage);
-                if (ServerMessageFactory.getMessageType(rawMessage).equals(ServerMessageType.Response)) {
-                    // handle response
-                    Response response = ServerMessageFactory.getAsResponse(rawMessage);
-                    logger.info("Handling response...");
-                    response.handleMe(this);
-                }
-                else if (ServerMessageFactory.getMessageType(rawMessage).equals(ServerMessageType.Update)) {
-                    // handle update
-                    Update update = ServerMessageFactory.getAsUpdate(rawMessage);
-                    logger.info("Handling update...");
-                    update.handleMe(mView.getUpdateHandler());
-                }
+            // receive it and unwrap it
+            logger.log(Level.INFO, "Received server message: {0}", rawMessage);
+            if (ServerMessageFactory.getMessageType(rawMessage).equals(ServerMessageType.Response)) {
+                // handle response
+                Response response = ServerMessageFactory.getAsResponse(rawMessage);
+                logger.info("Handling response...");
+                response.handleMe(this);
             }
-        }).start();
+            else if (ServerMessageFactory.getMessageType(rawMessage).equals(ServerMessageType.Update)) {
+                // handle update
+                Update update = ServerMessageFactory.getAsUpdate(rawMessage);
+                logger.info("Handling update...");
+                update.handleMe(mView.getUpdateHandler());
+            }
+        }
+    }
+
+    public void startReceivingMessages() {
+        new Thread(this::ReceiveMessages).start();
     }
 
     @Override

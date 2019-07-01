@@ -147,6 +147,10 @@ public class PlayerPane {
      * @param value Marks num to set
      */
     public void updateMarkLabel (PlayerColor color, int value) {
+        // gui haven't a mark label for player's own color, but info from model have it
+        if (color == mPlayerBoardColor) {
+            return;
+        }
         mMarksNumLabels.get(color).setText("x" + value);
     }
 
