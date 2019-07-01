@@ -6,33 +6,53 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RmiConnection implements Connection {
+    private static final Logger logger = Logger.getLogger(RmiConnection.class.getName());
+
     private enum SenderType {
-        Server,
-        Client
+        SERVER,
+        CLIENT
     }
 
-    private static class RmiMeseenger extends UnicastRemoteObject implements RmiMessengerRemote {
+    private static class RmiMessenger extends UnicastRemoteObject implements RmiMessengerRemote {
         private final BlockingQueue<String> mMessagesSentByClient = new LinkedBlockingQueue<>();
         private final BlockingQueue<String> mMessagesSentByServer = new LinkedBlockingQueue<>();
 
-        protected RmiMeseenger() throws RemoteException {
+        protected RmiMessenger() throws RemoteException {
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            RmiMessenger that = (RmiMessenger) o;
+            return Objects.equals(mMessagesSentByClient, that.mMessagesSentByClient) &&
+                    Objects.equals(mMessagesSentByServer, that.mMessagesSentByServer);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), mMessagesSentByClient, mMessagesSentByServer);
         }
 
         @Override
         public void storeMessage(String senderType, String message) {
             try {
-                if (senderType.equals(SenderType.Client.toString()))
+                if (senderType.equals(SenderType.CLIENT.toString()))
                     mMessagesSentByClient.put(message);
-                else if (senderType.equals(SenderType.Server.toString()))
+                else if (senderType.equals(SenderType.SERVER.toString()))
                     mMessagesSentByServer.put(message);
                 else
                     throw new IllegalArgumentException("Unrecognized sender type: " + senderType);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
             }
         }
 
@@ -40,14 +60,14 @@ public class RmiConnection implements Connection {
         public String retrieveMessage(String senderType) {
             String message = null;
             try {
-                if (senderType.equals(SenderType.Client.toString()))
+                if (senderType.equals(SenderType.CLIENT.toString()))
                     message = mMessagesSentByServer.take();
-                else if (senderType.equals(SenderType.Server.toString()))
+                else if (senderType.equals(SenderType.SERVER.toString()))
                     message = mMessagesSentByClient.take();
                 else
                     throw new IllegalArgumentException("Unrecognized sender type: " + senderType);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
             }
 
             if (message == null)
@@ -70,14 +90,14 @@ public class RmiConnection implements Connection {
     public static Connection create(int port, String id) {
         try {
             Registry registry = LocateRegistry.getRegistry(port);
-            registry.bind(id, new RmiMeseenger());
+            registry.bind(id, new RmiMessenger());
         } catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         } catch (AlreadyBoundException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         }
 
-        return new RmiConnection(port, SenderType.Server, id);
+        return new RmiConnection(port, SenderType.SERVER, id);
     }
 
     public static Connection establish(int port, String id) {
@@ -85,19 +105,19 @@ public class RmiConnection implements Connection {
         try {
             registry = LocateRegistry.getRegistry(port);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         }
 
         // check if id exists
         try {
             registry.lookup(id);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         } catch (NotBoundException e) {
             throw new IllegalArgumentException("Connection with id [" + id + "] was never created!");
         }
 
-        return new RmiConnection(port, SenderType.Client, id);
+        return new RmiConnection(port, SenderType.CLIENT, id);
     }
 
     @Override
@@ -108,9 +128,9 @@ public class RmiConnection implements Connection {
                     (RmiMessengerRemote) registry.lookup(mId);
             messengerRemote.storeMessage(mSenderType.toString(), message);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         } catch (NotBoundException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         }
     }
 
@@ -123,12 +143,12 @@ public class RmiConnection implements Connection {
             RmiMessengerRemote messengerRemote =
                     (RmiMessengerRemote) registry.lookup(mId);
 
-            System.out.println("waiting...");
+            logger.info("waiting...");
             result = messengerRemote.retrieveMessage(mSenderType.toString());
         } catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         } catch (NotBoundException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         }
 
         return result;

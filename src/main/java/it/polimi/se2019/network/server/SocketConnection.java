@@ -6,8 +6,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SocketConnection implements Connection {
+    private static final Logger logger = Logger.getLogger(SocketConnection.class.getName());
+
     private Socket mSocket;
     private PrintWriter mOut;
     private BufferedReader mIn;
@@ -25,7 +29,7 @@ public class SocketConnection implements Connection {
                     new InputStreamReader(mSocket.getInputStream())
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         }
     }
 
@@ -37,9 +41,9 @@ public class SocketConnection implements Connection {
         SocketConnection result = null;
         try {
             result = new SocketConnection(serverSocket.accept());
-            System.out.println("Accepted client socket");
+            logger.info("Accepted client socket");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         }
 
         return result;
@@ -49,9 +53,10 @@ public class SocketConnection implements Connection {
         SocketConnection result = null;
         try {
             result = new SocketConnection(new Socket(host, port));
-            System.out.println("Established connection with server [" + host + ", " + port + "]");
+            Object[] logObjects = {host, port};
+            logger.log(Level.INFO, "Established connection with server [{0}, {1}]", logObjects);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         }
 
         return result;
@@ -63,7 +68,7 @@ public class SocketConnection implements Connection {
             if (mSocket.isClosed())
                 throw new IllegalStateException("Socket is closed!");
 
-            System.out.println("sending message: " + message);
+            logger.log(Level.INFO, "sending message: {0}", message);
             mOut.println(message);
             mOut.flush();
         }
@@ -79,7 +84,7 @@ public class SocketConnection implements Connection {
             try {
                 result = mIn.readLine();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
             }
 
             return result;
@@ -93,7 +98,7 @@ public class SocketConnection implements Connection {
             mIn.close();
             mOut.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         }
     }
 
