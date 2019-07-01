@@ -3,7 +3,6 @@ package it.polimi.se2019.view.gui;
 import it.polimi.se2019.network.client.ClientNetworkHandler;
 import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.network.server.SocketConnection;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -85,9 +84,7 @@ public class LoginScreen {
 
                 if (mNetworkHandler.sendUsername(username)) {
                     mView.setNetworkHandler(mNetworkHandler);
-                    Platform.runLater(() ->
-                        ((NetworkHandler) mNetworkHandler).ReceiveMessages()
-                    );
+                    ((NetworkHandler) mNetworkHandler).startReceivingMessages();
 
                     waitingForPlayers();
                 }

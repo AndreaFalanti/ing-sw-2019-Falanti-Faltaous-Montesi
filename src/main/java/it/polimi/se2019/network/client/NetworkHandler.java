@@ -136,4 +136,9 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
 
         return true;
     }
+
+    @Override
+    public void registerObservablesFromView() {
+        mView.registerAll(this);
+    }
 }

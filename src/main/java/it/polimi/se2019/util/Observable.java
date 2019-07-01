@@ -10,7 +10,7 @@ public class Observable<Message> {
     public void register(Observer<Message> toRegister) {
         mObservers.add(toRegister);
     }
-    public void unregister(Observer<Message> toUnregister) {
+    public void deregister(Observer<Message> toUnregister) {
         mObservers.remove(toUnregister);
     }
 

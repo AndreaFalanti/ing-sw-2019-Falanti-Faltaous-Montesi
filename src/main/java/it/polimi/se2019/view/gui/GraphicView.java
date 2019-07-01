@@ -180,6 +180,8 @@ public class GraphicView extends View {
             mActuallyDisplayedScene.getWindow().hide();
             stage.show();
             mActuallyDisplayedScene = scene;
+
+            mNetworkHandler.registerObservablesFromView();
         }
         catch (IOException e) {
             logger.severe(e.getMessage());
@@ -188,8 +190,8 @@ public class GraphicView extends View {
 
     @Override
     public void registerAll(Observer<Request> observer) {
-        // TODO: implement this
-        throw new UnsupportedOperationException("WIP");
+        mMainFrameController.getBoardController().register(observer);
+        mMainFrameController.register(observer);
     }
 
     private Player getOwnerPlayerFromList (List<Player> players) {
