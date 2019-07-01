@@ -13,7 +13,6 @@ public class SocketClient extends Client {
     private PrintWriter mOut;
     private Socket mSocket;
 
-
     public SocketClient(String serverIp, int serverPort) throws IOException {
         super(serverIp, serverPort);
         mSocket = new Socket(serverIp, serverPort);

@@ -1,63 +1,60 @@
 package it.polimi.se2019.network.client;
 
-import com.google.gson.Gson;
 import it.polimi.se2019.controller.response.*;
+import it.polimi.se2019.model.update.Update;
+import it.polimi.se2019.network.server.Connection;
+import it.polimi.se2019.network.server.serialization.ServerMessageFactory;
+import it.polimi.se2019.network.server.serialization.ServerMessageType;
 import it.polimi.se2019.view.ResponseHandler;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.Request;
+import it.polimi.se2019.view.request.serialization.RequestFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SocketNetworkHandler implements ClientNetworkHandler, ResponseHandler {
-    private static final Logger logger = Logger.getLogger(SocketNetworkHandler.class.getName());
+public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
+    private static final Logger logger = Logger.getLogger(NetworkHandler.class.getName());
 
     private View mView;
-    private Socket mSocket;
-    private PrintWriter mOut;
-    private BufferedReader mIn;
-    private Gson mGson = new Gson();
+    private Connection mConnection;
 
-    public SocketNetworkHandler(View view, Socket socket) {
+    public NetworkHandler(View view, Connection connection) {
         mView = view;
-        mSocket = socket;
-
-        try {
-            mIn = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
-            mOut = new PrintWriter(mSocket.getOutputStream(), true);
-        } catch (IOException e) {
-            logger.severe(e.getMessage());
-        }
+        mConnection = connection;
     }
 
     @Override
     public void update(Request request) {
-        logger.log(Level.INFO, "Sending a request of type: {0}", request.getClass().getSimpleName());
-        mOut.print(mGson.toJson(request));
+        String rawRequest = RequestFactory.toJson(request);
+
+        logger.log(Level.INFO, "Sending request: {0}", rawRequest);
+        mConnection.sendMessage(rawRequest);
     }
 
-    public void activateGameMessageReception () {
-        new Thread(this::receiveResponses).start();
-    }
+    public void startRecievingServerMessages() {
+        new Thread(() -> {
+            while (true) {
+                // wait for message to be sent
+                logger.info("Waiting for server messsage");
+                String rawMessage = mConnection.waitForMessage();
 
-    private void receiveResponses() {
-        while (!mSocket.isClosed()) {
-            logger.info("Waiting for a request...");
-            try {
-                String json = mIn.readLine();
-                Response response = mGson.fromJson(json, Response.class);
-                logger.info("Handling request...");
-                response.handleMe(this);
-            } catch (IOException e) {
-                logger.severe(e.getMessage());
-                break;
+                // receive it and unwrap it
+                logger.log(Level.INFO, "Received server message: {0}", rawMessage);
+                if (ServerMessageFactory.getMessageType(rawMessage).equals(ServerMessageType.Response)) {
+                    // handle response
+                    Response response = ServerMessageFactory.getAsResponse(rawMessage);
+                    logger.info("Handling response...");
+                    response.handleMe(this);
+                }
+                else if (ServerMessageFactory.getMessageType(rawMessage).equals(ServerMessageType.Update)) {
+                    // handle update
+                    Update update = ServerMessageFactory.getAsUpdate(rawMessage);
+                    logger.info("Handling update...");
+                    update.handleMe(mView.getUpdateHandler());
+                }
             }
-        }
+        }).start();
     }
 
     @Override
@@ -127,13 +124,9 @@ public class SocketNetworkHandler implements ClientNetworkHandler, ResponseHandl
 
     @Override
     public boolean sendUsername(String username) {
-        mOut.println(username);
-        String message = null;
-        try {
-            message = mIn.readLine();
-        } catch (IOException e) {
-            logger.severe(e.getMessage());
-        }
+        mConnection.sendMessage(username);
+
+        String message = mConnection.waitForMessage();
         if (message == null || !message.equals("ok")) {
             logger.info(message);
             return false;

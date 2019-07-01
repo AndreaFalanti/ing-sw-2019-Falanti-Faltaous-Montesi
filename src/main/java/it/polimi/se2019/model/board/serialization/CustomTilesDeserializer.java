@@ -1,6 +1,7 @@
 package it.polimi.se2019.model.board.serialization;
 
 import com.google.gson.*;
+import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.Tile;
 
 import java.lang.reflect.Type;

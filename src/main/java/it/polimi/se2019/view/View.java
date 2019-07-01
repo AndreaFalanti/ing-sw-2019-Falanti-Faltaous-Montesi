@@ -17,6 +17,10 @@ public abstract class View extends Observable<Request> implements Observer<Updat
         mUpdateHandler = updateHandler;
     }
 
+    public View(PlayerColor ownerColor) {
+        mOwnerColor = ownerColor;
+    }
+
     public View(PlayerColor ownerColor, UpdateHandler updateHandler) {
         mOwnerColor = ownerColor;
         mUpdateHandler = updateHandler;

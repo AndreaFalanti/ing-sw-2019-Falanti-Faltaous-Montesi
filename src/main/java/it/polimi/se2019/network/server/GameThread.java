@@ -7,10 +7,9 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.InitializationInfo;
+import it.polimi.se2019.view.VirtualView;
 import it.polimi.se2019.view.View;
-import it.polimi.se2019.view.ViewFactory;
 
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -61,9 +60,8 @@ public class GameThread extends Thread {
         // announce start of game thread
         logger.info("The game thread has begun!!");
 
-        InitializationInfo initInfo = mGame.extractViewInitializationInfo();
         for (Map.Entry<PlayerColor, View> entry : mController.getPlayerViews().entrySet()) {
-            initInfo.setOwnerColor(entry.getKey());
+            InitializationInfo initInfo = mGame.extractViewInitializationInfo(entry.getKey());
             entry.getValue().reinitialize(initInfo);
         }
 
@@ -118,34 +116,34 @@ public class GameThread extends Thread {
 
         mController = new Controller(mGame, viewMap);
 
+        // initialize the view of every player that has connected
         for (PlayerConnection playerConnection : mPlayerConnections) {
             switch (playerConnection.getType()) {
                 case SOCKET:
-                    playerConnection.setVirtualView(ViewFactory.createSocketVirtualView(
-                            playerConnection.getSocket(), playerConnection.getColor()));
+                    playerConnection.setVirtualView(new VirtualView(
+                            playerConnection.getColor(), SocketConnection.from(playerConnection.getSocket())
+                    ));
                     viewMap.put(playerConnection.getColor(), playerConnection.getVirtualView());
                     break;
                 case RMI:
-                    // TODO: make player select view type
-
-                    View stub = null;
-                    String viewColor = playerConnection.getColor().getPascalName();
-                    try {
-                        stub = (View) registry.lookup(viewColor);
-                    } catch (RemoteException | NotBoundException e) {
-                        throw new IllegalStateException("exception while performing lookup of "
-                                + viewColor + " view on server");
-                    }
-                    viewMap.put(playerConnection.getColor(), stub);
-                    playerConnection.setVirtualView(stub);
+                    playerConnection.setVirtualView(new VirtualView(
+                            playerConnection.getColor(), RmiConnection.create(mRmiPort, "connection")
+                    ));
                     break;
                 default:
                     logger.severe("Invalid connection type");
                     throw new IllegalArgumentException("Invalid connection type");
             }
 
+            // TODO: think about this
+            // connect game to virtual view to send updates to client view
             mGame.register(playerConnection.getVirtualView());
+
+            // connect virtual view to controller to receive requests from client and notify them to controller
             playerConnection.getVirtualView().register(mController);
+
+            // start virtual view thread that listens to requests from client view
+            playerConnection.getVirtualView().startReceivingRequests();
         }
 
         logger.info("Game created successfully");

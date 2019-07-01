@@ -21,7 +21,7 @@ public abstract class Expression {
     /**
      * Construct empty expression
      */
-    protected Expression() {
+    public Expression() {
 
     }
 

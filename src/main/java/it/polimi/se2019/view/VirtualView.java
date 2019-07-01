@@ -1,6 +1,5 @@
 package it.polimi.se2019.view;
 
-import com.google.gson.Gson;
 import it.polimi.se2019.controller.response.*;
 import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.model.PlayerColor;
@@ -8,61 +7,38 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
-import it.polimi.se2019.view.request.Request;
+import it.polimi.se2019.network.server.Connection;
+import it.polimi.se2019.network.server.serialization.ServerMessageFactory;
+import it.polimi.se2019.view.request.serialization.RequestFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SocketVirtualView extends View {
-    private static final Logger logger = Logger.getLogger(SocketVirtualView.class.getName());
+public class VirtualView extends View {
+    private static final Logger logger = Logger.getLogger(VirtualView.class.getName());
 
-    private Socket mSocket;
-    private PrintWriter mOut;
-    private BufferedReader mIn;
+    private Connection mConnection;
 
-    private Gson mGson = new Gson();
-
-    public SocketVirtualView(PlayerColor ownerColor) {
+    public VirtualView(PlayerColor ownerColor, Connection connection) {
         super(
                 ownerColor,
                 new UpdateHandler() {
                     @Override
                     public void fallbackHandle(Update update) {
-                        throw new UnsupportedOperationException("Custom update handler not set");
+                        logger.log(Level.INFO, "Sending update: {0}", update);
+                        connection.sendMessage(ServerMessageFactory.toJson(update));
                     }
                 }
         );
 
-
+        mConnection = connection;
     }
 
-    public void setupUpdateHandler () {
-        mUpdateHandler = new UpdateHandler() {
-            @Override
-            public void fallbackHandle(Update update) {
-                        String json = mGson.toJson(update);
-                        mOut.print(json);
-            }
-        };
-    }
-
-    public void setupSocket (Socket socket) {
-        mSocket = socket;
-
-        try {
-            mIn = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
-            mOut = new PrintWriter(mSocket.getOutputStream(), true);
-        } catch (IOException e) {
-            logger.severe(e.getMessage());
-        }
+    public Connection getConnection() {
+        return mConnection;
     }
 
     @Override
@@ -135,21 +111,21 @@ public class SocketVirtualView extends View {
         sendResponse(new InitializationInfoResponse(initInfo));
     }
 
-    private void sendResponse (Response response) {
-        logger.log(Level.INFO, "Sending {0}...", response.getClass().getSimpleName());
-        mOut.println(mGson.toJson(response));
+    private void sendResponse(Response response) {
+        String rawMessage = ServerMessageFactory.toJson(response);
+
+        logger.log(Level.INFO, "Sending {0}... [json: {1}]",
+                new Object[]{ response.getClass().getSimpleName(), rawMessage });
+
+        mConnection.sendMessage(rawMessage);
     }
 
-    public void getRequests () {
-        while (!mSocket.isClosed()) {
-            logger.info("Waiting for a request...");
-            try {
-                String json = mIn.readLine();
-                Request request = mGson.fromJson(json, Request.class);
-                notify(request);
-            } catch (IOException e) {
-                logger.severe(e.getMessage());
+    public void startReceivingRequests() {
+        new Thread(() -> {
+            while (true) {
+                String rawRequest = mConnection.waitForMessage();
+                notify(RequestFactory.fromJson(rawRequest));
             }
-        }
+        }).start();
     }
 }

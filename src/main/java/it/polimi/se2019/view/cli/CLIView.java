@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 public class CLIView extends View {
 
 
-    private static final String[] COMMAND_ACTION         =  {"move","grab","shoot","reload","reloadshoot","use","back"};
+    private static final String[] COMMAND_ACTION         =  {"move","grab","turn","shoot","reload","reloadshoot","teleport","tagback","target","back"};
     private static final String[] COMMAND_SIMPLE_REQUEST =  {"myinfo","players","weapons","power","ammo","board","undo","showg","help","quit","back"} ;
     private static final String POSITION_REQUEST_COMMAND =  " and the position where you want " ;
     private static final String PLAYER_TARGET_REQUEST    =  "  the name of target player" ;
@@ -47,6 +47,7 @@ public class CLIView extends View {
 
     private CLIInfo mCLIInfo = null;
 
+
     private static void printLineToConsole(String message) {
         System.out.println(message);
     }
@@ -64,23 +65,22 @@ public class CLIView extends View {
 
     public  CLIView(InitializationInfo info,PlayerColor ownerColor){
 
-        super(new CLIUpdateHandler(new CLIInfo(info.getPlayers(),ownerColor,info.getActivePlayerColor(),info.getBoard(),info.getTurnNumber(),info.getKills(),
+        super(ownerColor, new CLIUpdateHandler(new CLIInfo(info.getPlayers(),ownerColor,info.getActivePlayerColor(),info.getBoard(),info.getTurnNumber(),info.getKills(),
                 info.getOverkills())));
 
-        mCLIInfo = ((CLIUpdateHandler)mUpdateHandler).getCLIInfo();
+        mCLIInfo = ((CLIUpdateHandler) mUpdateHandler).getCLIInfo();
     }
 
 
     @Override
     public void reinitialize(InitializationInfo initInfo){
-
-        printLineToConsole("arrivato");
+        mOwnerColor = initInfo.getOwnerColor();
 
         mCLIInfo = new CLIInfo(initInfo.getPlayers(),initInfo.getOwnerColor(), initInfo.getActivePlayerColor(), initInfo.getBoard(), initInfo.getTurnNumber(), initInfo.getKills(),
                 initInfo.getOverkills());
 
         ((CLIUpdateHandler)mUpdateHandler).setUpdateHandlerCLIInfo(mCLIInfo);
-        printLineToConsole("arrivato");
+        printLineToConsole("reinitialize CLI");
     }
 
     public void actionCommand(){
@@ -174,6 +174,9 @@ public class CLIView extends View {
                     action = new ReloadAction(index);
                     logger.log(Level.INFO, "Action: RELOAD  index: {0}", index);
                     break;
+                case "turn":
+                    notify(new TurnEndRequest(mCLIInfo.getOwnerColorf()));
+                    break;
                 default:
                     availableCommands();
                     break;
@@ -183,7 +186,7 @@ public class CLIView extends View {
             notify(new ActionRequest(action, getOwnerColor()));
    //     }else printLineToConsole("Is not your turn!\n");
 
-        availableCommands();
+
     }
 
     public Position parseDestination(String destination){
@@ -239,8 +242,8 @@ public class CLIView extends View {
 
     public int parseWeaponInformation(TileColor tileColor){
 
-        printToConsole("Type the index of the weapon you want between 0 and 2" +
-                mCLIInfo.getSpawnTiles().get(tileColor));
+        printToConsole("Type the index of the weapon you want between 0 and 2\n" +
+                mCLIInfo.getSpawnTiles().get(tileColor)+"\n");
 
         return parseInteger();
     }
@@ -273,10 +276,16 @@ public class CLIView extends View {
 
     @Override
     public void showWeaponSelectionView(TileColor spawnColor) {
-        if(spawnColor!=null)
-            notify(new WeaponSelectedRequest(parseWeaponInformation(spawnColor), mOwnerColor));
+        System.out.println("CIAO CIAO");
+        if(spawnColor!=null) {
+            System.out.println("CIAO CIAO CIAO");
+            int weaponInfo = parseWeaponInformation(spawnColor);
+            System.out.println("THIS IS WEAPON INFO: " + weaponInfo);
+            notify(new WeaponSelectedRequest(weaponInfo, mOwnerColor));
+        }
         else
             notify(new WeaponSelectedRequest(parseWeaponInformation(), mOwnerColor));
+        availableCommands();
     }
 
     @Override

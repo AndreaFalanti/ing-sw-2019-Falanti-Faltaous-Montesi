@@ -134,23 +134,4 @@ public class Main {
         cli.availableCommands();
       //  System.out.println(controller.getGame().getPlayerFromColor(PlayerColor.BLUE).getDamageTaken());
     }
-/*
-    public static void main1(String[] args) {
-        AmmoValue initialAmmo= new AmmoValue(3,3,3);
-        Game game = new Game(
-                Board.fromJson(Jsons.get("boards/game/board3")),
-                new ArrayList<>(Arrays.asList(
-                        new Player("Mario", PlayerColor.GREEN, new Position(3, 2), initialAmmo),
-                        new Player("Luigi", PlayerColor.YELLOW, new Position(2, 0), initialAmmo),
-                        new Player("Smurfette", PlayerColor.PURPLE, new Position(2, 0), initialAmmo)
-                )),
-                1
-        );
-
-
-        //end test
-        PlayerColor ownerColor = PlayerColor.YELLOW;
-        PlayerColor activePlayer = PlayerColor.YELLOW;
-        new CLIView(game.extractViewInitializationInfo(),ownerColor).availableCommands();
-    }*/
 }

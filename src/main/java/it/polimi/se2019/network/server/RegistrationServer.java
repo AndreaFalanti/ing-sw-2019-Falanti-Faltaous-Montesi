@@ -163,7 +163,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
      * @throws RemoteException
      */
     @Override
-    public boolean registerPlayerRemote(String username) throws RemoteException {
+    public boolean registerPlayerRemote(String username) {
         return registerPlayer(username, ConnectionType.RMI, null);
     }
 
@@ -173,7 +173,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
      * @throws RemoteException
      */
     @Override
-    public void deregisterPlayerRemote(String username) throws RemoteException {
+    public void deregisterPlayerRemote(String username) {
         deregisterPlayer(username);
     }
 }

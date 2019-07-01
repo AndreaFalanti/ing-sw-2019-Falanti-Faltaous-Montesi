@@ -1,7 +1,8 @@
 package it.polimi.se2019.view.gui;
 
 import it.polimi.se2019.network.client.ClientNetworkHandler;
-import it.polimi.se2019.network.client.SocketNetworkHandler;
+import it.polimi.se2019.network.client.NetworkHandler;
+import it.polimi.se2019.network.server.SocketConnection;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -10,7 +11,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -75,14 +75,19 @@ public class LoginScreen {
         switch ((int)radioButton.getUserData()) {
             case SOCKET_TYPE:
                 if (mNetworkHandler == null || mActualType != SOCKET_TYPE) {
-                    mNetworkHandler = new SocketNetworkHandler(mView,
-                            new Socket("localhost", 4567));
+                    mNetworkHandler = new NetworkHandler(
+                            mView,
+                            SocketConnection.establish("localhost", 4567)
+                    );
                     mActualType = SOCKET_TYPE;
                 }
 
                 if (mNetworkHandler.sendUsername(username)) {
                     mView.setNetworkHandler(mNetworkHandler);
-                    ((SocketNetworkHandler)mNetworkHandler).activateGameMessageReception();
+                    // TODO: Fala era questo il metodo. è uguale a prima nel senso che si mette ad accettare
+                    // Response dal server, ma adesso gestisce anche Update (ServerMessage se vai a vedere è
+                    // una cosa che rappresenta tutt'e due le cose)
+                    ((NetworkHandler) mNetworkHandler).startRecievingServerMessages();
                     waitingForPlayers();
                 }
                 else {

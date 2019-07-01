@@ -2,6 +2,7 @@ package it.polimi.se2019.controller;
 
 
 import it.polimi.se2019.controller.weapon.ShootInteraction;
+import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.CostlyAction;
@@ -46,6 +47,13 @@ public class Controller implements Observer<Request>, RequestHandler {
         mShootInteraction = new ShootInteraction(mGame, mPlayerViews);
 
         mPlayerNotSpawnedCounter = playerViews.size();
+
+        // observe view (Request)
+        playerViews.values().stream()
+                // observe views (Request)
+                .peek(view -> view.register(this))
+                // make views observe game (Update)
+                .forEach(mGame::registerAll);
     }
 
     // trivial getters
@@ -180,8 +188,7 @@ public class Controller implements Observer<Request>, RequestHandler {
     public void handle(ShootRequest request) {
         startShootInteraction(
                 request.getShooterColor(),
-                // TODO: substitute with Weapons.get() call
-                WeaponFactory.fromJson(Jsons.get("weapons/real/" + request.getWeaponID())).getBehaviour()
+                Weapons.get(request.getWeaponID()).getBehaviour()
         );
     }
 

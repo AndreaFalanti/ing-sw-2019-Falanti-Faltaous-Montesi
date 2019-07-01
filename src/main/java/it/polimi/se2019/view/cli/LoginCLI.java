@@ -23,15 +23,7 @@ public class LoginCLI {
     
     public static void log() throws IOException, NotBoundException {
 
-        String username="";
         Scanner scanner = new Scanner(System.in);
-
-        printLineToConsole("Choose a username:");
-        printToConsole(">> ");
-        while (username.equals("")) {
-            username = scanner.nextLine();
-        }
-
 
         printLineToConsole("Choose client connection type: ");
         printLineToConsole("Press 1 for socket");

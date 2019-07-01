@@ -8,6 +8,7 @@ public class Colors {
     public static final String ANSI_BLUE = "\u001B[34m";
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_WHITE = "\u001B[37m";
+    public static final String ANSI_RED =  "\u001B[31m";
 
 
 
@@ -22,6 +23,8 @@ public class Colors {
             return ANSI_BLUE;
         if(color.equalsIgnoreCase("green"))
             return ANSI_GREEN;
+        if(color.equalsIgnoreCase("red"))
+            return ANSI_RED;
         else
             return ANSI_WHITE;
 

@@ -59,12 +59,11 @@ public class InitializationInfo {
         return mOwnerColor;
     }
 
-
     public void setOwnerColor(PlayerColor ownerColor) {
         mOwnerColor = ownerColor;
     }
 
-    public InitializationInfo(Game game) {
+    public InitializationInfo(Game game, PlayerColor ownerColor) {
         mBoard = game.getBoard();
         mPlayers = game.getPlayers();
         mTurnNumber = game.getTurnNumber();
@@ -74,5 +73,6 @@ public class InitializationInfo {
         mFinalFrenzy = game.isFinalFrenzy();
         mActivePlayerColor = game.getActivePlayer().getColor();
         mRemainingActions = game.getRemainingActions();
+        mOwnerColor = ownerColor;
     }
 }
