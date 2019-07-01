@@ -94,9 +94,23 @@ public class CLIInfo {
     public void setNormalTiles(Tile tile,Position pos){
         NormalTile normal = (NormalTile)tile;
         if(normal.getAmmoCard()!=null)
-            normalTiles.put(pos,normal.getAmmoCard().toString());
+            normalTiles.put(pos,stringAmmoCard(normal.getAmmoCard()));
         else
             normalTiles.put(pos,"nothing");
+    }
+
+
+    public String stringAmmoCard(AmmoCard ammoCard){
+
+
+        return          " PowerUp : " +
+                        ammoCard.getDrawPowerUp()+
+                        " Ammo : "+
+                        colorAmmo(ammoCard.getAmmoGain().getRed(),"red")+
+                        colorAmmo(ammoCard.getAmmoGain().getYellow(),"yellow")+
+                        colorAmmo(ammoCard.getAmmoGain().getBlue(),"blue");
+
+
     }
 
     public void updatePowerUps(PlayerColor playerColor, PowerUpCard[] powerUpCards){
@@ -185,9 +199,9 @@ public class CLIInfo {
             if(weapon!=null){
                 stringWeapons.append(weapon.getName());
                 stringWeapons.append("  Cost: ");
-                stringWeapons.append(cost(weapon.getGrabCost().getRed(),"red"));
-                stringWeapons.append(cost(weapon.getGrabCost().getYellow(),"yellow"));
-                stringWeapons.append(cost(weapon.getGrabCost().getBlue(),"blue"));
+                stringWeapons.append(colorAmmo(weapon.getGrabCost().getRed(),"red"));
+                stringWeapons.append(colorAmmo(weapon.getGrabCost().getYellow(),"yellow"));
+                stringWeapons.append(colorAmmo(weapon.getGrabCost().getBlue(),"blue"));
                 stringWeapons.append(";");
             }
         }
@@ -195,7 +209,7 @@ public class CLIInfo {
         return stringWeapons.toString();
     }
 
-    public String cost(int value,String color){
+    public String colorAmmo(int value,String color){
         StringBuilder cost = new StringBuilder();
         cost.append(findColor(color));
         if(color.equalsIgnoreCase("red"))

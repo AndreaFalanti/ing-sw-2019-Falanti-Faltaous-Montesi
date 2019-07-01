@@ -55,6 +55,7 @@ public class LoginCLI {
         switch (result) {
             case 1:
                 client = new SocketClient("localhost", SOCKETPORT);
+
                 break;
             case 2:
                 client = new RmiClient("localhost", RMIPORT);

@@ -1,21 +1,23 @@
 package it.polimi.se2019.view.cli;
 
 import it.polimi.se2019.controller.Controller;
-import it.polimi.se2019.controller.weapon.Weapon;
-import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.network.client.ClientInterface;
+import it.polimi.se2019.network.client.NetworkHandler;
+import it.polimi.se2019.network.client.RmiClient;
+import it.polimi.se2019.network.client.SocketClient;
+import it.polimi.se2019.network.server.Connection;
+import it.polimi.se2019.network.server.SocketConnection;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.ShootRequest;
+import it.polimi.se2019.view.request.serialization.RequestFactory;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,7 +26,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException, NotBoundException {
         // test
-        List<Player> mPlayers = new ArrayList<>() ;
+     /*   List<Player> mPlayers = new ArrayList<>() ;
         PlayerColor activePlayer = PlayerColor.BLUE;
         Player owner = new Player("Owner",PlayerColor.GREEN,new Position(3,1));
         Player player1 = new Player("Player1",PlayerColor.BLUE,new Position(1,2));
@@ -76,14 +78,71 @@ public class Main {
                         owner,player1,player2,player3,player4
                 )),
                 1
-        );
+        );*/
         //end test
-        LoginCLI.log();
-        CLIView cliView = new CLIView(game.extractViewInitializationInfo(PlayerColor.GREEN),ownerColor);
-        cliView.availableCommands();
-      //  owner.onDamageTaken(new Damage(3,0), PlayerColor.YELLOW);
-      //  owner.onDamageTaken(new Damage(3,2), PlayerColor.GREY);
+
+        CLIView view = new CLIView(null);
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Choose client connection type: ");
+        System.out.println(("Press 1 for socket"));
+        System.out.println(("Press 2 for rmi"));
+        System.out.println((">> "));
+
+        int result = -1;
+        boolean validCmd;
+        do {
+            try {
+                result = scanner.nextInt();
+                if (result < 1 || result > 2) {
+                    System.out.println(("Invalid input"));
+                    System.out.println(("\n>> "));
+                    validCmd = false;
+                } else {
+                    validCmd = true;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println(("Choose a number please"));
+                System.out.println(("\n>> "));
+                // flush remaining \n in buffer
+                scanner.next();
+                validCmd = false;
+            }
+        } while (!validCmd);
+
+        ClientInterface client;
+        switch (result) {
+            case 1:
+                client = new SocketClient("localhost", 4567);
+
+                break;
+            case 2:
+                client = new RmiClient("localhost", 4568);
+                break;
+            default:
+                throw new IllegalStateException("invalid client selected");
+        }
+
+        client.run();
+
+        Connection connection = SocketConnection.establish("localhost", 4567);
+        // Connection connection = RmiConnection.establish(
+        // LaunchTestGameServer.RMI_PORT,
+        // PlayerColor.BLUE.getPascalName()
+        // );
+
+        view.register(request ->
+                connection.sendMessage(RequestFactory.toJson(request))
+        );
+
+        NetworkHandler networkHandler = new NetworkHandler(view, connection);
+        view.setNetworkHandler(networkHandler);
+
+
+        view.availableCommands();
     }
+
+
 
     public static void main3(String[] args) {
         AmmoValue initialAmmo = new AmmoValue(3, 3, 3);

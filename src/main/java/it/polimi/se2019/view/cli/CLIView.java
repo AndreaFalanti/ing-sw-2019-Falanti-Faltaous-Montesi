@@ -7,6 +7,8 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
+import it.polimi.se2019.network.client.ClientNetworkHandler;
+import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
@@ -40,6 +42,7 @@ public class CLIView extends View {
     private static final String MYINFO                   =  "MYINFO" + SHOW + " your information";
     private static final String WEAPONS                  =  "WEAPONS" + SHOW + " your weapons";
     private static final String BOARD                    =  "BOARD" + SHOW + " the board";
+    private static final String KILL                     =  "KILL" + SHOW + " kills and overkills";
     private static final String UNDO                     =  "UNDO" + " to undo the current action" ;
     private static final String BACK                     =  "BACK" + " to go back" ;
     private static final String HELP                     =  "HELP" + SHOW +" available commands";
@@ -47,7 +50,12 @@ public class CLIView extends View {
     private static final Logger logger = Logger.getLogger(CLIView.class.getName());
 
     private CLIInfo mCLIInfo = null;
+    private ClientNetworkHandler networkHandler;
 
+    public void setNetworkHandler(ClientNetworkHandler networkHandler) {
+        this.networkHandler = networkHandler;
+        ((NetworkHandler)networkHandler).startReceivingMessages();
+    }
 
     private static void printLineToConsole(String message) {
         System.out.println(message);
@@ -82,6 +90,7 @@ public class CLIView extends View {
 
         ((CLIUpdateHandler)mUpdateHandler).setUpdateHandlerCLIInfo(mCLIInfo);
         printLineToConsole("reinitialize CLI");
+
     }
 
     @Override
@@ -192,7 +201,7 @@ public class CLIView extends View {
             notify(new ActionRequest(action, getOwnerColor()));
    //     }else printLineToConsole("Is not your turn!\n");
 
-
+        availableCommands();
     }
 
     public Position parseDestination(String destination){
@@ -247,20 +256,25 @@ public class CLIView extends View {
 
 
     public int parseWeaponInformation(TileColor tileColor){
-
+        int index =5;
         printToConsole("Type the index of the weapon you want between 0 and 2\n" +
                 mCLIInfo.getSpawnTiles().get(tileColor)+"\n");
 
-        return parseInteger();
+        while(index<0 || index>2){
+            index = parseInteger();
+        }
+        return index;
     }
 
     public int parseWeaponInformation(){
-
+        int index = 5;
         printToConsole("Type the index of the weapon you want select between 0 and 2:\n");
         System.out.println(mCLIInfo.getOwner().getPlayerWeapons());
 
-
-        return parseInteger();
+        while(index<0 || index>2){
+            index = parseInteger();
+        }
+        return index;
     }
 
     @Override
@@ -368,12 +382,14 @@ public class CLIView extends View {
         printToConsole("Choose one of these effects: "+effect1.getName()+" "+effect2.getName());
         String effect = requestAdditionalInfo();
         notify(new WeaponModeSelectedRequest(effect, getOwnerColor()));
+        availableCommands();
     }
 
     @Override
     public void showRespawnPowerUpDiscardView() {
         printLineToConsole(mCLIInfo.getOwner().getPlayerPowerUps());
         notify(new RespawnPowerUpRequest(parseInteger(), mOwnerColor));
+        availableCommands();
     }
 
     public int parseInteger(){
@@ -397,6 +413,12 @@ public class CLIView extends View {
 
         switch(command){
             case "players"    : infoPlayers(); break;
+            case "kill"       : for(String s : mCLIInfo.getKills())
+                                    printToConsole(s);
+                                printToConsole("\n");
+                                for(String s : mCLIInfo.getOverkills())
+                                    printToConsole(s);
+                                break;
             case "showg"      : showGrabbable();break;
             case "weapons"    : System.out.println(mCLIInfo.getOwner().getPlayerWeapons()); break;
             case "myinfo"     : ownerInfo();break;
