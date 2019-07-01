@@ -169,13 +169,7 @@ public class MainScreen extends Observable<Request> {
         playerController.setMainScreen(this);
 
         playerController.setupBoardImage(ownerColor);
-        playerController.setPlayerName(player.getName());
-        playerController.updateAmmo(player.getAmmo());
-        playerController.setScore(player.getScore());
-
-        if (player.isBoardFlipped()) {
-            playerController.flipBoard();
-        }
+        initializeCommonPlayerBoardInfo(player, playerController);
 
         // update damage, marks and deaths
         updateDamageMarksAndDeaths(player, playerController);
@@ -191,13 +185,12 @@ public class MainScreen extends Observable<Request> {
         mPlayerControllers.put(player.getColor(), otherPlayerController);
 
         otherPlayerController.setMainScreen(this);
+
         otherPlayerController.setupBoardImage(player.getColor());
-        otherPlayerBoardsBox.getChildren().add(newLoadedPane);
-
-        // test methods
-        otherPlayerController.updateAmmo(player.getAmmo());
-
+        initializeCommonPlayerBoardInfo(player, otherPlayerController);
         updateDamageMarksAndDeaths(player, otherPlayerController);
+
+        otherPlayerBoardsBox.getChildren().add(newLoadedPane);
 
         ((OtherPlayerPane)otherPlayerController).updatePlayerWeapons(player.getWeapons());
 
@@ -208,6 +201,17 @@ public class MainScreen extends Observable<Request> {
             }
         }
         ((OtherPlayerPane)otherPlayerController).updatePowerUpNum(actualCardsNum);
+    }
+
+    private void initializeCommonPlayerBoardInfo (Player player, PlayerPane playerController) {
+        playerController.setPlayerName(player.getName());
+        playerController.updateAmmo(player.getAmmo());
+        playerController.setScore(player.getScore());
+        playerController.eraseDamage();
+
+        if (player.isBoardFlipped()) {
+            playerController.flipBoard();
+        }
     }
 
     private void updateDamageMarksAndDeaths (Player player, PlayerPane playerController) {

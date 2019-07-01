@@ -43,15 +43,7 @@
                 <Insets />
             </opaqueInsets>
         </HBox>
-        <HBox fx:id="deathsBox" layoutX="147.0" layoutY="75.0" prefHeight="55.0" prefWidth="231.0" AnchorPane.bottomAnchor="0.0">
-            <children>
-                <ImageView fitHeight="52.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/skull.png" />
-                    </image>
-                </ImageView>
-            </children>
-        </HBox>
+        <HBox fx:id="deathsBox" layoutX="147.0" layoutY="75.0" prefHeight="55.0" prefWidth="231.0" AnchorPane.bottomAnchor="0.0" />
       <HBox layoutX="620.0" layoutY="88.0" prefHeight="55.0" prefWidth="60.0" spacing="3.0" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="0.0">
          <children>
             <VBox fx:id="redAmmoBox" alignment="BOTTOM_CENTER" prefHeight="90.0" prefWidth="18.0" HBox.hgrow="NEVER" />

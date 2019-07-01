@@ -316,21 +316,26 @@ public class BoardPane extends Observable<Request> {
     private void createBoardElements (Board board) throws IOException {
         for (int x = 0; x < BOARD_COLUMNS; x++) {
             for (int y = 0; y < BOARD_ROWS; y++) {
-                if (board.getTileAt(new Position(x, y)) != null) {
+                Tile tile = board.getTileAt(new Position(x, y));
+
+                if (tile != null) {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/boardSquare.fxml"));
                     Pane newLoadedPane =  loader.load();
 
                     BoardSquare squareController = loader.getController();
                     mSquareControllers[x][y] = squareController;
 
-                    Tile tile = board.getTileAt(new Position(x, y));
                     if (tile.getTileType().equals("normal")) {
-                        // TODO: get correct ammoCard id from tile
-                        squareController.addAmmoCardImage("042");
+                        String guiId = ((NormalTile)tile).getAmmoCard().getGuiID();
+                        squareController.addAmmoCardImage(guiId);
                     }
                     else {
-                        // TODO: get correct weaponCard ids from tile
-                        String[] ids = {"022", "023", "024"};
+                        Weapon[] weapons = ((SpawnTile)tile).getWeapons();
+                        String[] ids = new String[3];
+                        for (int i = 0; i < weapons.length; i++) {
+                            ids[i] = (weapons[i] != null) ? weapons[i].getGuiID() : null;
+                        }
+
                         updateWeaponsInSpawn(mSpawnBoxes.get(tile.getColor()), ids);
                     }
 
