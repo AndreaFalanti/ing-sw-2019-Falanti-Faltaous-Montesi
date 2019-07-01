@@ -301,11 +301,8 @@ public class CLIView extends View {
 
     @Override
     public void showWeaponSelectionView(TileColor spawnColor) {
-        System.out.println("CIAO CIAO");
         if(spawnColor!=null) {
-            System.out.println("CIAO CIAO CIAO");
             int weaponInfo = parseWeaponInformation(spawnColor);
-            System.out.println("THIS IS WEAPON INFO: " + weaponInfo);
             notify(new WeaponSelectedRequest(weaponInfo, mOwnerColor));
         }
         else
@@ -392,11 +389,9 @@ public class CLIView extends View {
 
     @Override
     public void showRespawnPowerUpDiscardView() {
-
             printLineToConsole(mCLIInfo.getOwner().getPlayerPowerUps());
             notify(new RespawnPowerUpRequest(parseInteger(), mOwnerColor));
             availableCommands();
-
     }
 
     public int parseInteger(){

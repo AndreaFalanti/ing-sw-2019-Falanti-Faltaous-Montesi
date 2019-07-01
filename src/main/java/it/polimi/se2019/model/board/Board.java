@@ -409,7 +409,7 @@ public class Board {
      */
     public Stream<Position> posStream() {
         return IntStream.range(0, getWidth() * getHeight())
-                .mapToObj(i -> new Position(i / getWidth(), i % getWidth()));
+                .mapToObj(i -> new Position(i % getWidth(), i / getWidth()));
     }
 
     /**
