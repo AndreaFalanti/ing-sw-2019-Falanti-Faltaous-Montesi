@@ -1,6 +1,7 @@
 package it.polimi.se2019.model.board;
 
 import it.polimi.se2019.model.AmmoCard;
+import it.polimi.se2019.model.update.BoardTileUpdate;
 
 import java.util.Objects;
 
@@ -99,8 +100,7 @@ public class NormalTile extends Tile {
     public AmmoCard grabAmmo() {
         AmmoCard grabbedItem = mAmmoCard;
         mAmmoCard = null;
-        // TODO
-        //notify(new BoardTileUpdate(this, ));
+        notify(new BoardTileUpdate(this));
         return grabbedItem;
     }
 

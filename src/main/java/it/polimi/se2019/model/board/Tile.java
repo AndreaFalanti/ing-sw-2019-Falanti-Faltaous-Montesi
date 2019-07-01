@@ -1,6 +1,7 @@
 package it.polimi.se2019.model.board;
 
 import com.google.gson.annotations.JsonAdapter;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.serialization.DoorsDeserializer;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.util.Observable;
@@ -11,6 +12,7 @@ import java.util.Objects;
 
 public abstract class Tile extends Observable<Update> {
     private TileColor mColor = TileColor.BLUE;
+    private Position mPosition = null;
 
     @JsonAdapter(DoorsDeserializer.class)
     private Integer mDoors = 0;
@@ -20,6 +22,14 @@ public abstract class Tile extends Observable<Update> {
     protected Tile(TileColor color, int doors) {
         mColor = color;
         mDoors = doors;
+    }
+
+    public Position getPosition() {
+        return mPosition;
+    }
+
+    public void setPosition(Position position) {
+        mPosition = position;
     }
 
     public abstract Tile deepCopy();

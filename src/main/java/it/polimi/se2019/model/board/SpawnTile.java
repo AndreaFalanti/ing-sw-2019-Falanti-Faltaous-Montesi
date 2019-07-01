@@ -1,6 +1,7 @@
 package it.polimi.se2019.model.board;
 
 import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.model.update.BoardTileUpdate;
 
 import java.util.Arrays;
 
@@ -81,8 +82,7 @@ public class SpawnTile extends Tile {
     public Weapon grabWeapon(int index) {
         Weapon grabbedCard = mWeapons[index];
         mWeapons[index] = null;
-        // TODO
-        //notify(new BoardTileUpdate(this,));
+        notify(new BoardTileUpdate(this));
         return grabbedCard;
     }
 

@@ -5,11 +5,9 @@ import it.polimi.se2019.model.board.Tile;
 
 public class BoardTileUpdate implements Update {
     private Tile mTile;
-    private Position mTilePos;
 
-    public BoardTileUpdate(Tile tile, Position tilePos) {
+    public BoardTileUpdate(Tile tile) {
         mTile = tile;
-        mTilePos = tilePos;
     }
 
     public Tile getTile() {
@@ -17,7 +15,7 @@ public class BoardTileUpdate implements Update {
     }
 
     public Position getTilePos() {
-        return mTilePos;
+        return mTile.getPosition();
     }
 
     @Override

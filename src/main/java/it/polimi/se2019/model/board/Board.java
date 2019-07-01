@@ -10,6 +10,7 @@ import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
 import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.Exclude;
+import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 import java.util.*;
@@ -29,12 +30,12 @@ public class Board {
             .create();
 
     // width and height
-    int mWidth;
-    int mHeight;
+    private int mWidth;
+    private int mHeight;
 
     // all the board tiles
     @JsonAdapter(CustomTilesDeserializer.class)
-    ArrayList<Tile> mTiles;
+    private ArrayList<Tile> mTiles;
 
     @Exclude
     private EnumMap<TileColor, SpawnTile> mSpawnMap = new EnumMap<>(TileColor.class);
@@ -56,7 +57,7 @@ public class Board {
         return getWidth() * getHeight();
     }
 
-    public EnumMap<TileColor, SpawnTile> getSpawnMap() {
+    public Map<TileColor, SpawnTile> getSpawnMap() {
         return mSpawnMap;
     }
 
@@ -89,6 +90,14 @@ public class Board {
         }
     }
 
+    private void initializeTilePositions() {
+        List<Position> positions = posStream().collect(Collectors.toList());
+
+        IntStream.range(0, mTiles.size())
+                .filter(i -> mTiles.get(i) != null)
+                .forEach(i -> mTiles.get(i).setPosition(positions.get(i)));
+    }
+
     /**
      * Constructs a board parsing a json string
      * @param toParse the json string to parse
@@ -102,6 +111,7 @@ public class Board {
     public static Board fromJson(JsonElement toParse) {
         Board result = GSON.fromJson(toParse, Board.class);
         result.initializeSpawnMap();
+        result.initializeTilePositions();
         return result;
     }
 
@@ -123,16 +133,6 @@ public class Board {
     @Override
     public String toString() {
         return toJson();
-    }
-
-    /**
-     * Returns a default constructed board builder
-     * @return the builder
-     * @deprecated will be substituted fully by json deserialization
-     */
-    @Deprecated
-    public static Builder initializer() {
-        return new Builder();
     }
 
     /**
