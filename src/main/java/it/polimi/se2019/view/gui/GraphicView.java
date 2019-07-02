@@ -134,6 +134,11 @@ public class GraphicView extends View {
                 stage.setTitle("Adrenalina");
                 stage.setResizable(false);
                 stage.setAlwaysOnTop(true);
+                // close all thread and stop completely JVM
+                stage.setOnCloseRequest(event -> {
+                    Platform.exit();
+                    System.exit(0);
+                });
 
                 BackgroundImage backgroundImage = new BackgroundImage(new Image(GuiResourcePaths.BACKGROUND + "bg.jpg"),
                         BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);

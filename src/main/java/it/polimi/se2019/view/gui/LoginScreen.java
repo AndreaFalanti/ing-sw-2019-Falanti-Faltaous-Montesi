@@ -1,7 +1,7 @@
 package it.polimi.se2019.view.gui;
 
-import it.polimi.se2019.network.client.ClientNetworkHandler;
 import it.polimi.se2019.network.client.NetworkHandler;
+import it.polimi.se2019.network.connection.RmiConnection;
 import it.polimi.se2019.network.connection.SocketConnection;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -10,7 +10,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +36,7 @@ public class LoginScreen {
     private static final int RMI_TYPE = 1;
 
     private GraphicView mView;
-    private ClientNetworkHandler mNetworkHandler;
+    private NetworkHandler mNetworkHandler;
     private int mActualType = -1;
 
     public GraphicView getView() {
@@ -54,7 +53,7 @@ public class LoginScreen {
         rmiRadioButton.setUserData(RMI_TYPE);
     }
 
-    public void login () throws IOException {
+    public void login () {
         String username = usernameTextField.getText();
         RadioButton radioButton = (RadioButton) network.getSelectedToggle();
 
@@ -81,22 +80,28 @@ public class LoginScreen {
                     );
                     mActualType = SOCKET_TYPE;
                 }
-
-                if (mNetworkHandler.sendUsername(username)) {
-                    mView.setNetworkHandler(mNetworkHandler);
-                    ((NetworkHandler) mNetworkHandler).startReceivingMessages();
-
-                    waitingForPlayers();
-                }
-                else {
-                    errorLabel.setText(USERNAME_ALREADY_TAKEN);
-                }
                 break;
             case RMI_TYPE:
-                // TODO
+                if (mNetworkHandler == null || mActualType != RMI_TYPE) {
+                    mNetworkHandler = new NetworkHandler(
+                            mView,
+                            RmiConnection.establish(4568, "rmiServer")
+                    );
+                }
+                mActualType = RMI_TYPE;
                 break;
             default:
                 throw new IllegalArgumentException("Connection type not recognised");
+        }
+
+        if (mNetworkHandler.sendUsername(username)) {
+            mView.setNetworkHandler(mNetworkHandler);
+            mNetworkHandler.startReceivingMessages();
+
+            waitingForPlayers();
+        }
+        else {
+            errorLabel.setText(USERNAME_ALREADY_TAKEN);
         }
     }
 

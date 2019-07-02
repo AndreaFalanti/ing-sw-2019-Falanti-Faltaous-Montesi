@@ -160,6 +160,12 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Initialize player board of the owner of the view
+     * @param ownerColor Owner player color
+     * @param player Owner's player data
+     * @throws IOException Thrown if fxml is not found
+     */
     private void initializeMainPlayerBoard (PlayerColor ownerColor, Player player) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/playerPane.fxml"));
         Pane newLoadedPane =  loader.load();
@@ -177,6 +183,11 @@ public class MainScreen extends Observable<Request> {
         playerPane.getChildren().add(newLoadedPane);
     }
 
+    /**
+     * Initialize opponent player board
+     * @param player Opponent player data
+     * @throws IOException Thrown if fxml is not found
+     */
     private void initializeOpponentPlayerBoard (Player player) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/otherPlayerPane.fxml"));
         Pane newLoadedPane =  loader.load();
@@ -203,6 +214,11 @@ public class MainScreen extends Observable<Request> {
         ((OtherPlayerPane)otherPlayerController).updatePowerUpNum(actualCardsNum);
     }
 
+    /**
+     * Set various player board info, like name, ammo, score and also flip board if necessary
+     * @param player Player data
+     * @param playerController Player board controller
+     */
     private void initializeCommonPlayerBoardInfo (Player player, PlayerPane playerController) {
         playerController.setPlayerName(player.getName());
         playerController.updateAmmo(player.getAmmo());
@@ -214,6 +230,11 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Update player board damage, marks and deaths on initialization
+     * @param player Player data
+     * @param playerController Player board controller
+     */
     private void updateDamageMarksAndDeaths (Player player, PlayerPane playerController) {
         for (PlayerColor color : player.getDamageTaken()) {
             if (color != null) {
@@ -332,6 +353,9 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Reset all powerUps behaviour to default regular powerUp use
+     */
     private void resetAllPowerUpsBehaviourToDefault () {
         for (int i = 0; i < powerUpGrid.getChildren().size(); i++) {
             setPowerUpDefaultBehaviour((ImageView) powerUpGrid.getChildren().get(i), i);
@@ -516,6 +540,9 @@ public class MainScreen extends Observable<Request> {
         undoButton.setOnMouseClicked(event -> finalizePowerUpInteraction());
     }
 
+    /**
+     * Method called at start of every powerUp interaction
+     */
     private void initializePowerUpInteraction () {
         tabPane.getSelectionModel().select(ACTIONS_TAB);
         GuiUtils.setBoxEnableStatus(powerUpGrid, true);
@@ -523,6 +550,9 @@ public class MainScreen extends Observable<Request> {
         powerUpDiscardButton.setDisable(false);
     }
 
+    /**
+     * Method called at end of every powerUp interaction
+     */
     private void finalizePowerUpInteraction () {
         GuiUtils.setBoxEnableStatus(powerUpGrid,false);
         powerUpGrid.setDisable(false);
@@ -535,6 +565,10 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Setup powerUp grid to start a multiple selection of powerUps (Targeting scopes and Tagback grenade usages)
+     * @param indexes Valid powerUp indexes
+     */
     public void setupPowerUpSelection (List<Integer> indexes) {
         initializePowerUpInteraction();
         powerUpDiscardButton.setText("Use");
@@ -575,6 +609,9 @@ public class MainScreen extends Observable<Request> {
         });
     }
 
+    /**
+     * Setup powerUp grid for selecting a powerUp card discarded to respawn
+     */
     public void setupRespawnPowerUpSelection () {
         initializePowerUpInteraction();
 
@@ -661,6 +698,9 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Setup rom tab button behaviours. When clicked they will notify controller with selected room color.
+     */
     private void setupRoomColorButtonsBehaviour () {
         TileColor[] tileColors = TileColor.values();
         for (int i = 0; i < tileColors.length; i++) {
@@ -674,10 +714,17 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Activate direction tab
+     */
     public void activateDirectionTab () {
         activateWeaponRelatedTab(DIRECTION_TAB);
     }
 
+    /**
+     * Activate room tab, deactivate all color buttons that are not valid in the interaction
+     * @param possibleColors Valid room colors
+     */
     public void activateRoomTab (Set<TileColor> possibleColors) {
         activateWeaponRelatedTab(ROOM_TAB);
         TileColor[] tileColors = TileColor.values();
@@ -689,6 +736,12 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Activate target tab and customize it with received data
+     * @param possibleTargets Valid targets
+     * @param minTargets Min targets to select
+     * @param maxTargets Max targets to select
+     */
     public void activateTargetsTab (Set<PlayerColor> possibleTargets, int minTargets, int maxTargets) {
         activateWeaponRelatedTab(TARGETS_TAB);
         targetsBox.getChildren().clear();
@@ -748,6 +801,11 @@ public class MainScreen extends Observable<Request> {
         });
     }
 
+    /**
+     * Activate effect tab for choosing a weapon mode in a shoot interaction
+     * @param effect1 First shoot mode
+     * @param effect2 Second shoot mode
+     */
     public void activateEffectsTabForWeaponMode (Effect effect1, Effect effect2) {
         activateWeaponRelatedTab(EFFECTS_TAB);
         effectsBox.getChildren().clear();
@@ -771,6 +829,11 @@ public class MainScreen extends Observable<Request> {
         );
     }
 
+    /**
+     * Activate effects tab for choosing secondary effects
+     * @param priorityMap Map of all effects, associated with their priority
+     * @param possibleEffects Valid effects to use right now
+     */
     public void activateEffectsTabForEffects(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
         activateWeaponRelatedTab(EFFECTS_TAB);
         effectsBox.getChildren().clear();
@@ -815,6 +878,11 @@ public class MainScreen extends Observable<Request> {
         });
     }
 
+    /**
+     * Add toggle to effect pane and finalize its creation
+     * @param anchorPane Effect pane
+     * @param toggle Toggle to insert
+     */
     private void addToggleAndInsertInEffectsPane(AnchorPane anchorPane, Node toggle) {
         anchorPane.getChildren().add(toggle);
         AnchorPane.setBottomAnchor(toggle, 5d);
@@ -824,6 +892,12 @@ public class MainScreen extends Observable<Request> {
         VBox.setVgrow(anchorPane, Priority.ALWAYS);
     }
 
+    /**
+     * Create an effect pane, customized with effect info received
+     * @param effect Effect data
+     * @param enabled Should this pane be enabled?
+     * @return Created effect pane
+     */
     private AnchorPane createEffectPane (Effect effect, boolean enabled) {
         AnchorPane anchorPane = new AnchorPane();
 
@@ -852,6 +926,10 @@ public class MainScreen extends Observable<Request> {
         return anchorPane;
     }
 
+    /**
+     * Activate board interactive button grid for a position selection
+     * @param possiblePositions Valid positions to select
+     */
     public void activatePositionSelection (Set<Position> possiblePositions) {
         logToChat("Choose a position");
         mBoardController.setupInteractiveGridForChoosingPosition(possiblePositions);
@@ -877,6 +955,9 @@ public class MainScreen extends Observable<Request> {
         return count;
     }
 
+    /**
+     * Set default undo behaviour to all undo buttons in weapons related tabs
+     */
     private void setWeaponTabsUndoButtonsBehaviour () {
         for (Button button : mUndoWeaponButtons) {
             button.setOnMouseClicked(event -> {
@@ -886,6 +967,9 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Return to action tab, deactivating all other panes except player info tab
+     */
     public void returnToActionTab() {
         for (int i = 0; i < tabPane.getTabs().size(); i++) {
             tabPane.getTabs().get(i).setDisable(i != ACTIONS_TAB && i != PLAYERS_TAB);
@@ -893,6 +977,10 @@ public class MainScreen extends Observable<Request> {
         tabPane.getSelectionModel().selectFirst();
     }
 
+    /**
+     * Activate a specific weapon related tab, deactivating all the others in the process
+     * @param index Tab index to activate
+     */
     private void activateWeaponRelatedTab (int index) {
         for (int i = 0; i < tabPane.getTabs().size(); i++) {
             tabPane.getTabs().get(i).setDisable(i != index);
@@ -900,6 +988,9 @@ public class MainScreen extends Observable<Request> {
         tabPane.getSelectionModel().select(index);
     }
 
+    /**
+     * Send turn end notification
+     */
     public void endTurn () {
         notify(new TurnEndRequest(mView.getOwnerColor()));
     }
