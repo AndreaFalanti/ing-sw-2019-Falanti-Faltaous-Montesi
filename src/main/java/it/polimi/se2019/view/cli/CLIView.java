@@ -8,6 +8,7 @@ import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.network.client.ClientNetworkHandler;
+import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
 public class CLIView extends View {
 
 
-    private static final String[] COMMAND_ACTION         =  {"move","grab","turn","shoot","reload","reloadshoot","teleport","tagback","target","back"};
+    private static final String[] COMMAND_ACTION         =  {"move","grab","turn","shoot","reload","reloadshoot","use","back"};
     private static final String[] COMMAND_SIMPLE_REQUEST =  {"myinfo","players","weapons","power","ammo","board","undo","showg","help","quit","back"} ;
     private static final String POSITION_REQUEST_COMMAND =  " and the position where you want " ;
     private static final String PLAYER_TARGET_REQUEST    =  "  the name of target player" ;
@@ -50,11 +51,13 @@ public class CLIView extends View {
 
     private CLIInfo mCLIInfo = null;
     private ClientNetworkHandler networkHandler;
+    private Thread t1;
 
     public void setNetworkHandler(ClientNetworkHandler networkHandler) {
         this.networkHandler = networkHandler;
-        //((NetworkHandler)this.networkHandler).startReceivingMessages();
-         this.networkHandler.registerObservablesFromView();
+        t1 = new Thread(() -> ((NetworkHandler)this.networkHandler).startReceivingMessages());
+        t1.start();
+        this.networkHandler.registerObservablesFromView();
 
     }
 
@@ -149,9 +152,9 @@ public class CLIView extends View {
                         availableCommands();
                         return;
                     }
-                    action = new MoveAction(mCLIInfo.getOwnerColor(), pos);
+                    action = new MoveAction(mCLIInfo.getOwnerColor(), pos,true);
                     logger.log(Level.INFO, "Action: MOVE  Pos: {0}", pos);
-                    availableCommands();
+                    new Thread(() ->  availableCommands()).start();
                     break;
                 case "grab":
                     pos = parseDestination(otherCommandPart);
@@ -176,7 +179,7 @@ public class CLIView extends View {
                     printLineToConsole(mCLIInfo.getOwner().getPlayerPowerUps());
                     index = parseInteger();
                     notify(new UsePowerUpRequest(index,mCLIInfo.getOwnerColor()));
-                    availableCommands();
+                   // availableCommands();
                     break;
                 case "reloadshoot":
                     pos = parseDestination(otherCommandPart);
@@ -197,14 +200,16 @@ public class CLIView extends View {
                     break;
                 case "turn":
                     notify(new TurnEndRequest(mCLIInfo.getOwnerColor()));
+                    availableCommands();
                     break;
                 default:
                     availableCommands();
                     break;
             }
 
-        if(!command.equalsIgnoreCase("use"))
+        if(!command.equalsIgnoreCase("use")){
             notify(new ActionRequest(action, getOwnerColor()));
+        }
    //     }else printLineToConsole("Is not your turn!\n");
 
     }
@@ -301,13 +306,15 @@ public class CLIView extends View {
 
     @Override
     public void showWeaponSelectionView(TileColor spawnColor) {
-        if(spawnColor!=null) {
-            int weaponInfo = parseWeaponInformation(spawnColor);
-            notify(new WeaponSelectedRequest(weaponInfo, mOwnerColor));
-        }
-        else
-            notify(new WeaponSelectedRequest(parseWeaponInformation(), mOwnerColor));
-        availableCommands();
+        new Thread(() -> {
+            if(spawnColor!=null) {
+                int weaponInfo = parseWeaponInformation(spawnColor);
+                notify(new WeaponSelectedRequest(weaponInfo, mOwnerColor));
+            }
+            else
+                notify(new WeaponSelectedRequest(parseWeaponInformation(), mOwnerColor));
+            availableCommands();
+        }).start();
     }
 
     @Override
@@ -319,9 +326,11 @@ public class CLIView extends View {
 
     @Override
     public void showPowerUpSelectionView(List<Integer> indexes) {
-        List<Integer> powerUps= new ArrayList<>();
-        powerUps.add(parseInteger());
-        notify(new PowerUpsSelectedRequest(powerUps,mOwnerColor));
+       new Thread(() -> {
+            List<Integer> powerUps= new ArrayList<>();
+            powerUps.add(parseInteger());
+            notify(new PowerUpsSelectedRequest(powerUps,mOwnerColor));
+       }).start();
     }
 
     @Override
@@ -350,10 +359,18 @@ public class CLIView extends View {
 
     @Override
     public void showPositionSelectionView(Set<Position> possiblePositions) {
-        Position pos = selectPosition(possiblePositions);
-        if(pos == null)
-            return;
-        notify(new PositionSelectedRequest(pos, getOwnerColor()));
+        try {
+            t1.join();
+
+        } catch(InterruptedException e){
+            System.out.println("interrupted");
+        }
+        new Thread(() -> {
+            Position pos = selectPosition(possiblePositions);
+            if(pos == null)
+                return;
+            notify(new PositionSelectedRequest(pos, getOwnerColor()));
+        }).start();
     }
 
     @Override
@@ -389,9 +406,18 @@ public class CLIView extends View {
 
     @Override
     public void showRespawnPowerUpDiscardView() {
+        try {
+            t1.join();
+
+        } catch(InterruptedException e){
+            System.out.println("interrupted");
+        }
+       new Thread(() -> {
             printLineToConsole(mCLIInfo.getOwner().getPlayerPowerUps());
             notify(new RespawnPowerUpRequest(parseInteger(), mOwnerColor));
             availableCommands();
+       }).start();
+
     }
 
     public int parseInteger(){
@@ -608,6 +634,7 @@ public class CLIView extends View {
     @Override
     public void reportError(String error){
         printLineToConsole(error);
+        availableCommands();
     }
 
     public String requestAdditionalInfo(){

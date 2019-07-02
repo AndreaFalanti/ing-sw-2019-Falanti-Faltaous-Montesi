@@ -116,7 +116,7 @@ public class CLIPlayer {
 
     public void setPowerUpsOwnerPlayer(PowerUpCard[] powerUpCards){
         StringBuilder power = new StringBuilder();
-
+        int i=0;
         if (powerUpCards == null){
             mPlayerPowerUps = "not have power up card !";
             return;
@@ -124,7 +124,8 @@ public class CLIPlayer {
         power.append("PowerUpCard: ");
         for (PowerUpCard powerUpCard : powerUpCards) {
             if(powerUpCard != null){
-                power.append("Name : ");
+                power.append(i);
+                power.append(")Name : ");
                 power.append(powerUpCard.getType());
                 power.append(" ");
                 power.append("Color: ");
@@ -133,6 +134,12 @@ public class CLIPlayer {
                 power.append(Colors.ANSI_RESET);
                 power.append(SPACE+" ");
             }
+            else{
+                power.append(i);
+                power.append(")Not a card");
+                power.append(SPACE+" ");
+            }
+              i++;
         }
 
         mPlayerPowerUps = power.toString();

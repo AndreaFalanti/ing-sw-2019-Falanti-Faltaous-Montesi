@@ -139,7 +139,7 @@ public class BoardCLI {
             if (tiles[i/ SIZECELL +indexTile].getColor().equals(tiles[i/ SIZECELL + LENGTH +indexTile].getColor())) {
                 line.append(colleague(false,i));
             } else {
-                if (tiles[i/ SIZECELL+indexTile].getDoors()[1])
+                if (tiles[i/ SIZECELL+indexTile].getDoors()[2])
                     line.append(colleague(true,i));
                 else
                     line.append(appendLines(true));
@@ -231,7 +231,7 @@ public class BoardCLI {
                 .equals((tiles[i/ SIZECELL +indexTile].getColor().getPascalName())))
             line.append(sameRoom(i, j, tiles[i/ SIZECELL +indexTile].getColor().getPascalName(),indexTile,tiles));
         else {
-            if (tiles[(i-1)/ SIZECELL +indexTile].getDoors()[2])
+            if (tiles[(i-1)/ SIZECELL +indexTile].getDoors()[1])
                 line.append(makeDoor(i, j, tiles[i/ SIZECELL +indexTile].getColor().getPascalName()));
             else
                 line.append(makeWall(i, tiles[i/ SIZECELL +indexTile].getColor().getPascalName()));
