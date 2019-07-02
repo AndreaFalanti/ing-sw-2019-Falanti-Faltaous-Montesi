@@ -2,12 +2,11 @@ package it.polimi.se2019.network.client;
 
 import it.polimi.se2019.controller.response.*;
 import it.polimi.se2019.controller.response.serialization.ResponseFactory;
-import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.serialization.UpdateFactory;
+import it.polimi.se2019.network.connection.Connection;
 import it.polimi.se2019.network.connection.NetworkMessage;
 import it.polimi.se2019.network.connection.serialization.NetworkMessageFactory;
-import it.polimi.se2019.network.connection.Connection;
 import it.polimi.se2019.view.ResponseHandler;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.Request;
@@ -72,7 +71,12 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
 
     @Override
     public void handle(MessageResponse response) {
-        mView.showMessage(response.getMessage());
+        if (response.isError()) {
+            mView.reportError(response.getMessage());
+        }
+        else {
+            mView.showMessage(response.getMessage());
+        }
     }
 
     @Override
