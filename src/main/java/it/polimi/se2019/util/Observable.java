@@ -19,8 +19,9 @@ public class Observable<Message> {
     }
 
     public void notify(Message message) {//TODO change in protect
-        mObservers.stream()
-                .peek(observer -> System.out.println(getClass().getSimpleName() + " is notifying " + observer.getClass().getSimpleName() + ": " + message))
-                .forEach(observer -> observer.update(message));
+        if (mObservers != null)
+            mObservers.stream()
+                    .peek(observer -> System.out.println(getClass().getSimpleName() + " is notifying " + observer.getClass().getSimpleName() + ": " + message))
+                    .forEach(observer -> observer.update(message));
     }
 }

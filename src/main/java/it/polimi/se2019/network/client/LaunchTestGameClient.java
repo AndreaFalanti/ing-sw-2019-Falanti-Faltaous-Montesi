@@ -5,29 +5,36 @@ import it.polimi.se2019.network.server.Connection;
 import it.polimi.se2019.network.server.LaunchTestGameServer;
 import it.polimi.se2019.network.server.RmiConnection;
 import it.polimi.se2019.network.server.SocketConnection;
+import it.polimi.se2019.view.TestView;
 import it.polimi.se2019.view.cli.CLIView;
 import it.polimi.se2019.view.request.serialization.RequestFactory;
 
+import java.net.Socket;
+import java.util.Scanner;
+
+import static it.polimi.se2019.network.server.LaunchTestGameServer.RMI_PORT;
+import static it.polimi.se2019.network.server.LaunchTestGameServer.SOCKET_PORT;
+import static it.polimi.se2019.util.InteractionUtils.*;
 
 public class LaunchTestGameClient {
-
     public static void main(String[] args) {
-        CLIView view = new CLIView(null);
+        // pick connection
+        print("Pick connection type: ");
+        Connection connection =
+                input().equals("rmi") ?
+                        RmiConnection.establish(RMI_PORT, "connection") :
+                        SocketConnection.establish("localhost", SOCKET_PORT);
 
-        // Connection connection = SocketConnection.establish("localhost", LaunchTestGameServer.SOCKET_PORT);
-        Connection connection = RmiConnection.establish(
-                LaunchTestGameServer.RMI_PORT,
-                PlayerColor.BLUE.getPascalName()
-        );
+        // create view and register message sending to server
+        print("Pick player color: ");
+        TestView view = new TestView(PlayerColor.valueOf(input()));
 
-        view.register(request ->
-                connection.sendMessage(RequestFactory.toJson(request))
-        );
-
+        // initialize network handler
         NetworkHandler networkHandler = new NetworkHandler(view, connection);
         networkHandler.startReceivingMessages();
 
-        view.availableCommands();
+        // start view user interaction
+        view.startInteraction();
     }
 }
 

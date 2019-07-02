@@ -31,23 +31,26 @@ public class LaunchTestGameServer {
     public static final int SOCKET_PORT = 3456;
     public static final int RMI_PORT = 1111;
 
-    public static final Game testGame = new Game(
-            Board.fromJson(Jsons.get("boards/game/board1")),
-            new ArrayList<>(Arrays.asList(
-                    new Player("Mario", PlayerColor.PURPLE, new Position(2, 0)),
-                    new Player("Luigi", PlayerColor.GREEN, new Position(2, 0)),
-                    new Player("Smurfette", PlayerColor.BLUE, new Position(3, 2))
-            )),
-            8
-    );
 
     public static void main(String[] args) {
+        // initialize test game
+        final Game testGame = new Game(
+                Board.fromJson(Jsons.get("boards/game/board1")),
+                new ArrayList<>(Arrays.asList(
+                        new Player("Mario", PlayerColor.PURPLE, new Position(2, 0)),
+                        new Player("Luigi", PlayerColor.GREEN, new Position(2, 0)),
+                        new Player("Smurfette", PlayerColor.BLUE, new Position(3, 2))
+                )),
+                8
+        );
+
         // initialize RMI
         try {
             LocateRegistry.createRegistry(RMI_PORT);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+        Connection rmiConnection = RmiConnection.create(RMI_PORT, "connection");
 
         Controller controller = null;
         try (
@@ -58,11 +61,17 @@ public class LaunchTestGameServer {
                     Stream.of(
                             new Pair<>(
                                     PlayerColor.PURPLE,
-                                    new CLIView(null)
+                                    new VirtualView(
+                                            PlayerColor.PURPLE,
+                                            SocketConnection.accept(serverSocket)
+                                    )
                             ),
                             new Pair<>(
                                     PlayerColor.GREEN,
-                                    new CLIView(null)
+                                    new VirtualView(
+                                            PlayerColor.GREEN,
+                                            rmiConnection
+                                    )
                             ),
                             new Pair<>(
                                     PlayerColor.BLUE,
@@ -82,14 +91,12 @@ public class LaunchTestGameServer {
             e.printStackTrace();
         }
 
-        ((VirtualView) controller.getPlayerViews().get(PlayerColor.BLUE)).startReceivingRequests();
+        controller.getPlayerViews().values().stream()
+                .map(view -> (VirtualView) view)
+                .forEach(VirtualView::startReceivingRequests);
 
         controller.getPlayerViews().entrySet()
                 .forEach(entry -> entry.getValue().reinitialize(testGame.extractViewInitializationInfo(entry.getKey())));
-
-        testGame.startNextTurn();
-        testGame.startNextTurn();
-        testGame.startNextTurn();
 
         /*
         controller.startShootInteraction(PlayerColor.BLUE, Weapons.get("heatseeker").getBehaviour());

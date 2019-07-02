@@ -88,6 +88,8 @@ public class SocketConnection implements Connection {
                 logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
             }
 
+            logger.log(Level.INFO, "Received message: {0}", result);
+
             return result;
         }
     }
