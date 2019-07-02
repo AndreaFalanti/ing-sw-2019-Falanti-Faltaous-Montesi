@@ -1,10 +1,13 @@
 package it.polimi.se2019.network.client;
 
 import it.polimi.se2019.controller.response.*;
+import it.polimi.se2019.controller.response.serialization.ResponseFactory;
 import it.polimi.se2019.model.update.Update;
+import it.polimi.se2019.model.update.serialization.UpdateFactory;
 import it.polimi.se2019.network.server.Connection;
+import it.polimi.se2019.network.server.ServerMessage;
+import it.polimi.se2019.network.server.ServerMessageType;
 import it.polimi.se2019.network.server.serialization.ServerMessageFactory;
-import it.polimi.se2019.network.server.serialization.ServerMessageType;
 import it.polimi.se2019.view.ResponseHandler;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.Request;
@@ -41,16 +44,24 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
 
                 // receive it and unwrap it
                 logger.log(Level.INFO, "Received server message: {0}", rawMessage);
-                if (ServerMessageFactory.getMessageType(rawMessage).equals(ServerMessageType.Response)) {
-                    // handle response
-                    Response response = ServerMessageFactory.getAsResponse(rawMessage);
-                    logger.info("Handling response...");
-                    response.handleMe(this);
-                } else if (ServerMessageFactory.getMessageType(rawMessage).equals(ServerMessageType.Update)) {
-                    // handle update
-                    Update update = ServerMessageFactory.getAsUpdate(rawMessage);
-                    logger.info("Handling update...");
-                    update.handleMe(mView.getUpdateHandler());
+                ServerMessage message = ServerMessageFactory.fromJson(rawMessage);
+                switch (message.getType()) {
+                    case RESPONSE:
+                        Response response = ResponseFactory.fromJson(message.getRawContents());
+                        logger.info("Handling response...");
+                        response.handleMe(this);
+                        break;
+                    case UPDATE:
+                        Update update = UpdateFactory.fromJson(message.getRawContents());
+                        logger.info("Handling update...");
+                        update.handleMe(mView.getUpdateHandler());
+                        break;
+                    case PING:
+                        System.out.println("PING!");
+                        break;
+                    default:
+                        logger.severe("Received server message of unknown type!");
+                        break;
                 }
             }
         }).start();

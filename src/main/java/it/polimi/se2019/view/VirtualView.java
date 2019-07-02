@@ -7,6 +7,8 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
+import it.polimi.se2019.network.client.ClientMessage;
+import it.polimi.se2019.network.client.serialization.ClientMessageFactory;
 import it.polimi.se2019.network.server.Connection;
 import it.polimi.se2019.network.server.serialization.ServerMessageFactory;
 import it.polimi.se2019.util.Observer;
@@ -129,11 +131,23 @@ public class VirtualView extends View {
     public void startReceivingRequests() {
         new Thread(() -> {
             while (true) {
-                logger.info("Waiting for requests...");
-                String rawRequest = mConnection.waitForMessage();
-                Request request = RequestFactory.fromJson(rawRequest);
-                logger.log(Level.INFO, "Handling {0}...", request.getClass().getSimpleName());
-                notify(request);
+                logger.info("Waiting for client message...");
+                String rawMessage = mConnection.waitForMessage();
+
+                ClientMessage message = ClientMessageFactory.fromJson(rawMessage);
+                switch (message.getType()) {
+                    case REQUEST:
+                        Request request = RequestFactory.fromJson(message.getRawContents());
+                        logger.log(Level.INFO, "Handling request from client: {0}", request.getClass().getSimpleName());
+                        notify(request);
+                        break;
+                    case PONG:
+                        logger.info("PONG!");
+                        break;
+                    default:
+                        logger.severe("Received client message of unknown type!");
+                }
+
             }
         }).start();
     }
