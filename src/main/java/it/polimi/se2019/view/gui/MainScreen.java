@@ -853,7 +853,7 @@ public class MainScreen extends Observable<Request> {
     }
 
     public void activatePositionSelection (Set<Position> possiblePositions) {
-        logToChat("Choose a position for weapon effect");
+        logToChat("Choose a position");
         mBoardController.setupInteractiveGridForChoosingPosition(possiblePositions);
     }
 

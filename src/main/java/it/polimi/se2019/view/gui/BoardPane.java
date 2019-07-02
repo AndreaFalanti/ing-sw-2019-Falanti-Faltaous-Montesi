@@ -8,10 +8,7 @@ import it.polimi.se2019.model.action.MoveAction;
 import it.polimi.se2019.model.action.MoveGrabAction;
 import it.polimi.se2019.model.board.*;
 import it.polimi.se2019.util.Observable;
-import it.polimi.se2019.view.request.ActionRequest;
-import it.polimi.se2019.view.request.Request;
-import it.polimi.se2019.view.request.UndoWeaponInteractionRequest;
-import it.polimi.se2019.view.request.WeaponSelectedRequest;
+import it.polimi.se2019.view.request.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -473,24 +470,32 @@ public class BoardPane extends Observable<Request> {
 
                     mInteractiveButtons[i][j].setOnMouseClicked(event -> {
                         mMainController.logToChat("Selected position: (" + x + ", " + y + ")");
-                        switchButtonGridEnableStatus(false);
-                        for (Button[] buttons : mInteractiveButtons) {
-                            for (Button button : buttons) {
-                                if (button != null) {
-                                    button.setDisable(false);
-                                }
-                            }
-                        }
+                        resetButtonGrid();
+
+                        notify(new PositionSelectedRequest(new Position(x, y), mMainController.getView().getOwnerColor()));
                     });
                 }
 
                 mMainController.getUndoButton().setOnMouseClicked(event -> {
-                    switchButtonGridEnableStatus(false);
+                    resetButtonGrid();
+
                     mMainController.returnToActionTab();
                     notify(new UndoWeaponInteractionRequest(mMainController.getView().getOwnerColor()));
                 });
             }
         }
+    }
+
+    private void resetButtonGrid () {
+        for (Button[] buttons : mInteractiveButtons) {
+            for (Button button : buttons) {
+                if (button != null) {
+                    button.setDisable(false);
+                }
+            }
+        }
+
+        switchButtonGridEnableStatus(false);
     }
 
     public void enableSpawnWeaponBoxForSendingIndex(TileColor spawnColor) {
