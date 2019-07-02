@@ -166,8 +166,12 @@ public class BoardPane extends Observable<Request> {
      */
     public void movePawnToCoordinate(Position pos, PlayerColor color) {
         Circle pawn = mPawns.get(color);
-        pawn.setVisible(true);
-        mSquareControllers[pos.getX()][pos.getY()].addPawn(pawn);
+
+        // if a player is not spawned, shoot interaction could send a move update with null position
+        if (pos != null) {
+            pawn.setVisible(true);
+            mSquareControllers[pos.getX()][pos.getY()].addPawn(pawn);
+        }
     }
 
     /**
@@ -467,6 +471,7 @@ public class BoardPane extends Observable<Request> {
 
                 if (mInteractiveButtons[i][j] != null) {
                     mInteractiveButtons[i][j].setDisable(!possiblePosition.contains(new Position(i, j)));
+                    mInteractiveButtons[i][j].setVisible(possiblePosition.contains(new Position(i, j)));
 
                     mInteractiveButtons[i][j].setOnMouseClicked(event -> {
                         mMainController.logToChat("Selected position: (" + x + ", " + y + ")");
@@ -491,6 +496,7 @@ public class BoardPane extends Observable<Request> {
             for (Button button : buttons) {
                 if (button != null) {
                     button.setDisable(false);
+                    button.setVisible(true);
                 }
             }
         }

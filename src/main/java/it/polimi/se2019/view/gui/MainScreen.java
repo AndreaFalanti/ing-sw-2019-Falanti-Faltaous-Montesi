@@ -544,7 +544,7 @@ public class MainScreen extends Observable<Request> {
      * Method called at start of every powerUp interaction
      */
     private void initializePowerUpInteraction () {
-        tabPane.getSelectionModel().select(ACTIONS_TAB);
+        returnToActionTab();
         GuiUtils.setBoxEnableStatus(powerUpGrid, true);
         setEnableStatusActionButtonBox(false);
         powerUpDiscardButton.setDisable(false);
@@ -694,6 +694,7 @@ public class MainScreen extends Observable<Request> {
             directionButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
                 logToChat("Selected direction: " + directions[index].toString());
                 notify(new DirectionSelectedRequest(directions[index], mView.getOwnerColor()));
+                returnToActionTab();
             });
         }
     }
@@ -710,6 +711,7 @@ public class MainScreen extends Observable<Request> {
             roomColorButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
                 logToChat("Selected room: " + tileColors[index].toString());
                 notify(new RoomSelectedRequest(tileColors[index], mView.getOwnerColor()));
+                returnToActionTab();
             });
         }
     }
@@ -820,13 +822,16 @@ public class MainScreen extends Observable<Request> {
             radioButton.setUserData(effect.getId());
             radioButton.setToggleGroup(toggleGroup);
 
+            radioButton.setOnMouseClicked(event -> effectsOkButton.setDisable(false));
+
             addToggleAndInsertInEffectsPane(child, radioButton);
         }
 
-        effectsOkButton.setOnMouseClicked(event ->
+        effectsOkButton.setOnMouseClicked(event -> {
             notify(new WeaponModeSelectedRequest(
-                    (String) toggleGroup.getSelectedToggle().getUserData(), mView.getOwnerColor()))
-        );
+                    (String) toggleGroup.getSelectedToggle().getUserData(), mView.getOwnerColor()));
+            returnToActionTab();
+        });
     }
 
     /**

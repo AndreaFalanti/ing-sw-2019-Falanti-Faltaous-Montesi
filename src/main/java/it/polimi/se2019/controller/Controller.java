@@ -2,7 +2,6 @@ package it.polimi.se2019.controller;
 
 
 import it.polimi.se2019.controller.weapon.ShootInteraction;
-import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.controller.weapon.expression.ShootUndoInfo;
 import it.polimi.se2019.model.*;
@@ -267,7 +266,13 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void handle(UsePowerUpRequest request) {
-        PowerUpType powerUpType = mGame.getActivePlayer().getPowerUpCard(request.getPowerUpIndex()).getType();
+        PowerUpCard powerUpCard = mGame.getActivePlayer().getPowerUpCard(request.getPowerUpIndex());
+        if (powerUpCard == null) {
+            mPlayerViews.get(request.getViewColor()).showMessage("Invalid power up index selected");
+            return;
+        }
+
+        PowerUpType powerUpType = powerUpCard.getType();
         View playerView = mPlayerViews.get(request.getViewColor());
 
         switch (powerUpType) {
