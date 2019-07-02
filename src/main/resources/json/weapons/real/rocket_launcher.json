@@ -95,7 +95,7 @@
       {
         "name": "With fragmenting warhead",
         "cost": "1y",
-        "priority": 0,
+        "priority": 1,
         "optional": true,
         "behaviour": {
           "expr": "InflictDamage",

@@ -518,7 +518,7 @@ public class ShootInteraction {
     private TileColor pickAmmoColor(View view, Set<TileColor> possibleColors) {
         return waitForSelectionRequestSkippingObvious(
                 view,
-                () -> view.showRoomColorSelectionView(possibleColors),
+                () -> view.showAmmoColorSelectionView(possibleColors),
                 possibleColors, 1, 1,
                 req -> Stream.of(((AmmoColorSelectedRequest) req).getAmmoColor()),
                 "ammo color"

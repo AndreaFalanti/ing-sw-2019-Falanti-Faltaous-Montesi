@@ -67,24 +67,27 @@
           "list": [
             {
               "expr": "SelectTargets",
-              "store": "target",
-              "min": 2,
+              "store": "targets",
+              "min": 1,
               "max": 2,
               "from": {
-                "expr": "DistanceRange",
-                "origin": {
-                  "expr": "Load",
-                  "name": "the_vortex"
-                },
-                "min": 0,
-                "max": 2
+                "expr": "All",
+                "from": {
+                  "expr": "DistanceRange",
+                  "origin": {
+                    "expr": "Load",
+                    "name": "the_vortex"
+                  },
+                  "min": 0,
+                  "max": 2
+                }
               }
             },
             {
               "expr": "Move",
               "from": {
                 "expr": "Load",
-                "name": "target"
+                "name": "targets"
               },
               "to": {
                 "expr": "Load",
@@ -96,7 +99,7 @@
               "amount": "1d",
               "to": {
                 "expr": "Load",
-                "name": "target"
+                "name": "targets"
               }
             }
           ]
