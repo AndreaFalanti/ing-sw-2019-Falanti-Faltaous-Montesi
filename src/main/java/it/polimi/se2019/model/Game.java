@@ -425,6 +425,14 @@ public class Game extends Observable<Update> {
     }
 
     /**
+     * Increase action counter
+     */
+    public void increaseActionCounter () {
+        mRemainingActions++;
+        notify(new RemainingActionsUpdate(mRemainingActions));
+    }
+
+    /**
      * Add ammo tile to all normal tiles that are empty
      */
     private void refillAmmoTiles () {

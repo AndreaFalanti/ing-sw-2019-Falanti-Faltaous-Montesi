@@ -81,5 +81,6 @@ public class ShootUndoInfo {
 
         mGame.getPlayers()
                 .forEach(pl -> mPlayerUndoInfo.get(pl.getColor()).undoPlayer(pl));
+        mGame.increaseActionCounter();
     }
 }
