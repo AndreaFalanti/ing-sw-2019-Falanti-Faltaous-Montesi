@@ -60,15 +60,15 @@ public class MoveAction implements Action {
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         Position playerPos = game.getPlayerFromColor(mTarget).getPos();
 
-        // can't move player to its precedent position
-        if (playerPos.equals(mDestination)) {
-            return Optional.of(new MessageActionResponse("Can't move in your current position!"));
-        }
-
         if (mNormalMove) {
             // player can't move himself if out of actions
             if (game.getRemainingActions() == 0) {
                 return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
+            }
+
+            // can't move player to its precedent position
+            if (playerPos.equals(mDestination)) {
+                return Optional.of(new MessageActionResponse("Can't move in your current position!"));
             }
 
             // normal action is only set for active players to move themselves

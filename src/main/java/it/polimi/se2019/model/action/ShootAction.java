@@ -21,7 +21,7 @@ public class ShootAction implements ShootLeadingAction {
 
     @Override
     public void perform(Game game) {
-        throw new UnsupportedOperationException("WIP");
+        // now handled by ShootInteraction
     }
 
     @Override

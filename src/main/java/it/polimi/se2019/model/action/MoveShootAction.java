@@ -46,9 +46,12 @@ public class MoveShootAction implements ShootLeadingAction {
 
         if (!game.isFinalFrenzy()) {
             if (!player.canMoveBeforeShooting()) {
-                return Optional.of(new MessageActionResponse("You can't move while shooting right now"));
+                maxShootMoves = 0;
+                //return Optional.of(new MessageActionResponse("You can't move while shooting right now"));
             }
-            maxShootMoves = 1;
+            else {
+                maxShootMoves = 1;
+            }
         }
         else if (game.hasFirstPlayerDoneFinalFrenzy()) {
             maxShootMoves = 2;

@@ -604,7 +604,6 @@ public class MainScreen extends Observable<Request> {
         weapon.setOnMouseClicked(event -> {
             if (weapon.getOpacity() == LOADED_OPACITY) {
                 logToChat("Shooting with weapon of index: " + index);
-                setWeaponLoadStatus(index, false);
                 GuiUtils.setBoxEnableStatus(weaponBox,false);
                 setEnableStatusActionButtonBox(true);
 
