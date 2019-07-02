@@ -239,7 +239,7 @@ public class BoardPane extends Observable<Request> {
      * @param y Coordinate y in grid
      */
     public void handleClickedPos (int x, int y) {
-        mMainController.logToChat("You clicked (" + x + ", " + y + ")");
+        mMainController.logToChat("You clicked (" + x + ", " + y + ")", false);
         switchButtonGridEnableStatus(false);
     }
 
@@ -405,7 +405,7 @@ public class BoardPane extends Observable<Request> {
 
                 if (mInteractiveButtons[i][j] != null) {
                     mInteractiveButtons[i][j].setOnMouseClicked(event -> {
-                        mMainController.logToChat("Move Action in pos (" + x + ", " + y + ")");
+                        mMainController.logToChat("Move Action in pos (" + x + ", " + y + ")", false);
                         switchButtonGridEnableStatus(false);
                         mMainController.setEnableStatusActionButtonBox(true);
 
@@ -426,7 +426,7 @@ public class BoardPane extends Observable<Request> {
 
                 if (mInteractiveButtons[i][j] != null) {
                     mInteractiveButtons[i][j].setOnMouseClicked(event -> {
-                        mMainController.logToChat("Grab Action in pos (" + x + ", " + y + ")");
+                        mMainController.logToChat("Grab Action in pos (" + x + ", " + y + ")", false);
                         switchButtonGridEnableStatus(false);
                         mMainController.setEnableStatusActionButtonBox(true);
 
@@ -447,7 +447,7 @@ public class BoardPane extends Observable<Request> {
 
                 if (mInteractiveButtons[i][j] != null) {
                     mInteractiveButtons[i][j].setOnMouseClicked(event -> {
-                        mMainController.logToChat("Shoot Action pos set to: (" + x + ", " + y + ")");
+                        mMainController.logToChat("Shoot Action pos set to: (" + x + ", " + y + ")", false);
                         switchButtonGridEnableStatus(false);
                         mMainController.setShootOnWeapon(new Position(x, y));
                     });
@@ -474,7 +474,7 @@ public class BoardPane extends Observable<Request> {
                     mInteractiveButtons[i][j].setVisible(possiblePosition.contains(new Position(i, j)));
 
                     mInteractiveButtons[i][j].setOnMouseClicked(event -> {
-                        mMainController.logToChat("Selected position: (" + x + ", " + y + ")");
+                        mMainController.logToChat("Selected position: (" + x + ", " + y + ")", false);
                         resetButtonGrid();
 
                         notify(new PositionSelectedRequest(new Position(x, y), mMainController.getView().getOwnerColor()));

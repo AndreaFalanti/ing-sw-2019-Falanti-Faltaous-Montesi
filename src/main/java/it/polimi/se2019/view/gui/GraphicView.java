@@ -53,12 +53,12 @@ public class GraphicView extends View {
 
     @Override
     public void showMessage(String message){
-        Platform.runLater(() -> mMainFrameController.logToChat(message));
+        Platform.runLater(() -> mMainFrameController.logToChat(message, false));
     }
 
     @Override
     public void reportError(String error){
-        Platform.runLater(() -> mMainFrameController.logToChat(error));
+        Platform.runLater(() -> mMainFrameController.logToChat(error, true));
     }
 
     @Override

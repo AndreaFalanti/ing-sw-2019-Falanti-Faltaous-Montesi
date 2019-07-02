@@ -370,7 +370,7 @@ public class MainScreen extends Observable<Request> {
     private void setPowerUpDefaultBehaviour(ImageView powerUp, int index) {
         powerUp.setOnMouseClicked(event -> {
             if (powerUp.getImage() != null) {
-                logToChat("Using powerUp with index: " + index);
+                logToChat("Using powerUp with index: " + index, false);
                 notify(new UsePowerUpRequest(index, mView.getOwnerColor()));
                 powerUp.setDisable(true);
             }
@@ -380,10 +380,15 @@ public class MainScreen extends Observable<Request> {
     /**
      * Log message to both GUI and console
      * @param message Message to log
+     * @param error Is this message an error?
      */
-    public void logToChat (String message) {
+    public void logToChat(String message, boolean error) {
         logger.info(message);
         Label label = new Label(message);
+        if (error) {
+            label.setTextFill(Paint.valueOf("RED"));
+        }
+
         chatBox.getChildren().add(label);
     }
 
@@ -622,7 +627,7 @@ public class MainScreen extends Observable<Request> {
                     int index = x + y * POWER_UPS_GRID_COLUMNS;
 
                     powerUp.setOnMouseClicked(event -> {
-                        logToChat("Using powerUp of index " + index + " for respawn");
+                        logToChat("Using powerUp of index " + index + " for respawn", false);
                         notify(new RespawnPowerUpRequest(index, mView.getOwnerColor()));
                         finalizePowerUpInteraction();
                     });
@@ -640,14 +645,14 @@ public class MainScreen extends Observable<Request> {
     private void setShootingBehaviourOnWeapon (Node weapon, int index, Position pos) {
         weapon.setOnMouseClicked(event -> {
             if (weapon.getOpacity() == LOADED_OPACITY) {
-                logToChat("Shooting with weapon of index: " + index);
+                logToChat("Shooting with weapon of index: " + index, false);
                 GuiUtils.setBoxEnableStatus(weaponBox,false);
                 setEnableStatusActionButtonBox(true);
 
                 notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index), mView.getOwnerColor()));
             }
             else {
-                logToChat("Can't shoot with unloaded weapon");
+                logToChat("Can't shoot with unloaded weapon", true);
             }
         });
     }
@@ -660,7 +665,7 @@ public class MainScreen extends Observable<Request> {
     private void setReloadBehaviourOnWeapon (Node weapon, int index) {
         weapon.setOnMouseClicked(event -> {
             if (weapon.getOpacity() == UNLOADED_OPACITY) {
-                logToChat("Reload weapon of index: " + index);
+                logToChat("Reload weapon of index: " + index, false);
                 setWeaponLoadStatus(index, true);
                 GuiUtils.setBoxEnableStatus(weaponBox,false);
                 setEnableStatusActionButtonBox(true);
@@ -668,7 +673,7 @@ public class MainScreen extends Observable<Request> {
                 notify(new ActionRequest(new ReloadAction(index), mView.getOwnerColor()));
             }
             else {
-                logToChat("Can't reload an already loaded weapon");
+                logToChat("Can't reload an already loaded weapon", true);
             }
         });
     }
@@ -692,7 +697,7 @@ public class MainScreen extends Observable<Request> {
         for (int i = 0; i < directions.length; i++) {
             final int index = i;
             directionButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
-                logToChat("Selected direction: " + directions[index].toString());
+                logToChat("Selected direction: " + directions[index].toString(), false);
                 notify(new DirectionSelectedRequest(directions[index], mView.getOwnerColor()));
                 returnToActionTab();
             });
@@ -709,7 +714,7 @@ public class MainScreen extends Observable<Request> {
             mRoomButtons.put(tileColors[i], (Button)roomColorButtonsPane.getChildren().get(i));
 
             roomColorButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
-                logToChat("Selected room: " + tileColors[index].toString());
+                logToChat("Selected room: " + tileColors[index].toString(), false);
                 notify(new RoomSelectedRequest(tileColors[index], mView.getOwnerColor()));
                 returnToActionTab();
             });
@@ -777,11 +782,11 @@ public class MainScreen extends Observable<Request> {
                     radioButton.setSelected(select);
                     mTargetSelectedCache[index] = select;
                     String text = select ? "Selected: " : "Deselected: ";
-                    logToChat(text + radioButton.getText());
+                    logToChat(text + radioButton.getText(), false);
                 }
                 else {
                     mTargetSelectedCache[index] = false;
-                    logToChat("Deselected: " + radioButton.getText());
+                    logToChat("Deselected: " + radioButton.getText(), false);
                 }
 
                 targetsOkButton.setDisable(!checkTargetSelectionRestriction(minTargets, maxTargets));
@@ -936,7 +941,7 @@ public class MainScreen extends Observable<Request> {
      * @param possiblePositions Valid positions to select
      */
     public void activatePositionSelection (Set<Position> possiblePositions) {
-        logToChat("Choose a position");
+        logToChat("Choose a position", false);
         mBoardController.setupInteractiveGridForChoosingPosition(possiblePositions);
     }
 

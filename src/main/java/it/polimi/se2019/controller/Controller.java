@@ -268,7 +268,7 @@ public class Controller implements Observer<Request>, RequestHandler {
     public void handle(UsePowerUpRequest request) {
         PowerUpCard powerUpCard = mGame.getActivePlayer().getPowerUpCard(request.getPowerUpIndex());
         if (powerUpCard == null) {
-            mPlayerViews.get(request.getViewColor()).showMessage("Invalid power up index selected");
+            mPlayerViews.get(request.getViewColor()).reportError("Invalid power up index selected");
             return;
         }
 
@@ -285,7 +285,7 @@ public class Controller implements Observer<Request>, RequestHandler {
                 mPlayerActionController.setCompletableNewtonAction(new NewtonAction(request.getPowerUpIndex()));
                 Set<PlayerColor> possibleTargets = mPlayerActionController.getAllTargetsExceptActivePlayer();
                 if (possibleTargets.isEmpty()) {
-                    playerView.showMessage("No valid targets for newton!");
+                    playerView.reportError("No valid targets for newton!");
                 }
                 else {
                     playerView.showMessage("Select target for newton");
@@ -294,11 +294,11 @@ public class Controller implements Observer<Request>, RequestHandler {
                 break;
             case TAGBACK_GRENADE:
                 logger.info("Tagback grenade can't be handled without proper event");
-                playerView.showMessage("Can't use tagback without taking damage");
+                playerView.reportError("Can't use tagback without taking damage");
                 break;
             case TARGETING_SCOPE:
                 logger.info("Targeting scope can't be handled without proper event");
-                playerView.showMessage("Can't use targeting scope outside a shooting interaction");
+                playerView.reportError("Can't use targeting scope outside a shooting interaction");
                 break;
             default:
                 logger.severe("Unknown powerUp type");

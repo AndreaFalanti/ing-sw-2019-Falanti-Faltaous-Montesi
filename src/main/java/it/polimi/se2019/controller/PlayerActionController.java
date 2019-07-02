@@ -105,7 +105,12 @@ public class PlayerActionController implements InvalidActionResponseHandler {
 
     @Override
     public void handle(MessageActionResponse actionResponse) {
-        mRequestingView.showMessage(actionResponse.getMessage());
+        if (actionResponse.isError()) {
+            mRequestingView.reportError(actionResponse.getMessage());
+        }
+        else {
+            mRequestingView.showMessage(actionResponse.getMessage());
+        }
     }
 
     @Override

@@ -7,7 +7,7 @@ public class DiscardRequiredActionResponse extends MessageActionResponse {
     private CostlyAction mCostlyAction;
 
     public DiscardRequiredActionResponse(String message, CostlyAction costlyAction) {
-        super(message);
+        super(message, false);
         mCostlyAction = costlyAction;
     }
 

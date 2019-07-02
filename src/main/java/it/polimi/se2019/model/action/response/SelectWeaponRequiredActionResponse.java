@@ -13,7 +13,7 @@ public class SelectWeaponRequiredActionResponse extends MessageActionResponse {
 
     public SelectWeaponRequiredActionResponse(String message, TileColor color,
                                               WeaponIndexStrategy strategy, GrabAction grabAction) {
-        super(message);
+        super(message, false);
         mColor = color;
         mStrategy = strategy;
         mGrabAction = grabAction;
