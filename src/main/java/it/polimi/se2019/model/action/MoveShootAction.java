@@ -41,13 +41,17 @@ public class MoveShootAction implements ShootLeadingAction {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
 
+        Optional<InvalidActionResponse> response = mShootAction.getErrorResponse(game);
+        if (response.isPresent()) {
+            return response;
+        }
+
         Player player = game.getPlayerFromColor(mMoveAction.getTarget());
         int maxShootMoves;
 
         if (!game.isFinalFrenzy()) {
             if (!player.canMoveBeforeShooting()) {
                 maxShootMoves = 0;
-                //return Optional.of(new MessageActionResponse("You can't move while shooting right now"));
             }
             else {
                 maxShootMoves = 1;
@@ -59,10 +63,10 @@ public class MoveShootAction implements ShootLeadingAction {
         else {
             maxShootMoves = 1;
         }
-            return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) == maxShootMoves ?
-                    Optional.empty() : Optional.of(
-                            new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE + " while shooting")
-            );
+
+        return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) == maxShootMoves ?
+                Optional.empty() : Optional.of(
+                        new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE + " while shooting"));
     }
 
     @Override

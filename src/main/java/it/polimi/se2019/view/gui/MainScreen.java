@@ -1004,4 +1004,22 @@ public class MainScreen extends Observable<Request> {
     public void endTurn () {
         notify(new TurnEndRequest(mView.getOwnerColor()));
     }
+
+    /**
+     * Change view status depending on active player in this turn
+     */
+    public void activateView () {
+        returnToActionTab();
+        setEnableStatusActionButtonBox(true);
+        undoButton.setDisable(false);
+    }
+
+    public void deactivateView () {
+        returnToActionTab();
+        GuiUtils.setBoxEnableStatus(powerUpGrid, false);
+        GuiUtils.setBoxEnableStatus(weaponBox, false);
+        setEnableStatusActionButtonBox(false);
+        powerUpDiscardButton.setDisable(true);
+        undoButton.setDisable(true);
+    }
 }

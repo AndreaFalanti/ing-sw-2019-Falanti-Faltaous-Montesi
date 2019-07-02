@@ -91,7 +91,8 @@ public class GameThread extends Thread {
             mColors.remove(randomIndex);
         }
 
-        Board board = Board.fromJson(Jsons.get("boards/game/board1"));
+        int boardID = mRandom.nextInt(4) + 1;
+        Board board = Board.fromJson(Jsons.get("boards/game/board" + boardID));
         int killsTarget = 8;
 
         initializeGame(board, players, killsTarget);

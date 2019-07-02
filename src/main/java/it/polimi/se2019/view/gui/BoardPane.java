@@ -32,6 +32,8 @@ import java.util.Set;
 
 public class BoardPane extends Observable<Request> {
     @FXML
+    private ImageView boardImage;
+    @FXML
     private HBox redSpawnWeaponBox;
     @FXML
     private HBox blueSpawnWeaponBox;
@@ -218,6 +220,9 @@ public class BoardPane extends Observable<Request> {
      * @throws IOException Thrown if square fxml is not found
      */
     public void initialize (Board board) throws IOException {
+        Image image = new Image(GuiResourcePaths.BOARD + board.getGuiID() + ".png");
+        boardImage.setImage(image);
+
         createPawns();
         createSpawnEnumMap();
         createBoardElements(board);
@@ -234,7 +239,7 @@ public class BoardPane extends Observable<Request> {
     }
 
     /**
-     * Test behavior of grid overlay buttons
+     * Test behaviour of grid overlay buttons
      * @param x Coordinate x in grid
      * @param y Coordinate y in grid
      */

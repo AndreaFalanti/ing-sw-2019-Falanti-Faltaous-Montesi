@@ -1,5 +1,6 @@
 package it.polimi.se2019.controller;
 
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.GrabAmmoAction;
@@ -77,7 +78,9 @@ public class ControllerTest {
         assertNotNull(activePlayer.getPowerUpCard(0));
         assertNotNull(activePlayer.getPowerUpCard(1));
 
-        activePlayer.addWeapon(Weapons.get("sledgehammer"));
+        Weapon sledgehammer = Weapons.get("sledgehammer");
+        sledgehammer.setLoaded(false);
+        activePlayer.addWeapon(sledgehammer);
         assertFalse(activePlayer.getWeapon(0).isLoaded());
 
         // reset all ammo to 0

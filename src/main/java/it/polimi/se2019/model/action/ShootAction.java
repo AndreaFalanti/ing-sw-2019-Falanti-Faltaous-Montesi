@@ -1,5 +1,6 @@
 package it.polimi.se2019.model.action;
 
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.action.response.ActionResponseStrings;
@@ -28,6 +29,14 @@ public class ShootAction implements ShootLeadingAction {
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         if (game.getRemainingActions() == 0) {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
+        }
+
+        Weapon weapon = game.getActivePlayer().getWeapon(mWeaponIndex);
+        if (weapon == null) {
+            return Optional.of(new MessageActionResponse("Invalid weapon index selected"));
+        }
+        else if (!weapon.isLoaded()) {
+            return Optional.of(new MessageActionResponse("Trying to shoot with an unloaded weapon!"));
         }
 
         return Optional.empty();

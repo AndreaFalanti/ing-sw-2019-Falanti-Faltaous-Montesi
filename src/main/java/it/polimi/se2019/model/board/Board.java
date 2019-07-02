@@ -31,6 +31,8 @@ public class Board {
     private int mWidth;
     private int mHeight;
 
+    private String mGuiID;
+
     // all the board tiles
     @JsonAdapter(CustomTilesDeserializer.class)
     private ArrayList<Tile> mTiles;
@@ -53,6 +55,10 @@ public class Board {
 
     public int getSize() {
         return getWidth() * getHeight();
+    }
+
+    public String getGuiID() {
+        return mGuiID;
     }
 
     public Map<TileColor, SpawnTile> getSpawnMap() {

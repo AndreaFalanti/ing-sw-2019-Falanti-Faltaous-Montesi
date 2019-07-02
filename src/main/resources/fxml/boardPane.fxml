@@ -8,7 +8,7 @@
 <AnchorPane prefHeight="538.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.se2019.view.gui.BoardPane">
 
     <children>
-        <ImageView fitHeight="538.0" fitWidth="731.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="boardImage" fitHeight="538.0" fitWidth="731.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@../images/boards/board1.png" />
             </image>
