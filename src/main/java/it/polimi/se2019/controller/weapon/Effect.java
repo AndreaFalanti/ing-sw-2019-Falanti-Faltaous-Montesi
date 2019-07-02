@@ -2,6 +2,7 @@ package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.AmmoValue;
+import it.polimi.se2019.util.Exclude;
 import it.polimi.se2019.util.StringUtils;
 
 /**
@@ -17,9 +18,10 @@ public class Effect {
     private boolean mOptional;
     private AmmoValue mCost;
 
-    // expression
+    @Exclude
     private Expression mBehaviour;
 
+    // trivial constructor
     public Effect(String name, int priority, boolean optional, AmmoValue cost) {
         mName = name;
         mPriority = priority;
@@ -50,6 +52,11 @@ public class Effect {
 
     public Expression getBehaviour() {
         return mBehaviour;
+    }
+
+    // trivial setters
+    public void setOptional(boolean optional) {
+        mOptional = optional;
     }
 }
 

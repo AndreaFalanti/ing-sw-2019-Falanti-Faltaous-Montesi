@@ -5,6 +5,7 @@ import it.polimi.se2019.model.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -25,7 +26,9 @@ public class ShootUndoInfo {
             if (player == null || player.getWeapons() == null)
                 throw new NullPointerException();
 
-            mOriginalPosition = player.getPos().deepCopy();
+            mOriginalPosition = player.getPos() == null ?
+                    null :
+                    player.getPos().deepCopy();
             mOriginalAmmo = player.getAmmo().deepCopy();
             mOriginalDamageTaken = player.getDamageTaken().clone();
             mOriginalMarks = player.getMarks().entrySet().stream()

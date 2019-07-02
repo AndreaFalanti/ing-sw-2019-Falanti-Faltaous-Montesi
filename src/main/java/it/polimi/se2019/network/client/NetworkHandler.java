@@ -47,14 +47,14 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
                 switch (message.getType()) {
                     case RESPONSE:
                         // responses are handled by calling the appropriate view method
+                        logger.log(Level.INFO, "Handling response from server: {0}", message.getRawContents());
                         Response response = ResponseFactory.fromJson(message.getRawContents());
-                        logger.info("Handling response...");
                         response.handleMe(this);
                         break;
                     case UPDATE:
                         // updates are reflected on the view
+                        logger.log(Level.INFO, "Handling update from server: {0}", message.getRawContents());
                         Update update = UpdateFactory.fromJson(message.getRawContents());
-                        logger.info("Handling update...");
                         update.handleMe(mView.getUpdateHandler());
                         break;
                     case PING:

@@ -18,6 +18,10 @@ public class XorEffect extends Expression {
         ShootInteraction interaction = context.getInteraction();
         View view = context.getView();
 
+        // set inputs as optionals so that view does not force the user to pick both of them
+        mLhs.setOptional(true);
+        mRhs.setOptional(true);
+
         // get input
         String selectedEffectID = interaction.selectWeaponMode(view, mLhs, mRhs);
 
