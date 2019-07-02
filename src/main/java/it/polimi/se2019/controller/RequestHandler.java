@@ -18,4 +18,5 @@ public interface RequestHandler {
     void handle(TurnEndRequest request);
     void handle(RespawnPowerUpRequest request);
     void handle(UsePowerUpRequest request);
+    void handle(AmmoColorSelectedRequest request);
 }

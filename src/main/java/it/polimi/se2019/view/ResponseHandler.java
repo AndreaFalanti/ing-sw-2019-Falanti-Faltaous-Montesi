@@ -16,4 +16,5 @@ public interface ResponseHandler {
     void handle(PickRoomColorResponse response);
     void handle(PickRespawnPowerUpResponse response);
     void handle(InitializationInfoResponse response);
+    void handle(PickAmmoColorResponse response);
 }

@@ -140,6 +140,11 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
     }
 
     @Override
+    public void handle(PickAmmoColorResponse response) {
+        mView.showAmmoColorSelectionView(response.getAmmoColors());
+    }
+
+    @Override
     public boolean sendUsername(String username) {
         mConnection.sendMessage(username);
 

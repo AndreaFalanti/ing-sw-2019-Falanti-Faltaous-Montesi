@@ -7,12 +7,11 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
+import it.polimi.se2019.network.connection.Connection;
 import it.polimi.se2019.network.connection.NetworkMessage;
 import it.polimi.se2019.network.connection.serialization.NetworkMessageFactory;
-import it.polimi.se2019.network.connection.Connection;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.request.Request;
-import it.polimi.se2019.view.request.TurnEndRequest;
 import it.polimi.se2019.view.request.serialization.RequestFactory;
 
 import java.util.*;
@@ -113,6 +112,11 @@ public class VirtualView extends View {
     @Override
     public void showRespawnPowerUpDiscardView() {
         sendResponse(new PickRespawnPowerUpResponse());
+    }
+
+    @Override
+    public void showAmmoColorSelectionView(Set<TileColor> possibleColors) {
+        sendResponse(new PickAmmoColorResponse(possibleColors));
     }
 
     @Override

@@ -31,6 +31,7 @@ public final class ResponseFactory {
                         .registerSubtype(PickWeaponResponse.class)
                         .registerSubtype(ValidMoveResponse.class)
                         .registerSubtype(PickEffectsResponse.class)
+                        .registerSubtype(PickAmmoColorResponse.class)
                 )
                 //.setPrettyPrinting()
                 .registerTypeAdapter(Board.class, new CustomBoardAdapter())

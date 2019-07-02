@@ -124,6 +124,11 @@ public class GraphicView extends View {
     }
 
     @Override
+    public void showAmmoColorSelectionView(Set<TileColor> possibleColors) {
+        //TODO
+    }
+
+    @Override
     public void reinitialize(InitializationInfo initInfo) {
         Platform.runLater(() -> {
             try {

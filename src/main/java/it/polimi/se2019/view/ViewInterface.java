@@ -8,7 +8,6 @@ import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.request.Request;
 
-import java.rmi.Remote;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -78,6 +77,8 @@ public interface ViewInterface extends Observer<Update> {
     void showWeaponModeSelectionView(Effect effect1, Effect effect2);
 
     void showRespawnPowerUpDiscardView();
+
+    void showAmmoColorSelectionView(Set<TileColor> possibleColors);
 
     void reinitialize(InitializationInfo initInfo);
 

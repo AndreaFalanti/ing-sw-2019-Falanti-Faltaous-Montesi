@@ -32,6 +32,7 @@ public final class RequestFactory {
                         .registerSubtype(WeaponModeSelectedRequest.class)
                         .registerSubtype(WeaponSelectedRequest.class)
                         .registerSubtype(UsePowerUpRequest.class)
+                        .registerSubtype(AmmoColorSelectedRequest.class)
                 )
                 .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Action.class, "type")
                         .registerSubtype(GrabAmmoAction.class)

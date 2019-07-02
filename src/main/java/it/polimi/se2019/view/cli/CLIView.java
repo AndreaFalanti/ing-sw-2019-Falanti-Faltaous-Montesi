@@ -420,6 +420,11 @@ public class CLIView extends View {
 
     }
 
+    @Override
+    public void showAmmoColorSelectionView(Set<TileColor> possibleColors) {
+        //TODO
+    }
+
     public int parseInteger(){
         Integer index = null;
         boolean isValid = false;

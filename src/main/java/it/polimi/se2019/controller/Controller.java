@@ -306,6 +306,11 @@ public class Controller implements Observer<Request>, RequestHandler {
         }
     }
 
+    @Override
+    public void handle(AmmoColorSelectedRequest request) {
+        //TODO
+    }
+
     public void handleNextTurn () {
         // prevent another turn start if called after an initial spawn
         if (mActivePlayerSpawnedThisTurn) {

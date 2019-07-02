@@ -1,26 +1,33 @@
 package it.polimi.se2019.view;
 
 import com.google.gson.GsonBuilder;
-import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.controller.weapon.Weapon;
-import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.Damage;
+import it.polimi.se2019.model.Game;
+import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.action.MoveAction;
 import it.polimi.se2019.model.action.MoveGrabAction;
-import it.polimi.se2019.model.action.MoveShootAction;
 import it.polimi.se2019.model.action.ShootAction;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.*;
 import it.polimi.se2019.model.update.serialization.UpdateFactory;
 import it.polimi.se2019.util.Observer;
-import it.polimi.se2019.view.request.*;
-import sun.plugin.dom.exception.InvalidStateException;
+import it.polimi.se2019.view.request.ActionRequest;
+import it.polimi.se2019.view.request.Request;
+import it.polimi.se2019.view.request.TurnEndRequest;
+import it.polimi.se2019.view.request.WeaponSelectedRequest;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static it.polimi.se2019.util.InteractionUtils.*;
+import static it.polimi.se2019.util.InteractionUtils.input;
+import static it.polimi.se2019.util.InteractionUtils.println;
 
 public class TestView extends View {
     private Game mGame = null;
@@ -212,6 +219,11 @@ public class TestView extends View {
     @Override
     public void showRespawnPowerUpDiscardView() {
         throw new UnsupportedOperationException();
+
+    }
+
+    @Override
+    public void showAmmoColorSelectionView(Set<TileColor> possibleColors) {
 
     }
 
