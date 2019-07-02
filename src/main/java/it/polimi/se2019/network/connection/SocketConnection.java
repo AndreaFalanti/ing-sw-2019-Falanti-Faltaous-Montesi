@@ -1,4 +1,4 @@
-package it.polimi.se2019.network.server;
+package it.polimi.se2019.network.connection;
 
 import java.io.BufferedReader;
 import java.io.IOException;

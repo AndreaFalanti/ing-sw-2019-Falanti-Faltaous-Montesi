@@ -4,7 +4,7 @@ import it.polimi.se2019.network.client.ClientInterface;
 import it.polimi.se2019.network.client.ClientNetworkHandler;
 import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.network.client.RmiClient;
-import it.polimi.se2019.network.server.SocketConnection;
+import it.polimi.se2019.network.connection.SocketConnection;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;

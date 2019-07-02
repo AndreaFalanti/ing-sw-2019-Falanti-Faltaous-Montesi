@@ -1,4 +1,6 @@
-package it.polimi.se2019.network.server;
+package it.polimi.se2019.network.connection;
+
+import it.polimi.se2019.network.server.RmiMessengerRemote;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;

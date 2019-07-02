@@ -1,6 +1,7 @@
 package it.polimi.se2019.network.server;
 
 import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.network.connection.ConnectionType;
 import it.polimi.se2019.view.VirtualView;
 
 import java.net.Socket;

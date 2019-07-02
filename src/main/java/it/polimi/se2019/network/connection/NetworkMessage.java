@@ -1,17 +1,17 @@
-package it.polimi.se2019.network.client;
+package it.polimi.se2019.network.connection;
 
-public class ClientMessage {
-    private ClientMessageType mType;
+public class NetworkMessage {
+    private NetworkMessageType mType;
     private String mRawContents;
 
     // trivial constructor
-    public ClientMessage(ClientMessageType type, String rawContents) {
+    public NetworkMessage(NetworkMessageType type, String rawContents) {
         mType = type;
         mRawContents = rawContents;
     }
 
     // trivial getters
-    public ClientMessageType getType() {
+    public NetworkMessageType getType() {
         return mType;
     }
 

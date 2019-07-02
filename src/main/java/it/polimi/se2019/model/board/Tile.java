@@ -31,13 +31,11 @@ public abstract class Tile extends Observable<Update> {
 
     public abstract Tile deepCopy();
     public Tile finishDeepCopy(Tile childTile) {
-        Tile result = childTile;
+        childTile.mColor = mColor;
+        childTile.mPosition = mPosition;
+        childTile.mDoorDirections = mDoorDirections;
 
-        result.mColor = mColor;
-        result.mPosition = mPosition;
-        result.mDoorDirections = mDoorDirections;
-
-        return result;
+        return childTile;
     }
 
     @Override

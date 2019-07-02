@@ -5,14 +5,13 @@ import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.network.connection.RmiConnection;
+import it.polimi.se2019.network.connection.SocketConnection;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.VirtualView;
 
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -62,7 +61,7 @@ public class GameThread extends Thread {
         logger.info("The game thread has begun!!");
 
         for (Map.Entry<PlayerColor, View> entry : mController.getPlayerViews().entrySet()) {
-            ((VirtualView)entry.getValue()).startReceivingRequests();
+            ((VirtualView)entry.getValue()).startReceivingMessages();
             InitializationInfo initInfo = mGame.extractViewInitializationInfo(entry.getKey());
             entry.getValue().reinitialize(initInfo);
         }
@@ -105,13 +104,6 @@ public class GameThread extends Thread {
      * @param killsTarget Kills target of the game
      */
     private void initializeGame (Board board, List<Player> players, int killsTarget) {
-        Registry registry = null;
-        try {
-            registry = LocateRegistry.getRegistry(mRmiPort);
-        } catch (RemoteException e) {
-            throw new IllegalStateException("Could not locate registry for server during game init");
-        }
-
         mGame = new Game(board, players, killsTarget);
 
         mController = new Controller(
@@ -135,6 +127,9 @@ public class GameThread extends Thread {
                             }
                         })
                         .map(PlayerConnection::getVirtualView)
+                        // start sending pings from all virtual views to clients
+                        .peek(VirtualView::startSendingPings)
+                        // collect all views and put them inside controller as normal views
                         .collect(Collectors.toMap(
                                 View::getOwnerColor,
                                 view -> view

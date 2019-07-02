@@ -1,5 +1,7 @@
 package it.polimi.se2019.network.server;
 
+import it.polimi.se2019.network.connection.ConnectionType;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

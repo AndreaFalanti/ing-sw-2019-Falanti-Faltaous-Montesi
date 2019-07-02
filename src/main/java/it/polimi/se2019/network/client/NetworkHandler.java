@@ -4,14 +4,12 @@ import it.polimi.se2019.controller.response.*;
 import it.polimi.se2019.controller.response.serialization.ResponseFactory;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.serialization.UpdateFactory;
-import it.polimi.se2019.network.server.Connection;
-import it.polimi.se2019.network.server.ServerMessage;
-import it.polimi.se2019.network.server.ServerMessageType;
-import it.polimi.se2019.network.server.serialization.ServerMessageFactory;
+import it.polimi.se2019.network.connection.NetworkMessage;
+import it.polimi.se2019.network.connection.serialization.NetworkMessageFactory;
+import it.polimi.se2019.network.connection.Connection;
 import it.polimi.se2019.view.ResponseHandler;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.Request;
-import it.polimi.se2019.view.request.serialization.RequestFactory;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,10 +27,10 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
 
     @Override
     public void update(Request request) {
-        String rawRequest = RequestFactory.toJson(request);
+        String rawMessage = NetworkMessageFactory.toJson(request);
 
-        logger.log(Level.INFO, "Sending request: {0}", rawRequest);
-        mConnection.sendMessage(rawRequest);
+        logger.log(Level.INFO, "Sending request: {0}", rawMessage);
+        mConnection.sendMessage(rawMessage);
     }
 
     public void startReceivingMessages() {
@@ -44,20 +42,24 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
 
                 // receive it and unwrap it
                 logger.log(Level.INFO, "Received server message: {0}", rawMessage);
-                ServerMessage message = ServerMessageFactory.fromJson(rawMessage);
+                NetworkMessage message = NetworkMessageFactory.fromJson(rawMessage);
                 switch (message.getType()) {
                     case RESPONSE:
+                        // responses are handled by calling the appropriate view method
                         Response response = ResponseFactory.fromJson(message.getRawContents());
                         logger.info("Handling response...");
                         response.handleMe(this);
                         break;
                     case UPDATE:
+                        // updates are reflected on the view
                         Update update = UpdateFactory.fromJson(message.getRawContents());
                         logger.info("Handling update...");
                         update.handleMe(mView.getUpdateHandler());
                         break;
                     case PING:
-                        System.out.println("PING!");
+                        // pings are answered with pongs
+                        logger.info("Received PING from server. Answering with PONG...");
+                        mConnection.sendMessage(NetworkMessageFactory.makeRawPong());
                         break;
                     default:
                         logger.severe("Received server message of unknown type!");

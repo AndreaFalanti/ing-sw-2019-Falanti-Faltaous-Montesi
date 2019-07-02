@@ -1,21 +1,18 @@
 package it.polimi.se2019.network.server;
 
 import it.polimi.se2019.controller.Controller;
-import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.model.update.ActivePlayerUpdate;
-import it.polimi.se2019.model.update.Update;
-import it.polimi.se2019.model.update.UpdateHandler;
+import it.polimi.se2019.network.connection.Connection;
+import it.polimi.se2019.network.connection.RmiConnection;
+import it.polimi.se2019.network.connection.SocketConnection;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.VirtualView;
-import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.cli.CLIView;
-import sun.management.counter.perf.PerfLongCounter;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -24,7 +21,6 @@ import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class LaunchTestGameServer {
@@ -93,7 +89,7 @@ public class LaunchTestGameServer {
 
         controller.getPlayerViews().values().stream()
                 .map(view -> (VirtualView) view)
-                .forEach(VirtualView::startReceivingRequests);
+                .forEach(VirtualView::startReceivingMessages);
 
         controller.getPlayerViews().entrySet()
                 .forEach(entry -> entry.getValue().reinitialize(testGame.extractViewInitializationInfo(entry.getKey())));

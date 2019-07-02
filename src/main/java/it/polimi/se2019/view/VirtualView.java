@@ -7,22 +7,22 @@ import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.UpdateHandler;
-import it.polimi.se2019.network.client.ClientMessage;
-import it.polimi.se2019.network.client.serialization.ClientMessageFactory;
-import it.polimi.se2019.network.server.Connection;
-import it.polimi.se2019.network.server.serialization.ServerMessageFactory;
+import it.polimi.se2019.network.connection.NetworkMessage;
+import it.polimi.se2019.network.connection.serialization.NetworkMessageFactory;
+import it.polimi.se2019.network.connection.Connection;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.request.Request;
 import it.polimi.se2019.view.request.serialization.RequestFactory;
 
-import java.util.List;
-import java.util.Set;
-import java.util.SortedMap;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class VirtualView extends View {
     private static final Logger logger = Logger.getLogger(VirtualView.class.getName());
+
+    // pint period in milliseconds
+    private static final int PING_PERIOD = 1000;
 
     private Connection mConnection;
 
@@ -33,7 +33,7 @@ public class VirtualView extends View {
                     @Override
                     public void fallbackHandle(Update update) {
                         logger.log(Level.INFO, "Sending update: {0}", update.getClass().getSimpleName());
-                        connection.sendMessage(ServerMessageFactory.toJson(update));
+                        connection.sendMessage(NetworkMessageFactory.toJson(update));
                     }
                 }
         );
@@ -121,20 +121,32 @@ public class VirtualView extends View {
     }
 
     private void sendResponse(Response response) {
-        String rawMessage = ServerMessageFactory.toJson(response);
+        String rawMessage = NetworkMessageFactory.toJson(response);
 
         logger.log(Level.INFO, "Sending response: {0}", response.getClass().getSimpleName());
 
         mConnection.sendMessage(rawMessage);
     }
 
-    public void startReceivingRequests() {
+    public void startSendingPings() {
+        new Timer().scheduleAtFixedRate(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        // logger.log(Level.INFO, "Sending ping to {0} client", getOwnerColor());
+                        mConnection.sendMessage(NetworkMessageFactory.makeRawPing());
+                    }
+                }, 0, PING_PERIOD
+        );
+    }
+
+    public void startReceivingMessages() {
         new Thread(() -> {
             while (true) {
                 logger.info("Waiting for client message...");
                 String rawMessage = mConnection.waitForMessage();
 
-                ClientMessage message = ClientMessageFactory.fromJson(rawMessage);
+                NetworkMessage message = NetworkMessageFactory.fromJson(rawMessage);
                 switch (message.getType()) {
                     case REQUEST:
                         Request request = RequestFactory.fromJson(message.getRawContents());

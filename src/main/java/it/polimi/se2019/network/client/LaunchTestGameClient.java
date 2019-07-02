@@ -1,16 +1,10 @@
 package it.polimi.se2019.network.client;
 
 import it.polimi.se2019.model.PlayerColor;
-import it.polimi.se2019.network.server.Connection;
-import it.polimi.se2019.network.server.LaunchTestGameServer;
-import it.polimi.se2019.network.server.RmiConnection;
-import it.polimi.se2019.network.server.SocketConnection;
+import it.polimi.se2019.network.connection.Connection;
+import it.polimi.se2019.network.connection.SocketConnection;
 import it.polimi.se2019.view.TestView;
-import it.polimi.se2019.view.cli.CLIView;
-import it.polimi.se2019.view.request.serialization.RequestFactory;
-
-import java.net.Socket;
-import java.util.Scanner;
+import it.polimi.se2019.network.connection.RmiConnection;
 
 import static it.polimi.se2019.network.server.LaunchTestGameServer.RMI_PORT;
 import static it.polimi.se2019.network.server.LaunchTestGameServer.SOCKET_PORT;

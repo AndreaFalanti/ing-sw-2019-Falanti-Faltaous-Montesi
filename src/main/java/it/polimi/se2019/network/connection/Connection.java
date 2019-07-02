@@ -1,4 +1,4 @@
-package it.polimi.se2019.network.server;
+package it.polimi.se2019.network.connection;
 
 public interface Connection {
     void sendMessage(String message);

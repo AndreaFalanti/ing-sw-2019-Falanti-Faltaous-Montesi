@@ -1,5 +1,7 @@
 package it.polimi.se2019.network.server;
 
+import it.polimi.se2019.network.connection.ConnectionType;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.rmi.registry.LocateRegistry;
