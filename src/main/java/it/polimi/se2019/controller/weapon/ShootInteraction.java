@@ -2,6 +2,7 @@ package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.controller.weapon.expression.Expression;
+import it.polimi.se2019.controller.weapon.expression.ShootUndoInfo;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
@@ -68,14 +69,14 @@ public class ShootInteraction {
      * @param shooter the shooter
      * @param weaponBehaviour the weapon behaviour used to shoot
      */
-    public void exec(Game game, PlayerColor shooter, Expression weaponBehaviour) {
+    public void exec(Game game, PlayerColor shooter, Expression weaponBehaviour, ShootUndoInfo undoInfo) {
         // announce that thread is occupied
         mOccupied = true;
 
         mLogger.info("Starting shoot interaction thread...");
         new Thread(() -> {
             // evaluate shoot expression
-            ShootContext context = new ShootContext(game, mPlayerViews.get(shooter), shooter, this);
+            ShootContext context = new ShootContext(game, mPlayerViews.get(shooter), shooter, undoInfo, this);
             try {
                 weaponBehaviour.eval(context);
             } catch (UndoShootInteractionException e) {

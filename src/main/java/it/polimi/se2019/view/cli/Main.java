@@ -7,7 +7,6 @@ import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
-import it.polimi.se2019.view.request.ShootRequest;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -127,7 +126,6 @@ public class Main {
         Controller controller = new Controller(game, viewMap);
         game.register(viewMap.get(PlayerColor.YELLOW));
         viewMap.get(PlayerColor.YELLOW).register(controller);
-        viewMap.get(PlayerColor.YELLOW).notify(new ShootRequest(PlayerColor.YELLOW, "plasma_gun" ,PlayerColor.YELLOW));
         System.out.println(controller.getGame().getActivePlayer().getPos());
       //  viewMap.get(PlayerColor.YELLOW).reinitialize(game.extractViewInitializationInfo().setOwnerColor(PlayerColor.YELLOW));
         CLIView cli = (CLIView)viewMap.get(PlayerColor.YELLOW);

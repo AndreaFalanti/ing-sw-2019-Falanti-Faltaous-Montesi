@@ -104,9 +104,12 @@ public class Controller implements Observer<Request>, RequestHandler {
     /*******************/
     /* control methods */
     /*******************/
-    // TODO: make this private and notify ShootRequest in weapon tests
     public void startShootInteraction(PlayerColor shooter, Expression weaponBehaviour) {
-        mShootInteraction.exec(mGame, shooter, weaponBehaviour);
+        mShootInteraction.exec(mGame, shooter, weaponBehaviour, new ShootUndoInfo(mGame));
+    }
+
+    public void startShootInteraction(PlayerColor shooter, Expression weaponBehaviour, ShootUndoInfo undoInfo) {
+        mShootInteraction.exec(mGame, shooter, weaponBehaviour, undoInfo);
     }
 
     private void continueShootInteraction(Request request) {
@@ -182,14 +185,6 @@ public class Controller implements Observer<Request>, RequestHandler {
         mWeaponIndexStrategy = null;
         mPlayerActionController.executeAction(mPlayerActionController.getCachedAction(),
                 mPlayerViews.get(request.getViewColor()));
-    }
-
-    @Override
-    public void handle(ShootRequest request) {
-        startShootInteraction(
-                request.getShooterColor(),
-                Weapons.get(request.getWeaponID()).getBehaviour()
-        );
     }
 
     @Override

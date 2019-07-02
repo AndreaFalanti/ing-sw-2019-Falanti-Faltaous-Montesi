@@ -21,7 +21,7 @@ public class ShootAction implements ShootLeadingAction {
 
     @Override
     public void perform(Game game) {
-        // now handled by ShootInteraction
+        game.getActivePlayer().getWeapon(mWeaponIndex).setLoaded(false);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package it.polimi.se2019.controller;
 
+import it.polimi.se2019.controller.weapon.expression.ShootUndoInfo;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
@@ -80,12 +81,18 @@ public class PlayerActionController implements InvalidActionResponseHandler {
 
         Optional<InvalidActionResponse> response = action.getErrorResponse(mMainController.getGame());
         if(!response.isPresent()) {
-            action.perform(mMainController.getGame());
-
             if (action.leadToAShootInteraction()) {
+                ShootUndoInfo shootUndoInfo = new ShootUndoInfo(mMainController.getGame());
+
+                action.perform(mMainController.getGame());
                 mMainController.startShootInteraction(requestingView.getOwnerColor(),
-                        ((ShootLeadingAction) action).getShotBehaviour(mMainController.getGame()));
+                        ((ShootLeadingAction) action).getShotBehaviour(mMainController.getGame()),
+                        shootUndoInfo);
             }
+            else {
+                action.perform(mMainController.getGame());
+            }
+
             if (action.consumeAction()) {
                 mMainController.getGame().decreaseActionCounter();
             }

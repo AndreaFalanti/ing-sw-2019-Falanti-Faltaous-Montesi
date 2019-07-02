@@ -25,7 +25,6 @@ public final class RequestFactory {
                         .registerSubtype(PowerUpsSelectedRequest.class)
                         .registerSubtype(RespawnPowerUpRequest.class)
                         .registerSubtype(RoomSelectedRequest.class)
-                        .registerSubtype(ShootRequest.class)
                         .registerSubtype(TargetsSelectedRequest.class)
                         .registerSubtype(TurnEndRequest.class)
                         .registerSubtype(UndoWeaponInteractionRequest.class)

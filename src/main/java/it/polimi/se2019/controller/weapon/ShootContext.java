@@ -30,7 +30,8 @@ public class ShootContext {
     private ShootUndoInfo mUndoInfo;
 
     // trivial constructor
-    public ShootContext(Game game, View view, PlayerColor shooterColor, ShootInteraction shootInteraction) {
+    public ShootContext(Game game, View view, PlayerColor shooterColor,
+                        ShootUndoInfo undoInfo, ShootInteraction shootInteraction) {
         // safety check to assure that shooter is present among provided players
         List<Player> players = game.getPlayers();
         if (players.stream().noneMatch(pl -> pl.getColor() == shooterColor))
@@ -42,7 +43,7 @@ public class ShootContext {
         mShooterColor = shooterColor;
         mScope = new HashMap<>();
         mShootInteraction = shootInteraction;
-        mUndoInfo = new ShootUndoInfo(mGame);
+        mUndoInfo = undoInfo;
 
         // initialize special variables
         setVar(SPECIAL_VAR_LAST_SELECTED, new SetExpression());
