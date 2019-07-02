@@ -363,10 +363,9 @@ public class Board {
             return true;
 
         // can walk among tiles of different color if there's a door
-        if ((fromTile.getDoors()[0] && toTile.getDoors()[2]) ||
-                (fromTile.getDoors()[1] && toTile.getDoors()[3]) ||
-                (fromTile.getDoors()[2] && toTile.getDoors()[0]) ||
-                (fromTile.getDoors()[3] && toTile.getDoors()[1]))
+        if (getTileAt(from).getDoorsDirections().contains(Direction.connectingDirection(from, to)) ||
+                getTileAt(to).getDoorsDirections().contains(Direction.connectingDirection(to, from))
+        )
             return true;
 
         // no other way

@@ -141,11 +141,6 @@ public class BoardTest {
     }
 
     @Test
-    public void getTileDistance() {
-        //TODO: we need a valid board to test this method (at least 3 * 3)
-    }
-
-    @Test
     // TODO: experiment with parameterized tests for this
     public void testIsOutOfBounds() {
         Board board = new Board(3, 3);
@@ -227,6 +222,34 @@ public class BoardTest {
 
         assertEquals(expected, rangeInfo);
     }
+
+    @Test
+    public void testGetRangeInfoRealGame() {
+        RangeInfo rangeInfo = mGameBoard1.getRangeInfo(new Position(2, 0));
+
+        RangeInfo expected = RangeInfo.fromMatrix(new Position(2, 0),
+                new Integer[][]{
+                        { 2,  1,  0,  1},
+                        { 3,  4,  1,  2},
+                        {-1,  3,  2,  3}
+                },
+                new Integer[][]{
+                        {1, 1, 1, 1},
+                        {0, 0, 1, 1},
+                        {0, 0, 1, 1}
+                }
+        );
+
+        assertFalse(
+                mGameBoard1.getTileAt(new Position(0, 1))
+                        .getDoorsDirections().contains(Direction.SOUTH) &&
+                        mGameBoard1.getTileAt(new Position(1, 1))
+                                .getDoorsDirections().contains(Direction.NORTH)
+
+        );
+        assertEquals(expected, rangeInfo);
+    }
+
 
     @Test
     public void testPosStream() {
