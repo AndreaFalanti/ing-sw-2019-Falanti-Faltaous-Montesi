@@ -38,11 +38,11 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
         new Thread(() -> {
             while (true) {
                 // wait for message to be sent
-                logger.info("Waiting for server message");
+                // logger.info("Waiting for server message");
                 String rawMessage = mConnection.waitForMessage();
 
                 // receive it and unwrap it
-                logger.log(Level.INFO, "Received server message: {0}", rawMessage);
+                // logger.log(Level.INFO, "Received server message: {0}", rawMessage);
                 NetworkMessage message = NetworkMessageFactory.fromJson(rawMessage);
                 switch (message.getType()) {
                     case RESPONSE:
@@ -59,7 +59,7 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
                         break;
                     case PING:
                         // pings are answered with pongs
-                        logger.info("Received PING from server. Answering with PONG...");
+                        // logger.info("Received PING from server. Answering with PONG...");
                         mConnection.sendMessage(NetworkMessageFactory.makeRawPong());
                         break;
                     default:
