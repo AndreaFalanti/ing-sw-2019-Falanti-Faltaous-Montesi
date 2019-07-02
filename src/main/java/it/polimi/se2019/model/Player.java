@@ -400,6 +400,17 @@ public class Player extends Observable<Update> {
     }
 
     /**
+     * Wrapper method for unloading weapon and notify it to views
+     * @param weaponIndex Weapon index
+     */
+    public void unloadWeaponForShooting (int weaponIndex) {
+        Weapon weapon = getWeapon(weaponIndex);
+        weapon.setLoaded(false);
+
+        notify(new PlayerWeaponsUpdate(mColor, mWeapons));
+    }
+
+    /**
      * Returns all the indices for the powerups of the given type
      * @param wantedType the wanted type
      * @return all the indices corresponding to the wanted powerup type

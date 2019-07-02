@@ -315,17 +315,15 @@ public class MainScreen extends Observable<Request> {
      * Update spawn's weapon box with latest model changes
      * @param ids Weapon ids
      */
-    public void updateWeaponBox (String[] ids) {
-        if (ids.length != 3) {
-            throw new IllegalArgumentException("need 3 powerUp ids to update");
-        }
-
+    public void updateWeaponBox (String[] ids, boolean[] loaded) {
         for (int i = 0; i < ids.length; i++) {
             ImageView weaponImageView = (ImageView)weaponBox.getChildren().get(i);
 
             if (ids[i] != null) {
                 Image weaponImage = new Image(GuiResourcePaths.WEAPON_CARD + ids[i] + ".png");
                 weaponImageView.setImage(weaponImage);
+                double opacity = loaded[i] ? LOADED_OPACITY : UNLOADED_OPACITY;
+                weaponImageView.setOpacity(opacity);
             }
             else {
                 weaponImageView.setImage(null);

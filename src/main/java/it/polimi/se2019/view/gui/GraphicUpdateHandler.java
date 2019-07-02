@@ -45,18 +45,21 @@ public class GraphicUpdateHandler implements UpdateHandler {
     public void handle(PlayerWeaponsUpdate update) {
         Platform.runLater(() -> {
             if (update.getPlayerColor() == mMainController.getClientColor()) {
-                String[] ids = new String[3];
+                int weaponNum = update.getWeapons().length;
+                String[] ids = new String[weaponNum];
+                boolean[] booleans = new boolean[weaponNum];
 
                 Weapon[] weapons = update.getWeapons();
                 for (int i = 0; i < 3; i++) {
                     if (weapons[i] != null) {
                         ids[i] = weapons[i].getGuiID();
+                        booleans[i] = weapons[i].isLoaded();
                     }
                     else {
                         ids[i] = null;
                     }
                 }
-                mMainController.updateWeaponBox(ids);
+                mMainController.updateWeaponBox(ids, booleans);
             }
             else {
                 OtherPlayerPane playerController = (OtherPlayerPane)mMainController

@@ -170,19 +170,24 @@ public class GraphicView extends View {
                         initInfo.getPlayers(), initInfo.getKills(), initInfo.getOverkills());
 
                 Player owner = getOwnerPlayerFromList(initInfo.getPlayers());
-                String[] weaponIds = new String[3];
-                for (int i = 0; i < owner.getWeapons().length; i++) {
+                int weaponNum = owner.getWeapons().length;
+                String[] weaponIds = new String[weaponNum];
+                boolean[] loaded = new boolean[weaponNum];
+
+                for (int i = 0; i < weaponNum; i++) {
                     if (owner.getWeapon(i) != null) {
                         weaponIds[i] = owner.getWeapon(i).getGuiID();
+                        loaded[i] = owner.getWeapon(i).isLoaded();
                     }
                     else {
                         weaponIds[i] = null;
                     }
                 }
-                controller.updateWeaponBox(weaponIds);
+                controller.updateWeaponBox(weaponIds, loaded);
 
-                String[] powerUpIds = new String[4];
-                for (int i = 0; i < owner.getPowerUps().length; i++) {
+                int powerUpsNum = owner.getPowerUps().length;
+                String[] powerUpIds = new String[powerUpsNum];
+                for (int i = 0; i < powerUpsNum; i++) {
                     if (owner.getPowerUpCard(i) != null) {
                         powerUpIds[i] = owner.getPowerUpCard(i).getGuiID();
                     }
