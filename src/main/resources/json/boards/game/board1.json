@@ -5,7 +5,7 @@
     {
       "type": "normal",
       "doors": [
-        "south"
+        "SOUTH"
       ],
       "color": "BLUE"
     },
@@ -17,44 +17,44 @@
     {
       "type": "spawn",
       "doors": [
-        "east",
-        "south"
+        "EAST",
+        "SOUTH"
       ],
       "color": "BLUE"
     },
     {
       "type": "normal",
       "doors": [
-        "south",
-        "west"
+        "SOUTH",
+        "WEST"
       ],
       "color": "GREEN"
     },
     {
       "type": "spawn",
       "doors": [
-        "north"
+        "NORTH"
       ],
       "color": "RED"
     },
     {
       "type": "normal",
       "doors": [
-        "south"
+        "SOUTH"
       ],
       "color": "RED"
     },
     {
       "type": "normal",
       "doors": [
-        "north"
+        "NORTH"
       ],
       "color": "YELLOW"
     },
     {
       "type": "normal",
       "doors": [
-        "north"
+        "NORTH"
       ],
       "color": "YELLOW"
     },
@@ -64,15 +64,15 @@
     {
       "type": "normal",
       "doors": [
-        "north",
-        "east"
+        "NORTH",
+        "EAST"
       ],
       "color": "WHITE"
     },
     {
       "type": "normal",
       "doors": [
-        "west"
+        "WEST"
       ],
       "color": "YELLOW"
     },

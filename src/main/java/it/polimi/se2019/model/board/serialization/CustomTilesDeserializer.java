@@ -18,8 +18,6 @@ public class CustomTilesDeserializer implements JsonDeserializer<List<Tile>>, Js
 
         JsonArray jTiles = jsonElement.getAsJsonArray();
 
-        int itr = 0;
-        Position posItr = new Position(0, 0);
         for (JsonElement jeTile : jTiles) {
             if (jeTile.getAsJsonObject().get("type").getAsString().equals("empty"))
                 result.add(null);

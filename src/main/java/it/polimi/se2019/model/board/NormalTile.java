@@ -3,7 +3,9 @@ package it.polimi.se2019.model.board;
 import it.polimi.se2019.model.AmmoCard;
 import it.polimi.se2019.model.update.BoardTileUpdate;
 
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
 
 public class NormalTile extends Tile {
@@ -22,14 +24,14 @@ public class NormalTile extends Tile {
      * @param color color of constructed tile
      */
     public NormalTile(TileColor color) {
-        super(color, 0);
+        super(color, Collections.emptySet());
     }
 
     /**
      * Constructs empty tile of given color and doors with no ammo card
      * @param color color of constructed tile
      */
-    public NormalTile(TileColor color, int doors) {
+    public NormalTile(TileColor color, Set<Direction> doors) {
         super(color, doors);
     }
 

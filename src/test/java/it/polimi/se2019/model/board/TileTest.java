@@ -3,31 +3,41 @@ package it.polimi.se2019.model.board;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class TileTest {
     @Test
     public void testGetDoors() {
-        NormalTile tile1 = new NormalTile(TileColor.RED, 8);
-        NormalTile tile2 = new NormalTile(TileColor.RED, 0);
-        NormalTile tile3 = new NormalTile(TileColor.RED, 15);
-        NormalTile tile4 = new NormalTile(TileColor.RED, 5);
+        NormalTile tile1 = new NormalTile(TileColor.RED, Collections.singleton(
+                Direction.NORTH
+        ));
+        NormalTile tile2 = new NormalTile(TileColor.RED, Collections.emptySet());
+        NormalTile tile3 = new NormalTile(TileColor.RED, Arrays.stream(Direction.values()).collect(Collectors.toSet()));
+        NormalTile tile4 = new NormalTile(TileColor.RED, new HashSet<>(Arrays.asList(
+                Direction.EAST, Direction.WEST
+        )));
 
-        boolean[] b1 = {true, false, false, false};
-        boolean[] b2 = {false, false, false, false};
-        boolean[] b3 = {true, true, true, true};
-        boolean[] b4 = {false, true, false, true};
+        Boolean[] b1 = {true, false, false, false};
+        Boolean[] b2 = {false, false, false, false};
+        Boolean[] b3 = {true, true, true, true};
+        Boolean[] b4 = {false, true, false, true};
 
-        //TODO: JUnit 4.12 is required to test easily booleans array, should we update?
-        //assertArrayEquals(b1, tile1.getDoors());
+        // TODO: update JUnit version to test this
+        // assertArrayEquals(b1, tile1.getDoors());
     }
 
     @Test
     public void testGetDoorsDirections() {
-        Tile testTile = new NormalTile(TileColor.BLUE, 0b1000 + 0b0001);
+        Tile testTile = new NormalTile(TileColor.BLUE, new HashSet<>(Arrays.asList(
+                Direction.NORTH, Direction.WEST
+        )));
 
         assertEquals(testTile.getDoorsDirections(),
-                     Arrays.asList(Direction.NORTH, Direction.WEST));
+                     new HashSet<>(Arrays.asList(Direction.NORTH, Direction.WEST)));
     }
 }
