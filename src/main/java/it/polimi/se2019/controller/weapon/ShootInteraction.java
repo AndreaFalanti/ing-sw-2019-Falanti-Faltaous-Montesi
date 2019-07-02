@@ -4,9 +4,11 @@ import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.controller.weapon.expression.ShootUndoInfo;
 import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.action.AmmoPayment;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
+import it.polimi.se2019.util.ArrayUtils;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
@@ -19,7 +21,10 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
 public class ShootInteraction {
     // logger
@@ -127,16 +132,24 @@ public class ShootInteraction {
             Set<Integer> possibleIndices = inflicterPlayer.getPowerUpIndices(PowerUpType.TARGETING_SCOPE);
 
             possibleIndices.forEach(index -> {
-                // the activation of each scope is requested individually from the user
-                inflicterView.showMessage(
-                        "You can use your targeting scope on one of the selected targets! Select it in the powerup " +
-                                "menu to use it."
+                // check if the scope can be payed for
+                boolean[] scopeExcludedMask = ArrayUtils.from(IntStream.range(0, MAX_POWERUPS_IN_HAND)
+                        .mapToObj(i -> i != index && inflicterPlayer.getPowerUpCard(i) != null)
+                        .collect(Collectors.toList())
                 );
 
-                if (requestPowerupActivation(
-                        inflicter, PowerUpType.TARGETING_SCOPE.toString(), index)
-                ) {
-                    useTargetingScope(inflicter, inflicted, index);
+                if (AmmoPayment.isValid(inflicterPlayer, new AmmoValue(1, 0, 0), scopeExcludedMask)) {
+                    // the activation of each scope is requested individually from the user
+                    inflicterView.showMessage(
+                            "You can use your targeting scope on one of the selected targets! Select it in the " +
+                                    "powerup menu to use it."
+                    );
+
+                    if (requestPowerupActivation(
+                            inflicter, PowerUpType.TARGETING_SCOPE.toString(), index)
+                    ) {
+                        useTargetingScope(inflicter, inflicted, index);
+                    }
                 }
             });
         }
@@ -318,6 +331,81 @@ public class ShootInteraction {
         );
     }
 
+    // manage payment
+    public void manageAmmoPayment(PlayerColor payingPlayerColor, AmmoValue costToPay, String thingsToPay,
+                                  Runnable selectThingsToPayAgain) {
+        Player payingPlayer = mGame.getPlayerFromColor(payingPlayerColor);
+        View payerView = mPlayerViews.get(payingPlayerColor);
+
+        LOGGER.log(Level.INFO,
+                "proceeding with payment of {0}\n" +
+                        "Total cost to pay: {1}\n" +
+                        "Remaining ammo: {2}",
+                new Object[]{
+                        thingsToPay,
+                        costToPay,
+                        payingPlayer.getAmmo()
+                }
+        );
+
+        // if the effects cannot be payed, the selection is invalid. Ask it again
+        if (!AmmoPayment.canPayWithPowerUps(payingPlayer, costToPay)) {
+            payerView.reportError("The effects you chose cost too much to activate!" +
+                    " Select less effects or undo the shoot interaction"
+            );
+
+            selectThingsToPayAgain.run(); return;
+        }
+
+        // if the user has enough ammo, make him pay without asking for powerup selection
+        else if (AmmoPayment.isValid(payingPlayer, costToPay, ArrayUtils.ofAll(false, 4))) {
+            payerView.showMessage("skipping powerup discard...");
+
+            AmmoPayment.payCost(payingPlayer, costToPay, ArrayUtils.ofAll(false, 4));
+        }
+
+        // otherwise a powerup discard is requested
+        else {
+            LOGGER.log(Level.INFO, "starting poewrup discard interaction loop...");
+
+            while (true) {
+                boolean[] selectedPowerupsMask =
+                        selectPowerupsForPayment(payerView);
+                Set<Integer> selectedPowerupsIndices = IntStream.range(0, 4)
+                        .filter(i -> selectedPowerupsMask[i])
+                        .boxed()
+                        .collect(Collectors.toSet());
+                Set<PowerUpCard> selectedPowerups = selectedPowerupsIndices.stream()
+                        .map(payingPlayer::getPowerUpCard)
+                        .collect(Collectors.toSet());
+
+                // selection not valid
+                if (!AmmoPayment.isValid(
+                        payingPlayer,
+                        costToPay,
+                        selectedPowerupsMask
+                )) {
+                    payerView.reportError(String.format(
+                            "You cannot pay the selected effects (%s) with these powerups: %s",
+                            thingsToPay, selectedPowerups
+                    ));
+                }
+
+                // selection valid
+                else {
+                    LOGGER.log(Level.INFO,
+                            "Player paying discarding powerups: {0}",
+                            selectedPowerups
+                    );
+
+                    AmmoPayment.payCost(payingPlayer, costToPay, selectedPowerupsMask);
+
+                    return;
+                }
+            }
+        }
+    }
+
     // select targets
     public Set<PlayerColor> selectTargets(View view, int min, int max, Set<PlayerColor> possibleTargets) {
         return waitForSelectionRequestSkippingObvious(
@@ -419,7 +507,6 @@ public class ShootInteraction {
     // request a powerup activation
     private boolean requestPowerupActivation(PlayerColor activator, String powerupName, int index) {
         View view = mPlayerViews.get(activator);
-        view.showPowerUpSelectionView(Collections.singletonList(index));
 
         while (true) {
             Set<Integer> selectedIndices = waitForSelectionRequestCheckingInputBounds(
@@ -456,12 +543,21 @@ public class ShootInteraction {
 
         mGame.handleDamageInteraction(inflicter, inflicted, new Damage(0, 1));
     }
-    private void useTargetingScope(PlayerColor inflicter, Set<PlayerColor> possibleTargets, int index) {
-        mGame.getPlayerFromColor(inflicter).discard(index);
+    private void useTargetingScope(PlayerColor inflicterColor, Set<PlayerColor> possibleTargets, int index) {
+        Player inflicter = mGame.getPlayerFromColor(inflicterColor);
+        View inflicterView = mPlayerViews.get(inflicterColor);
 
-        PlayerColor selectedTarget = selectTargets(mPlayerViews.get(inflicter), 1, 1, possibleTargets)
+        inflicter.discard(index);
+
+        // TODO: pick ammo color
+        // manageAmmoPayment(inflicter, pickAmmoColor(
+                // inflicterView,
+                // inflicter.getAmmo().getColors()
+        // ));
+
+        PlayerColor selectedTarget = selectTargets(inflicterView, 1, 1, possibleTargets)
                 .iterator().next();
-        mGame.handleDamageInteraction(inflicter, selectedTarget, new Damage(0, 1));
+        mGame.handleDamageInteraction(inflicterColor, selectedTarget, new Damage(1, 0));
     }
 }
 

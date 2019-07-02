@@ -47,14 +47,19 @@ public class RmiConnection implements Connection {
         @Override
         public void storeMessage(String senderType, String message) {
             try {
-                if (senderType.equals(SenderType.CLIENT.toString()))
+                if (senderType.equals(SenderType.CLIENT.toString())) {
+                    System.out.println("STORE FOR SERVER: " + message);
                     mMessagesSentByClient.put(message);
-                else if (senderType.equals(SenderType.SERVER.toString()))
+                }
+                else if (senderType.equals(SenderType.SERVER.toString())) {
+                    System.out.println("STORE FOR CLIENT: " + message);
                     mMessagesSentByServer.put(message);
+                }
                 else
                     throw new IllegalArgumentException("Unrecognized sender type: " + senderType);
             } catch (InterruptedException e) {
                 logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -70,6 +75,7 @@ public class RmiConnection implements Connection {
                     throw new IllegalArgumentException("Unrecognized sender type: " + senderType);
             } catch (InterruptedException e) {
                 logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
+                Thread.currentThread().interrupt();
             }
 
             if (message == null)
@@ -96,7 +102,7 @@ public class RmiConnection implements Connection {
         } catch (RemoteException e) {
             logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         } catch (AlreadyBoundException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
+            logger.log(Level.INFO, "RMI server with id {0} already created!");
         }
 
         return new RmiConnection(port, SenderType.SERVER, id);

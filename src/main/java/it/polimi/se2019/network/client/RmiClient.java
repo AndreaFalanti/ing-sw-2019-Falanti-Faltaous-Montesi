@@ -22,7 +22,7 @@ public class RmiClient extends Client {
         printLineToConsole("\n");
 
         // gets a reference for the remote server
-        mServerRemote = (RegistrationRemote) registry.lookup("rmiServer");
+        mServerRemote = (RegistrationRemote) registry.lookup("rmiRegistrationServer");
     }
 
     private static void printLineToConsole(String message) {

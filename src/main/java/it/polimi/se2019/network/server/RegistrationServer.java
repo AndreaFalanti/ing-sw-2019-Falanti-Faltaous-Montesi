@@ -26,9 +26,9 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
     public RegistrationServer(int rmiPort) throws IOException {
         mRmiPort = rmiPort;
 
-        Registry registry = LocateRegistry.createRegistry(rmiPort);
+        Registry registry = LocateRegistry.getRegistry(rmiPort);
         UnicastRemoteObject.exportObject(this, rmiPort);
-        registry.rebind("rmiServer", this);
+        registry.rebind("rmiRegistrationServer", this);
         logger.log(Level.INFO, "RMI initialized on port {0}\nexported modules:\nrmiServer", rmiPort);
 
         /*

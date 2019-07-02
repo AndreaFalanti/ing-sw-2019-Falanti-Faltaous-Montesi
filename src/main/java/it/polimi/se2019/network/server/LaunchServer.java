@@ -1,10 +1,15 @@
 package it.polimi.se2019.network.server;
 
+import it.polimi.se2019.network.connection.RmiConnection;
+
 import java.io.IOException;
+import java.rmi.registry.LocateRegistry;
 import java.util.logging.Logger;
 
 public class LaunchServer {
     private static final Logger logger = Logger.getLogger(LaunchServer.class.getName());
+
+    public static final String RMI_SERVER_ID = "rmiServer";
 
     public static void main(String[] args) throws IOException {
         if (args.length != 2) {
@@ -14,6 +19,10 @@ public class LaunchServer {
 
         int socketPort = Integer.parseInt(args[0]);
         int rmiPort = Integer.parseInt(args[1]);
+
+        // initialize RMI connection
+        LocateRegistry.createRegistry(rmiPort);
+        RmiConnection.create(rmiPort, RMI_SERVER_ID);
 
         RegistrationServer registrationServer = new RegistrationServer(rmiPort);
         AcceptationServer acceptationServer = new AcceptationServer(socketPort, registrationServer);

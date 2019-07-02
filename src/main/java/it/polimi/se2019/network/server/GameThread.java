@@ -119,7 +119,7 @@ public class GameThread extends Thread {
                                     break;
                                 case RMI:
                                     pc.setVirtualView(new VirtualView(
-                                            pc.getColor(), RmiConnection.create(mRmiPort, "connection")
+                                            pc.getColor(), RmiConnection.create(mRmiPort, "rmiServer")
                                     ));
                                     break;
                                 default:
