@@ -45,6 +45,7 @@ public class NormalTile extends Tile {
      */
     public void setAmmoCard(AmmoCard value) {
         mAmmoCard = value;
+        notify(new BoardTileUpdate(this));
     }
 
     /**

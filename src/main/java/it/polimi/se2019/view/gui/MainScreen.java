@@ -699,7 +699,7 @@ public class MainScreen extends Observable<Request> {
         targetsOkButton.setDisable(true);
 
         Label title;
-        String labelText = (minTargets == maxTargets) ? "Select " + minTargets + "target" :
+        String labelText = (minTargets == maxTargets) ? "Select " + minTargets + " target" :
                 "Select from " + minTargets + " to " + maxTargets + " targets";
         title = new Label(labelText);
 

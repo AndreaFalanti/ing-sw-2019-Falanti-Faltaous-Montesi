@@ -140,7 +140,9 @@ public class PlayerActionController implements InvalidActionResponseHandler {
         Set<PlayerColor> playerColors = new HashSet<>();
 
         for(Player player : mMainController.getGame().getPlayers()) {
-            playerColors.add(player.getColor());
+            if (player.getPos() != null) {
+                playerColors.add(player.getColor());
+            }
         }
         playerColors.remove(mMainController.getGame().getActivePlayer().getColor());
 

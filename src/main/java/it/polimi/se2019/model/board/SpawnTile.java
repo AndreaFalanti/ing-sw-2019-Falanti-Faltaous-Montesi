@@ -25,6 +25,7 @@ public class SpawnTile extends Tile {
         for (int i = 0; i < mWeapons.length; i++) {
             if (mWeapons[i] == null) {
                 mWeapons[i] = value;
+                notify(new BoardTileUpdate(this));
                 return;
             }
         }

@@ -17,6 +17,7 @@ import it.polimi.se2019.view.request.*;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -281,9 +282,14 @@ public class Controller implements Observer<Request>, RequestHandler {
                 break;
             case NEWTON:
                 mPlayerActionController.setCompletableNewtonAction(new NewtonAction(request.getPowerUpIndex()));
-                playerView.showMessage("Select target for newton");
-                playerView.showTargetsSelectionView(1, 1,
-                        mPlayerActionController.getAllTargetsExceptActivePlayer());
+                Set<PlayerColor> possibleTargets = mPlayerActionController.getAllTargetsExceptActivePlayer();
+                if (possibleTargets.isEmpty()) {
+                    playerView.showMessage("No valid targets for newton!");
+                }
+                else {
+                    playerView.showMessage("Select target for newton");
+                    playerView.showTargetsSelectionView(1, 1, possibleTargets);
+                }
                 break;
             case TAGBACK_GRENADE:
                 logger.info("Tagback grenade can't be handled without proper event");
