@@ -2,6 +2,7 @@ package it.polimi.se2019.network.client;
 
 import it.polimi.se2019.controller.response.*;
 import it.polimi.se2019.controller.response.serialization.ResponseFactory;
+import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.update.Update;
 import it.polimi.se2019.model.update.serialization.UpdateFactory;
 import it.polimi.se2019.network.connection.NetworkMessage;

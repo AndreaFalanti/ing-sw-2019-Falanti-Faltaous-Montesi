@@ -68,7 +68,9 @@ public class SocketConnection implements Connection {
             if (mSocket.isClosed())
                 throw new IllegalStateException("Socket is closed!");
 
-            logger.log(Level.INFO, "sending message: {0}", message);
+            // TODO: block with filter
+            // logger.log(Level.INFO, "sending message: {0}", message);
+
             mOut.println(message);
             mOut.flush();
         }
@@ -83,12 +85,18 @@ public class SocketConnection implements Connection {
             String result = null;
             try {
                 result = mIn.readLine();
-                logger.log(Level.INFO, "Received request: {0}", result);
             } catch (IOException e) {
                 logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
             }
 
-            logger.log(Level.INFO, "Received message: {0}", result);
+            // if result is null, the other connection endpoint has disconnected abruptly
+            if (result == null) {
+                // TODO: handle this gracefully
+                throw new UnsupportedOperationException("WIP");
+            }
+
+            // TODO: block this with filter
+            // logger.log(Level.INFO, "Received message: {0}", result);
 
             return result;
         }

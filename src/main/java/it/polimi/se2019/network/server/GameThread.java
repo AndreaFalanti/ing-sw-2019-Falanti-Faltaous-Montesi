@@ -128,7 +128,7 @@ public class GameThread extends Thread {
                         })
                         .map(PlayerConnection::getVirtualView)
                         // start sending pings from all virtual views to clients
-                        .peek(VirtualView::startSendingPings)
+                        .peek(VirtualView::startCheckingForDisconnection)
                         // collect all views and put them inside controller as normal views
                         .collect(Collectors.toMap(
                                 View::getOwnerColor,

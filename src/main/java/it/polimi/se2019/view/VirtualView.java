@@ -12,19 +12,24 @@ import it.polimi.se2019.network.connection.serialization.NetworkMessageFactory;
 import it.polimi.se2019.network.connection.Connection;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.request.Request;
+import it.polimi.se2019.view.request.TurnEndRequest;
 import it.polimi.se2019.view.request.serialization.RequestFactory;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class VirtualView extends View {
     private static final Logger logger = Logger.getLogger(VirtualView.class.getName());
 
-    // pint period in milliseconds
+    // NB. all units are in milliseconds
     private static final int PING_PERIOD = 1000;
+    private static final int PONG_CHECK_DELAY = 1000;
 
     private Connection mConnection;
+    private AtomicBoolean mHasReceivedPong = new AtomicBoolean(false);
+    private AtomicBoolean mIsDisconnected = new AtomicBoolean(false);
 
     public VirtualView(PlayerColor ownerColor, Connection connection) {
         super(
@@ -128,13 +133,38 @@ public class VirtualView extends View {
         mConnection.sendMessage(rawMessage);
     }
 
-    public void startSendingPings() {
+    public void startCheckingForDisconnection() {
+        // send pings periodically
         new Timer().scheduleAtFixedRate(
                 new TimerTask() {
                     @Override
                     public void run() {
                         // logger.log(Level.INFO, "Sending ping to {0} client", getOwnerColor());
+
+                        // send ping
                         mConnection.sendMessage(NetworkMessageFactory.makeRawPing());
+
+                        // check if pong has been sent in response after a certain delay
+                        try {
+                            Thread.sleep(PONG_CHECK_DELAY);
+                        } catch (InterruptedException e) {
+                            logger.log(Level.SEVERE, "{0} disconnection checking thread has been interrupted!");
+                            Thread.currentThread().interrupt();
+                            return;
+                        }
+
+                        // logger.log(Level.INFO, "checking for pong for {0} client", getOwnerColor());
+
+                        // reconnect if pong is received after disconnection
+                        if (mIsDisconnected.get() && mHasReceivedPong.getAndSet(false)) {
+                            logger.log(Level.WARNING, "{0} has reconnected!", mOwnerColor);
+                            mIsDisconnected.set(false);
+                        }
+                        // mark as disconnected if no pong is received
+                        else if (!mIsDisconnected.get() && !mHasReceivedPong.getAndSet(false)) {
+                            logger.log(Level.WARNING, "{0} client has disconnected!", mOwnerColor);
+                            mIsDisconnected.set(true);
+                        }
                     }
                 }, 0, PING_PERIOD
         );
@@ -143,7 +173,6 @@ public class VirtualView extends View {
     public void startReceivingMessages() {
         new Thread(() -> {
             while (true) {
-                logger.info("Waiting for client message...");
                 String rawMessage = mConnection.waitForMessage();
 
                 NetworkMessage message = NetworkMessageFactory.fromJson(rawMessage);
@@ -154,7 +183,9 @@ public class VirtualView extends View {
                         notify(request);
                         break;
                     case PONG:
-                        logger.info("PONG!");
+                        // TODO: filter?
+                        // logger.log(Level.INFO, "Received PONG from {0} client", mOwnerColor);
+                        mHasReceivedPong.set(true);
                         break;
                     default:
                         logger.severe("Received client message of unknown type!");
@@ -164,3 +195,4 @@ public class VirtualView extends View {
         }).start();
     }
 }
+
