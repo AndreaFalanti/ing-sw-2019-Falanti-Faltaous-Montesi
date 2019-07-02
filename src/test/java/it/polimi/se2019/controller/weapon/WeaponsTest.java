@@ -660,7 +660,7 @@ public class WeaponsTest {
         );
     }
 
-    /*@Test
+    @Test
     public void testCyberbladeSmurfetteShadowStepsAndCutsMarioAndGreyUsingATargetingScopeOnEach() {
         // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
@@ -690,14 +690,16 @@ public class WeaponsTest {
                 // do even more damage to Mario with the targeting scope
                 //  NB. target selection is skipped since only Mario was damaged
                 new PowerUpsSelectedRequest(Collections.singletonList(0), shooterColor),
-                new PowerUpsSelectedRequest(null, shooterColor),
+                new AmmoColorSelectedRequest(TileColor.BLUE, shooterColor),
+                new PowerUpsSelectedRequest(Collections.emptyList(), shooterColor),
 
                 // whack stones with slice and dice
                 // NB. selection is skipped
                 new EffectsSelectedRequest(Collections.singletonList("with_slice_and_dice"), shooterColor),
 
                 // use last targeting scope on Dorian
-                new PowerUpsSelectedRequest(Collections.singletonList(1), shooterColor)
+                new PowerUpsSelectedRequest(Collections.singletonList(1), shooterColor),
+                new AmmoColorSelectedRequest(TileColor.RED, shooterColor)
         );
 
         // shoot through controller
@@ -710,7 +712,7 @@ public class WeaponsTest {
                 new Position(3, 2)
         );
 
-        // verify whacking damage and targeting scope mark damage (1 additional to each)
+        // verify whacking damage and targeting scope damage (1 additional to each)
         for (PlayerColor target : Arrays.asList(PlayerColor.PURPLE, PlayerColor.GREY))
             assertPlayerDamage(
                     mLuigiHidesFromYellowParty.getPlayerFromColor(target),
@@ -721,7 +723,7 @@ public class WeaponsTest {
                     ),
                     Collections.emptyList()
             );
-    }*/
+    }
 
     @Test
     public void testThorMarioUsesChainToZapHiddenLuigiThroughStonesAlsoStonesUsesATagbackAndLuigiCannotBecauseHeCantSeeMario() {
@@ -940,6 +942,47 @@ public class WeaponsTest {
                     ),
                     Collections.emptyList()
             );
+    }
+
+    @Test
+    public void testGrenadeLauncherSkipEffect() {
+        // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.PURPLE).move(new Position(0, 0));
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY).move(new Position(0, 0));
+
+        PlayerColor shooterColor = PlayerColor.BLUE;
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("grenade_launcher");
+
+        // mock selection
+        mockSelections(testController,
+                // shoot Stones w/ basic effect
+
+                // shoot Stones again
+                new EffectsSelectedRequest(Collections.singletonList("with_extra_grenade"), shooterColor),
+                new PositionSelectedRequest(new Position(2, 1), shooterColor),
+
+                // move Stones
+                new EffectsSelectedRequest(Collections.singletonList("basic_effect_move"), shooterColor),
+                new PositionSelectedRequest(new Position(3, 1 ), shooterColor)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // very that everyone in yellow rooms has been damaged
+        assertPlayerStatus(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.YELLOW),
+                Arrays.asList(
+                        PlayerColor.BLUE,
+                        PlayerColor.BLUE
+                ),
+                Collections.emptyList(),
+                new Position(3, 1)
+        );
     }
 
     @Test

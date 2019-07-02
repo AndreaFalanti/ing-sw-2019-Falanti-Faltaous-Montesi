@@ -8,8 +8,9 @@ public class AmmoColorSelectedRequest implements Request {
     private TileColor mAmmoColor;
     private PlayerColor mViewColor;
 
-    public AmmoColorSelectedRequest(TileColor ammoColor) {
+    public AmmoColorSelectedRequest(TileColor ammoColor, PlayerColor viewColor) {
         mAmmoColor = ammoColor;
+        mViewColor = viewColor;
     }
 
     public TileColor getAmmoColor() {

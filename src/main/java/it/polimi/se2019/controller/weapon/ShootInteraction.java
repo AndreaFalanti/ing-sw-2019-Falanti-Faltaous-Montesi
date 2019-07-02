@@ -138,7 +138,22 @@ public class ShootInteraction {
                         .collect(Collectors.toList())
                 );
 
-                if (AmmoPayment.isValid(inflicterPlayer, new AmmoValue(1, 0, 0), scopeExcludedMask)) {
+                boolean canPay = Stream.of(TileColor.RED, TileColor.YELLOW, TileColor.BLUE)
+                        .map(AmmoValue::from)
+                        .anyMatch(ammo ->
+                                AmmoPayment.isValid(
+                                        inflicterPlayer,
+                                        ammo,
+                                        ArrayUtils.ofAll(false, 3)
+                                ) ||
+                                        AmmoPayment.isValid(
+                                                inflicterPlayer,
+                                                ammo,
+                                                scopeExcludedMask
+                                        )
+                        );
+
+                if (canPay) {
                     // the activation of each scope is requested individually from the user
                     inflicterView.showMessage(
                             "You can use your targeting scope on one of the selected targets! Select it in the " +
@@ -499,6 +514,18 @@ public class ShootInteraction {
                 .get(0);
     }
 
+    // pick ammo color
+    private TileColor pickAmmoColor(View view, Set<TileColor> possibleColors) {
+        return waitForSelectionRequestSkippingObvious(
+                view,
+                () -> view.showRoomColorSelectionView(possibleColors),
+                possibleColors, 1, 1,
+                req -> Stream.of(((AmmoColorSelectedRequest) req).getAmmoColor()),
+                "ammo color"
+        )
+                .collect(Collectors.toList())
+                .get(0);
+    }
 
     /************************/
     /* Powerup interactions */
@@ -550,14 +577,22 @@ public class ShootInteraction {
         inflicter.discard(index);
 
         // TODO: pick ammo color
-        // manageAmmoPayment(inflicter, pickAmmoColor(
-                // inflicterView,
-                // inflicter.getAmmo().getColors()
-        // ));
+        manageAmmoPayment(
+                inflicterColor,
+                AmmoValue.from(pickAmmoColor(
+                        inflicterView,
+                        inflicter.getAmmo().getContainedColors()
+                )),
+                "targeting scope",
+                () -> mLogger.log(Level.SEVERE,
+                        "{0} not able to pay for targeting scope even though previous checks" +
+                                "attested it was possible!")
+        );
 
         PlayerColor selectedTarget = selectTargets(inflicterView, 1, 1, possibleTargets)
                 .iterator().next();
         mGame.handleDamageInteraction(inflicterColor, selectedTarget, new Damage(1, 0));
     }
+
 }
 
