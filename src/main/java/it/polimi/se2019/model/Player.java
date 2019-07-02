@@ -52,6 +52,10 @@ public class Player extends Observable<Update> {
     }
 
     //region GETTERS
+    public boolean isSpawned() {
+        return mPos != null;
+    }
+
     public AmmoValue getAmmo() {
         return mAmmo;
     }

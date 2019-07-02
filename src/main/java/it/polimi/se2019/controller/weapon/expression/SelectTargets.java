@@ -2,6 +2,7 @@ package it.polimi.se2019.controller.weapon.expression;
 
 import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.controller.weapon.ShootInteraction;
+import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.view.View;
 
@@ -34,10 +35,15 @@ public class SelectTargets extends Behaviour {
     public final Expression eval(ShootContext context) {
         View view = context.getView();
         ShootInteraction interaction = context.getInteraction();
+        Game game = context.getGame();
 
-        // remove shooter from selectable targets
+        // remove players that cannot be selected
         Set<PlayerColor> targets = getSub("from").eval(context).asTargets().stream()
+                // remove shooter from selectable targets
                 .filter(clr -> !clr.equals(context.getShooterColor()))
+                // remove not yet spawned players from selectable targets
+                .filter(clr -> game.getPlayerFromColor(clr).isSpawned())
+                // collect
                 .collect(Collectors.toSet());
 
         // select targets
