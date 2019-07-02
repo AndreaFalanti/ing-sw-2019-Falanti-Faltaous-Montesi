@@ -11,7 +11,7 @@
         "priority": 0,
         "behaviour": {
           "expr": "InflictDamage",
-          "amount": "1d",
+          "amount": "2d",
           "to": {
             "expr": "SelectOneTarget",
             "from": {

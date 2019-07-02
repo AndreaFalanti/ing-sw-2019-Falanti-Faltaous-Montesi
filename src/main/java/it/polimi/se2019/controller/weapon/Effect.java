@@ -5,6 +5,8 @@ import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.util.Exclude;
 import it.polimi.se2019.util.StringUtils;
 
+import java.util.Objects;
+
 /**
  * Used for storing information about effect priorities and costs
  */
@@ -57,6 +59,23 @@ public class Effect {
     // trivial setters
     public void setOptional(boolean optional) {
         mOptional = optional;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Effect effect = (Effect) o;
+        return mPriority == effect.mPriority &&
+                mOptional == effect.mOptional &&
+                Objects.equals(mId, effect.mId) &&
+                Objects.equals(mName, effect.mName) &&
+                Objects.equals(mCost, effect.mCost);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mId, mName, mPriority, mOptional, mCost);
     }
 }
 
