@@ -51,6 +51,8 @@ public class MainScreen extends Observable<Request> {
     @FXML
     private Pane roomColorButtonsPane;
     @FXML
+    private Pane ammoColorButtonsPane;
+    @FXML
     private VBox effectsBox;
     @FXML
     private VBox targetsBox;
@@ -66,6 +68,8 @@ public class MainScreen extends Observable<Request> {
     private Button targetsUndoButton;
     @FXML
     private Button roomsUndoButton;
+    @FXML
+    private Button ammoUndoButton;
 
 
     private static final Logger logger = Logger.getLogger(MainScreen.class.getName());
@@ -76,6 +80,7 @@ public class MainScreen extends Observable<Request> {
     private static final int DIRECTION_TAB = 3;
     private static final int TARGETS_TAB = 4;
     private static final int ROOM_TAB = 5;
+    private static final int AMMO_TAB = 6;
 
     private static final double LOADED_OPACITY = 1;
     private static final double UNLOADED_OPACITY = 0.4;
@@ -97,6 +102,7 @@ public class MainScreen extends Observable<Request> {
 
     private List<Button> mUndoWeaponButtons;
     private EnumMap<TileColor, Button> mRoomButtons = new EnumMap<>(TileColor.class);
+    private EnumMap<TileColor, Button> mAmmoButtons = new EnumMap<>(TileColor.class);
 
 
     public BoardPane getBoardController() {
@@ -135,9 +141,11 @@ public class MainScreen extends Observable<Request> {
         mUndoWeaponButtons.add(targetsUndoButton);
         mUndoWeaponButtons.add(directionsUndoButton);
         mUndoWeaponButtons.add(roomsUndoButton);
+        mUndoWeaponButtons.add(ammoUndoButton);
 
         setupDirectionButtonsBehaviour();
         setupRoomColorButtonsBehaviour();
+        setupAmmoColorButtonsBehaviour();
         setWeaponTabsUndoButtonsBehaviour();
 
         resetAllPowerUpsBehaviourToDefault();
@@ -703,7 +711,7 @@ public class MainScreen extends Observable<Request> {
     }
 
     /**
-     * Setup rom tab button behaviours. When clicked they will notify controller with selected room color.
+     * Setup room tab button behaviours. When clicked they will notify controller with selected room color.
      */
     private void setupRoomColorButtonsBehaviour () {
         TileColor[] tileColors = TileColor.values();
@@ -714,6 +722,23 @@ public class MainScreen extends Observable<Request> {
             roomColorButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
                 logToChat("Selected room: " + tileColors[index].toString(), false);
                 notify(new RoomSelectedRequest(tileColors[index], mView.getOwnerColor()));
+                returnToActionTab();
+            });
+        }
+    }
+
+    /**
+     * Setup ammo tab button behaviours. When clicked they will notify controller with selected ammo color.
+     */
+    private void setupAmmoColorButtonsBehaviour () {
+        TileColor[] ammoColors = {TileColor.RED, TileColor.YELLOW, TileColor.BLUE};
+        for (int i = 0; i < ammoColors.length; i++) {
+            final int index = i;
+            mAmmoButtons.put(ammoColors[i], (Button)ammoColorButtonsPane.getChildren().get(i));
+
+            ammoColorButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
+                logToChat("Selected ammo color: " + ammoColors[index].toString(), false);
+                notify(new AmmoColorSelectedRequest(ammoColors[index], mView.getOwnerColor()));
                 returnToActionTab();
             });
         }
@@ -732,12 +757,17 @@ public class MainScreen extends Observable<Request> {
      */
     public void activateRoomTab (Set<TileColor> possibleColors) {
         activateWeaponRelatedTab(ROOM_TAB);
-        TileColor[] tileColors = TileColor.values();
 
-        for (TileColor tileColor : tileColors) {
-            for (Button button : mRoomButtons.values()) {
-                button.setDisable(!possibleColors.contains(tileColor));
-            }
+        for (Map.Entry<TileColor, Button> entry : mRoomButtons.entrySet()) {
+            entry.getValue().setDisable(!possibleColors.contains(entry.getKey()));
+        }
+    }
+
+    public void activateAmmoTab (Set<TileColor> possibleColors) {
+        activateWeaponRelatedTab(AMMO_TAB);
+
+        for (Map.Entry<TileColor, Button> entry : mAmmoButtons.entrySet()) {
+            entry.getValue().setDisable(!possibleColors.contains(entry.getKey()));
         }
     }
 

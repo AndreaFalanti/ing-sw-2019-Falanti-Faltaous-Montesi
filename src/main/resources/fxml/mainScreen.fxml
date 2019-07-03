@@ -43,17 +43,17 @@
             <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <ImageView fitHeight="110.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="0" GridPane.columnIndex="0">
+            <ImageView fitHeight="110.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0" GridPane.rowIndex="0">
                <image>
                   <Image url="@../images/cards/AD_powerups_IT_022.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="110.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <ImageView fitHeight="110.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="0">
                <image>
                   <Image url="@../images/cards/AD_powerups_IT_022.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="110.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" GridPane.columnIndex="0">
+            <ImageView fitHeight="110.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0" GridPane.rowIndex="1">
                <image>
                   <Image url="@../images/cards/AD_powerups_IT_022.png" />
                </image>
@@ -112,36 +112,6 @@
                                     <CheckBox layoutX="341.0" layoutY="103.0" mnemonicParsing="false" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
                                  </children>
                               </AnchorPane>
-                              <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="134.0" prefWidth="458.0" style="-fx-background-color: #eeeeee;">
-                                 <children>
-                                    <Label layoutX="24.0" layoutY="14.0" text="Weapon effect title" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
-                                       <font>
-                                          <Font name="System Bold Italic" size="16.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="353.0" layoutY="9.0" text="(1, 2, 1)" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                    </Label>
-                                    <CheckBox layoutX="341.0" layoutY="103.0" mnemonicParsing="false" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
-                                 </children>
-                              </AnchorPane>
-                              <AnchorPane layoutX="10.0" layoutY="150.0" prefHeight="134.0" prefWidth="458.0" style="-fx-background-color: #eeeeee;">
-                                 <children>
-                                    <Label layoutX="24.0" layoutY="14.0" text="Weapon effect title" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
-                                       <font>
-                                          <Font name="System Bold Italic" size="16.0" />
-                                       </font>
-                                    </Label>
-                                    <Label layoutX="353.0" layoutY="9.0" text="(1, 2, 1)" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                    </Label>
-                                    <CheckBox layoutX="341.0" layoutY="103.0" mnemonicParsing="false" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
-                                 </children>
-                              </AnchorPane>
                            </children>
                         </VBox>
                         <Button fx:id="effectsOkButton" layoutX="447.0" layoutY="383.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="85.0" text="OK" AnchorPane.bottomAnchor="95.0" AnchorPane.rightAnchor="14.0" />
@@ -184,9 +154,6 @@
                                  </font>
                               </Label>
                               <RadioButton mnemonicParsing="false" text="Player1 [GREEN]" textFill="WHITE" />
-                              <RadioButton layoutX="10.0" layoutY="52.0" mnemonicParsing="false" text="Player2 [BLUE]" textFill="WHITE" />
-                              <RadioButton layoutX="10.0" layoutY="81.0" mnemonicParsing="false" text="Player3 [YELLOW]" textFill="WHITE" />
-                              <RadioButton layoutX="10.0" layoutY="110.0" mnemonicParsing="false" text="Player4 [PURPLE]" textFill="WHITE" />
                            </children>
                         </VBox>
                         <Button fx:id="targetsOkButton" layoutX="447.0" layoutY="383.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="85.0" text="OK" AnchorPane.bottomAnchor="95.0" AnchorPane.rightAnchor="14.0" />
@@ -224,6 +191,35 @@
                            </children>
                         </GridPane>
                         <Button fx:id="roomsUndoButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="85.0" text="UNDO" AnchorPane.bottomAnchor="57.0" AnchorPane.rightAnchor="14.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="Ammo">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label alignment="CENTER" layoutX="53.0" layoutY="27.0" prefHeight="27.0" prefWidth="441.0" text="Choose ammo color for paying targeting scope..." textFill="WHITE">
+                           <font>
+                              <Font name="System Bold Italic" size="18.0" />
+                           </font>
+                        </Label>
+                        <GridPane fx:id="ammoColorButtonsPane" layoutX="22.0" layoutY="86.0" prefHeight="210.0" prefWidth="504.0">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Button layoutX="22.0" layoutY="49.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="131.0" style="-fx-background-color: RED;" text="RED" />
+                              <Button layoutX="22.0" layoutY="49.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: YELLOW;" text="YELLOW" GridPane.columnIndex="1" />
+                              <Button layoutX="22.0" layoutY="49.0" mnemonicParsing="false" prefHeight="130.0" prefWidth="130.0" style="-fx-background-color: BLUE;" text="BLUE" GridPane.columnIndex="2" />
+                           </children>
+                        </GridPane>
+                        <Button fx:id="ammoUndoButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="85.0" text="UNDO" AnchorPane.bottomAnchor="57.0" AnchorPane.rightAnchor="14.0" />
                      </children>
                   </AnchorPane>
                </content>

@@ -308,7 +308,7 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void handle(AmmoColorSelectedRequest request) {
-        //TODO
+        continueShootInteraction(request);
     }
 
     public void handleNextTurn () {

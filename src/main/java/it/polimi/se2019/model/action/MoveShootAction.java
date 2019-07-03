@@ -64,7 +64,7 @@ public class MoveShootAction implements ShootLeadingAction {
             maxShootMoves = 1;
         }
 
-        return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) == maxShootMoves ?
+        return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) <= maxShootMoves ?
                 Optional.empty() : Optional.of(
                         new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE + " while shooting"));
     }

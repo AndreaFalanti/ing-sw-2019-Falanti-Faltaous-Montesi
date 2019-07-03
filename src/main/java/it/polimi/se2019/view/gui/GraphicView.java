@@ -125,7 +125,7 @@ public class GraphicView extends View {
 
     @Override
     public void showAmmoColorSelectionView(Set<TileColor> possibleColors) {
-        //TODO
+        Platform.runLater(() -> mMainFrameController.activateAmmoTab(possibleColors));
     }
 
     @Override

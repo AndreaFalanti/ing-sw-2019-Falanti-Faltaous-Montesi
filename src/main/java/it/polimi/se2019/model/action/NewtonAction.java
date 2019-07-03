@@ -51,7 +51,7 @@ public class NewtonAction implements Action {
     public void perform(Game game) {
         Player player = game.getPlayerFromColor(mTarget);
         player.move(mDestination);
-        player.discard(mNewtonIndex);
+        game.getActivePlayer().discard(mNewtonIndex);
     }
 
     @Override
