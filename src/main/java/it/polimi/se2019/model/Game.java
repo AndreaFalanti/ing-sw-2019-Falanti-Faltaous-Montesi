@@ -82,7 +82,8 @@ public class Game extends Observable<Update> {
         List<PowerUpCard> powerUpCards = PowerUpCard.returnDeckFromJson(Jsons.get("PowerUpCardDeck"));
         mPowerUpCardDeck = new Deck<>(powerUpCards);
 
-        List<Weapon> weaponCards = Weapons.getAll();
+        // List<Weapon> weaponCards = Weapons.getAll();
+        List<Weapon> weaponCards = Collections.singletonList(Weapons.get("furnace"));
         mWeaponDeck = new Deck<>(weaponCards, false);
 
         refillAmmoTiles();

@@ -13,7 +13,22 @@
         "to": {
           "expr": "AllInRoom",
           "color": {
-            "expr": "SelectOneColor"
+            "expr": "SelectOneColor",
+            "from": {
+              "expr": "Difference",
+              "lhs": {
+                "expr": "GetColors",
+                "from": {
+                  "expr": "GetVisibleRange"
+                }
+              },
+              "rhs": {
+                "expr": "GetColors",
+                "from": {
+                  "expr": "YourPosition"
+                }
+              }
+            }
           }
         }
       }

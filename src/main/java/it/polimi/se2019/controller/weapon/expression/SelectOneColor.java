@@ -11,22 +11,18 @@ import java.util.stream.Collectors;
 
 public class SelectOneColor extends Behaviour {
     public SelectOneColor() {
-
     }
 
     @Override
     public Expression eval(ShootContext context) {
         View view = context.getView();
-        Board board = context.getBoard();
         ShootInteraction interaction = context.getInteraction();
-        Player shooter = context.getShooter();
+
+        Expression from = getSub("from").eval(context);
 
         TileColor color = interaction.pickRoomColor(
                 view,
-                board.getRoomColors()
-                        .filter(clr -> board.getRoom(clr)
-                                .noneMatch(pos -> shooter.getPos().equals(pos)))
-                        .collect(Collectors.toSet())
+                from.asColors()
         );
 
         return new ColorLiteral(color);

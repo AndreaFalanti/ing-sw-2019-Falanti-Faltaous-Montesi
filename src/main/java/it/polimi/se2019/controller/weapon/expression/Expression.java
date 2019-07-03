@@ -173,5 +173,13 @@ public abstract class Expression {
     public TileColor asColor() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "Color");
     }
+
+    /**
+     * Convert the expression to a set of color values (if possible)
+     * @return a set of color values representation of the expression
+     */
+    public Set<TileColor> asColors() {
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Colors");
+    }
 }
 

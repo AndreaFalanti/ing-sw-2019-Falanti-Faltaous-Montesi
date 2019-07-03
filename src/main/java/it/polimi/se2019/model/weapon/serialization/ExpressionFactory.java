@@ -25,6 +25,8 @@ public class ExpressionFactory {
                 .registerSubtype(PositionLiteral.class, "PositionLiteral")
                 .registerSubtype(PickEffect.class, "PickEffect")
                 .registerSubtype(Move.class, "Move")
+                .registerSubtype(ColorLiteral.class, "ColorLiteral")
+                .registerSubtype(GetColors.class, "GetColors")
                 .registerSubtype(DistanceRange.class, "DistanceRange")
                 .registerSubtype(SetExpression.class, "SetExpression")
                 .registerSubtype(Load.class, "Load")
