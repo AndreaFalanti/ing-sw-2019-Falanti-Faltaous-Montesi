@@ -365,7 +365,7 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void update(Request message) {
-        if (mActivePlayerColor != message.getViewColor())
+        if (!mGame.getActivePlayer().getColor().equals(message.getViewColor()))
             mPlayerViews.get(message.getViewColor()).reportError("It's not your turn!");
         else
             message.handleMe(this);
