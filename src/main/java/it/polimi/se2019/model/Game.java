@@ -156,9 +156,6 @@ public class Game extends Observable<Update> {
         mPlayers = players;
     }
 
-    public void setActivePlayerIndex(int index) {
-        mActivePlayerIndex = index;
-    }
     //endregion
 
     /**

@@ -40,8 +40,16 @@ public class Weapon {
     }
 
     public Weapon(String name, AmmoValue reloadCost, AmmoValue grabCost, String guiID) {
-        this (name, reloadCost, grabCost);
+        this(name, reloadCost, grabCost);
         mGuiID = guiID;
+    }
+
+    public Weapon(String name, AmmoValue reloadCost, AmmoValue grabCost, String guiID,
+                  boolean loaded, Expression behaviour) {
+        this(name, reloadCost, grabCost, guiID);
+
+        mLoaded = loaded;
+        mBehaviour = behaviour;
     }
 
     // trivial getters
@@ -84,10 +92,8 @@ public class Weapon {
         mLoaded = value;
     }
 
-    // TODO: add doc
-    // TODO: implement
     public Weapon deepCopy() {
-        throw new UnsupportedOperationException();
+        return new Weapon(mName, mReloadCost, mGrabCost, mGuiID, mLoaded, mBehaviour);
     }
 
     public static List<Weapon> returnDeckFromJson(String json) {

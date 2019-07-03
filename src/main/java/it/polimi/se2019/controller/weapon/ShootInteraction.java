@@ -37,17 +37,20 @@ public class ShootInteraction {
 
     // fields
     private boolean mOccupied = false;
+    private PlayerColor mActivePlayerColor;
+
+
+    // containers
     private final BlockingQueue<Request> mRequests = new LinkedBlockingQueue<>();
     private final Object mLock = new Object();
     private final Map<PlayerColor, View> mPlayerViews;
     private final Game mGame;
-    private final Controller mController;
 
     // trivial constructors
-    public ShootInteraction(Controller controller, Game game, Map<PlayerColor, View> playerViews) {
+    public ShootInteraction(Game game, Map<PlayerColor, View> playerViews) {
         mGame = game;
-        mController = controller;
         mPlayerViews = playerViews;
+        mActivePlayerColor = mGame.getActivePlayer().getColor();
     }
 
     // trivial getters
@@ -59,6 +62,9 @@ public class ShootInteraction {
     }
     public Object getLock() {
         return mLock;
+    }
+    public PlayerColor getActivePlayerColor() {
+        return mActivePlayerColor;
     }
 
     // trivial setters
@@ -122,10 +128,6 @@ public class ShootInteraction {
 
     // inflict damage
     public void inflictDamage(Game game, PlayerColor inflicter, Set<PlayerColor> inflicted, Damage amount) {
-        Board board = game.getBoard();
-        Player inflicterPlayer = game.getPlayerFromColor(inflicter);
-        View inflicterView = mPlayerViews.get(inflicter);
-
         mLogger.log(Level.INFO,
                 "{0} inflicting {1} damage to {2}",
                 new Object[]{inflicter, amount, inflicted}
@@ -574,7 +576,7 @@ public class ShootInteraction {
                 );
 
                 // pass control to tagback activator
-                mController.setActivePlayerColor(inflicted);
+                mActivePlayerColor = inflicted;
 
                 inflictedView.showMessage(
                         "You can use your tagback grenade on " + inflicterPlayer.getName() + "!" +
@@ -588,7 +590,7 @@ public class ShootInteraction {
                 }
 
                 // give control back to shooter
-                mController.setActivePlayerColor(inflicter);
+                mActivePlayerColor = inflicter;
             });
         }
     }

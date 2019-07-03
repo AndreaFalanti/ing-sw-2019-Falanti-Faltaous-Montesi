@@ -8,9 +8,9 @@ import java.util.List;
 
 
 public class PowerUpCard {
-    private PowerUpType mType;
-    private AmmoValue mAmmoValue;
-    private String mGuiID;
+    private final PowerUpType mType;
+    private final AmmoValue mAmmoValue;
+    private final String mGuiID = null;
 
     /**
      *
@@ -80,6 +80,15 @@ public class PowerUpCard {
     private class PowerUpStruct {
         PowerUpCard card;
         int quantity;
+    }
+
+    /**
+     * Returns a deep copy of the powerup card
+     * @return return powerupcard
+     */
+    public PowerUpCard deepCopy() {
+        // NB. this object is immutable
+        return this;
     }
 
     @Override

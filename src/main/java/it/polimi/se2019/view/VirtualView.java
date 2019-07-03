@@ -167,6 +167,7 @@ public class VirtualView extends View {
                         // reconnect if pong is received after disconnection
                         if (mIsDisconnected.get() && mHasReceivedPong.getAndSet(false)) {
                             logger.log(Level.WARNING, "{0} has reconnected!", mOwnerColor);
+                            sendResponse(new MessageResponse("You have been reconnected!", false));
                             mIsDisconnected.set(false);
                         }
                         // mark as disconnected if no pong is received

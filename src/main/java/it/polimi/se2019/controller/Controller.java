@@ -37,17 +37,15 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     private int mPlayerNotSpawnedCounter;
     private boolean mActivePlayerSpawnedThisTurn = false;
-    private PlayerColor mActivePlayerColor;
 
     // constructors
     public Controller(Game game, Map<PlayerColor, View> playerViews) {
         mGame = game;
         mPlayerViews = playerViews;
         mPlayerActionController = new PlayerActionController(this);
-        mShootInteraction = new ShootInteraction(this, mGame, mPlayerViews);
+        mShootInteraction = new ShootInteraction(mGame, mPlayerViews);
 
         mPlayerNotSpawnedCounter = playerViews.size();
-        mActivePlayerColor = mGame.getActivePlayer().getColor();
 
         // observe view (Request)
         playerViews.values().stream()
@@ -100,10 +98,6 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     public void setPlayerNotSpawnedCounter(int playerNotSpawnedCounter) {
         mPlayerNotSpawnedCounter = playerNotSpawnedCounter;
-    }
-
-    public void setActivePlayerColor(PlayerColor color) {
-        mActivePlayerColor = color;
     }
 
     /*******************/
@@ -365,7 +359,11 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void update(Request message) {
-        if (!mGame.getActivePlayer().getColor().equals(message.getViewColor()))
+        PlayerColor activePlayer = isHandlingShootInteraction() ?
+                getShootInteraction().getActivePlayerColor() :
+                mGame.getActivePlayer().getColor();
+
+        if (!activePlayer.equals(message.getViewColor()))
             mPlayerViews.get(message.getViewColor()).reportError("It's not your turn!");
         else
             message.handleMe(this);
