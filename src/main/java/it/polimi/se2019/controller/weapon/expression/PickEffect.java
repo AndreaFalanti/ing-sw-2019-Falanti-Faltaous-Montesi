@@ -51,10 +51,15 @@ public class PickEffect extends Expression {
     }
 
     private void manageAmmoPayment(ShootContext context, Set<Effect> effectsToSelect, List<Effect> effectsToPay) {
-        // manage payment
         AmmoValue totalEffectsCost = effectsToPay.stream()
                 .map(Effect::getCost)
                 .reduce(new AmmoValue(0, 0, 0), AmmoValue::add);
+
+        context.getView().showMessage(String.format(
+                "Paying for following effects: %s (cost: %s)",
+                effectsToPay.stream().map(Effect::getId).collect(Collectors.toList()),
+                totalEffectsCost
+        ));
 
         context.getInteraction().manageAmmoPayment(
                 context.getShooterColor(),

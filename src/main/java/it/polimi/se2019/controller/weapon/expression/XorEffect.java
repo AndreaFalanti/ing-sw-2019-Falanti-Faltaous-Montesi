@@ -24,14 +24,16 @@ public class XorEffect extends Expression {
 
         // get input
         String selectedEffectID = interaction.selectWeaponMode(view, mLhs, mRhs);
+        Effect selectedEffect = selectedEffectID.equals(mLhs.getId()) ? mLhs : mRhs;
 
-        // TODO: check if input needs to be validated
-
-        // use input to decide which effect should be chosen
-        if (mLhs.getId().equals(selectedEffectID))
-            discardEvalResult(mLhs.getBehaviour().eval(context));
-        else
-            discardEvalResult(mRhs.getBehaviour().eval(context));
+        // pay and execute selected effect
+        interaction.manageAmmoPayment(
+                view.getOwnerColor(),
+                selectedEffect.getCost(),
+                selectedEffect.getName(),
+                () -> eval(context)
+        );
+        selectedEffect.getBehaviour().eval(context);
 
         return new Done();
     }
