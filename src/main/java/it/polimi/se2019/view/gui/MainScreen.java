@@ -587,6 +587,7 @@ public class MainScreen extends Observable<Request> {
 
         for (Node node : powerUpGrid.getChildren()) {
             node.setOpacity(UNLOADED_OPACITY);
+            node.setDisable(true);
         }
 
         for (Integer index : indexes) {
@@ -602,8 +603,6 @@ public class MainScreen extends Observable<Request> {
                         powerUp.setOpacity(LOADED_OPACITY);
                         mPowerUpUsedCache.add(index);
                     }
-
-                    powerUpDiscardButton.setDisable(mPowerUpUsedCache.isEmpty());
                 });
             }
         }
@@ -625,6 +624,7 @@ public class MainScreen extends Observable<Request> {
      */
     public void setupRespawnPowerUpSelection () {
         initializePowerUpInteraction();
+        powerUpDiscardButton.setDisable(true);
 
         for (int x = 0; x < POWER_UPS_GRID_COLUMNS; x++) {
             for (int y = 0; y < POWER_UPS_GRID_ROWS; y++) {
@@ -650,16 +650,11 @@ public class MainScreen extends Observable<Request> {
      */
     private void setShootingBehaviourOnWeapon (Node weapon, int index, Position pos) {
         weapon.setOnMouseClicked(event -> {
-            if (weapon.getOpacity() == LOADED_OPACITY) {
-                logToChat("Shooting with weapon of index: " + index, false);
-                GuiUtils.setBoxEnableStatus(weaponBox,false);
-                setEnableStatusActionButtonBox(true);
+            logToChat("Shooting with weapon of index: " + index, false);
+            GuiUtils.setBoxEnableStatus(weaponBox,false);
+            setEnableStatusActionButtonBox(true);
 
-                notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index), mView.getOwnerColor()));
-            }
-            else {
-                logToChat("Can't shoot with unloaded weapon", true);
-            }
+            notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index), mView.getOwnerColor()));
         });
     }
 
@@ -670,17 +665,12 @@ public class MainScreen extends Observable<Request> {
      */
     private void setReloadBehaviourOnWeapon (Node weapon, int index) {
         weapon.setOnMouseClicked(event -> {
-            if (weapon.getOpacity() == UNLOADED_OPACITY) {
-                logToChat("Reload weapon of index: " + index, false);
-                setWeaponLoadStatus(index, true);
-                GuiUtils.setBoxEnableStatus(weaponBox,false);
-                setEnableStatusActionButtonBox(true);
+            logToChat("Reload weapon of index: " + index, false);
+            setWeaponLoadStatus(index, true);
+            GuiUtils.setBoxEnableStatus(weaponBox,false);
+            setEnableStatusActionButtonBox(true);
 
-                notify(new ActionRequest(new ReloadAction(index), mView.getOwnerColor()));
-            }
-            else {
-                logToChat("Can't reload an already loaded weapon", true);
-            }
+            notify(new ActionRequest(new ReloadAction(index), mView.getOwnerColor()));
         });
     }
 

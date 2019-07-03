@@ -186,7 +186,7 @@ public class Player extends Observable<Update> {
     /**
      * takes a weapon (is used in Action class to exchange weapon when the hand of player is full)
      * @param index is the index of the weapon to add in your hand
-     * @return
+     * @return Weapon taken from player
      */
     public Weapon takeWeapon (int index) {
         Weapon weapon = mWeapons[index];
@@ -234,13 +234,13 @@ public class Player extends Observable<Update> {
      * @param damage value of damage to add to the current damage
      */
     private void sufferedDamage(PlayerColor attackingPlayer, int damage) {
-        // store initial damage value, so that can update view properly
-        int damageMemory = damage;
-
         if (damage != 0) {
             damage += getMarks().get(attackingPlayer);
             mMarks.put(attackingPlayer, 0);
         }
+
+        // store initial damage value + marks converted to damage, so that can update view properly
+        int damageMemory = damage;
 
         for (int i = 0; i < mDamageTaken.length && damage > 0; i++) {
             if (mDamageTaken[i] == null) {
@@ -249,6 +249,7 @@ public class Player extends Observable<Update> {
             }
         }
 
+        // (damageMemory - damage) to avoid exceeding possible max damage of 12
         notify(new PlayerDamageUpdate(mColor, damageMemory - damage, attackingPlayer));
     }
 
@@ -278,7 +279,6 @@ public class Player extends Observable<Update> {
     /**
      * Add a weapon to player hand and throws exception in case player hand is full
      * @param value is the weapon to add
-     * @throws FullHandException
      */
     public void addWeapon(Weapon value) {
         int i=0;
@@ -305,7 +305,6 @@ public class Player extends Observable<Update> {
      * add powerup card in player hand and throw exception when player reaches the maximum number of powerups card
      * @param value powerup card to add
      * @param isRespawn boolean value to know if a player could have four powerups instead of three
-     * @throws FullHandException
      * @return modified player
      */
     public Player addPowerUp(PowerUpCard value, boolean isRespawn) {
