@@ -610,10 +610,7 @@ public class MainScreen extends Observable<Request> {
             finalizePowerUpInteraction();
         });
 
-        undoButton.setOnMouseClicked(event -> {
-            powerUpDiscardButton.setText("Discard");
-            finalizePowerUpInteraction();
-        });
+        undoButton.setDisable(true);
     }
 
     /**
@@ -1003,12 +1000,13 @@ public class MainScreen extends Observable<Request> {
     }
 
     /**
-     * Activate a specific weapon related tab, deactivating all the others in the process
+     * Activate a specific weapon related tab, deactivating all the others in the process,
+     * except player info tab (easier to check target for strategy)
      * @param index Tab index to activate
      */
     private void activateWeaponRelatedTab (int index) {
         for (int i = 0; i < tabPane.getTabs().size(); i++) {
-            tabPane.getTabs().get(i).setDisable(i != index);
+            tabPane.getTabs().get(i).setDisable(i != index && i != PLAYERS_TAB);
         }
         tabPane.getSelectionModel().select(index);
     }

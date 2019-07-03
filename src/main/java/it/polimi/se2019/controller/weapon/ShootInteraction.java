@@ -17,7 +17,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -50,7 +49,6 @@ public class ShootInteraction {
     public ShootInteraction(Game game, Map<PlayerColor, View> playerViews) {
         mGame = game;
         mPlayerViews = playerViews;
-        mActivePlayerColor = mGame.getActivePlayer().getColor();
     }
 
     // trivial getters
@@ -85,6 +83,7 @@ public class ShootInteraction {
     public void exec(Game game, PlayerColor shooter, Expression weaponBehaviour, ShootUndoInfo undoInfo) {
         // announce that thread is occupied
         mOccupied = true;
+        mActivePlayerColor = mGame.getActivePlayer().getColor();
 
         mLogger.info("Starting shoot interaction thread...");
         new Thread(() -> {
