@@ -1,6 +1,9 @@
 package it.polimi.se2019.network.connection;
 
-import it.polimi.se2019.network.server.RmiMessengerRemote;
+import com.sun.org.apache.regexp.internal.RE;
+import it.polimi.se2019.controller.response.Response;
+import it.polimi.se2019.network.server.RmiStationRemote;
+import jdk.internal.org.objectweb.asm.tree.LocalVariableAnnotationNode;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
@@ -8,167 +11,211 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.rmi.registry.LocateRegistry.createRegistry;
+
 public class RmiConnection implements Connection {
-    private static final Logger logger = Logger.getLogger(RmiConnection.class.getName());
+    /**
+     * Remote object representing a station with the mailboxes of all registered connections
+     */
+    private static class RmiStation extends UnicastRemoteObject implements RmiStationRemote {
+        private final Map<Integer, BlockingQueue<String>> mMailboxes = new HashMap<>();
+        private int mNextUniqueAddress = ACCEPTATION_MAILBOX_ADDRESS + 1;
 
-    private enum SenderType {
-        SERVER,
-        CLIENT
-    }
-
-    private static class RmiMessenger extends UnicastRemoteObject implements RmiMessengerRemote {
-        private final BlockingQueue<String> mMessagesSentByClient = new LinkedBlockingQueue<>();
-        private final BlockingQueue<String> mMessagesSentByServer = new LinkedBlockingQueue<>();
-
-        protected RmiMessenger() throws RemoteException {
+        protected RmiStation() throws RemoteException {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            if (!super.equals(o)) return false;
-            RmiMessenger that = (RmiMessenger) o;
-            return Objects.equals(mMessagesSentByClient, that.mMessagesSentByClient) &&
-                    Objects.equals(mMessagesSentByServer, that.mMessagesSentByServer);
+        public int generateUniqueAddress() {
+            return mNextUniqueAddress++;
         }
 
         @Override
-        public int hashCode() {
-            return Objects.hash(super.hashCode(), mMessagesSentByClient, mMessagesSentByServer);
+        public void addMailbox(int address) {
+            mMailboxes.put(address, new LinkedBlockingQueue<>());
         }
 
         @Override
-        public void storeMessage(String senderType, String message) {
+        public void storeMessage(int senderAddress, String message) {
             try {
-                if (senderType.equals(SenderType.CLIENT.toString())) {
-                    System.out.println("STORE FOR SERVER: " + message);
-                    mMessagesSentByClient.put(message);
-                }
-                else if (senderType.equals(SenderType.SERVER.toString())) {
-                    System.out.println("STORE FOR CLIENT: " + message);
-                    mMessagesSentByServer.put(message);
-                }
-                else
-                    throw new IllegalArgumentException("Unrecognized sender type: " + senderType);
+                if (mMailboxes.get(senderAddress) == null)
+                    mMailboxes.put(senderAddress, new LinkedBlockingQueue<>());
+                mMailboxes.get(senderAddress).put(message);
             } catch (InterruptedException e) {
-                logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
-                Thread.currentThread().interrupt();
+                e.printStackTrace();
             }
         }
 
         @Override
-        public String retrieveMessage(String senderType) {
+        public String retrieveMessage(int senderAddress) {
             String message = null;
-            try {
-                if (senderType.equals(SenderType.CLIENT.toString()))
-                    message = mMessagesSentByServer.take();
-                else if (senderType.equals(SenderType.SERVER.toString()))
-                    message = mMessagesSentByClient.take();
-                else
-                    throw new IllegalArgumentException("Unrecognized sender type: " + senderType);
-            } catch (InterruptedException e) {
-                logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
-                Thread.currentThread().interrupt();
-            }
 
-            if (message == null)
-                throw new NullPointerException();
+            try {
+                if (mMailboxes.get(senderAddress) == null)
+                    mMailboxes.put(senderAddress, new LinkedBlockingQueue<>());
+                message = mMailboxes.get(senderAddress).take();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             return message;
         }
     }
 
-    private int mPort;
-    private String mId;
-    private SenderType mSenderType;
+    // logger
+    private static final Logger logger = Logger.getLogger(RmiConnection.class.getName());
 
-    private RmiConnection(int port, SenderType senderType, String id) {
-        mPort = port;
-        mSenderType = senderType;
-        mId = id;
+    // static constants
+    public static final String RMI_STATION_REGISTRY_ID = "$station";
+    private static final int ACCEPTATION_MAILBOX_ADDRESS = 0;
+    static final int RMI_PORT = 4568;
+
+    // fields
+    private final int mAddress;
+    private final int mPenPalAddress;
+
+    // constructor
+    private RmiConnection(int address, int penPalAddress) {
+        mAddress = address;
+        mPenPalAddress = penPalAddress;
     }
 
-    public static Connection create(int port, String id) {
+    public static void init() {
         try {
-            Registry registry = LocateRegistry.getRegistry(port);
-            registry.bind(id, new RmiMessenger());
+            // create registry
+            Registry registry = LocateRegistry.createRegistry(RMI_PORT);
+
+            // create station
+            registry.bind(RMI_STATION_REGISTRY_ID, new RmiStation());
+
         } catch (RemoteException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
+            e.printStackTrace();
         } catch (AlreadyBoundException e) {
-            logger.log(Level.INFO, "RMI server with id {0} already created!");
+            e.printStackTrace();
         }
-
-        return new RmiConnection(port, SenderType.SERVER, id);
     }
 
-    public static Connection establish(int port, String id) {
-        Registry registry = null;
-        try {
-            registry = LocateRegistry.getRegistry(port);
-        } catch (RemoteException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
-        }
+    public static void startAccepting(Consumer<Connection> connectionConsumer) {
+        new Thread(() -> {
+            while (true) {
+                connectionConsumer.accept(accept());
+            }
+        }).start();
+    }
 
-        // check if id exists
+    /**
+     * Waits for a connection to be established and accepts it, returning one of its acceptor endpoint
+     * @return
+     */
+    public static RmiConnection accept() {
+        RmiConnection result = null;
         try {
-            registry.lookup(id);
+            RmiStationRemote station = getStation();
+
+            int acceptorAddress = station.generateUniqueAddress();
+
+            logger.log(Level.INFO, "Accepting rmi connections on {0}", acceptorAddress);
+            String rawHandshakeMessage = station.retrieveMessage(ACCEPTATION_MAILBOX_ADDRESS);
+
+            // TODO: include something else to decorate the accepted address
+            int acceptedAddress = Integer.parseInt(rawHandshakeMessage);
+
+            getStation().addMailbox(acceptedAddress);
+            getStation().storeMessage(acceptedAddress, String.valueOf(acceptorAddress));
+
+            logger.log(Level.INFO, "Accepted connection: {0} - {1}",
+                    new Object[]{ acceptorAddress, acceptedAddress });
+            result = new RmiConnection(acceptorAddress, acceptedAddress);
         } catch (RemoteException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static RmiConnection establish() {
+
+        RmiConnection result = null;
+        try {
+            RmiStationRemote station = getStation();
+
+            int addressToAccept = station.generateUniqueAddress();
+
+            // TODO: include something else to decorate the address to accept
+            station.storeMessage(ACCEPTATION_MAILBOX_ADDRESS, String.valueOf(addressToAccept));
+
+            logger.log(Level.INFO, "Trying to establish connection on {0}", addressToAccept);
+            int acceptorAddress = Integer.parseInt(station.retrieveMessage(addressToAccept));
+
+            logger.log(Level.INFO, "Established connection: {0} - {1}",
+                    new Object[]{ addressToAccept, acceptorAddress });
+            result = new RmiConnection(addressToAccept, acceptorAddress);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private static RmiStationRemote getStation() {
+        RmiStationRemote station = null;
+
+        try {
+            station =
+                    (RmiStationRemote) LocateRegistry.getRegistry(RMI_PORT)
+                            .lookup(RMI_STATION_REGISTRY_ID);
+        } catch (RemoteException e) {
+            e.printStackTrace();
         } catch (NotBoundException e) {
-            throw new IllegalArgumentException("Connection with id [" + id + "] was never created!");
+            e.printStackTrace();
         }
 
-        return new RmiConnection(port, SenderType.CLIENT, id);
+        return station;
     }
 
     @Override
     public void sendMessage(String message) {
         try {
-            Registry registry = LocateRegistry.getRegistry(mPort);
-            RmiMessengerRemote messengerRemote =
-                    (RmiMessengerRemote) registry.lookup(mId);
-            messengerRemote.storeMessage(mSenderType.toString(), message);
+            getStation().storeMessage(mPenPalAddress, message);
         } catch (RemoteException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
-        } catch (NotBoundException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
+            e.printStackTrace();
         }
     }
 
     @Override
     public String waitForMessage() {
-        String result = null;
+        String message = null;
 
         try {
-            Registry registry = LocateRegistry.getRegistry(mPort);
-            RmiMessengerRemote messengerRemote =
-                    (RmiMessengerRemote) registry.lookup(mId);
-
-            logger.info("waiting...");
-            result = messengerRemote.retrieveMessage(mSenderType.toString());
+            message = getStation().retrieveMessage(mAddress);
         } catch (RemoteException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
-        } catch (NotBoundException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
+            e.printStackTrace();
         }
 
-        return result;
+        return message;
     }
 
     @Override
     public void close() {
-        throw new UnsupportedOperationException();
+        // TODO: implement this
+        // getStation().removeMailbox(mAddress);
+        throw new UnsupportedOperationException("WIP");
     }
 
     @Override
     public boolean isClosed() {
-        throw new UnsupportedOperationException();
+        // TODO: implement this
+        // getStation().removeMailbox(mAddress);
+        throw new UnsupportedOperationException("WIP");
+    }
+
+    @Override
+    public String getId() {
+        return String.valueOf(mAddress);
     }
 }

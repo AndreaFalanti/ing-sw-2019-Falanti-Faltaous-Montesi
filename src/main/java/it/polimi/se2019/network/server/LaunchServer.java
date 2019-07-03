@@ -20,11 +20,7 @@ public class LaunchServer {
         int socketPort = Integer.parseInt(args[0]);
         int rmiPort = Integer.parseInt(args[1]);
 
-        // initialize RMI connection
-        LocateRegistry.createRegistry(rmiPort);
-        RmiConnection.create(rmiPort, RMI_SERVER_ID);
-
-        RegistrationServer registrationServer = new RegistrationServer(rmiPort);
+        RegistrationServer registrationServer = new RegistrationServer();
         AcceptationServer acceptationServer = new AcceptationServer(socketPort, registrationServer);
 
         acceptationServer.startServer();

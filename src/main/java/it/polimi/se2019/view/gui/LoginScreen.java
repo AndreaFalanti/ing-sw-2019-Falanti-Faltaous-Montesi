@@ -79,7 +79,7 @@ public class LoginScreen {
                 if (mNetworkHandler == null || mActualType != SOCKET_TYPE) {
                     mNetworkHandler = new NetworkHandler(
                             mView,
-                            SocketConnection.establish("localhost", 4567)
+                            SocketConnection.establish("localhost")
                     );
                     mActualType = SOCKET_TYPE;
                 }
@@ -88,7 +88,7 @@ public class LoginScreen {
                 if (mNetworkHandler == null || mActualType != RMI_TYPE) {
                     mNetworkHandler = new NetworkHandler(
                             mView,
-                            RmiConnection.establish(4568, RMI_SERVER_ID)
+                            RmiConnection.establish()
                     );
                 }
                 mActualType = RMI_TYPE;

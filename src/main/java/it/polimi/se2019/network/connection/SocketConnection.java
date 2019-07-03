@@ -6,10 +6,14 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SocketConnection implements Connection {
+    public static final int SOCKET_PORT = 3456;
+
     private static final Logger logger = Logger.getLogger(SocketConnection.class.getName());
 
     private Socket mSocket;
@@ -33,11 +37,25 @@ public class SocketConnection implements Connection {
         }
     }
 
-    public static Connection from(Socket socket) {
+    public static void startAccepting(Consumer<Connection> connectionConsumer) {
+        new Thread(() -> {
+            try (
+                    ServerSocket serverSocket = new ServerSocket(SOCKET_PORT)
+            ) {
+                while (true) {
+                    connectionConsumer.accept(accept(serverSocket));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public static SocketConnection from(Socket socket) {
         return new SocketConnection(socket);
     }
 
-    public static Connection accept(ServerSocket serverSocket) {
+    public static SocketConnection accept(ServerSocket serverSocket) {
         SocketConnection result = null;
         try {
             result = new SocketConnection(serverSocket.accept());
@@ -49,17 +67,21 @@ public class SocketConnection implements Connection {
         return result;
     }
 
-    public static Connection establish(String host, int port) {
+    public static SocketConnection establish(String host) {
         SocketConnection result = null;
         try {
-            result = new SocketConnection(new Socket(host, port));
-            Object[] logObjects = {host, port};
+            result = new SocketConnection(new Socket(host, SOCKET_PORT));
+            Object[] logObjects = {host, SOCKET_PORT};
             logger.log(Level.INFO, "Established connection with server [{0}, {1}]", logObjects);
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
         }
 
         return result;
+    }
+
+    public SocketAddress getRemoteSocketAdress() {
+        return mSocket.getRemoteSocketAddress();
     }
 
     @Override
@@ -116,5 +138,10 @@ public class SocketConnection implements Connection {
     @Override
     public boolean isClosed() {
         return mSocket.isClosed();
+    }
+
+    @Override
+    public String getId() {
+        return mSocket.getRemoteSocketAddress().toString();
     }
 }

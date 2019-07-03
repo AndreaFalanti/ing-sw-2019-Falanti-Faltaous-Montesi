@@ -61,7 +61,7 @@ public class LoginCLI {
             case 1:
                 mNetworkHandler = new NetworkHandler(
                         view,
-                        SocketConnection.establish("localhost", 4567)
+                        SocketConnection.establish("localhost")
                 );
                 String username;
                 Scanner scanner1 = new Scanner(System.in);

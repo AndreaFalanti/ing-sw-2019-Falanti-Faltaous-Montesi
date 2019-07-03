@@ -1,6 +1,7 @@
 package it.polimi.se2019.network.server;
 
 import it.polimi.se2019.model.PlayerColor;
+import it.polimi.se2019.network.connection.Connection;
 import it.polimi.se2019.network.connection.ConnectionType;
 import it.polimi.se2019.view.VirtualView;
 
@@ -11,25 +12,16 @@ public class PlayerConnection {
     private String mUsername;
     private boolean mActive;
     private PlayerColor mColor;
-    private ConnectionType mType;
 
-    private Socket mSocket;
+    private Connection mConnection;
 
-    // TODO: add connection type so that server can send message to clients
-
-    public PlayerConnection(String username, ConnectionType type) {
+    public PlayerConnection(String username, Connection connection) {
         mUsername = username;
+        mConnection = connection;
         mActive = true;
-        mType = type;
         mVirtualView = null;
-
-        mSocket = null;
     }
 
-    public PlayerConnection(String username, ConnectionType type, Socket socket) {
-        this (username, type);
-        mSocket = socket;
-    }
 
     public VirtualView getVirtualView() {
         return mVirtualView;
@@ -47,12 +39,8 @@ public class PlayerConnection {
         return mColor;
     }
 
-    public ConnectionType getType() {
-        return mType;
-    }
-
-    public Socket getSocket() {
-        return mSocket;
+    public Connection getConnection() {
+        return mConnection;
     }
 
     public void setVirtualView(VirtualView virtualView) {
@@ -70,7 +58,7 @@ public class PlayerConnection {
                 ", mUsername='" + mUsername + '\'' +
                 ", mActive=" + mActive +
                 ", mColor=" + mColor +
-                ", mType=" + mType +
+                ", mConnection=" + mConnection +
                 '}';
     }
 }

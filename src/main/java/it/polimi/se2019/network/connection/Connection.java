@@ -5,4 +5,5 @@ public interface Connection {
     String waitForMessage();
     void close();
     boolean isClosed();
+    String getId();
 }

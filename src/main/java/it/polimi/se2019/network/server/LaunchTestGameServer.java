@@ -25,8 +25,6 @@ import java.util.stream.Stream;
 
 public class LaunchTestGameServer {
     public static final int SOCKET_PORT = 3456;
-    public static final int RMI_PORT = 1111;
-
 
     public static void main(String[] args) {
         // initialize test game
@@ -40,13 +38,7 @@ public class LaunchTestGameServer {
                 8
         );
 
-        // initialize RMI
-        try {
-            LocateRegistry.createRegistry(RMI_PORT);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        Connection rmiConnection = RmiConnection.create(RMI_PORT, "connection");
+        RmiConnection.init();
 
         Controller controller = null;
         try (
@@ -59,22 +51,21 @@ public class LaunchTestGameServer {
                                     PlayerColor.PURPLE,
                                     new VirtualView(
                                             PlayerColor.PURPLE,
-                                            SocketConnection.accept(serverSocket)
+                                            RmiConnection.accept()
                                     )
                             ),
                             new Pair<>(
                                     PlayerColor.GREEN,
                                     new VirtualView(
                                             PlayerColor.GREEN,
-                                            rmiConnection
+                                            RmiConnection.accept()
                                     )
                             ),
                             new Pair<>(
                                     PlayerColor.BLUE,
                                     new VirtualView(
                                             PlayerColor.BLUE,
-                                            RmiConnection.create(RMI_PORT, PlayerColor.BLUE.getPascalName())
-                                            // SocketConnection.accept(serverSocket)
+                                            RmiConnection.accept()
                                     )
                             )
                     )

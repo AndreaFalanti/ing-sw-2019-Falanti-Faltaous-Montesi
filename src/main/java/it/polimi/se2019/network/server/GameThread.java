@@ -24,14 +24,12 @@ public class GameThread extends Thread {
     private Controller mController;
     private List<PlayerConnection> mPlayerConnections;
     private boolean mStarted = false;
-    private int mRmiPort;
 
     private Random mRandom = new Random();
     private List<PlayerColor> mColors = new ArrayList<>(Arrays.asList(PlayerColor.values()));
 
-    public GameThread (List<PlayerConnection> players, int rmiPort){
+    public GameThread (List<PlayerConnection> players) {
         mPlayerConnections = new ArrayList<>(players);
-        mRmiPort = rmiPort;
 
         Timer mTimer = new Timer();
         mTimer.schedule(new TimerTask() {
@@ -110,23 +108,11 @@ public class GameThread extends Thread {
         mController = new Controller(
                 mGame,
                 mPlayerConnections.stream()
-                        .peek(pc -> {
-                            switch (pc.getType()) {
-                                case SOCKET:
-                                    pc.setVirtualView(new VirtualView(
-                                            pc.getColor(), SocketConnection.from(pc.getSocket())
-                                    ));
-                                    break;
-                                case RMI:
-                                    pc.setVirtualView(new VirtualView(
-                                            pc.getColor(), RmiConnection.create(mRmiPort, "rmiServer")
-                                    ));
-                                    break;
-                                default:
-                                    logger.severe("Invalid connection type");
-                                    throw new IllegalArgumentException("Invalid connection type");
-                            }
-                        })
+                        .peek(pc ->
+                            pc.setVirtualView(new VirtualView(
+                                    pc.getColor(), pc.getConnection()
+                            ))
+                        )
                         .map(PlayerConnection::getVirtualView)
                         // start sending pings from all virtual views to clients
                         .peek(VirtualView::startCheckingForDisconnection)
