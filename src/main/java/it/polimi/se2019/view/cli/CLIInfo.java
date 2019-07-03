@@ -4,10 +4,7 @@ import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.*;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static it.polimi.se2019.view.cli.Colors.ANSI_RESET;
 import static it.polimi.se2019.view.cli.Colors.findColor;
@@ -121,7 +118,7 @@ public class CLIInfo {
         if(powerUpCards == null)
             mPlayersInfo.get(playerColor).setPowerUpsOtherPlayers(0);
         else
-            mPlayersInfo.get(playerColor).setPowerUpsOtherPlayers(powerUpCards.length);
+            mPlayersInfo.get(playerColor).setPowerUpsOtherPlayers(Arrays.asList(powerUpCards).size());
     }
 
     public void updateMarks(PlayerColor targetColor, int marks, PlayerColor shooterColor){
@@ -137,11 +134,13 @@ public class CLIInfo {
     }
 
     public void updatePosition(PlayerColor playerColor, Position pos){
+
+
         mPlayersInfo.get(playerColor).setPosition(pos);
     }
 
-    public void updateDamage(PlayerColor damagedPlayerColor,int damageTaken,PlayerColor shooterPlayerColor){
-        mPlayersInfo.get(damagedPlayerColor).setDamageTaken(damageTaken,shooterPlayerColor);
+    public void updateDamage(PlayerColor damagedPlayerColor,PlayerColor[] damageTaken){
+        mPlayersInfo.get(damagedPlayerColor).setAllDamageTaken(damageTaken);
     }
 
     public void updateBoardFlip(PlayerColor playerColor){

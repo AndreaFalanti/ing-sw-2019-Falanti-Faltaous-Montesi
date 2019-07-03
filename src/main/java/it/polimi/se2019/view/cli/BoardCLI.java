@@ -364,7 +364,6 @@ public class BoardCLI {
     public static void addPlayer(StringBuilder line , String horizontal,String color,int numberPlayer){
         int index=0;
         int coordX=Integer.parseInt(horizontal);
-        System.out.println(HIGHCELL/2);
         for(int i=0;i<HIGHCELL/2 ;i++){
             index = line.indexOf("\n",index);
             index+=1;

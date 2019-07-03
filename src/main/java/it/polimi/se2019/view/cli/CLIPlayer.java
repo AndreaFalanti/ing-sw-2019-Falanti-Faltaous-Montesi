@@ -230,21 +230,6 @@ public class CLIPlayer {
         return shooter;
     }
 
-    public void setDamageTaken(int damageTaken, PlayerColor shooterPlayerColor){
-
-        int i = 0;
-        for(String s: mDamageTaken){
-            if(i!=0 && s.contains(shooterPlayerColor.getPascalName())){
-                String damageString = s.replaceAll("[0-9]",String.valueOf(Integer.parseInt(s.replaceAll("\\D","")) + damageTaken));
-                mDamageTaken.set(i,damageString);
-                return;
-            }
-            i++;
-        }
-
-        mDamageTaken.add(createSingleStringDamage(damageTaken,shooterPlayerColor).toString());
-    }
-
     public void setWeaponOtherPlayer(Weapon[] weapons){
         List<String> actualWeapons = new ArrayList<>();
         if (weapons == null){

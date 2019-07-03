@@ -8,7 +8,6 @@ import it.polimi.se2019.model.action.*;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.network.client.ClientNetworkHandler;
-import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
@@ -55,8 +54,8 @@ public class CLIView extends View {
 
     public void setNetworkHandler(ClientNetworkHandler networkHandler) {
         this.networkHandler = networkHandler;
-        t1 = new Thread(() -> ((NetworkHandler)this.networkHandler).startReceivingMessages());
-        t1.start();
+       // t1 = new Thread(() -> ((NetworkHandler)this.networkHandler).startReceivingMessages());
+       // t1.start();
         this.networkHandler.registerObservablesFromView();
 
     }
@@ -95,14 +94,14 @@ public class CLIView extends View {
         mCLIInfo = new CLIInfo(initInfo.getPlayers(),initInfo.getOwnerColor(), initInfo.getActivePlayerColor(), initInfo.getBoard(), initInfo.getTurnNumber(), initInfo.getKills(),
                 initInfo.getOverkills());
 
-        ((CLIUpdateHandler)mUpdateHandler).setUpdateHandlerCLIInfo(mCLIInfo);
+        ((CLIUpdateHandler)mUpdateHandler).setUpdateHandlerCLIInfo(this,mCLIInfo);
         printLineToConsole("reinitialize CLI");
 
     }
 
     @Override
     public void confirmEndOfInteraction() {
-        //TODO
+        availableCommands();
     }
 
     @Override
@@ -159,7 +158,7 @@ public class CLIView extends View {
                     }
                     action = new MoveAction(mCLIInfo.getOwnerColor(), pos,true);
                     logger.log(Level.INFO, "Action: MOVE  Pos: {0}", pos);
-                    new Thread(() ->  availableCommands()).start();
+            //        new Thread(() ->  availableCommands()).start();
                     break;
                 case "grab":
                     pos = parseDestination(otherCommandPart);
@@ -205,15 +204,14 @@ public class CLIView extends View {
                     break;
                 case "turn":
                     notify(new TurnEndRequest(mCLIInfo.getOwnerColor()));
-                    availableCommands();
                     break;
                 default:
                     availableCommands();
                     break;
             }
 
-        if(!command.equalsIgnoreCase("use")){
-            notify(new ActionRequest(action, getOwnerColor()));
+        if(action!=null&&!command.equalsIgnoreCase("use")){
+            notify(new ActionRequest(action,mCLIInfo.getOwnerColor()));
         }
    //     }else printLineToConsole("Is not your turn!\n");
 
@@ -311,15 +309,15 @@ public class CLIView extends View {
 
     @Override
     public void showWeaponSelectionView(TileColor spawnColor) {
-        new Thread(() -> {
+
             if(spawnColor!=null) {
                 int weaponInfo = parseWeaponInformation(spawnColor);
                 notify(new WeaponSelectedRequest(weaponInfo, mOwnerColor));
             }
             else
                 notify(new WeaponSelectedRequest(parseWeaponInformation(), mOwnerColor));
-            availableCommands();
-        }).start();
+        //    availableCommands();
+
     }
 
     @Override
@@ -331,11 +329,10 @@ public class CLIView extends View {
 
     @Override
     public void showPowerUpSelectionView(List<Integer> indexes) {
-       new Thread(() -> {
+
             List<Integer> powerUps= new ArrayList<>();
             powerUps.add(parseInteger());
             notify(new PowerUpsSelectedRequest(powerUps,mOwnerColor));
-       }).start();
     }
 
     @Override
@@ -364,18 +361,13 @@ public class CLIView extends View {
 
     @Override
     public void showPositionSelectionView(Set<Position> possiblePositions) {
-        try {
-            t1.join();
 
-        } catch(InterruptedException e){
-            System.out.println("interrupted");
-        }
-        new Thread(() -> {
+
             Position pos = selectPosition(possiblePositions);
             if(pos == null)
                 return;
             notify(new PositionSelectedRequest(pos, getOwnerColor()));
-        }).start();
+
     }
 
     @Override
@@ -403,31 +395,52 @@ public class CLIView extends View {
 
     @Override
     public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
-        printToConsole("Choose one of these effects: "+effect1.getName()+" "+effect2.getName());
-        String effect = requestAdditionalInfo();
-        notify(new WeaponModeSelectedRequest(effect, getOwnerColor()));
-        availableCommands();
+
+
+            printLineToConsole("Choose one of these effects: "+effect1.getName()+" "+effect2.getName());
+            String effect = requestAdditionalInfo();
+            notify(new WeaponModeSelectedRequest(effect, getOwnerColor()));
+
     }
 
     @Override
     public void showRespawnPowerUpDiscardView() {
-        try {
-            t1.join();
+    //    try {
+    //        t1.join();
 
-        } catch(InterruptedException e){
-            System.out.println("interrupted");
-        }
+  //      } catch(InterruptedException e){
+ //           System.out.println("interrupted"); }
        new Thread(() -> {
             printLineToConsole(mCLIInfo.getOwner().getPlayerPowerUps());
             notify(new RespawnPowerUpRequest(parseInteger(), mOwnerColor));
-            availableCommands();
+            if(mCLIInfo.getActivePlayer()==mCLIInfo.getOwnerColor())
+                availableCommands();
        }).start();
 
     }
 
     @Override
     public void showAmmoColorSelectionView(Set<TileColor> possibleColors) {
-        //TODO
+        TileColor choosen = null;
+
+        while(choosen == null){
+            printToConsole("Choose one of these colors (or undo to go back): ");
+            for (TileColor possibleColor : possibleColors) {
+                printToConsole(possibleColor +" ");
+            }
+            String color = requestAdditionalInfo();
+            if(color.equalsIgnoreCase("undo")){
+                deleteRequest();
+                return;
+            }
+            for (TileColor possibleColor : mCLIInfo.getTilesColor().keySet()) {
+                if(color.equalsIgnoreCase(mCLIInfo.getTilesColor().get(possibleColor)))
+                    choosen = possibleColor;
+            }
+        }
+
+        notify(new AmmoColorSelectedRequest(choosen,mCLIInfo.getOwnerColor()));
+
     }
 
     public int parseInteger(){
@@ -571,7 +584,6 @@ public class CLIView extends View {
 
             direction = requestAdditionalInfo();
             if(direction.equalsIgnoreCase("undo")){
-                deleteRequest();
                 return null;
             }
         }
@@ -610,7 +622,7 @@ public class CLIView extends View {
         String target = requestAdditionalInfo();
         if(target.equalsIgnoreCase("undo")){
             deleteRequest();
-            return choosen;
+            return new HashSet<>();
         }
         String[] targets = target.split("\\s+");
         while(targets.length<minToSelect ){
@@ -633,18 +645,19 @@ public class CLIView extends View {
 
     public void deleteRequest(){
         notify(new UndoWeaponInteractionRequest(mOwnerColor));
-        availableCommands();
     }
 
     @Override
     public void showMessage(String message){
         printLineToConsole(message);
+
     }
 
     @Override
     public void reportError(String error){
         printLineToConsole(error);
         availableCommands();
+
     }
 
     public String requestAdditionalInfo(){

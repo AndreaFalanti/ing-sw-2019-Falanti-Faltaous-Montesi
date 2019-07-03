@@ -5,12 +5,19 @@ import it.polimi.se2019.model.update.*;
 public class CLIUpdateHandler implements UpdateHandler {
 
     private CLIInfo mCLIInfo;
+    private CLIView cliView;
 
     public CLIInfo getCLIInfo(){return mCLIInfo;}
 
-    public void setUpdateHandlerCLIInfo(CLIInfo cliInfo){mCLIInfo = cliInfo;}
+    public void setUpdateHandlerCLIInfo(CLIView view,CLIInfo cliInfo){
+        mCLIInfo = cliInfo;
+        cliView = view;
+    }
 
-    public CLIUpdateHandler(CLIInfo cLIInfo){mCLIInfo=cLIInfo;}
+    public CLIUpdateHandler(CLIInfo cLIInfo){
+        mCLIInfo = cLIInfo;
+    }
+
 
     @Override
     public void handle(PlayerPositionUpdate update) {
@@ -23,8 +30,8 @@ public class CLIUpdateHandler implements UpdateHandler {
     }
     @Override
     public void handle(PlayerDamageUpdate update) {
-        //TODO: adapt to new update structure
-            //mCLIInfo.updateDamage(update.getDamagedPlayerColor(),update.getDamageTaken(),update.getShooterPlayerColor());
+
+            mCLIInfo.updateDamage(update.getDamagedPlayerColor(),update.getDamageTaken());
     }
     @Override
     public void handle(PlayerMarksUpdate update) {
@@ -44,25 +51,39 @@ public class CLIUpdateHandler implements UpdateHandler {
     @Override
     public void handle(BoardTileUpdate update) {
 
-            if(update.getTile().getTileType().equalsIgnoreCase("spawn"))
-                mCLIInfo.setSpawnTiles(update.getTile());
-            else
-                mCLIInfo.setNormalTiles(update.getTile(),update.getTilePos());
+
+                if(update.getTile().getTileType().equalsIgnoreCase("spawn"))
+                    mCLIInfo.setSpawnTiles(update.getTile());
+                else
+                    mCLIInfo.setNormalTiles(update.getTile(),update.getTilePos());
+
 
     }
     @Override
     public void handle(KillScoredUpdate update) {
 
             mCLIInfo.updateKillTrack(update.getPlayerKilledColor(),update.getKillerColor(),
-                update.isOverkill(),update.getScores());
+                 update.isOverkill(),update.getScores());
     }
     @Override
     public void handle(PlayerBoardFlipUpdate update) {
-        mCLIInfo.updateBoardFlip(update.getPlayerColor());
+      mCLIInfo.updateBoardFlip(update.getPlayerColor());
     }
     @Override
     public void handle(ActivePlayerUpdate update) {
+
+     if(mCLIInfo.getOwnerColor() != update.getPlayerColor()){
+         mCLIInfo.getBoard().addPlayers(mCLIInfo.getBoard().getBoardCLI(),mCLIInfo.getPlayersInfo());
+         cliView.infoPlayers();
+     }else {
+         if(!mCLIInfo.getOwner().getPlayerPosition().equalsIgnoreCase("not respawned"))
+             cliView.availableCommands();
+     }
+
         mCLIInfo.setActivePlayer(update.getPlayerColor());
+
+
+
     }
     @Override
     public void handle(PlayerRespawnUpdate update){
@@ -73,5 +94,6 @@ public class CLIUpdateHandler implements UpdateHandler {
     @Override
     public void handle(RemainingActionsUpdate update) {
         //TODO
+
     }
 }
