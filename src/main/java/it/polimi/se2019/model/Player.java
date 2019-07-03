@@ -118,6 +118,7 @@ public class Player extends Observable<Update> {
 
     public Player setAmmo(AmmoValue ammo) {
         mAmmo = ammo;
+        notify(new PlayerAmmoUpdate(mColor, mAmmo));
         return this;
     }
 
@@ -272,7 +273,7 @@ public class Player extends Observable<Update> {
     /**
      * Increase the numbers of deaths of player
      */
-    public void incrementDeaths() {
+    private void incrementDeaths() {
         mDeathsNum += 1;
     }
 
@@ -363,13 +364,16 @@ public class Player extends Observable<Update> {
      * @param value the position where to put player
      */
     public void respawn(Position value) {
+        // avoid incrementing deaths in first spawn
+        if (mDead) {
+            incrementDeaths();
+        }
+
         for (int i = 0; i < mDamageTaken.length; i++) {
             mDamageTaken[i] = null;
         }
 
         notify(new PlayerRespawnUpdate(mColor));
-
-        incrementDeaths();
         setDeadStatus();
         move(value);
     }

@@ -150,6 +150,8 @@ public class ControllerTest {
         assertNull(greyPlayer.getPowerUpCard(0));
         // still waiting for yellowPlayer respawn
         assertEquals(1, game.getTurnNumber());
+        // make sure to add a death when respawning
+        assertEquals(1, greyPlayer.getDeathsNum());
 
 
         controller.handle(new RespawnPowerUpRequest(0, PlayerColor.YELLOW));
@@ -195,8 +197,10 @@ public class ControllerTest {
         assertNull(cards[1]);
         // now player complete its spawn, flag remains to true
         assertTrue(controller.isActivePlayerSpawnedThisTurn());
-        // and skip an erroneous turn start
+        // and skip an erroneous turn start that would change player
         assertEquals(1, game.getTurnNumber());
+        // make sure to not add a death when spawning first time
+        assertEquals(0, game.getActivePlayer().getDeathsNum());
 
         // pass turn, same thing for yellow player
         controller.handle(new TurnEndRequest(PlayerColor.BLUE));
