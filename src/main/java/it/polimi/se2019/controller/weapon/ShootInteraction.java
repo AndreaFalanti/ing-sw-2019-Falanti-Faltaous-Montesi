@@ -96,6 +96,8 @@ public class ShootInteraction {
                 synchronized (mLock) {
                     mLock.notifyAll();
                 }
+
+                context.getView().confirmEndOfInteraction();
             }
 
             // announce end of shoot interaction
