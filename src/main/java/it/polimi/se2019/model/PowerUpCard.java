@@ -82,15 +82,6 @@ public class PowerUpCard {
         int quantity;
     }
 
-    /**
-     * Returns a deep copy of the powerup card
-     * @return return powerupcard
-     */
-    public PowerUpCard deepCopy() {
-        // NB. this object is immutable
-        return this;
-    }
-
     @Override
     public String toString() {
         return "PowerUpCard{" +

@@ -244,11 +244,8 @@ public class MainScreen extends Observable<Request> {
      * @param playerController Player board controller
      */
     private void updateDamageMarksAndDeaths (Player player, PlayerPane playerController) {
-        for (PlayerColor color : player.getDamageTaken()) {
-            if (color != null) {
-                playerController.addDamageTokens(color, 1);
-            }
-        }
+        playerController.updateDamageTokens(player.getDamageTaken());
+
         for (int i = 0; i < player.getDeathsNum(); i++) {
             playerController.addDeath();
         }

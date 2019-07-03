@@ -32,7 +32,7 @@ public class GraphicUpdateHandler implements UpdateHandler {
     @Override
     public void handle(PlayerDamageUpdate update) {
         Platform.runLater(() -> mMainController.getPlayerControllerFromColor(update.getDamagedPlayerColor())
-                 .addDamageTokens(update.getShooterPlayerColor(), update.getDamageTaken()));
+                 .updateDamageTokens(update.getDamageTaken()));
     }
 
     @Override

@@ -359,13 +359,13 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void update(Request message) {
-        PlayerColor activePlayer = isHandlingShootInteraction() ?
+        /*PlayerColor activePlayer = isHandlingShootInteraction() ?
                 getShootInteraction().getActivePlayerColor() :
                 mGame.getActivePlayer().getColor();
 
         if (!activePlayer.equals(message.getViewColor()))
             mPlayerViews.get(message.getViewColor()).reportError("It's not your turn!");
-        else
+        else*/
             message.handleMe(this);
     }
 }

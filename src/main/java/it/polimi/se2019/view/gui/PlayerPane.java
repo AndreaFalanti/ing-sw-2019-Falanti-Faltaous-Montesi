@@ -100,13 +100,15 @@ public class PlayerPane {
 
     /**
      * Add damage tokens to this board
-     * @param color Color of player that dealt the damage
-     * @param quantity Number of tokens to add
+     * @param colors Damage token array of colors
      */
-    public void addDamageTokens (PlayerColor color, int quantity) {
-        Image tokenImage = new Image(GuiResourcePaths.DAMAGE_TOKEN + color.getPascalName() + ".png");
-
-        for (int i = 0; i < quantity; i++) {
+    public void updateDamageTokens (PlayerColor[] colors) {
+        eraseDamage();
+        for (PlayerColor color : colors) {
+            if (color == null) {
+                break;
+            }
+            Image tokenImage = new Image(GuiResourcePaths.DAMAGE_TOKEN + color.getPascalName() + ".png");
             GuiUtils.addImageViewToBox(damageTokensBox, mDamageTokenHeight, mDamageTokenWidth, tokenImage);
         }
     }

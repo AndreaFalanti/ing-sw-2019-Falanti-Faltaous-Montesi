@@ -1,13 +1,10 @@
 package it.polimi.se2019.controller.weapon.expression;
 
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.*;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Class recording information to undo a shoot interaction
@@ -19,8 +16,8 @@ public class ShootUndoInfo {
         private PlayerColor[] mOriginalDamageTaken;
         private Map<PlayerColor, Integer> mOriginalMarks;
         private boolean mOriginalDead;
-        private int mOriginalDeathsNum;
-        private List<Boolean> mOriginalWeaponLoadStatus;
+        private Weapon[] mOriginalWeapons;
+        private PowerUpCard[] mOriginalPowerUpCards;
 
         PlayerUndoInfo(Player player) {
             if (player == null || player.getWeapons() == null)
@@ -37,24 +34,36 @@ public class ShootUndoInfo {
                             Map.Entry::getValue
                     ));
             mOriginalDead = player.isDead();
-            mOriginalDeathsNum = player.getDeathsNum();
-            mOriginalWeaponLoadStatus = Arrays.stream(player.getWeapons())
-                    .map(weapon -> weapon != null && weapon.isLoaded())
-                    .collect(Collectors.toList());
+
+            int weaponsNum = player.getWeapons().length;
+            mOriginalWeapons = new Weapon[weaponsNum];
+            for (int i = 0; i < weaponsNum; i++) {
+                Weapon weapon =  player.getWeapon(i);
+                mOriginalWeapons[i] = (weapon != null) ? weapon.deepCopy() : null;
+            }
+
+            int powerUpNum = player.getPowerUps().length;
+            mOriginalPowerUpCards = new PowerUpCard[powerUpNum];
+            for (int i = 0; i < powerUpNum; i++) {
+                mOriginalPowerUpCards[i] = player.getPowerUpCard(i);
+            }
         }
 
-        void undoPlayer(Player player) {
+        void undoPlayer(Player player, boolean activePlayer) {
             player.move(mOriginalPosition);
-            player.setAmmo(mOriginalAmmo);
-            player.setDamageTaken(mOriginalDamageTaken);
             player.setMarks(mOriginalMarks);
-            player.setDead(mOriginalDead);
-            player.setDeathsNum(mOriginalDeathsNum);
-            IntStream.range(0, player.getWeapons().length)
-                    .filter(i -> player.getWeapons()[i] != null)
-                    .forEach(i ->
-                            player.getWeapons()[i].setLoaded(mOriginalWeaponLoadStatus.get(i))
-                    );
+            player.setPowerUpCards(mOriginalPowerUpCards);
+
+            // only for shooter
+            if (activePlayer) {
+                player.setAmmo(mOriginalAmmo);
+                player.setWeapons(mOriginalWeapons);
+            }
+            // only for other players
+            else {
+                player.setDamageTaken(mOriginalDamageTaken);
+                player.setDead(mOriginalDead);
+            }
         }
     }
 
@@ -80,7 +89,8 @@ public class ShootUndoInfo {
         mUndone = true;
 
         mGame.getPlayers()
-                .forEach(pl -> mPlayerUndoInfo.get(pl.getColor()).undoPlayer(pl));
+                .forEach(pl -> mPlayerUndoInfo.get(pl.getColor())
+                        .undoPlayer(pl, pl.getColor() == mGame.getActivePlayer().getColor()));
         mGame.increaseActionCounter();
     }
 }

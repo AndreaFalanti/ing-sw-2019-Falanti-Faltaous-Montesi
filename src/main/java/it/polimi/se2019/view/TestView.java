@@ -111,11 +111,11 @@ public class TestView extends View {
 
             @Override
             public void handle(PlayerDamageUpdate update) {
-                mGame.handleDamageInteraction(
+                /*mGame.handleDamageInteraction(
                         update.getShooterPlayerColor(),
                         update.getDamagedPlayerColor(),
                         new Damage(update.getDamageTaken(), 0)
-                );
+                );*/
             }
 
             @Override

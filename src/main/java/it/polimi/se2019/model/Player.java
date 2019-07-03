@@ -122,15 +122,29 @@ public class Player extends Observable<Update> {
         return this;
     }
 
-    public void setDeathsNum(int deathsNum) {
-        mDeathsNum = deathsNum;
+    public void setWeapons(Weapon[] weapons) {
+        mWeapons = weapons;
+        notify(new PlayerWeaponsUpdate(mColor, mWeapons));
+    }
+
+    public void setPowerUpCards(PowerUpCard[] powerUpCards) {
+        mPowerUpCards = powerUpCards;
+        notify(new PlayerPowerUpsUpdate(mColor, mPowerUpCards));
     }
 
     public void setDamageTaken(PlayerColor[] damageTaken) {
         mDamageTaken = damageTaken;
+        notify(new PlayerDamageUpdate(mColor, mDamageTaken));
     }
 
     public void setMarks(Map<PlayerColor, Integer> marks) {
+        // This maps have same PlayerColor set, so can optimize notifies by checking if values are actually changed
+        for (Map.Entry<PlayerColor, Integer> entry : marks.entrySet()) {
+            if (!marks.get(entry.getKey()).equals(mMarks.get(entry.getKey()))) {
+                notify(new PlayerMarksUpdate(mColor, mMarks.get(entry.getKey()), entry.getKey()));
+            }
+        }
+
         mMarks = marks;
     }
 
@@ -240,9 +254,6 @@ public class Player extends Observable<Update> {
             mMarks.put(attackingPlayer, 0);
         }
 
-        // store initial damage value + marks converted to damage, so that can update view properly
-        int damageMemory = damage;
-
         for (int i = 0; i < mDamageTaken.length && damage > 0; i++) {
             if (mDamageTaken[i] == null) {
                 mDamageTaken[i] = attackingPlayer;
@@ -250,8 +261,7 @@ public class Player extends Observable<Update> {
             }
         }
 
-        // (damageMemory - damage) to avoid exceeding possible max damage of 12
-        notify(new PlayerDamageUpdate(mColor, damageMemory - damage, attackingPlayer));
+        notify(new PlayerDamageUpdate(mColor, mDamageTaken));
     }
 
     /**

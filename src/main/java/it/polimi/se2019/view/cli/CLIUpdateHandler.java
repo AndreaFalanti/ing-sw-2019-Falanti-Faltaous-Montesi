@@ -23,8 +23,8 @@ public class CLIUpdateHandler implements UpdateHandler {
     }
     @Override
     public void handle(PlayerDamageUpdate update) {
-
-            mCLIInfo.updateDamage(update.getDamagedPlayerColor(),update.getDamageTaken(),update.getShooterPlayerColor());
+        //TODO: adapt to new update structure
+            //mCLIInfo.updateDamage(update.getDamagedPlayerColor(),update.getDamageTaken(),update.getShooterPlayerColor());
     }
     @Override
     public void handle(PlayerMarksUpdate update) {
