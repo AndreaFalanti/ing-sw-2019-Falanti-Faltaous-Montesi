@@ -101,6 +101,11 @@ public class CLIView extends View {
     }
 
     @Override
+    public void confirmEndOfInteraction() {
+        //TODO
+    }
+
+    @Override
     public void registerAll(Observer<Request> observer) {
         register(observer);
 

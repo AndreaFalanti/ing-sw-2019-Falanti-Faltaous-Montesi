@@ -125,6 +125,11 @@ public class VirtualView extends View {
     }
 
     @Override
+    public void confirmEndOfInteraction() {
+        sendResponse(new InteractionEndResponse());
+    }
+
+    @Override
     public void registerAll(Observer<Request> observer) {
         register(observer);
     }

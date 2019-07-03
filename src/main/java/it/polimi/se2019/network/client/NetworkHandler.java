@@ -145,6 +145,11 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
     }
 
     @Override
+    public void handle(InteractionEndResponse response) {
+        mView.confirmEndOfInteraction();
+    }
+
+    @Override
     public boolean sendUsername(String username) {
         mConnection.sendMessage(username);
 

@@ -233,6 +233,11 @@ public class TestView extends View {
     }
 
     @Override
+    public void confirmEndOfInteraction() {
+
+    }
+
+    @Override
     public void registerAll(Observer<Request> observer) {
         register(observer);
     }

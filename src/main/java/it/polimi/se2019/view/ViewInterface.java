@@ -28,13 +28,17 @@ public interface ViewInterface extends Observer<Update> {
 
      void showValidPositions(List<Position> positions);
 
+    /**
+     * Ask player for targeting scopes or tagback grenades activation
+     * @param indexes Valid powerUp indexes
+     */
      void showPowerUpSelectionView(List<Integer> indexes);
 
     // WEAPONS related
 
     /**
      * Ask a player to pick a room color
-     * @param possibleColors
+     * @param possibleColors Valid colors
      */
      void showRoomColorSelectionView(Set<TileColor> possibleColors);
 
@@ -64,7 +68,7 @@ public interface ViewInterface extends Observer<Update> {
      * @param priorityMap The possible effects that the player can choose from. The effects are associated to their
      *                    respective priorities. If an effect is picked that is not present among this map, the the
      *                    controller should consider the call an input error.
-     * @param possibleEffects TODO complete this doc
+     * @param possibleEffects Valid effects
      */
     void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap,
                                                   Set<Effect> possibleEffects);
@@ -76,14 +80,30 @@ public interface ViewInterface extends Observer<Update> {
      */
     void showWeaponModeSelectionView(Effect effect1, Effect effect2);
 
+    /**
+     * Ask player to select a powerUp for respawn
+     */
     void showRespawnPowerUpDiscardView();
 
+    /**
+     * Ask player to select an ammo color for paying a targeting scope activation
+     * @param possibleColors Valid ammo colors
+     */
     void showAmmoColorSelectionView(Set<TileColor> possibleColors);
 
+    /**
+     * Reinitialize view with most recent data
+     * @param initInfo Initialization info updated
+     */
     void reinitialize(InitializationInfo initInfo);
 
     @Override
     void update(Update update);
+
+    /**
+     * Confirm that current interaction is ended
+     */
+    void confirmEndOfInteraction ();
 
     /**
      * Register {@code observer} to all subcomponents of the View of type {@code Observable<Request>}

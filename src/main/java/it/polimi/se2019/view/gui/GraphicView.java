@@ -212,6 +212,11 @@ public class GraphicView extends View {
     }
 
     @Override
+    public void confirmEndOfInteraction() {
+        // do nothing
+    }
+
+    @Override
     public void registerAll(Observer<Request> observer) {
         mMainFrameController.getBoardController().register(observer);
         mMainFrameController.register(observer);

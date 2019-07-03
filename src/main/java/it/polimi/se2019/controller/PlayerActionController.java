@@ -91,6 +91,7 @@ public class PlayerActionController implements InvalidActionResponseHandler {
             }
             else {
                 action.perform(mMainController.getGame());
+                requestingView.confirmEndOfInteraction();
             }
 
             if (action.consumeAction()) {
