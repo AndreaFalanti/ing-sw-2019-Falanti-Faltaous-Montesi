@@ -130,46 +130,7 @@ public class ShootInteraction {
         );
 
         // handle targeting scope activation
-        if (amount.getDamage() > 0) {
-            Set<Integer> possibleIndices = inflicterPlayer.getPowerUpIndices(PowerUpType.TARGETING_SCOPE);
-
-            possibleIndices.forEach(index -> {
-                // check if the scope can be payed for
-                boolean[] scopeExcludedMask = ArrayUtils.from(IntStream.range(0, MAX_POWERUPS_IN_HAND)
-                        .mapToObj(i -> i != index && inflicterPlayer.getPowerUpCard(i) != null)
-                        .collect(Collectors.toList())
-                );
-
-                boolean canPay = Stream.of(TileColor.RED, TileColor.YELLOW, TileColor.BLUE)
-                        .map(AmmoValue::from)
-                        .anyMatch(ammo ->
-                                AmmoPayment.isValid(
-                                        inflicterPlayer,
-                                        ammo,
-                                        ArrayUtils.ofAll(false, 3)
-                                ) ||
-                                        AmmoPayment.isValid(
-                                                inflicterPlayer,
-                                                ammo,
-                                                scopeExcludedMask
-                                        )
-                        );
-
-                if (canPay) {
-                    // the activation of each scope is requested individually from the user
-                    inflicterView.showMessage(
-                            "You can use your targeting scope on one of the selected targets! Select it in the " +
-                                    "powerup menu to use it."
-                    );
-
-                    if (requestPowerupActivation(
-                            inflicter, PowerUpType.TARGETING_SCOPE.toString(), index)
-                    ) {
-                        useTargetingScope(inflicter, inflicted, index);
-                    }
-                }
-            });
-        }
+        handleTargetingScope(inflicter, inflicted, amount);
 
         inflicted.stream()
                 // actually do damage to inflicted player
@@ -178,25 +139,10 @@ public class ShootInteraction {
 
                 // handle tagback activation
                 .forEach(singularInflicted -> {
-                    Player inflictedPlayer = game.getPlayerFromColor(singularInflicted);
-                    View inflictedView = mPlayerViews.get(singularInflicted);
+                    handleTagbackGrenade()
+                })
+                .forEach(singularInflicted -> {
 
-                    if (board.canSee(inflictedPlayer.getPos(), inflicterPlayer.getPos())) {
-                        Set<Integer> possibleIndices = inflictedPlayer.getPowerUpIndices(PowerUpType.TAGBACK_GRENADE);
-
-                        possibleIndices.forEach(index -> {
-                            inflictedView.showMessage(
-                                    "You can use your tagback grenade on " + inflicterPlayer.getName() + "!" +
-                                            "Select it from the powerup menu to use it."
-                            );
-
-                            if (requestPowerupActivation(
-                                    singularInflicted, PowerUpType.TAGBACK_GRENADE.toString(), index)
-                            ) {
-                                useTagbackGrenade(singularInflicted, inflicter, index);
-                            }
-                        });
-                    }
                 });
     }
 
@@ -561,8 +507,84 @@ public class ShootInteraction {
                 continue;
             }
 
-
             return true;
+        }
+    }
+
+    // handle targeting scope activation
+    private void handleTargetingScope(PlayerColor inflicter, Set<PlayerColor> inflicted, Damage damageInflicted) {
+        Player inflicterPlayer = mGame.getPlayerFromColor(inflicter);
+        View inflicterView = mPlayerViews.get(inflicter);
+
+        if (damageInflicted.getDamage() > 0) {
+            Set<Integer> possibleIndices = inflicterPlayer.getPowerUpIndices(PowerUpType.TARGETING_SCOPE);
+
+            possibleIndices.forEach(index -> {
+                // check if the scope can be payed for
+                boolean[] scopeExcludedMask = ArrayUtils.from(IntStream.range(0, MAX_POWERUPS_IN_HAND)
+                        .mapToObj(i -> i != index && inflicterPlayer.getPowerUpCard(i) != null)
+                        .collect(Collectors.toList())
+                );
+
+                boolean canPay = Stream.of(TileColor.RED, TileColor.YELLOW, TileColor.BLUE)
+                        .map(AmmoValue::from)
+                        .anyMatch(ammo ->
+                                AmmoPayment.isValid(
+                                        inflicterPlayer,
+                                        ammo,
+                                        ArrayUtils.ofAll(false, 3)
+                                ) ||
+                                        AmmoPayment.isValid(
+                                                inflicterPlayer,
+                                                ammo,
+                                                scopeExcludedMask
+                                        )
+                        );
+
+                if (canPay) {
+                    // the activation of each scope is requested individually from the user
+                    inflicterView.showMessage(
+                            "You can use your targeting scope on one of the selected targets! Select it in the " +
+                                    "powerup menu to use it."
+                    );
+
+                    if (requestPowerupActivation(
+                            inflicter, PowerUpType.TARGETING_SCOPE.toString(), index)
+                    ) {
+                        useTargetingScope(inflicter, inflicted, index);
+                    }
+                }
+            });
+        }
+    }
+
+    // handle tagback grenade activation
+    private void handleTagbackGrenade(PlayerColor inflicter, PlayerColor inflicted) {
+        Player inflictedPlayer = mGame.getPlayerFromColor(inflicted);
+        Player inflicterPlayer = mGame.getPlayerFromColor(inflicter);
+        View inflictedView = mPlayerViews.get(inflicted);
+        View inflicterView = mPlayerViews.get(inflicter);
+        Board board = mGame.getBoard();
+
+        if (board.canSee(inflictedPlayer.getPos(), inflicterPlayer.getPos())) {
+            Set<Integer> possibleIndices = inflictedPlayer.getPowerUpIndices(PowerUpType.TAGBACK_GRENADE);
+
+            possibleIndices.forEach(index -> {
+                inflicterView.showMessage(
+                        inflictedPlayer.getName() + " is thinking..."
+                );
+
+                inflictedView.showMessage(
+                        "You can use your tagback grenade on " + inflicterPlayer.getName() + "!" +
+                                "Select it from the powerup menu to use it."
+                );
+
+                if (requestPowerupActivation(
+                        inflicted, PowerUpType.TAGBACK_GRENADE.toString(), index
+                )) {
+                    useTagbackGrenade(inflicted, inflicter, index);
+                }
+            });
         }
     }
 
@@ -572,6 +594,8 @@ public class ShootInteraction {
 
         mGame.handleDamageInteraction(inflicter, inflicted, new Damage(0, 1));
     }
+
+    // use targeting scope
     private void useTargetingScope(PlayerColor inflicterColor, Set<PlayerColor> possibleTargets, int index) {
         Player inflicter = mGame.getPlayerFromColor(inflicterColor);
         View inflicterView = mPlayerViews.get(inflicterColor);
