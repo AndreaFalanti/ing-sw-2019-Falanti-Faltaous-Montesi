@@ -44,7 +44,7 @@ public class Controller implements Observer<Request>, RequestHandler {
         mGame = game;
         mPlayerViews = playerViews;
         mPlayerActionController = new PlayerActionController(this);
-        mShootInteraction = new ShootInteraction(mGame, mPlayerViews);
+        mShootInteraction = new ShootInteraction(this, mGame, mPlayerViews);
 
         mPlayerNotSpawnedCounter = playerViews.size();
         mActivePlayerColor = mGame.getActivePlayer().getColor();

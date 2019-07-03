@@ -41,10 +41,12 @@ public class ShootInteraction {
     private final Object mLock = new Object();
     private final Map<PlayerColor, View> mPlayerViews;
     private final Game mGame;
+    private final Controller mController;
 
     // trivial constructors
-    public ShootInteraction(Game game, Map<PlayerColor, View> playerViews) {
+    public ShootInteraction(Controller controller, Game game, Map<PlayerColor, View> playerViews) {
         mGame = game;
+        mController = controller;
         mPlayerViews = playerViews;
     }
 
@@ -138,12 +140,9 @@ public class ShootInteraction {
                         game.handleDamageInteraction(inflicter, singularInflicted, amount))
 
                 // handle tagback activation
-                .forEach(singularInflicted -> {
-                    handleTagbackGrenade()
-                })
-                .forEach(singularInflicted -> {
-
-                });
+                .forEach(singularInflicted ->
+                    handleTagbackGrenade(inflicter, singularInflicted)
+                );
     }
 
     // move player around
@@ -574,6 +573,9 @@ public class ShootInteraction {
                         inflictedPlayer.getName() + " is thinking..."
                 );
 
+                // pass control to tagback activator
+                mController.setActivePlayerColor(inflicted);
+
                 inflictedView.showMessage(
                         "You can use your tagback grenade on " + inflicterPlayer.getName() + "!" +
                                 "Select it from the powerup menu to use it."
@@ -584,6 +586,9 @@ public class ShootInteraction {
                 )) {
                     useTagbackGrenade(inflicted, inflicter, index);
                 }
+
+                // give control back to shooter
+                mController.setActivePlayerColor(inflicter);
             });
         }
     }
