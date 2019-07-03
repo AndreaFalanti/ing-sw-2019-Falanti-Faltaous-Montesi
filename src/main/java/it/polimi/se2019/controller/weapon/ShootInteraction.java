@@ -221,7 +221,7 @@ public class ShootInteraction {
                 break;
 
             // else report error and request input again
-            selectingView.reportError(String.format(
+            reportError(selectingView, String.format(
                     "Illegal %s selection made: %s\n" +
                             "Possible selection set: %s",
                     selectionDescriptor, selection, possibleToSelect
@@ -241,7 +241,7 @@ public class ShootInteraction {
                                                                      String selectionDescriptor) {
         // undo if selection cannot be performed...
         if (possibleToSelect.size() < min) {
-            selectingView.reportError(Controller.NO_ACTIONS_REMAINING_ERROR_MSG);
+            reportError(selectingView, Controller.NO_ACTIONS_REMAINING_ERROR_MSG);
             throw new UndoShootInteractionException();
         }
 
@@ -266,7 +266,7 @@ public class ShootInteraction {
                 return selection.stream();
 
             else
-                selectingView.reportError(String.format(
+                reportError(selectingView, String.format(
                         "Over-sized %s selection received: %d (max: %d)",
                         selectionDescriptor, selection.size(), max
                 ));
@@ -314,7 +314,7 @@ public class ShootInteraction {
 
         // if the effects cannot be payed, the selection is invalid. Ask it again
         if (!AmmoPayment.canPayWithPowerUps(payingPlayer, costToPay)) {
-            payerView.reportError("The effects you chose cost too much to activate!" +
+            reportError(payerView, "The effects you chose cost too much to activate!" +
                     " Select less effects or undo the shoot interaction"
             );
 
@@ -349,7 +349,7 @@ public class ShootInteraction {
                         costToPay,
                         selectedPowerupsMask
                 )) {
-                    payerView.reportError(String.format(
+                    reportError(payerView, String.format(
                             "You cannot pay the selected effects (%s) with these powerups: %s",
                             thingsToPay, selectedPowerups
                     ));
@@ -476,6 +476,11 @@ public class ShootInteraction {
                 .get(0);
     }
 
+    // report error
+    private void reportError(View view, String message) {
+        view.showMessage(message);
+    }
+
     /************************/
     /* Powerup interactions */
     /************************/
@@ -501,7 +506,7 @@ public class ShootInteraction {
             int selectedIndex = selectedIndices.iterator().next();
 
             if (selectedIndex != index) {
-                view.reportError("You can't use a " +
+                reportError(view, "You can't use a " +
                         mGame.getPlayerFromColor(activator).getPowerUpCard(selectedIndex).getType() +
                         " you can only use a " + powerupName
                 );
