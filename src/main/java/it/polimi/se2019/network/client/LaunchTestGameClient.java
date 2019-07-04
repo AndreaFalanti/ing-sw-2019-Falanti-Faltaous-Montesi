@@ -2,12 +2,12 @@ package it.polimi.se2019.network.client;
 
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.network.connection.Connection;
+import it.polimi.se2019.network.connection.RmiConnection;
 import it.polimi.se2019.network.connection.SocketConnection;
 import it.polimi.se2019.view.TestView;
-import it.polimi.se2019.network.connection.RmiConnection;
 
-import static it.polimi.se2019.network.server.LaunchTestGameServer.SOCKET_PORT;
-import static it.polimi.se2019.util.InteractionUtils.*;
+import static it.polimi.se2019.util.InteractionUtils.input;
+import static it.polimi.se2019.util.InteractionUtils.print;
 
 public class LaunchTestGameClient {
     public static void main(String[] args) {

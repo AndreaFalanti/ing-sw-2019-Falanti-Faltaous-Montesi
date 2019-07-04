@@ -46,7 +46,7 @@ public class SocketConnection implements Connection {
                     connectionConsumer.accept(accept(serverSocket));
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.log(Level.SEVERE, e.getMessage(), e);
             }
         }).start();
     }
@@ -61,7 +61,7 @@ public class SocketConnection implements Connection {
             result = new SocketConnection(serverSocket.accept());
             logger.info("Accepted client socket");
         } catch (IOException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return result;
@@ -74,7 +74,7 @@ public class SocketConnection implements Connection {
             Object[] logObjects = {host, SOCKET_PORT};
             logger.log(Level.INFO, "Established connection with server [{0}, {1}]", logObjects);
         } catch (IOException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return result;
@@ -108,7 +108,7 @@ public class SocketConnection implements Connection {
             try {
                 result = mIn.readLine();
             } catch (IOException e) {
-                logger.log(Level.SEVERE, e.getMessage(), e.fillInStackTrace());
+                logger.log(Level.SEVERE, e.getMessage(), e);
             }
 
             // if result is null, the other connection endpoint has disconnected abruptly

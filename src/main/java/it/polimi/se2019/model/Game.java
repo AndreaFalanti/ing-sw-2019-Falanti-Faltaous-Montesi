@@ -12,7 +12,6 @@ import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.InitializationInfo;
 
-import java.nio.channels.IllegalSelectorException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;

@@ -1,9 +1,6 @@
 package it.polimi.se2019.network.server;
 
 import it.polimi.se2019.network.connection.Connection;
-import it.polimi.se2019.network.connection.ConnectionType;
-
-import java.net.Socket;
 
 public interface ConnectionRegister {
     boolean isUsernameAvailable (String username);

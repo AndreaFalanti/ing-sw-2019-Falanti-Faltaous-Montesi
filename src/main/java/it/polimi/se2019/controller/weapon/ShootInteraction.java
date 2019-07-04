@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
-
 public class ShootInteraction {
     // logger
     private Logger mLogger = Logger.getLogger(getClass().getName());
@@ -319,7 +317,7 @@ public class ShootInteraction {
         Player payingPlayer = mGame.getPlayerFromColor(payingPlayerColor);
         View payerView = mPlayerViews.get(payingPlayerColor);
 
-        LOGGER.log(Level.INFO,
+        mLogger.log(Level.INFO,
                 "proceeding with payment of {0}\n" +
                         "Total cost to pay: {1}\n" +
                         "Remaining ammo: {2}",
@@ -348,7 +346,7 @@ public class ShootInteraction {
 
         // otherwise a powerup discard is requested
         else {
-            LOGGER.log(Level.INFO, "starting poewrup discard interaction loop...");
+            mLogger.log(Level.INFO, "starting poewrup discard interaction loop...");
 
             while (true) {
                 boolean[] selectedPowerupsMask =
@@ -375,7 +373,7 @@ public class ShootInteraction {
 
                 // selection valid
                 else {
-                    LOGGER.log(Level.INFO,
+                    mLogger.log(Level.INFO,
                             "Player paying discarding powerups: {0}",
                             selectedPowerups
                     );

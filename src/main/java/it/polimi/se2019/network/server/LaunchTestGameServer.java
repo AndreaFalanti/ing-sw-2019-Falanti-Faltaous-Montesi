@@ -6,18 +6,13 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.network.connection.Connection;
 import it.polimi.se2019.network.connection.RmiConnection;
-import it.polimi.se2019.network.connection.SocketConnection;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.VirtualView;
-import it.polimi.se2019.view.cli.CLIView;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;

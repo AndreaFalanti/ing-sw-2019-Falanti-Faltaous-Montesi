@@ -3,7 +3,6 @@ package it.polimi.se2019.view.gui;
 import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.network.connection.RmiConnection;
 import it.polimi.se2019.network.connection.SocketConnection;
-import it.polimi.se2019.network.server.LaunchServer;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -13,8 +12,6 @@ import javafx.scene.layout.Pane;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static it.polimi.se2019.network.server.LaunchServer.RMI_SERVER_ID;
 
 public class LoginScreen {
     @FXML

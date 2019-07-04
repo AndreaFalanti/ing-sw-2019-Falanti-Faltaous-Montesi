@@ -1,16 +1,9 @@
 package it.polimi.se2019.network.server;
 
 import it.polimi.se2019.network.connection.Connection;
-import it.polimi.se2019.network.connection.ConnectionType;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

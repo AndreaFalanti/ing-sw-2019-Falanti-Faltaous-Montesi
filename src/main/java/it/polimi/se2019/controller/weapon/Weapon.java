@@ -1,7 +1,6 @@
 package it.polimi.se2019.controller.weapon;
 
 import com.google.gson.Gson;
-import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.controller.weapon.expression.Behaviour;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.AmmoValue;

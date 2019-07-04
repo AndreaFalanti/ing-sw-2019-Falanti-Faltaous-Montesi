@@ -1,14 +1,11 @@
 package it.polimi.se2019.model.board.serialization;
 
 import com.google.gson.*;
-import it.polimi.se2019.model.Position;
-import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.Tile;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class CustomTilesDeserializer implements JsonDeserializer<List<Tile>>, JsonSerializer<List<Tile>> {
 

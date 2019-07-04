@@ -1,7 +1,5 @@
 package it.polimi.se2019.network.server;
 
-import com.sun.xml.internal.ws.model.RuntimeModelerException;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

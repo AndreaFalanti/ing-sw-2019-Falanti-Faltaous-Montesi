@@ -4,15 +4,10 @@ import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.model.AmmoValue;
-import it.polimi.se2019.model.PowerUpCard;
-import it.polimi.se2019.model.action.AmmoPayment;
-import it.polimi.se2019.util.ArrayUtils;
 import it.polimi.se2019.view.View;
 
 import java.util.*;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class PickEffect extends Expression {
     // subexpressions

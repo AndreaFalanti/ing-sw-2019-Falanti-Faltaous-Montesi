@@ -1,9 +1,6 @@
 package it.polimi.se2019.network.server;
 
-import it.polimi.se2019.network.connection.RmiConnection;
-
 import java.io.IOException;
-import java.rmi.registry.LocateRegistry;
 import java.util.logging.Logger;
 
 public class LaunchServer {

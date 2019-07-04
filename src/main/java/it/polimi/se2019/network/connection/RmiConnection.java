@@ -10,6 +10,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
@@ -53,7 +54,7 @@ public class RmiConnection implements Connection {
                     mMailboxes.put(senderAddress, new LinkedBlockingQueue<>());
                 message = mMailboxes.get(senderAddress).take();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.log(Level.SEVERE, e.getMessage(), e);
             }
 
             return message;
@@ -87,9 +88,9 @@ public class RmiConnection implements Connection {
             registry.bind(RMI_STATION_REGISTRY_ID, new RmiStation());
 
         } catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         } catch (AlreadyBoundException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -125,7 +126,7 @@ public class RmiConnection implements Connection {
                     new Object[]{ acceptorAddress, acceptedAddress });
             result = new RmiConnection(acceptorAddress, acceptedAddress);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
         return result;
     }
@@ -148,7 +149,7 @@ public class RmiConnection implements Connection {
                     new Object[]{ addressToAccept, acceptorAddress });
             result = new RmiConnection(addressToAccept, acceptorAddress);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
         return result;
     }
@@ -161,9 +162,9 @@ public class RmiConnection implements Connection {
                     (RmiStationRemote) LocateRegistry.getRegistry(RMI_PORT)
                             .lookup(RMI_STATION_REGISTRY_ID);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         } catch (NotBoundException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return station;
@@ -174,7 +175,7 @@ public class RmiConnection implements Connection {
         try {
             getStation().storeMessage(mPenPalAddress, message);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -185,7 +186,7 @@ public class RmiConnection implements Connection {
         try {
             message = getStation().retrieveMessage(mAddress);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return message;
@@ -208,5 +209,19 @@ public class RmiConnection implements Connection {
     @Override
     public String getId() {
         return String.valueOf(mAddress);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RmiConnection that = (RmiConnection) o;
+        return mAddress == that.mAddress &&
+                mPenPalAddress == that.mPenPalAddress;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mAddress, mPenPalAddress);
     }
 }

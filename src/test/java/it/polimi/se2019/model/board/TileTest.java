@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class TileTest {
