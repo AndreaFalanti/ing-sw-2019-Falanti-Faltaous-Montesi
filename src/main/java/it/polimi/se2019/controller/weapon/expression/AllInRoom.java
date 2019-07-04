@@ -32,7 +32,7 @@ public class AllInRoom extends Behaviour {
 
         TileColor roomColor = getSub("color").eval(context).asColor();
         Set<Expression> playersInRoom = board.getRoom(roomColor)
-                .flatMap(pos -> players.stream().filter(pl -> pl.getPos().equals(pos)))
+                .flatMap(pos -> players.stream().filter(pl -> pl.isSpawned() && pl.getPos().equals(pos)))
                 .map(Player::getColor)
                 .map(TargetLiteral::new)
                 .map(l -> (Expression) l)

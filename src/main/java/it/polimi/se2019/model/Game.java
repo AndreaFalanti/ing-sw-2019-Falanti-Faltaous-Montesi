@@ -82,7 +82,8 @@ public class Game extends Observable<Update> {
         List<PowerUpCard> powerUpCards = PowerUpCard.returnDeckFromJson(Jsons.get("PowerUpCardDeck"));
         mPowerUpCardDeck = new Deck<>(powerUpCards);
 
-        List<Weapon> weaponCards = Weapons.getAll();
+        // List<Weapon> weaponCards = Weapons.getAll();
+        List<Weapon> weaponCards = Stream.generate(() -> Weapons.get("furnace")).limit(10).collect(Collectors.toList());
         mWeaponDeck = new Deck<>(weaponCards, false);
 
         refillAmmoTiles();
