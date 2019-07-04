@@ -1,6 +1,5 @@
 package it.polimi.se2019.view.cli;
 
-import it.polimi.se2019.network.client.ClientInterface;
 import it.polimi.se2019.network.client.ClientNetworkHandler;
 import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.network.connection.RmiConnection;
@@ -13,6 +12,8 @@ public class LoginCLI {
     private static final int SOCKETPORT = 4567;
     private static final int RMIPORT = 4568;
 
+    private LoginCLI() {
+    }
 
     private static void printLineToConsole(String message) {
         System.out.println(message);
@@ -53,7 +54,6 @@ public class LoginCLI {
         } while (!validCmd);
 
         ClientNetworkHandler mNetworkHandler;
-        ClientInterface client;
         boolean isValid=false;
         switch (result) {
             case 1:
