@@ -398,8 +398,6 @@ public class ShootInteraction {
 
     // select position
     public Position selectPosition(View view, Set<Position> range) {
-        view.showPositionSelectionView(range);
-
         return  waitForSelectionRequestSkippingObvious(
                 view,
                 () -> view.showPositionSelectionView(range),
