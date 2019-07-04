@@ -72,6 +72,7 @@
               "max": 2,
               "from": {
                 "expr": "All",
+                "exclude_previous_selections": true,
                 "from": {
                   "expr": "DistanceRange",
                   "origin": {
