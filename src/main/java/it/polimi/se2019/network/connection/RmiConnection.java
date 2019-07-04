@@ -1,9 +1,6 @@
 package it.polimi.se2019.network.connection;
 
-import com.sun.org.apache.regexp.internal.RE;
-import it.polimi.se2019.controller.response.Response;
 import it.polimi.se2019.network.server.RmiStationRemote;
-import jdk.internal.org.objectweb.asm.tree.LocalVariableAnnotationNode;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
@@ -18,8 +15,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.rmi.registry.LocateRegistry.createRegistry;
 
 public class RmiConnection implements Connection {
     /**
@@ -44,13 +39,9 @@ public class RmiConnection implements Connection {
 
         @Override
         public void storeMessage(int senderAddress, String message) {
-            try {
-                if (mMailboxes.get(senderAddress) == null)
-                    mMailboxes.put(senderAddress, new LinkedBlockingQueue<>());
-                mMailboxes.get(senderAddress).put(message);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            if (mMailboxes.get(senderAddress) == null)
+                mMailboxes.put(senderAddress, new LinkedBlockingQueue<>());
+            mMailboxes.get(senderAddress).add(message);
         }
 
         @Override
@@ -127,8 +118,8 @@ public class RmiConnection implements Connection {
             // TODO: include something else to decorate the accepted address
             int acceptedAddress = Integer.parseInt(rawHandshakeMessage);
 
-            getStation().addMailbox(acceptedAddress);
-            getStation().storeMessage(acceptedAddress, String.valueOf(acceptorAddress));
+            station.addMailbox(acceptedAddress);
+            station.storeMessage(acceptedAddress, String.valueOf(acceptorAddress));
 
             logger.log(Level.INFO, "Accepted connection: {0} - {1}",
                     new Object[]{ acceptorAddress, acceptedAddress });
