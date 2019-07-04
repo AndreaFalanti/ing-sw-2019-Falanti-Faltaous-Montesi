@@ -40,6 +40,8 @@ public class MainScreen extends Observable<Request> {
     @FXML
     private VBox chatBox;
     @FXML
+    private ScrollPane scrollLogger;
+    @FXML
     private VBox otherPlayerBoardsBox;
     @FXML
     private Pane buttonBox;
@@ -385,6 +387,8 @@ public class MainScreen extends Observable<Request> {
         }
 
         chatBox.getChildren().add(label);
+        //automatically scroll to last element
+        scrollLogger.setVvalue(1d);
     }
 
     /**
@@ -710,9 +714,13 @@ public class MainScreen extends Observable<Request> {
      * @param index Index to set in notification
      */
     private void setIndexForwardingOnWeapon(Node weapon, int index) {
-        weapon.setOnMouseClicked(event ->
-            notify(new WeaponSelectedRequest(index, mView.getOwnerColor()))
-        );
+        weapon.setOnMouseClicked(event -> {
+            logToChat("Switching weapon of index: " + index , false);
+            GuiUtils.setBoxEnableStatus(weaponBox,false);
+            setEnableStatusActionButtonBox(true);
+
+            notify(new WeaponSelectedRequest(index, mView.getOwnerColor()));
+        });
     }
 
     /**

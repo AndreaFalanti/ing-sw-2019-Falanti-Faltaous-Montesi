@@ -7,6 +7,7 @@ import it.polimi.se2019.model.update.*;
 import javafx.application.Platform;
 
 import java.util.Map;
+import java.util.SortedMap;
 
 public class GraphicUpdateHandler implements UpdateHandler {
     private MainScreen mMainController;
@@ -135,5 +136,19 @@ public class GraphicUpdateHandler implements UpdateHandler {
     @Override
     public void handle(RemainingActionsUpdate update) {
         Platform.runLater(() -> mMainController.getBoardController().updateRemainingActionsText(update.getRemainingActions()));
+    }
+
+    @Override
+    public void handle(EndGameUpdate update) {
+        mMainController.logToChat("///////////////////////", true);
+        String[] positions = {"1st", "2nd", "3rd", "4th", "5th"};
+
+        int counter = 0;
+        SortedMap<PlayerColor, Integer> leaderboard = update.getLeaderboard();
+        for (Map.Entry<PlayerColor, Integer> entry : leaderboard.entrySet()) {
+            mMainController.logToChat(positions[counter] + ") "
+                    + mMainController.getPlayerControllerFromColor(entry.getKey()).getPlayerUsername() + " score: "
+                    + entry.getValue(), false);
+        }
     }
 }

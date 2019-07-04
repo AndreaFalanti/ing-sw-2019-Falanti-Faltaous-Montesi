@@ -37,6 +37,7 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     private int mPlayerNotSpawnedCounter;
     private boolean mActivePlayerSpawnedThisTurn = false;
+    private PlayerColor mExpectedPlayingPlayer;
 
     // constructors
     public Controller(Game game, Map<PlayerColor, View> playerViews) {
@@ -262,6 +263,9 @@ public class Controller implements Observer<Request>, RequestHandler {
         if (areAllPlayersAlive()) {
             handleNextTurn();
         }
+        else {
+            sendRespawnNotificationToDeadPlayers();
+        }
     }
 
     @Override
@@ -318,7 +322,7 @@ public class Controller implements Observer<Request>, RequestHandler {
         }
 
         if (mPlayerNotSpawnedCounter > 0) {
-            mGame.startNextTurn();
+            startNextTurn();
             Player player = mGame.getActivePlayer();
 
             // handle initial spawn
@@ -330,8 +334,13 @@ public class Controller implements Observer<Request>, RequestHandler {
             mPlayerNotSpawnedCounter--;
         }
         else {
-            mGame.startNextTurn();
+            startNextTurn();
         }
+    }
+
+    private void startNextTurn () {
+        mGame.startNextTurn();
+        mExpectedPlayingPlayer = mGame.getActivePlayer().getColor();
     }
 
     private boolean areAllPlayersAlive () {
@@ -349,6 +358,9 @@ public class Controller implements Observer<Request>, RequestHandler {
             if (player.isDead()) {
                 player.addPowerUp(mGame.getPowerUpDeck().drawCard(), true);
                 mPlayerViews.get(player.getColor()).showRespawnPowerUpDiscardView();
+
+                mExpectedPlayingPlayer = player.getColor();
+                return;
             }
         }
     }
@@ -361,7 +373,7 @@ public class Controller implements Observer<Request>, RequestHandler {
     public void update(Request message) {
         PlayerColor activePlayer = isHandlingShootInteraction() ?
                 getShootInteraction().getActivePlayerColor() :
-                mGame.getActivePlayer().getColor();
+                mExpectedPlayingPlayer;
 
         if (!activePlayer.equals(message.getViewColor()))
             mPlayerViews.get(message.getViewColor()).reportError("It's not your turn!");

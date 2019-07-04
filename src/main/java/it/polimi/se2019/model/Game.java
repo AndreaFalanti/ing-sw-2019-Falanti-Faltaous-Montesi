@@ -6,10 +6,7 @@ import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.Tile;
-import it.polimi.se2019.model.update.ActivePlayerUpdate;
-import it.polimi.se2019.model.update.KillScoredUpdate;
-import it.polimi.se2019.model.update.RemainingActionsUpdate;
-import it.polimi.se2019.model.update.Update;
+import it.polimi.se2019.model.update.*;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
@@ -82,8 +79,7 @@ public class Game extends Observable<Update> {
         List<PowerUpCard> powerUpCards = PowerUpCard.returnDeckFromJson(Jsons.get("PowerUpCardDeck"));
         mPowerUpCardDeck = new Deck<>(powerUpCards);
 
-        // List<Weapon> weaponCards = Weapons.getAll();
-        List<Weapon> weaponCards = Stream.generate(() -> Weapons.get("thor")).limit(10).collect(Collectors.toList());
+        List<Weapon> weaponCards = Weapons.getAll();
         mWeaponDeck = new Deck<>(weaponCards, false);
 
         refillAmmoTiles();
@@ -167,6 +163,7 @@ public class Game extends Observable<Update> {
         mTurnNumber++;
         if (isGameOver()) {
             distributeTotalKillsScore();
+            notify(new EndGameUpdate(getScoreLeaderboard()));
             return;
         }
 
@@ -386,6 +383,14 @@ public class Game extends Observable<Update> {
         }
 
         return playerScores;
+    }
+
+    public SortedMap<PlayerColor, Integer> getScoreLeaderboard () {
+        // TODO: fix this
+        /*return getScoreMap().entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));*/
+        return null;
     }
 
     /**

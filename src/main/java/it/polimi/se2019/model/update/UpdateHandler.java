@@ -39,4 +39,7 @@ public interface UpdateHandler extends AbstractHandler<Update> {
     default void handle(RemainingActionsUpdate update) {
         fallbackHandle(update);
     }
+    default void handle(EndGameUpdate update) {
+        fallbackHandle(update);
+    }
 }

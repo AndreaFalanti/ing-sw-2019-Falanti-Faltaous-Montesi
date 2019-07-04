@@ -68,7 +68,7 @@
                <content>
                   <Pane prefWidth="546.0">
                      <children>
-                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="171.0" layoutY="3.0" prefHeight="382.0" prefWidth="340.0" vbarPolicy="ALWAYS">
+                        <ScrollPane fx:id="scrollLogger" fitToWidth="true" hbarPolicy="NEVER" layoutX="171.0" layoutY="3.0" prefHeight="382.0" prefWidth="340.0" vbarPolicy="ALWAYS">
                            <content>
                               <VBox fx:id="chatBox" prefHeight="327.0" prefWidth="278.0" />
                            </content>

@@ -142,20 +142,22 @@ public class ControllerTest {
 
         controller.handle(new TurnEndRequest(PlayerColor.BLUE));
         assertEquals(1, game.getTurnNumber());
-        // they should be asked for respawn, giving them a powerUp card
+        // yellow player should be asked to respawn, giving him a powerUp card
         assertNotNull(yellowPlayer.getPowerUpCard(0));
-        assertNotNull(greyPlayer.getPowerUpCard(0));
-
-        controller.handle(new RespawnPowerUpRequest(0, PlayerColor.GREY));
         assertNull(greyPlayer.getPowerUpCard(0));
-        // still waiting for yellowPlayer respawn
-        assertEquals(1, game.getTurnNumber());
-        // make sure to add a death when respawning
-        assertEquals(1, greyPlayer.getDeathsNum());
-
 
         controller.handle(new RespawnPowerUpRequest(0, PlayerColor.YELLOW));
         assertNull(yellowPlayer.getPowerUpCard(0));
+        // still waiting for greyPlayer respawn
+        assertEquals(1, game.getTurnNumber());
+        // make sure to add a death when respawning
+        assertEquals(1, yellowPlayer.getDeathsNum());
+        // grey player should be asked to respawn, giving him a powerUp card
+        assertNotNull(greyPlayer.getPowerUpCard(0));
+
+
+        controller.handle(new RespawnPowerUpRequest(0, PlayerColor.GREY));
+        assertNull(greyPlayer.getPowerUpCard(0));
 
         // new turn started because all player have respawned
         assertEquals(2, game.getTurnNumber());

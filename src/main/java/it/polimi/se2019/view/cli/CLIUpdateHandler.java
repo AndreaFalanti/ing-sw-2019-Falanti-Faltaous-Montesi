@@ -94,6 +94,10 @@ public class CLIUpdateHandler implements UpdateHandler {
     @Override
     public void handle(RemainingActionsUpdate update) {
         //TODO
+    }
 
+    @Override
+    public void handle(EndGameUpdate update) {
+        //TODO
     }
 }

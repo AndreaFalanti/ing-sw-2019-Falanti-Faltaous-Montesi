@@ -5,8 +5,6 @@ import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.board.Board;
-import it.polimi.se2019.network.connection.RmiConnection;
-import it.polimi.se2019.network.connection.SocketConnection;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
@@ -91,7 +89,7 @@ public class GameThread extends Thread {
 
         int boardID = mRandom.nextInt(4) + 1;
         Board board = Board.fromJson(Jsons.get("boards/game/board" + boardID));
-        int killsTarget = 8;
+        int killsTarget = 1;
 
         initializeGame(board, players, killsTarget);
     }
