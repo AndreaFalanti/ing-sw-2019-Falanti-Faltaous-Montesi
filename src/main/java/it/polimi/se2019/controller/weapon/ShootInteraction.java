@@ -127,15 +127,30 @@ public class ShootInteraction {
 
     // inflict damage
     public void inflictDamage(Game game, PlayerColor inflicter, Set<PlayerColor> inflicted, Damage amount) {
+        // log
         mLogger.log(Level.INFO,
                 "{0} inflicting {1} damage to {2}",
                 new Object[]{inflicter, amount, inflicted}
         );
 
+        // notify inflicter player of damage interaction
+        mPlayerViews.get(inflicter).showMessage(String.format(
+                "You inflicted %s damage to %s!",
+                amount.toCompactString(), inflicted
+        ));
+
         // handle targeting scope activation
         handleTargetingScope(inflicter, inflicted, amount);
 
         inflicted.stream()
+                // notify inflicted player of damage interaction
+                .peek(singularInflicted -> mPlayerViews.get(singularInflicted)
+                        .showMessage(String.format(
+                                "You have been inflicted %s points of damage by %s!",
+                                amount.toCompactString(), game.getPlayerFromColor(inflicter).getName()
+                        ))
+                )
+
                 // actually do damage to inflicted player
                 .peek(singularInflicted ->
                         game.handleDamageInteraction(inflicter, singularInflicted, amount))
