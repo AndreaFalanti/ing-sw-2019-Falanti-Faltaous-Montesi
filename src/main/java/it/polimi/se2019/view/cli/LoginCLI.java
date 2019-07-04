@@ -3,7 +3,7 @@ package it.polimi.se2019.view.cli;
 import it.polimi.se2019.network.client.ClientInterface;
 import it.polimi.se2019.network.client.ClientNetworkHandler;
 import it.polimi.se2019.network.client.NetworkHandler;
-import it.polimi.se2019.network.client.RmiClient;
+import it.polimi.se2019.network.connection.RmiConnection;
 import it.polimi.se2019.network.connection.SocketConnection;
 
 import java.io.IOException;
@@ -63,26 +63,30 @@ public class LoginCLI {
                         view,
                         SocketConnection.establish("localhost")
                 );
-                String username;
-                Scanner scanner1 = new Scanner(System.in);
-                while(!isValid){
-                    printLineToConsole("Choose username");
-                    username=scanner1.nextLine();
-                    if (mNetworkHandler.sendUsername(username)) {
-                        view.setNetworkHandler(mNetworkHandler);
-                       // ((NetworkHandler)mNetworkHandler).startReceivingMessages();
-                        isValid=true;
-                    }
-                    else {
-                        printLineToConsole("username already used");
-                    }
-                }
+
                 break;
             case 2:
-                client = new RmiClient("localhost", RMIPORT);
+                mNetworkHandler = new NetworkHandler(
+                        view,
+                        RmiConnection.establish()
+                );
                 break;
             default:
                 throw new IllegalStateException("invalid client selected");
+        }
+
+        String username;
+        Scanner scanner1 = new Scanner(System.in);
+        while(!isValid){
+            printLineToConsole("Choose username");
+            username=scanner1.nextLine();
+            if (mNetworkHandler.sendUsername(username)) {
+                view.setNetworkHandler(mNetworkHandler);
+                isValid=true;
+            }
+            else {
+                printLineToConsole("username already used");
+            }
         }
 
     }

@@ -72,15 +72,18 @@ public class CLIUpdateHandler implements UpdateHandler {
     @Override
     public void handle(ActivePlayerUpdate update) {
 
-     if(mCLIInfo.getOwnerColor() != update.getPlayerColor()){
-         mCLIInfo.getBoard().addPlayers(mCLIInfo.getBoard().getBoardCLI(),mCLIInfo.getPlayersInfo());
-         cliView.infoPlayers();
-     }else {
-         if(!mCLIInfo.getOwner().getPlayerPosition().equalsIgnoreCase("not respawned"))
-             cliView.availableCommands();
-     }
 
-        mCLIInfo.setActivePlayer(update.getPlayerColor());
+             if(mCLIInfo.getOwnerColor() != update.getPlayerColor()){
+                 mCLIInfo.getBoard().addPlayers(mCLIInfo.getBoard().getBoardCLI(),mCLIInfo.getPlayersInfo());
+                 cliView.infoPlayers();
+             }
+
+                mCLIInfo.setActivePlayer(update.getPlayerColor());
+
+
+        if(mCLIInfo.getOwnerColor() == update.getPlayerColor() &&
+        !mCLIInfo.getOwner().getPlayerPosition().equalsIgnoreCase("not respawned"))
+            cliView.availableCommands();
 
 
 

@@ -16,8 +16,8 @@ public class CLIInfo {
     private PlayerColor mActivePlayer;
     private PlayerColor mOwnerColor;
     private CLIPlayer mOwner;
-    private List<String> mKills;
-    private List<String> mOverkills;
+    private List<String> mKills = new ArrayList<>();
+    private List<String> mOverkills = new ArrayList<>();
     private EnumMap<PlayerColor,CLIPlayer> mPlayersInfo = new EnumMap<>(PlayerColor.class);
     private EnumMap<TileColor,String> spawnTiles = new EnumMap<>(TileColor.class);
     private Map<Position,String> normalTiles = new HashMap<>();

@@ -54,10 +54,7 @@ public class CLIView extends View {
 
     public void setNetworkHandler(ClientNetworkHandler networkHandler) {
         this.networkHandler = networkHandler;
-       // t1 = new Thread(() -> ((NetworkHandler)this.networkHandler).startReceivingMessages());
-       // t1.start();
         this.networkHandler.registerObservablesFromView();
-
     }
 
 
@@ -148,7 +145,6 @@ public class CLIView extends View {
         Action action = null;
         int index;
         Position pos;
-     //   if(mCLIInfo.getActivePlayer().equalsIgnoreCase(mOwnerColor.getPascalName())) {
             switch (command) {
                 case "move":
                     pos = parseDestination(otherCommandPart);
@@ -158,7 +154,7 @@ public class CLIView extends View {
                     }
                     action = new MoveAction(mCLIInfo.getOwnerColor(), pos,true);
                     logger.log(Level.INFO, "Action: MOVE  Pos: {0}", pos);
-            //        new Thread(() ->  availableCommands()).start();
+
                     break;
                 case "grab":
                     pos = parseDestination(otherCommandPart);
@@ -183,7 +179,7 @@ public class CLIView extends View {
                     printLineToConsole(mCLIInfo.getOwner().getPlayerPowerUps());
                     index = parseInteger();
                     notify(new UsePowerUpRequest(index,mCLIInfo.getOwnerColor()));
-                   // availableCommands();
+
                     break;
                 case "reloadshoot":
                     pos = parseDestination(otherCommandPart);
@@ -213,7 +209,7 @@ public class CLIView extends View {
         if(action!=null&&!command.equalsIgnoreCase("use")){
             notify(new ActionRequest(action,mCLIInfo.getOwnerColor()));
         }
-   //     }else printLineToConsole("Is not your turn!\n");
+
 
     }
 
@@ -231,9 +227,9 @@ public class CLIView extends View {
                 isValid = true;
 
             } catch (NumberFormatException|ArrayIndexOutOfBoundsException e) {
-                logger.log(Level.SEVERE,"Uncorrect insertion. Please insert coord: ");
+                logger.log(Level.SEVERE,"Uncorrect insertion. Please insert correctly: ");
 
-                destination = requestAdditionalInfo();
+                destination = requestAdditionalInfo(false);
                 if(destination.equalsIgnoreCase("undo")){
                     return null;
                 }
@@ -248,8 +244,6 @@ public class CLIView extends View {
     }
 
     public int parseWeaponToAct(boolean shoot){
-        int index=5;
-        List<String> possibleWeapons = new ArrayList<>();
 
         if(mCLIInfo.getOwner().getPlayerWeapons().get(0).equals(NOWEAPON)){
             printLineToConsole("You don't have weapon");
@@ -297,7 +291,9 @@ public class CLIView extends View {
                 "(example 1 0 1 to discard first and third.\n" +
                 " Pay attention every number different from 1 is considered as 0) \n" +
                 mCLIInfo.getOwner().getPlayerPowerUps());
-        String[] index = (String.valueOf(parseInteger())).split("");
+        String indexes = requestAdditionalInfo(false);
+        String chosen = indexes.replaceAll("\\D","");
+        String[] index = chosen.split("");
 
         for (int i = 0; i < index.length; i++){
             if (index[i] != null && index[i].equals("1")) {
@@ -316,7 +312,7 @@ public class CLIView extends View {
             }
             else
                 notify(new WeaponSelectedRequest(parseWeaponInformation(), mOwnerColor));
-        //    availableCommands();
+
 
     }
 
@@ -331,24 +327,21 @@ public class CLIView extends View {
     public void showPowerUpSelectionView(List<Integer> indexes) {
 
             List<Integer> powerUps= new ArrayList<>();
+            for (Integer powerUp : indexes) {
+                    printToConsole(String.valueOf(powerUp));
+            }
             powerUps.add(parseInteger());
             notify(new PowerUpsSelectedRequest(powerUps,mOwnerColor));
     }
 
     @Override
     public void showRoomColorSelectionView(Set<TileColor> possibleColors) {
-        printLineToConsole("Choose one color from the colo of the tiles");
-        System.out.println(mCLIInfo.getTilesColor().values());
-        String color = requestAdditionalInfo();
-        if(color.equalsIgnoreCase("undo")){
-            deleteRequest();
-            return;
-        }
-        for(TileColor tileColor: mCLIInfo.getTilesColor().keySet()){
-            if(tileColor.getPascalName().equalsIgnoreCase(color))
-                notify(new RoomSelectedRequest(tileColor,mOwnerColor));
 
-        }
+        TileColor tileColor = selectTileColor(possibleColors);
+        if(tileColor == null)
+            return;
+        notify(new RoomSelectedRequest(tileColor,mOwnerColor));
+
     }
 
     @Override
@@ -383,37 +376,41 @@ public class CLIView extends View {
         List<String> effects =new ArrayList<>();
         printToConsole("Choose an effect: ");
         for(Effect effect: possibleEffects)
-            printToConsole(effect.getName());
-        String effectChoosen = requestAdditionalInfo();
+            printToConsole(effect.getId()+" ");
+        String effectChoosen = requestAdditionalInfo(true);
         if(effectChoosen.equalsIgnoreCase("undo")){
             deleteRequest();
             return;
         }
+        if(effectChoosen.equalsIgnoreCase("")){
+            notify(new EffectsSelectedRequest(effects,mCLIInfo.getOwnerColor()));
+            return;
+        }
         effects.add(effectChoosen);
-        notify(new EffectsSelectedRequest(effects,mOwnerColor));
+        notify(new EffectsSelectedRequest(effects,mCLIInfo.getOwnerColor()));
     }
 
     @Override
     public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
 
 
-            printLineToConsole("Choose one of these effects: "+effect1.getName()+" "+effect2.getName());
-            String effect = requestAdditionalInfo();
+            printLineToConsole("Choose one of these effects: "+effect1.getId()+" "+effect2.getId());
+            String effect = requestAdditionalInfo(false);
+            if(effect.equalsIgnoreCase("undo")){
+                deleteRequest();
+                return;
+            }
             notify(new WeaponModeSelectedRequest(effect, getOwnerColor()));
 
     }
 
     @Override
     public void showRespawnPowerUpDiscardView() {
-    //    try {
-    //        t1.join();
 
-  //      } catch(InterruptedException e){
- //           System.out.println("interrupted"); }
        new Thread(() -> {
             printLineToConsole(mCLIInfo.getOwner().getPlayerPowerUps());
             notify(new RespawnPowerUpRequest(parseInteger(), mOwnerColor));
-            if(mCLIInfo.getActivePlayer()==mCLIInfo.getOwnerColor())
+            if(mCLIInfo.getActivePlayer() == mCLIInfo.getOwnerColor())
                 availableCommands();
        }).start();
 
@@ -421,26 +418,31 @@ public class CLIView extends View {
 
     @Override
     public void showAmmoColorSelectionView(Set<TileColor> possibleColors) {
-        TileColor choosen = null;
+        TileColor chosen = selectTileColor(possibleColors);
+        if(chosen ==null)
+            return;
+        notify(new AmmoColorSelectedRequest(chosen,mCLIInfo.getOwnerColor()));
+    }
 
-        while(choosen == null){
+    public TileColor selectTileColor(Set<TileColor> possibleColors){
+        TileColor chosen = null;
+
+        while(chosen == null){
             printToConsole("Choose one of these colors (or undo to go back): ");
             for (TileColor possibleColor : possibleColors) {
                 printToConsole(possibleColor +" ");
             }
-            String color = requestAdditionalInfo();
+            String color = requestAdditionalInfo(false);
             if(color.equalsIgnoreCase("undo")){
                 deleteRequest();
-                return;
+                return null;
             }
             for (TileColor possibleColor : mCLIInfo.getTilesColor().keySet()) {
                 if(color.equalsIgnoreCase(mCLIInfo.getTilesColor().get(possibleColor)))
-                    choosen = possibleColor;
+                    chosen = possibleColor;
             }
         }
-
-        notify(new AmmoColorSelectedRequest(choosen,mCLIInfo.getOwnerColor()));
-
+        return chosen;
     }
 
     public int parseInteger(){
@@ -449,7 +451,7 @@ public class CLIView extends View {
 
         do{
             try{
-                index = Integer.parseInt(requestAdditionalInfo());
+                index = Integer.parseInt(requestAdditionalInfo(false));
                 isValid = true;
             }catch(NumberFormatException e){
                 System.err.println("Is not a number. Please type correctly:");
@@ -500,10 +502,10 @@ public class CLIView extends View {
                     System.out.print(s);
                 System.out.print(SPACE);
                 System.out.print("Weapons :   ");
-                for(String weapon: mCLIInfo.getOwner().getWeaponsInfo().keySet())
-                    printToConsole(weapon + " "+ mCLIInfo.getOwner().getWeaponsInfo().get(weapon));
-        System.out.println();
-        System.out.println();
+                for(String weapon: mCLIInfo.getOwner().getPlayerWeapons())
+                    printToConsole(weapon + " "+ mCLIInfo.getOwner().getWeaponsInfo().get(weapon)+" ");
+        printToConsole("\n");
+        printToConsole("\n");
     }
 
     public void infoPlayers(){
@@ -574,7 +576,7 @@ public class CLIView extends View {
     }
 
     public Direction pickDirection() {
-        printLineToConsole("Choose a direction: north, south, est, west.");
+        printLineToConsole("Choose a direction: north, south, east, west.");
         String direction= "";
 
         while(!direction.equalsIgnoreCase("north")&&
@@ -582,7 +584,7 @@ public class CLIView extends View {
                 !direction.equalsIgnoreCase("west")&&
                 !direction.equalsIgnoreCase("east")){
 
-            direction = requestAdditionalInfo();
+            direction = requestAdditionalInfo(false);
             if(direction.equalsIgnoreCase("undo")){
                 return null;
             }
@@ -603,7 +605,7 @@ public class CLIView extends View {
         for(Position position: positions)
             printLineToConsole(position.toString());
 
-        String destination = requestAdditionalInfo();
+        String destination = requestAdditionalInfo(false);
         if(destination.equalsIgnoreCase("undo")){
             deleteRequest();
             return null;
@@ -619,14 +621,15 @@ public class CLIView extends View {
            printLineToConsole(mCLIInfo.getPlayersInfo().get(possibleTarget).getPlayerName() );
         }
         printLineToConsole("then press enter");
-        String target = requestAdditionalInfo();
+        String target = requestAdditionalInfo(false);
         if(target.equalsIgnoreCase("undo")){
             deleteRequest();
             return new HashSet<>();
         }
+
         String[] targets = target.split("\\s+");
         while(targets.length<minToSelect ){
-            target = requestAdditionalInfo();
+            target = requestAdditionalInfo(false);
             targets = target.split("\\s+");
         }
         for (String s : targets) {
@@ -660,17 +663,21 @@ public class CLIView extends View {
 
     }
 
-    public String requestAdditionalInfo(){
+    public String requestAdditionalInfo(boolean isForShoot){
         Scanner scanner = new Scanner(System.in);
         String command = "" ;
-        while (command.equals("")) {
-            command = scanner.nextLine();
+        if(!isForShoot){
+            while (command.equals("")) {
+                command = scanner.nextLine();
+            }
+        }else{
+            command=scanner.nextLine();
         }
         return command;
     }
 
     public void interact(){
-        String command = requestAdditionalInfo();
+        String command = requestAdditionalInfo(false);
         parseCommand(command);
     }
 
