@@ -12,6 +12,7 @@ import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.InitializationInfo;
 
+import java.nio.channels.IllegalSelectorException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -386,11 +387,16 @@ public class Game extends Observable<Update> {
     }
 
     public SortedMap<PlayerColor, Integer> getScoreLeaderboard () {
-        // TODO: fix this
-        /*return getScoreMap().entrySet().stream()
+        return getScoreMap().entrySet().stream()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));*/
-        return null;
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (duplicatePlayer1, duplicatePlayer2) -> {
+                            throw new IllegalStateException("Found multiple players listed in score map!");
+                        },
+                        TreeMap::new
+                ));
     }
 
     /**

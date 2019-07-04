@@ -555,10 +555,10 @@ public class WeaponsTest {
         // mock selection
         mockSelections(testController,
                 // roast Luigi and Stones with basic mode
-                //   NB. Luigi doesn't need to be selected since he's the only one standing in his position
                 new WeaponModeSelectedRequest("basic_mode", shooterColor),
                 new DirectionSelectedRequest(Direction.NORTH, shooterColor),
-                new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), shooterColor)
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), shooterColor),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), shooterColor)
         );
 
         // shoot through controller
@@ -641,7 +641,8 @@ public class WeaponsTest {
         mockSelections(testController,
                 // roast Stones, Dorian and then Luigi
                 new WeaponModeSelectedRequest("in_barbecue_mode", shooterColor),
-                new DirectionSelectedRequest(Direction.NORTH, shooterColor)
+                new DirectionSelectedRequest(Direction.NORTH, shooterColor),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), shooterColor)
         );
 
         // shoot through controller
