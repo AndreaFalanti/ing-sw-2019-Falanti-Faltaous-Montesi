@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static it.polimi.se2019.controller.weapon.ShootContext.SPECIAL_VAR_LAST_SELECTED;
+import static it.polimi.se2019.controller.weapon.ShootContext.SPECIAL_VAR_PREVIOUSLY_SELECTED;
 
 
 public class SelectTargets extends Behaviour {
@@ -26,6 +27,13 @@ public class SelectTargets extends Behaviour {
     private static Expression returnSelection(ShootContext context, Expression selection) {
         // first record selection in dedicated variable
         context.setVar(SPECIAL_VAR_LAST_SELECTED, selection.deepCopy());
+        context.setVar(
+                SPECIAL_VAR_PREVIOUSLY_SELECTED,
+                new Union(
+                        context.getVar(SPECIAL_VAR_LAST_SELECTED),
+                        selection.deepCopy()
+                ).eval(context)
+        );
 
         return selection;
     }

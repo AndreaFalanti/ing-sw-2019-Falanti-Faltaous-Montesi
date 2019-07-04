@@ -20,6 +20,7 @@ public class ShootContext {
 
     // special variables handled directly by expression other than Load and Look
     public static final String SPECIAL_VAR_LAST_SELECTED = "$last";
+    public static final String SPECIAL_VAR_PREVIOUSLY_SELECTED = "$last_all";
 
     // fields
     private Game mGame;
@@ -47,6 +48,7 @@ public class ShootContext {
 
         // initialize special variables
         setVar(SPECIAL_VAR_LAST_SELECTED, new SetExpression());
+        setVar(SPECIAL_VAR_PREVIOUSLY_SELECTED, new SetExpression());
     }
 
     // trivial getters
