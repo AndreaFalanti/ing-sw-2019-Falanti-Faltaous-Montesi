@@ -101,6 +101,10 @@ public class Controller implements Observer<Request>, RequestHandler {
         mPlayerNotSpawnedCounter = playerNotSpawnedCounter;
     }
 
+    public void setExpectedPlayingPlayer(PlayerColor expectedPlayingPlayer) {
+        mExpectedPlayingPlayer = expectedPlayingPlayer;
+    }
+
     /*******************/
     /* control methods */
     /*******************/

@@ -11,11 +11,7 @@ import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 import org.junit.Before;
 import org.junit.Test;
-import sun.misc.IOUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -24,7 +20,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;

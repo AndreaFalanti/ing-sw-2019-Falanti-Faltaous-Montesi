@@ -234,6 +234,7 @@ public class ControllerTest {
         controller.setPlayerNotSpawnedCounter(0);
 
         // use teleport powerUp
+        controller.setExpectedPlayingPlayer(PlayerColor.BLUE);
         controller.handle(new UsePowerUpRequest(0, PlayerColor.BLUE));
         // expect a position
         Position targetPosition = new Position(2, 0);
