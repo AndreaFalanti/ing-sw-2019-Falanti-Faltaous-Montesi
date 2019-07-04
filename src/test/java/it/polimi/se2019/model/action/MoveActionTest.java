@@ -60,11 +60,6 @@ public class MoveActionTest {
                 new MoveAction(game2.getActivePlayer().getColor(), new Position(1, 0), false),
                 new MoveAction(game3.getActivePlayer().getColor(), new Position(1, 0), false)
         };
-        MoveAction[] action6 = {
-                new MoveAction(game1.getActivePlayer().getColor(), new Position(3, 1), false),
-                new MoveAction(game2.getActivePlayer().getColor(), new Position(3, 1), false),
-                new MoveAction(game3.getActivePlayer().getColor(), new Position(3, 1), false)
-        };
 
         //NOTE: all players are in pos(0, 0)
         // distance = 1
@@ -90,9 +85,5 @@ public class MoveActionTest {
         assertFalse(action5[0].getErrorResponse(game1).isPresent());
         assertFalse(action5[1].getErrorResponse(game2).isPresent());
         assertFalse(action5[2].getErrorResponse(game3).isPresent());
-
-        assertTrue(action6[0].getErrorResponse(game1).isPresent());
-        assertTrue(action6[1].getErrorResponse(game2).isPresent());
-        assertTrue(action6[2].getErrorResponse(game3).isPresent());
     }
 }

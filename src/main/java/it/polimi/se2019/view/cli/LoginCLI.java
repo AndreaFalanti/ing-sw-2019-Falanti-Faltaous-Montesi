@@ -6,14 +6,12 @@ import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.network.connection.RmiConnection;
 import it.polimi.se2019.network.connection.SocketConnection;
 
-import java.io.IOException;
-import java.rmi.NotBoundException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class LoginCLI {
-    private static int SOCKETPORT = 4567;
-    private static int RMIPORT = 4568;
+    private static final int SOCKETPORT = 4567;
+    private static final int RMIPORT = 4568;
 
 
     private static void printLineToConsole(String message) {
@@ -24,7 +22,7 @@ public class LoginCLI {
         System.out.print(message);
     }
     
-    public static void log(CLIView view) throws IOException, NotBoundException {
+    public static void log(CLIView view) {
         Scanner scanner = new Scanner(System.in);
 
 
@@ -89,6 +87,7 @@ public class LoginCLI {
             }
         }
 
+        printLineToConsole("\nWaiting for players...");
     }
 
 }

@@ -252,6 +252,13 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void handle(RespawnPowerUpRequest request) {
+        if (!checkPowerUpValidity(request.getIndex())) {
+            View playerView = mPlayerViews.get(request.getViewColor());
+            playerView.reportError("Invalid power up index selected");
+            playerView.showRespawnPowerUpDiscardView();
+            return;
+        }
+
         Player respawningPlayer = mGame.getPlayerFromColor(request.getViewColor());
         TileColor spawnColor = respawningPlayer.getPowerUpCard(request.getIndex()).getColor();
         SpawnTile respawnTile = mGame.getBoard().getSpawnMap().get(spawnColor);
@@ -270,12 +277,12 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void handle(UsePowerUpRequest request) {
-        PowerUpCard powerUpCard = mGame.getActivePlayer().getPowerUpCard(request.getPowerUpIndex());
-        if (powerUpCard == null) {
+        if (!checkPowerUpValidity(request.getPowerUpIndex())) {
             mPlayerViews.get(request.getViewColor()).reportError("Invalid power up index selected");
             return;
         }
 
+        PowerUpCard powerUpCard = mGame.getActivePlayer().getPowerUpCard(request.getPowerUpIndex());
         PowerUpType powerUpType = powerUpCard.getType();
         View playerView = mPlayerViews.get(request.getViewColor());
 
@@ -363,6 +370,14 @@ public class Controller implements Observer<Request>, RequestHandler {
                 return;
             }
         }
+    }
+
+    private boolean checkPowerUpValidity (int index) {
+        if (index < 0 || index > 3) {
+            return false;
+        }
+        PowerUpCard powerUpCard = mGame.getPlayerFromColor(mExpectedPlayingPlayer).getPowerUpCard(index);
+        return powerUpCard != null;
     }
 
     /*****************************************/

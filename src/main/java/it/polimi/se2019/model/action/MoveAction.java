@@ -60,7 +60,10 @@ public class MoveAction implements Action {
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         Position playerPos = game.getPlayerFromColor(mTarget).getPos();
 
-        if (game.getBoard().isOutOfBounds(mDestination) || game.getBoard().getTileAt(mDestination) == null) {
+        if (game.getBoard().isOutOfBounds(mDestination)) {
+            return Optional.of(new MessageActionResponse("Invalid tile selected"));
+        }
+        if (game.getBoard().getTileAt(mDestination) == null) {
             return Optional.of(new MessageActionResponse("Invalid tile selected"));
         }
 
@@ -102,11 +105,8 @@ public class MoveAction implements Action {
             return game.getBoard().getTileDistance(playerPos, mDestination) <= moveMaxDistance ?
                     Optional.empty() : Optional.of(new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE));
         }
-        else {
-            // maximum distance for "indirect" moves are 3 spaces
-            return game.getBoard().getTileDistance(playerPos, mDestination) <= 3 ?
-                    Optional.empty() : Optional.of(new MessageActionResponse("You can shift a player up to three tiles"));
-        }
+
+        return Optional.empty();
     }
 
     @Override

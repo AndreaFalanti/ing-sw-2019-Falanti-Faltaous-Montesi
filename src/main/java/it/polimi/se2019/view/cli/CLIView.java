@@ -461,6 +461,23 @@ public class CLIView extends View {
         return index;
     }
 
+    /*
+    public int parseIntegerForPowerUp(){
+        Integer index = null;
+        boolean isValid = false;
+
+        do{
+            try{
+                index = Integer.parseInt(requestAdditionalInfo());
+                isValid = index >= 0 && index < 4;
+            }catch(NumberFormatException e){
+                System.err.println("Is not a number. Please type correctly:");
+            }
+        }while(!isValid);
+
+        return index;
+    }*/
+
 
     public void easyCommand(String command){
 

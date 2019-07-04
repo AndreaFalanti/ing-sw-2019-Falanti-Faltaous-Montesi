@@ -41,6 +41,11 @@ public class MoveShootAction implements ShootLeadingAction {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
 
+        Optional<InvalidActionResponse> response = mMoveAction.getErrorResponse(game);
+        if (response.isPresent()) {
+            return response;
+        }
+
         Player player = game.getPlayerFromColor(mMoveAction.getTarget());
         int maxShootMoves;
 
@@ -63,7 +68,7 @@ public class MoveShootAction implements ShootLeadingAction {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE + " while shooting"));
         }
 
-        Optional<InvalidActionResponse> response = mShootAction.getErrorResponse(game);
+        response = mShootAction.getErrorResponse(game);
         if (response.isPresent()) {
             return response;
         }

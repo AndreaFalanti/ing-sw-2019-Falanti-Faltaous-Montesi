@@ -60,9 +60,14 @@ public class MoveGrabAction implements Action {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
         }
 
+        Optional<InvalidActionResponse> response = mMoveAction.getErrorResponse(game);
+        if (response.isPresent()) {
+            return response;
+        }
+
         Player player = game.getPlayerFromColor(mMoveAction.getTarget());
 
-        Optional<InvalidActionResponse> response = mGrabAction.getErrorMessageAtPos(game, mMoveAction.getDestination());
+        response = mGrabAction.getErrorMessageAtPos(game, mMoveAction.getDestination());
         if (response.isPresent()) {
             return response;
         }

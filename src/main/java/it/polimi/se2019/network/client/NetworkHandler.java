@@ -81,6 +81,9 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
 
     @Override
     public void handle(PickWeaponResponse response) {
+        String message = (response.getSpawnColor() != null) ? "Select weapon from " + response.getSpawnColor() + " tile" :
+                "Select weapon from your hand";
+        mView.showMessage(message);
         mView.showWeaponSelectionView(response.getSpawnColor());
     }
 
@@ -91,16 +94,19 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
 
     @Override
     public void handle(DiscardPowerUpResponse response) {
+        mView.showMessage("Discard powerUps to cover the cost");
         mView.showPowerUpsDiscardView();
     }
 
     @Override
     public void handle(PickDirectionResponse response) {
+        mView.showMessage("Pick a direction");
         mView.showDirectionSelectionView();
     }
 
     @Override
     public void handle(PickPositionResponse response) {
+        mView.showMessage("Pick a position");
         mView.showPositionSelectionView(response.getPositions());
     }
 
@@ -111,26 +117,31 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
 
     @Override
     public void handle(PickTargetsResponse response) {
+        mView.showMessage("Select targets");
         mView.showTargetsSelectionView(response.getMinTargets(), response.getMaxTargets(), response.getTargets());
     }
 
     @Override
     public void handle(PickEffectsResponse response) {
+        mView.showMessage("Pick weapon effect to activate");
         mView.showEffectsSelectionView(response.getPriorityMap(), response.getPossibleEffects());
     }
 
     @Override
     public void handle(PickWeaponModeResponse response) {
+        mView.showMessage("Pick weapon mode");
         mView.showWeaponModeSelectionView(response.getEffect1(), response.getEffect2());
     }
 
     @Override
     public void handle(PickRoomColorResponse response) {
+        mView.showMessage("Select room");
         mView.showRoomColorSelectionView(response.getTileColors());
     }
 
     @Override
     public void handle(PickRespawnPowerUpResponse response) {
+        mView.showMessage("Discard a powerUp to respawn");
         mView.showRespawnPowerUpDiscardView();
     }
 
@@ -141,6 +152,7 @@ public class NetworkHandler implements ClientNetworkHandler, ResponseHandler {
 
     @Override
     public void handle(PickAmmoColorResponse response) {
+        mView.showMessage("Select ammo to discard for paying targeting scope card");
         mView.showAmmoColorSelectionView(response.getAmmoColors());
     }
 
