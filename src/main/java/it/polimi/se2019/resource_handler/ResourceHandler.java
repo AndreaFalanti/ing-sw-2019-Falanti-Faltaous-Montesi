@@ -15,7 +15,6 @@ public class ResourceHandler {
     // fields
     private final HashMap<String, Resource> mResources = new HashMap<>();
     private String mBasePath;
-    private static final String OS = System.getProperty("os.name").toLowerCase();
 
     // methods
     public void setBasePath(String basePath) {
@@ -29,33 +28,31 @@ public class ResourceHandler {
         Resource toRegister;
         try {
             toRegister = loader.apply(path);
-        } catch(Exception e) {
+        } catch (Exception e) {
             mLogger.log(
                     Level.SEVERE,
                     "Could not load resource [key: {0}; path: {1}]",
-                    new Object[]{ path, customName }
+                    new Object[]{path, customName}
             );
             throw e;
         }
 
         mResources.put(customName, toRegister);
     }
+
     public void registerResource(Function<String, Resource> loader, String path) {
         // check if base paths exists, if so save it for later (to remove it)
         int baseStartIndex = path.indexOf(mBasePath);
         int baseEndIndex = (baseStartIndex == -1) ?
                 0 :
-                baseStartIndex + mBasePath.length() + 1; // the +1 is for removing the "/"
+                baseStartIndex + mBasePath.length();
 
         registerResource(loader, path,
                 path.substring(baseEndIndex, path.indexOf('.')));
     }
 
     public Object get(String resourceKey) {
-        if (isWindowsOS()) {
-            resourceKey = resourceKey.replace('/', '\\');
-        }
-        Resource resource =  mResources.get(resourceKey);
+        Resource resource = mResources.get(resourceKey);
 
         if (resource == null)
             throw new IllegalArgumentException("Trying to reference nonexistent resource!\n" +
@@ -73,9 +70,4 @@ public class ResourceHandler {
     public Set<String> listResourceNames() {
         return mResources.keySet();
     }
-
-    private static boolean isWindowsOS () {
-        return OS.contains("win");
-    }
 }
-

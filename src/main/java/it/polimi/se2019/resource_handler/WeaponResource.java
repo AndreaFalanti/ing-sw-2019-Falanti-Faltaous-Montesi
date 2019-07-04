@@ -2,6 +2,7 @@ package it.polimi.se2019.resource_handler;
 
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
+import it.polimi.se2019.util.ResourceUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,16 +19,9 @@ public class WeaponResource extends Resource {
     public static Resource loadFromPath(String path) {
         WeaponResource result = new WeaponResource();
 
-        try {
-            result.mContents = WeaponFactory.fromJson(
-                    new String(
-                        Files.readAllBytes(Paths.get(path)),
-                        StandardCharsets.UTF_8
-                    )
-            );
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Could not load weapon resource at file path " + path);
-        }
+        result.mContents = WeaponFactory.fromJson(
+                ResourceUtils.loadResource(path)
+        );
 
         return result;
     }

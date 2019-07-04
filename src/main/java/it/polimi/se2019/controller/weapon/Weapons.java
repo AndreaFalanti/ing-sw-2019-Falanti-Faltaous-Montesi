@@ -2,11 +2,13 @@ package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.resource_handler.*;
 import it.polimi.se2019.util.Jsons;
+import it.polimi.se2019.util.ResourceUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,19 +32,15 @@ public class Weapons {
     /**
      * Utility function to load all weapon json files residing at a given path
      */
-    private static void loadWeaponsAt(Path path) {
-        resourceHandler.setBasePath(path.toString());
+    private static void loadWeaponsAt(String path) {
+        resourceHandler.setBasePath(path);
 
-        try (Stream<Path> walk = Files.walk(path)) {
-            walk
-                    .filter(Files::isRegularFile)
-                    .forEach(jsonFile ->
-                            resourceHandler.registerResource(WeaponResource::loadFromPath, jsonFile.toString())
-                    );
-        } catch (IOException e) {
-            throw new BadLoadException("could not load json resources from designed folder path: [" +
-                    PATH_TO_WEAPONS_RESOURCES_FOLDER + "]");
-        }
+        Arrays.stream(ResourceUtils.loadResource(path)
+                .split("\\n"))
+                .map(nameOfJsonFile -> path + nameOfJsonFile)
+                .forEach(pathToJsonFile ->
+                        resourceHandler.registerResource(WeaponResource::loadFromPath, pathToJsonFile)
+                );
     }
 
     /**
@@ -51,7 +49,7 @@ public class Weapons {
     private static void loadResources() {
         if (!resourcesLoaded) {
             resourcesLoaded = true;
-            loadWeaponsAt(Paths.get(PATH_TO_WEAPONS_RESOURCES_FOLDER));
+            loadWeaponsAt(PATH_TO_WEAPONS_RESOURCES_FOLDER);
         }
     }
 
