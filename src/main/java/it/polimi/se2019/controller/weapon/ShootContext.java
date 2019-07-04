@@ -2,7 +2,7 @@ package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.controller.weapon.expression.SetExpression;
-import it.polimi.se2019.controller.weapon.expression.ShootUndoInfo;
+import it.polimi.se2019.controller.weapon.expression.UndoInfo;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
@@ -27,11 +27,11 @@ public class ShootContext {
     private PlayerColor mShooterColor;
     private Map<String, Expression> mScope;
     private ShootInteraction mShootInteraction;
-    private ShootUndoInfo mUndoInfo;
+    private UndoInfo mUndoInfo;
 
     // trivial constructor
     public ShootContext(Game game, View view, PlayerColor shooterColor,
-                        ShootUndoInfo undoInfo, ShootInteraction shootInteraction) {
+                        UndoInfo undoInfo, ShootInteraction shootInteraction) {
         // safety check to assure that shooter is present among provided players
         List<Player> players = game.getPlayers();
         if (players.stream().noneMatch(pl -> pl.getColor() == shooterColor))
@@ -90,7 +90,7 @@ public class ShootContext {
         return mShootInteraction.getRequestQueue();
     }
 
-    public ShootUndoInfo getUndoInfo() {
+    public UndoInfo getUndoInfo() {
         return mUndoInfo;
     }
 

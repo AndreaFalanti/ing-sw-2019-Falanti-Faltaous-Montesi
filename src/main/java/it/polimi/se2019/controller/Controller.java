@@ -3,7 +3,7 @@ package it.polimi.se2019.controller;
 
 import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.controller.weapon.expression.Expression;
-import it.polimi.se2019.controller.weapon.expression.ShootUndoInfo;
+import it.polimi.se2019.controller.weapon.expression.UndoInfo;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.CostlyAction;
 import it.polimi.se2019.model.action.MoveGrabAction;
@@ -104,10 +104,10 @@ public class Controller implements Observer<Request>, RequestHandler {
     /* control methods */
     /*******************/
     public void startShootInteraction(PlayerColor shooter, Expression weaponBehaviour) {
-        mShootInteraction.exec(mGame, shooter, weaponBehaviour, new ShootUndoInfo(mGame));
+        mShootInteraction.exec(mGame, shooter, weaponBehaviour, new UndoInfo(shooter, mGame));
     }
 
-    public void startShootInteraction(PlayerColor shooter, Expression weaponBehaviour, ShootUndoInfo undoInfo) {
+    public void startShootInteraction(PlayerColor shooter, Expression weaponBehaviour, UndoInfo undoInfo) {
         mShootInteraction.exec(mGame, shooter, weaponBehaviour, undoInfo);
     }
 

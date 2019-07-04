@@ -467,7 +467,6 @@ public class WeaponsTest {
                 new PositionSelectedRequest(new Position(0, 1), shooterColor),
 
                 // Shoot Mario as basic effect target
-                new EffectsSelectedRequest(Collections.singletonList("basic_effect"), shooterColor),
                 new TargetsSelectedRequest(Collections.singleton(PlayerColor.PURPLE), shooterColor),
 
                 // Use fragmenting warhead for extra mayhem

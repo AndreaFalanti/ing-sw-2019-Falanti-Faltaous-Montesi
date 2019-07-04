@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Class recording information to undo a shoot interaction
+ * Class recording information to undo a game state
  */
-public class ShootUndoInfo {
+public class UndoInfo {
     private static class PlayerUndoInfo {
         private Position mOriginalPosition;
         private AmmoValue mOriginalAmmo;
@@ -67,11 +67,13 @@ public class ShootUndoInfo {
         }
     }
 
+    private PlayerColor mActivePlayerColor;
     private Game mGame;
     private Map<PlayerColor, PlayerUndoInfo> mPlayerUndoInfo;
     private boolean mUndone = false;
 
-    public ShootUndoInfo(Game game) {
+    public UndoInfo(PlayerColor activePlayerColor, Game game) {
+        mActivePlayerColor = activePlayerColor;
         mGame = game;
         mPlayerUndoInfo = mGame.getPlayers().stream()
                 .collect(Collectors.toMap(
@@ -90,7 +92,7 @@ public class ShootUndoInfo {
 
         mGame.getPlayers()
                 .forEach(pl -> mPlayerUndoInfo.get(pl.getColor())
-                        .undoPlayer(pl, pl.getColor() == mGame.getActivePlayer().getColor()));
+                        .undoPlayer(pl, pl.getColor().equals(mActivePlayerColor)));
         mGame.increaseActionCounter();
     }
 }

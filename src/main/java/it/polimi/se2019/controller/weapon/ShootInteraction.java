@@ -2,7 +2,7 @@ package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.controller.weapon.expression.Expression;
-import it.polimi.se2019.controller.weapon.expression.ShootUndoInfo;
+import it.polimi.se2019.controller.weapon.expression.UndoInfo;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.AmmoPayment;
 import it.polimi.se2019.model.board.Board;
@@ -80,7 +80,7 @@ public class ShootInteraction {
      * @param shooter the shooter
      * @param weaponBehaviour the weapon behaviour used to shoot
      */
-    public void exec(Game game, PlayerColor shooter, Expression weaponBehaviour, ShootUndoInfo undoInfo) {
+    public void exec(Game game, PlayerColor shooter, Expression weaponBehaviour, UndoInfo undoInfo) {
         // announce that thread is occupied
         mOccupied = true;
         mActivePlayerColor = mGame.getActivePlayer().getColor();
