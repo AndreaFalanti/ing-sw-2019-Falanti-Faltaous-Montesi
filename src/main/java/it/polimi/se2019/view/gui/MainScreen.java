@@ -1070,6 +1070,12 @@ public class MainScreen extends Observable<Request> {
     public void switchActionBox (boolean isFrenzy) {
         normalActionsBox.setVisible(!isFrenzy);
         frenzyActionsBox.setVisible(isFrenzy);
+
+        if (isFrenzy) {
+            for (PlayerPane pane : mPlayerControllers.values()) {
+                pane.setFrenzyActionTile();
+            }
+        }
     }
 
     /**

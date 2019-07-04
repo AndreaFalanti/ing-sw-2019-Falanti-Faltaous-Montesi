@@ -50,7 +50,7 @@ public class MoveGrabAction implements Action {
 
     @Override
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
-        // can't perform "costly" actions if they are no more available in this turn
+        // can't perform "costly" actions if there are no more available in this turn
         if (game.getRemainingActions() == 0) {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }

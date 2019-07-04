@@ -78,6 +78,12 @@ public class PlayerPane {
         actionTile.setImage(actionImage);
     }
 
+    public void setFrenzyActionTile () {
+        Image actionImage = new Image(GuiResourcePaths.ACTION_TILE + "Flipped"
+                + mPlayerBoardColor.getPascalName() + ".png");
+        actionTile.setImage(actionImage);
+    }
+
     /**
      * Setup a board of given player color
      * @param color Color of the board

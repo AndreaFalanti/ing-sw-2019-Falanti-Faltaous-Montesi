@@ -36,14 +36,9 @@ public class MoveShootAction implements ShootLeadingAction {
 
     @Override
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
-        // can't perform "costly" actions if they are no more available in this turn
+        // can't perform "costly" actions if there are no more available in this turn
         if (game.getRemainingActions() == 0) {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
-        }
-
-        Optional<InvalidActionResponse> response = mShootAction.getErrorResponse(game);
-        if (response.isPresent()) {
-            return response;
         }
 
         Player player = game.getPlayerFromColor(mMoveAction.getTarget());
@@ -64,9 +59,16 @@ public class MoveShootAction implements ShootLeadingAction {
             maxShootMoves = 1;
         }
 
-        return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) <= maxShootMoves ?
-                Optional.empty() : Optional.of(
-                        new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE + " while shooting"));
+        if (game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) > maxShootMoves) {
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE + " while shooting"));
+        }
+
+        Optional<InvalidActionResponse> response = mShootAction.getErrorResponse(game);
+        if (response.isPresent()) {
+            return response;
+        }
+
+        return Optional.empty();
     }
 
     @Override

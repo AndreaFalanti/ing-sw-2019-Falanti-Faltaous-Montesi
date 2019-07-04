@@ -36,7 +36,7 @@ public class MoveReloadShootAction implements ShootLeadingAction {
 
     @Override
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
-        // can't perform "costly" actions if they are no more available in this turn
+        // can't perform "costly" actions if there are no more available in this turn
         if (game.getRemainingActions() == 0) {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
@@ -44,12 +44,18 @@ public class MoveReloadShootAction implements ShootLeadingAction {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
         }
 
-        Optional<InvalidActionResponse> response = mMoveShootAction.getErrorResponse(game);
+        Optional<InvalidActionResponse> response = mReloadAction.getErrorResponse(game);
         if (response.isPresent()) {
             return response;
         }
 
-        return mReloadAction.getErrorResponse(game);
+        response = mMoveShootAction.getErrorResponse(game);
+        if (response.isPresent() &&
+                !((MessageActionResponse)response.get()).getMessage().equals("Trying to shoot with an unloaded weapon!")) {
+                return response;
+        }
+
+        return Optional.empty();
     }
 
     @Override

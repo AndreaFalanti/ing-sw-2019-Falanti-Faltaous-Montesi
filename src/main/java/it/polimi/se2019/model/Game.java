@@ -360,10 +360,10 @@ public class Game extends Observable<Update> {
             getActivePlayer().addScore(1);
         }
 
-        //player with no damage or respawned player will always have board flipped
+        //player with no damage or killed player will always have board flipped
         if (mFinalFrenzy) {
             for (Player player : mPlayers) {
-                if (player.hasNoDamage()) {
+                if (player.hasNoDamage() || player.isDead()) {
                     player.flipBoard();
                 }
             }
