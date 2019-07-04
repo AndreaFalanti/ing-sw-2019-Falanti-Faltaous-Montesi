@@ -60,6 +60,10 @@ public class MoveAction implements Action {
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         Position playerPos = game.getPlayerFromColor(mTarget).getPos();
 
+        if (game.getBoard().isOutOfBounds(mDestination) || game.getBoard().getTileAt(mDestination) == null) {
+            return Optional.of(new MessageActionResponse("Invalid tile selected"));
+        }
+
         if (mNormalMove) {
             // player can't move himself if out of actions
             if (game.getRemainingActions() == 0) {

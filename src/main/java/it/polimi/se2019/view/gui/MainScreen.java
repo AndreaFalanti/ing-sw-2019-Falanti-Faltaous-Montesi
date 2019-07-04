@@ -791,6 +791,10 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Activate ammo tab, deactivate all color buttons that are not valid in the interaction
+     * @param possibleColors Valid ammo colors
+     */
     public void activateAmmoTab (Set<TileColor> possibleColors) {
         activateWeaponRelatedTab(AMMO_TAB);
 

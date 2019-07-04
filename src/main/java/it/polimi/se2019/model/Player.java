@@ -190,8 +190,8 @@ public class Player extends Observable<Update> {
      * @return true if has three power ups, false otherwise
      */
     public boolean isFullOfPowerUps () {
-        for (PowerUpCard powerUpCard : mPowerUpCards) {
-            if (powerUpCard == null) {
+        for (int i = 0; i < mPowerUpCards.length - 1; i++) {
+            if (getPowerUpCard(i) == null) {
                 return false;
             }
         }

@@ -88,6 +88,7 @@
                                  <children>
                                     <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForMove" prefHeight="55.0" prefWidth="100.0" text="FRENZY MOVE" />
                                     <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForGrab" prefHeight="55.0" prefWidth="100.0" text="FRENZY GRAB" />
+                                    <Button contentDisplay="CENTER" layoutX="10.0" layoutY="75.0" mnemonicParsing="false" onMouseClicked="#activateButtonGridForNormalShoot" prefHeight="55.0" prefWidth="100.0" text="FRENZY SHOOT" />
                                     <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#activateButtonGridForFrenzyReloadShoot" prefHeight="55.0" prefWidth="100.0" text="FRENZY RELOAD SHOOT" textAlignment="CENTER" wrapText="true" />
                                     <Button contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#endTurn" prefHeight="55.0" prefWidth="100.0" text="END TURN" />
                                  </children>
