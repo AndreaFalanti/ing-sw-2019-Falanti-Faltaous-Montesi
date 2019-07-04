@@ -444,7 +444,7 @@ public class BoardPane extends Observable<Request> {
         }
     }
 
-    public void setupInteractiveGridForShootAction (Node weaponBox) {
+    public void setupInteractiveGridForShootAction (Node weaponBox, boolean reloadAndShoot) {
         for (int i = 0; i < BOARD_COLUMNS; i++) {
             for (int j = 0; j < BOARD_ROWS; j++) {
                 int x = i;
@@ -454,11 +454,18 @@ public class BoardPane extends Observable<Request> {
                     mInteractiveButtons[i][j].setOnMouseClicked(event -> {
                         mMainController.logToChat("Shoot Action pos set to: (" + x + ", " + y + ")", false);
                         switchButtonGridEnableStatus(false);
-                        mMainController.setShootOnWeapon(new Position(x, y));
+
+                        Position position = new Position(x, y);
+                        if (reloadAndShoot) {
+                            mMainController.setReloadShootOnWeapon(position);
+                        }
+                        else {
+                            mMainController.setShootOnWeapon(position);
+                        }
                     });
                 }
 
-                mMainController.getUndoButton().setOnMouseClicked(event -> {
+                mMainController.activateUndoButtonWithBehaviour(() -> {
                     GuiUtils.setBoxEnableStatus(weaponBox, false);
                     mMainController.setEnableStatusActionButtonBox(true);
                 });
@@ -486,7 +493,7 @@ public class BoardPane extends Observable<Request> {
                     });
                 }
 
-                mMainController.getUndoButton().setOnMouseClicked(event -> {
+                mMainController.activateUndoButtonWithBehaviour(() -> {
                     resetButtonGrid();
 
                     mMainController.returnToActionTab();
@@ -523,7 +530,7 @@ public class BoardPane extends Observable<Request> {
             });
         }
 
-        mMainController.getUndoButton().setOnMouseClicked(event -> resetWeaponBoxToDefault(selectedSpawn));
+        mMainController.activateUndoButtonWithBehaviour(() -> resetWeaponBoxToDefault(selectedSpawn));
     }
 
     private void resetWeaponBoxToDefault (Node weaponBox) {

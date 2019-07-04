@@ -5,6 +5,7 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.PowerUpCard;
+import it.polimi.se2019.model.action.MoveReloadShootAction;
 import it.polimi.se2019.model.action.MoveShootAction;
 import it.polimi.se2019.model.action.ReloadAction;
 import it.polimi.se2019.model.board.Board;
@@ -41,7 +42,11 @@ public class MainScreen extends Observable<Request> {
     @FXML
     private VBox otherPlayerBoardsBox;
     @FXML
-    private VBox buttonBox;
+    private Pane buttonBox;
+    @FXML
+    private Pane normalActionsBox;
+    @FXML
+    private Pane frenzyActionsBox;
     @FXML
     private Button powerUpDiscardButton;
     @FXML
@@ -117,10 +122,6 @@ public class MainScreen extends Observable<Request> {
         return mView;
     }
 
-    public Button getUndoButton() {
-        return undoButton;
-    }
-
     public void setClientColor (PlayerColor color) {
         mClientColor = color;
     }
@@ -149,6 +150,14 @@ public class MainScreen extends Observable<Request> {
         setWeaponTabsUndoButtonsBehaviour();
 
         resetAllPowerUpsBehaviourToDefault();
+    }
+
+    public void activateUndoButtonWithBehaviour (Runnable executableFunction) {
+        undoButton.setDisable(false);
+        undoButton.setOnMouseClicked(event -> {
+            executableFunction.run();
+            undoButton.setDisable(true);
+        });
     }
 
 
@@ -299,23 +308,6 @@ public class MainScreen extends Observable<Request> {
         boardPane.getChildren().add(newLoadedPane);
     }
 
-
-
-    /**
-     * Change weapon image appearence, based on its loaded status
-     * @param index Weapon index
-     * @param value true if loaded, false otherwise
-     */
-    public void setWeaponLoadStatus (int index, boolean value) {
-        ImageView weaponView = (ImageView)weaponBox.getChildren().get(index);
-        if (value) {
-            weaponView.setOpacity(1);
-        }
-        else {
-            weaponView.setOpacity(0.4);
-        }
-    }
-
     /**
      * Update spawn's weapon box with latest model changes
      * @param ids Weapon ids
@@ -426,7 +418,7 @@ public class MainScreen extends Observable<Request> {
 
         mBoardController.setupInteractiveGridForMoveAction();
 
-        undoButton.setOnMouseClicked(event -> {
+        activateUndoButtonWithBehaviour(() -> {
             disableBoardButtonGrid();
             setEnableStatusActionButtonBox(true);
         });
@@ -441,7 +433,7 @@ public class MainScreen extends Observable<Request> {
 
         mBoardController.setupInteractiveGridForGrabAction();
 
-        undoButton.setOnMouseClicked(event -> {
+        activateUndoButtonWithBehaviour(() -> {
             disableBoardButtonGrid();
             setEnableStatusActionButtonBox(true);
         });
@@ -449,17 +441,32 @@ public class MainScreen extends Observable<Request> {
 
     /**
      * Activate interactive board button grid for shoot action
+     * @param frenzy Is a frenzy reload shoot?
      */
-    public void activateButtonGridForShoot () {
+    public void activateButtonGridForShoot (boolean frenzy) {
         activateBoardButtonGrid();
         setEnableStatusActionButtonBox(false);
 
-        mBoardController.setupInteractiveGridForShootAction(weaponBox);
+        mBoardController.setupInteractiveGridForShootAction(weaponBox, frenzy);
 
-        undoButton.setOnMouseClicked(event -> {
+        activateUndoButtonWithBehaviour(() -> {
             disableBoardButtonGrid();
             setEnableStatusActionButtonBox(true);
         });
+    }
+
+    /**
+     * Activate board button grid for normal shoot
+     */
+    public void activateButtonGridForNormalShoot () {
+        activateButtonGridForShoot(false);
+    }
+
+    /**
+     * Activate board button grid for frenzy reload shoot
+     */
+    public void activateButtonGridForFrenzyReloadShoot () {
+        activateButtonGridForShoot(true);
     }
 
     /**
@@ -467,6 +474,7 @@ public class MainScreen extends Observable<Request> {
      * @param pos Selected position for ShootAction
      */
     public void setShootOnWeapon (Position pos) {
+        logToChat("Select weapon for shoot", false);
         GuiUtils.setBoxEnableStatus(weaponBox,true);
         setEnableStatusActionButtonBox(false);
 
@@ -474,7 +482,7 @@ public class MainScreen extends Observable<Request> {
             setShootingBehaviourOnWeapon(weaponBox.getChildren().get(i), i, pos);
         }
 
-        undoButton.setOnMouseClicked(event -> {
+        activateUndoButtonWithBehaviour(() -> {
             GuiUtils.setBoxEnableStatus(weaponBox,false);
             setEnableStatusActionButtonBox(true);
         });
@@ -484,6 +492,7 @@ public class MainScreen extends Observable<Request> {
      * Enable weapon box and set reload behaviour on weapon images
      */
     public void setReloadOnWeapon () {
+        logToChat("Select weapon to reload", false);
         GuiUtils.setBoxEnableStatus(weaponBox,true);
         setEnableStatusActionButtonBox(false);
 
@@ -491,9 +500,68 @@ public class MainScreen extends Observable<Request> {
             setReloadBehaviourOnWeapon(weaponBox.getChildren().get(i), i);
         }
 
-        undoButton.setOnMouseClicked(event -> {
+        activateUndoButtonWithBehaviour(() -> {
             GuiUtils.setBoxEnableStatus(weaponBox,false);
             setEnableStatusActionButtonBox(true);
+        });
+    }
+
+    public void setReloadShootOnWeapon (Position pos) {
+        setReloadOnWeapon();
+
+        // override on click behaviour
+        for (int i = 0; i < weaponBox.getChildren().size(); i++) {
+            setReloadShootBehaviourOnWeapon(weaponBox.getChildren().get(i), i, pos);
+        }
+    }
+
+    /**
+     * Set shoot behaviour on weapon images
+     * @param weapon Weapon image
+     * @param index Weapon index
+     * @param pos ShootAction position
+     */
+    private void setShootingBehaviourOnWeapon (Node weapon, int index, Position pos) {
+        weapon.setOnMouseClicked(event -> {
+            logToChat("Shooting with weapon of index: " + index, false);
+            GuiUtils.setBoxEnableStatus(weaponBox,false);
+            setEnableStatusActionButtonBox(true);
+
+            notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index), mView.getOwnerColor()));
+        });
+    }
+
+    /**
+     * Set reload behaviour on weapon images
+     * @param weapon Weapon image
+     * @param index Weapon index
+     */
+    private void setReloadBehaviourOnWeapon (Node weapon, int index) {
+        weapon.setOnMouseClicked(event -> {
+            logToChat("Reload weapon of index: " + index, false);
+            GuiUtils.setBoxEnableStatus(weaponBox,false);
+            setEnableStatusActionButtonBox(true);
+
+            notify(new ActionRequest(new ReloadAction(index), mView.getOwnerColor()));
+        });
+    }
+
+    private void setReloadShootBehaviourOnWeapon (Node weapon, int reloadIndex, Position pos) {
+        weapon.setOnMouseClicked(event -> {
+            logToChat("Reload weapon of index: " + reloadIndex, false);
+
+            logToChat("Select weapon for shoot", false);
+            for (int i = 0; i < weaponBox.getChildren().size(); i++) {
+                int shootIndex = i;
+                weaponBox.getChildren().get(i).setOnMouseClicked(event1 -> {
+                    logToChat("Complete Reload-Shoot with weapon of index: " + reloadIndex, false);
+                    GuiUtils.setBoxEnableStatus(weaponBox,false);
+                    setEnableStatusActionButtonBox(true);
+
+                    notify(new ActionRequest(new MoveReloadShootAction(mClientColor, pos, shootIndex, reloadIndex),
+                            mView.getOwnerColor()));
+                });
+            }
         });
     }
 
@@ -508,7 +576,7 @@ public class MainScreen extends Observable<Request> {
             setIndexForwardingOnWeapon(weaponBox.getChildren().get(i), i);
         }
 
-        undoButton.setOnMouseClicked(event -> {
+        activateUndoButtonWithBehaviour(() -> {
             GuiUtils.setBoxEnableStatus(weaponBox,false);
             setEnableStatusActionButtonBox(true);
         });
@@ -545,7 +613,7 @@ public class MainScreen extends Observable<Request> {
             finalizePowerUpInteraction();
         });
 
-        undoButton.setOnMouseClicked(event -> finalizePowerUpInteraction());
+        activateUndoButtonWithBehaviour(this::finalizePowerUpInteraction);
     }
 
     /**
@@ -634,38 +702,6 @@ public class MainScreen extends Observable<Request> {
                 }
             }
         }
-    }
-
-    /**
-     * Set shoot behaviour on weapon images
-     * @param weapon Weapon image
-     * @param index Weapon index
-     * @param pos ShootAction position
-     */
-    private void setShootingBehaviourOnWeapon (Node weapon, int index, Position pos) {
-        weapon.setOnMouseClicked(event -> {
-            logToChat("Shooting with weapon of index: " + index, false);
-            GuiUtils.setBoxEnableStatus(weaponBox,false);
-            setEnableStatusActionButtonBox(true);
-
-            notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index), mView.getOwnerColor()));
-        });
-    }
-
-    /**
-     * Set reload behaviour on weapon images
-     * @param weapon Weapon image
-     * @param index Weapon index
-     */
-    private void setReloadBehaviourOnWeapon (Node weapon, int index) {
-        weapon.setOnMouseClicked(event -> {
-            logToChat("Reload weapon of index: " + index, false);
-            setWeaponLoadStatus(index, true);
-            GuiUtils.setBoxEnableStatus(weaponBox,false);
-            setEnableStatusActionButtonBox(true);
-
-            notify(new ActionRequest(new ReloadAction(index), mView.getOwnerColor()));
-        });
     }
 
     /**
@@ -1015,7 +1051,17 @@ public class MainScreen extends Observable<Request> {
      * Send turn end notification
      */
     public void endTurn () {
+        logToChat("Ending turn", false);
         notify(new TurnEndRequest(mView.getOwnerColor()));
+    }
+
+    /**
+     * Set action box accordingly to game status (frenzy or normal)
+     * @param isFrenzy Is game in frenzy mode?
+     */
+    public void switchActionBox (boolean isFrenzy) {
+        normalActionsBox.setVisible(!isFrenzy);
+        frenzyActionsBox.setVisible(isFrenzy);
     }
 
     /**

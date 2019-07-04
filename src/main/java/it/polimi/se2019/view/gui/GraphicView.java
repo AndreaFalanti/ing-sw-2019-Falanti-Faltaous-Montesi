@@ -163,6 +163,7 @@ public class GraphicView extends View {
                 controller.setView(this);
                 controller.setClientColor(clientColor);
 
+                controller.switchActionBox(initInfo.isFinalFrenzy());
 
                 controller.loadPlayerBoards(clientColor, initInfo.getPlayers());
                 controller.initializeBoardAndInfo(initInfo.getBoard(), initInfo.getSkullNum(),

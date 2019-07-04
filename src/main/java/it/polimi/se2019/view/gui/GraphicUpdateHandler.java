@@ -123,6 +123,7 @@ public class GraphicUpdateHandler implements UpdateHandler {
         Platform.runLater(() -> {
             mMainController.getBoardController().updateActivePlayerText(update.getPlayerColor());
             mMainController.getBoardController().updateTurnText(update.getTurnNumber());
+            mMainController.switchActionBox(update.isFinalFrenzy());
         });
     }
 

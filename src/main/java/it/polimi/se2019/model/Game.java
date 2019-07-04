@@ -82,8 +82,7 @@ public class Game extends Observable<Update> {
         List<PowerUpCard> powerUpCards = PowerUpCard.returnDeckFromJson(Jsons.get("PowerUpCardDeck"));
         mPowerUpCardDeck = new Deck<>(powerUpCards);
 
-        // List<Weapon> weaponCards = Weapons.getAll();
-        List<Weapon> weaponCards = Collections.singletonList(Weapons.get("furnace"));
+        List<Weapon> weaponCards = Weapons.getAll();
         mWeaponDeck = new Deck<>(weaponCards, false);
 
         refillAmmoTiles();
@@ -179,7 +178,7 @@ public class Game extends Observable<Update> {
 
         mRemainingActions = calculateTurnActions();
 
-        notify(new ActivePlayerUpdate(getActivePlayer().getColor(), mTurnNumber));
+        notify(new ActivePlayerUpdate(getActivePlayer().getColor(), mTurnNumber, mFinalFrenzy));
         notify(new RemainingActionsUpdate(mRemainingActions));
     }
 
