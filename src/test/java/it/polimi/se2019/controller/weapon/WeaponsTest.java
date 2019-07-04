@@ -546,7 +546,6 @@ public class WeaponsTest {
     public void testFlamethrowerBasicModeSmurfetteRoastsStonesAndLuigi() {
         // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
-        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY).move(new Position(2, 1));
 
         // instantiate weapon
         Weapon testedWeapon = Weapons.get("flamethrower");
@@ -576,6 +575,50 @@ public class WeaponsTest {
         );
         assertPlayerDamage(
                 mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.YELLOW),
+                Collections.singletonList(
+                        PlayerColor.BLUE
+                ),
+                Collections.emptyList()
+        );
+    }
+
+    @Test
+    public void testFlamethrowerBasicModeSmurfetteRoastsStonesOnly() {
+        // create cutstom game
+        AmmoValue initialAmmo = new AmmoValue(3, 3, 3);
+        Game game = new Game(
+                Board.fromJson(Jsons.get("boards/game/board4")),
+                new ArrayList<>(Arrays.asList(
+                        new Player("Smurfette", PlayerColor.BLUE, new Position(3, 2), initialAmmo),
+                        new Player("Stones", PlayerColor.YELLOW, new Position(3, 1), initialAmmo),
+                        new Player("Luigi", PlayerColor.GREEN, new Position(3, 1), initialAmmo)
+                )),
+                8
+        );
+
+        // instantiate controller
+        Controller testController = new Controller(game, mPlayerViewMocks);
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("flamethrower");
+
+        PlayerColor shooterColor = PlayerColor.BLUE;
+
+        // mock selection
+        mockSelections(testController,
+                // roast Luigi
+                new WeaponModeSelectedRequest("basic_mode", shooterColor),
+                new DirectionSelectedRequest(Direction.NORTH, shooterColor),
+                new TargetsSelectedRequest(Collections.singleton(PlayerColor.YELLOW), shooterColor)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // assert that Stones has been roasted thoroughly
+        assertPlayerDamage(
+                game.getPlayerFromColor(PlayerColor.YELLOW),
                 Collections.singletonList(
                         PlayerColor.BLUE
                 ),

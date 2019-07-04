@@ -127,6 +127,10 @@ public class ShootInteraction {
 
     // inflict damage
     public void inflictDamage(Game game, PlayerColor inflicter, Set<PlayerColor> inflicted, Damage amount) {
+        // do not inflict damage if there are no targets
+        if (inflicted.isEmpty())
+            return;
+
         // log
         mLogger.log(Level.INFO,
                 "{0} inflicting {1} damage to {2}",
@@ -294,7 +298,7 @@ public class ShootInteraction {
                                                                  int min, int max, Function<Request, Stream<T>> selectionGetter,
                                                                  String selectionDescriptor) {
         // attempt to skip selection request
-        if (min == max && possibleToSelect.size() == min) {
+        if (possibleToSelect.size() == min) {
             selectingView.showMessage(String.format(
                     "Skipping %s selection of %d",
                     selectionDescriptor, min
