@@ -98,7 +98,7 @@ public class SocketConnection implements Connection {
             try {
                 result = mIn.readLine();
             } catch (IOException e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
+                logger.log(Level.WARNING, "{0} - Player disconnected", e.getMessage());
             }
 
             return result;

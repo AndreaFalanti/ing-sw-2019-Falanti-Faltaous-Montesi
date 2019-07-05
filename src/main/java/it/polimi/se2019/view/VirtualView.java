@@ -189,20 +189,22 @@ public class VirtualView extends View {
             while (true) {
                 String rawMessage = mConnection.waitForMessage();
 
-                NetworkMessage message = NetworkMessageFactory.fromJson(rawMessage);
-                switch (message.getType()) {
-                    case REQUEST:
-                        Request request = RequestFactory.fromJson(message.getRawContents());
-                        logger.log(Level.INFO, "Handling request from client: {0}", request.getClass().getSimpleName());
-                        notify(request);
-                        break;
-                    case PONG:
-                        // TODO: filter?
-                        // logger.log(Level.INFO, "Received PONG from {0} client", mOwnerColor);
-                        mHasReceivedPong.set(true);
-                        break;
-                    default:
-                        logger.severe("Received client message of unknown type!");
+                if (rawMessage != null) {
+                    NetworkMessage message = NetworkMessageFactory.fromJson(rawMessage);
+                    switch (message.getType()) {
+                        case REQUEST:
+                            Request request = RequestFactory.fromJson(message.getRawContents());
+                            logger.log(Level.INFO, "Handling request from client: {0}", request.getClass().getSimpleName());
+                            notify(request);
+                            break;
+                        case PONG:
+                            // TODO: filter?
+                            // logger.log(Level.INFO, "Received PONG from {0} client", mOwnerColor);
+                            mHasReceivedPong.set(true);
+                            break;
+                        default:
+                            logger.severe("Received client message of unknown type!");
+                    }
                 }
 
             }

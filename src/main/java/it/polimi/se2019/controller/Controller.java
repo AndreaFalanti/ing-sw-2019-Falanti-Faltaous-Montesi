@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 public class Controller implements Observer<Request>, RequestHandler {
     // messages constants
     public static final String NO_ACTIONS_REMAINING_ERROR_MSG = "Can't proceed further with shoot! Undoing action...";
-    public static final boolean DONT_USE_TIMER = false;
+    private static final boolean DONT_USE_TIMER = false;
 
     private static final Logger logger = Logger.getLogger(Controller.class.getName());
 

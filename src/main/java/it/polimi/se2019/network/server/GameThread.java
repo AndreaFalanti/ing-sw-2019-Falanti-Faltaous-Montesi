@@ -59,7 +59,7 @@ public class GameThread extends Thread {
             mGameSettings = gson.fromJson(Jsons.get("configurations/gameSettings"), GameSettings.class);
 
             try (FileWriter fileWriter = new FileWriter(jarPath + "gameSettings.json")) {
-                fileWriter.write(Jsons.get("configurations/connection"));
+                fileWriter.write(Jsons.get("configurations/gameSettings"));
             }
             catch (IOException e1) {
                 logger.severe(e1.getMessage());
