@@ -81,6 +81,8 @@ public class PlayerActionController implements InvalidActionResponseHandler {
 
         Optional<InvalidActionResponse> response = action.getErrorResponse(mMainController.getGame());
         if(!response.isPresent()) {
+            mMainController.getTurnTimer().cancel();
+
             if (action.leadToAShootInteraction()) {
                 UndoInfo shootUndoInfo = new UndoInfo(
                         mMainController.getGame().getActivePlayer().getColor(),
@@ -95,6 +97,8 @@ public class PlayerActionController implements InvalidActionResponseHandler {
             else {
                 action.perform(mMainController.getGame());
                 requestingView.confirmEndOfInteraction();
+
+                mMainController.setTimerTask();
             }
 
             if (action.consumeAction()) {

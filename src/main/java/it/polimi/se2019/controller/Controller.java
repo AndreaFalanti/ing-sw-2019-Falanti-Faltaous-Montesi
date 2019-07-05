@@ -15,9 +15,7 @@ import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,6 +36,7 @@ public class Controller implements Observer<Request>, RequestHandler {
     private int mPlayerNotSpawnedCounter;
     private boolean mActivePlayerSpawnedThisTurn = false;
     private PlayerColor mExpectedPlayingPlayer;
+    private Timer mTurnTimer = new Timer();
 
     // constructors
     public Controller(Game game, Map<PlayerColor, View> playerViews) {
@@ -71,6 +70,10 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     public ShootInteraction getShootInteraction() {
         return mShootInteraction;
+    }
+
+    public Timer getTurnTimer() {
+        return mTurnTimer;
     }
 
     public Object getShootInteractionLock() {
@@ -326,6 +329,9 @@ public class Controller implements Observer<Request>, RequestHandler {
         continueShootInteraction(request);
     }
 
+    /**
+     * Try to start next turn of the game, handling initial spawn if needed
+     */
     public void handleNextTurn () {
         // prevent another turn start if called after an initial spawn
         if (mActivePlayerSpawnedThisTurn) {
@@ -349,11 +355,33 @@ public class Controller implements Observer<Request>, RequestHandler {
         }
     }
 
+    /**
+     * Start next turn of the game
+     */
     private void startNextTurn () {
         mGame.startNextTurn();
         mExpectedPlayingPlayer = mGame.getActivePlayer().getColor();
+
+        setTimerTask();
     }
 
+    /**
+     * Suspend players for inactivity after a minute between an action and another
+     */
+    void setTimerTask () {
+        mTurnTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mPlayerViews.get(mExpectedPlayingPlayer).reportError("SUSPENDED FOR INACTIVITY");
+                handleNextTurn();
+            }
+        },60000);
+    }
+
+    /**
+     * Check if all players are alive
+     * @return true if all players are alive, false otherwise
+     */
     private boolean areAllPlayersAlive () {
         for (Player player : mGame.getPlayers()) {
             if (player.isDead()) {
@@ -364,6 +392,9 @@ public class Controller implements Observer<Request>, RequestHandler {
         return true;
     }
 
+    /**
+     * Send a respawn notification to first dead player found
+     */
     private void sendRespawnNotificationToDeadPlayers () {
         for (Player player : mGame.getPlayers()) {
             if (player.isDead()) {
@@ -376,6 +407,11 @@ public class Controller implements Observer<Request>, RequestHandler {
         }
     }
 
+    /**
+     * Check if powerUp index is valid
+     * @param index PowerUp index
+     * @return true if valid, false otherwise
+     */
     private boolean checkPowerUpValidity (int index) {
         if (index < 0 || index > 3) {
             return false;
