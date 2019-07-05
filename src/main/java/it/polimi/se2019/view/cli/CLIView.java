@@ -834,7 +834,7 @@ public class CLIView extends View {
                     TimeUnit.MILLISECONDS
             ).readLine();
 
-        }catch (InterruptedException e){}
+        }catch (InterruptedException e){Thread.currentThread().interrupt();}
 
         return "";
     }

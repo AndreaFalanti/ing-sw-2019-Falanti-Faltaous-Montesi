@@ -27,7 +27,7 @@ public class Reader {
                     input = result.get(timeout, unit);
                     break;
                 } catch (ExecutionException e) {
-                    e.getCause().printStackTrace();
+
                 } catch (TimeoutException e) {
 
                     result.cancel(true);

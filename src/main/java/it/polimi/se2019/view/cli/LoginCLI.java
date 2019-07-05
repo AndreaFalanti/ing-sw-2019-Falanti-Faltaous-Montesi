@@ -9,8 +9,6 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class LoginCLI {
-    private static final int SOCKETPORT = 4567;
-    private static final int RMIPORT = 4568;
 
     private LoginCLI() {
     }

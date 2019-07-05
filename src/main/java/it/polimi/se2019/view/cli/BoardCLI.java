@@ -301,6 +301,15 @@ public class BoardCLI {
         return line;
     }
 
+
+    /**
+     *
+     * @param i an int that indicates actual index on a line horizontally
+     * @param j an int that indicates actual index on a line vertically
+     * @param indexTile the first tile on a line
+     * @param tiles tile of the real board
+     * @return line of a row
+     */
     public StringBuilder valutation3(int i,int j,int indexTile,Tile[] tiles ){
         StringBuilder line = new StringBuilder();
 
@@ -318,6 +327,15 @@ public class BoardCLI {
     }
 
 
+    /**
+     * operation that creates a line and control two tiles have same color,have doors or wall
+     * @param i an int that indicates actual index on a line horizontally
+     * @param j an int that indicates actual index on a line vertically
+     * @param indexTile the first tile on a line
+     * @param color color of the tile that is evaluating
+     * @param tile tiles of the board
+     * @return line
+     */
     public StringBuilder sameRoom(int i,int j,String color,int indexTile,Tile[] tiles){
         StringBuilder line = new StringBuilder();
         line.append(getColorTile(color));
@@ -341,6 +359,7 @@ public class BoardCLI {
         line.append(ANSI_RESET);
         return line;
     }
+
 
     public StringBuilder makeDoor(int i,int j, String color){
         StringBuilder line = new StringBuilder();

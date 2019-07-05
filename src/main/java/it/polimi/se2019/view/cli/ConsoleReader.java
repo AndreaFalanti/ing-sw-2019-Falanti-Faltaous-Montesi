@@ -18,6 +18,7 @@ public class ConsoleReader implements Callable<String> {
                 }
                 input = br.readLine();
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 return null;
             }
         } while ("".equals(input));
