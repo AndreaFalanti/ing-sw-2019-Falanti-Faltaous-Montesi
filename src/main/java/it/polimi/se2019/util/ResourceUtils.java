@@ -2,7 +2,6 @@ package it.polimi.se2019.util;
 
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ResourceUtils {
@@ -24,7 +23,7 @@ public class ResourceUtils {
         return Arrays.stream(
                 loadResource(rootPath).split("\\n")
         )
-                .map(paht -> rootPath + paht)
+                .map(path -> rootPath + path)
                 .map(ResourceUtils::loadResource);
     }
 }

@@ -369,6 +369,7 @@ public class Controller implements Observer<Request>, RequestHandler {
      * Suspend players for inactivity after a minute between an action and another
      */
     void setTimerTask () {
+        mTurnTimer = new Timer();
         mTurnTimer.schedule(new TimerTask() {
             @Override
             public void run() {
