@@ -9,6 +9,11 @@ import it.polimi.se2019.view.View;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Expression that evaluates to an effect picked by the user. The effect is picked through interactions wit the
+ * shooter's view.
+ * @author Stefano Montesi
+ */
 public class PickEffect extends Expression {
     // subexpressions
     private SortedMap<Integer, Set<Effect>> mSubexpressions;
@@ -45,6 +50,12 @@ public class PickEffect extends Expression {
         correspondingPriorityList.add(value);
     }
 
+    /**
+     * Manage payment of a particular sum of ammo for executing a particular set of effects
+     * @param context context of the shoot interaction
+     * @param effectsToSelect effects still left to select by the player
+     * @param effectsToPay effects that the player has currently selected to pay
+     */
     private void manageAmmoPayment(ShootContext context, Set<Effect> effectsToSelect, List<Effect> effectsToPay) {
         AmmoValue totalEffectsCost = effectsToPay.stream()
                 .map(Effect::getCost)
@@ -64,6 +75,11 @@ public class PickEffect extends Expression {
         );
     }
 
+    /**
+     * manage selction of effects by the player
+     * @param context context of shoot interaction
+     * @param effectsToSelect effects among which the player can select
+     */
     private void manageEffectSelection(ShootContext context, Set<Effect> effectsToSelect) {
         if (effectsToSelect.isEmpty())
             return;
@@ -124,6 +140,11 @@ public class PickEffect extends Expression {
         );
     }
 
+    /**
+     * Evaluates expression
+     * @param context context used for evaluation
+     * @return result of evaluation
+     */
     @Override
     public final Expression eval(ShootContext context) {
         // client interaction loop

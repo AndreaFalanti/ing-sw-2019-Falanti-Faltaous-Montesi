@@ -11,6 +11,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Expression representing a set of expressions
+ * @author Stefano Montesi
+ */
 public class SetExpression extends Expression {
     @SerializedName("subs")
     private final Set<Expression> mSubexpressions;
@@ -34,7 +38,7 @@ public class SetExpression extends Expression {
      * Converts {@code this} into a set
      * @return a set containing {@code this}'s subexpressions
      */
-    public Set<Expression> asSet() {
+    Set<Expression> asSet() {
         return mSubexpressions;
     }
 

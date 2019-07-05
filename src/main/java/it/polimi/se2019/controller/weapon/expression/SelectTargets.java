@@ -14,16 +14,28 @@ import static it.polimi.se2019.controller.weapon.ShootContext.SPECIAL_VAR_LAST_S
 import static it.polimi.se2019.controller.weapon.ShootContext.SPECIAL_VAR_PREVIOUSLY_SELECTED;
 
 
+/**
+ * Behaviour that takes a set of targets from player input
+ * @author Stefano Montesi
+ */
 public class SelectTargets extends Behaviour {
+    // required for Gson; should never be called by the user
     public SelectTargets() {
     }
 
+    /**
+     * Constructs the behaviour with using the given subexpressions
+     * @param min minimum amount of targets to select
+     * @param max maximum amount of targets to select
+     * @param from targets among which the playre can select
+     */
     public SelectTargets(Expression min, Expression max, Expression from) {
         putSub("min", min);
         putSub("max", max);
         putSub("from", from);
     }
 
+    // decorator to return the selection while saving vital info about it on the scope
     private static Expression returnSelection(ShootContext context, Expression selection) {
         // first record selection in dedicated variable
         context.setVar(SPECIAL_VAR_LAST_SELECTED, selection.deepCopy());
@@ -38,7 +50,11 @@ public class SelectTargets extends Behaviour {
         return selection;
     }
 
-    // TODO: add doc
+    /**
+     * Evaluates expression
+     * @param context context used for evaluation
+     * @return result of evaluation
+     */
     @Override
     public final Expression eval(ShootContext context) {
         View view = context.getView();
