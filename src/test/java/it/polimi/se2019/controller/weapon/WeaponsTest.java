@@ -5,6 +5,7 @@ import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
+import it.polimi.se2019.model.weapon.serialization.ExpressionFactory;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Pair;
 import it.polimi.se2019.view.View;
@@ -192,15 +193,13 @@ public class WeaponsTest {
 
     @Test
     public void testWeaponsGetAll() {
-
+        System.out.println(Weapons.getAll());
     }
 
     @Test
     public void testWeaponsLoading() {
         // try to get a weapon and in doing so expect no exceptions
-        Weapons.get(Weapons.listResourceNames().iterator().next());
-
-        System.out.println(Weapons.get("rocket_launcher"));
+        System.out.println(Jsons.get("weapons/real/cyberblade"));
     }
 
     @Test
