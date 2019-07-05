@@ -1029,6 +1029,43 @@ public class WeaponsTest {
     }
 
     @Test
+    public void testShotgunMarioShootsAndMovesDorian() {
+        // instantiate controller
+        Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+
+        PlayerColor shooterColor = PlayerColor.PURPLE;
+
+        // instantiate weapon
+        Weapon testedWeapon = Weapons.get("shotgun");
+
+        // mock selection
+        mockSelections(testController,
+                // shoot Dorian w/ basic effect (Luigi is picked immediately)
+                new WeaponModeSelectedRequest("basic_mode", shooterColor),
+
+                // move Dorian
+                new EffectsSelectedRequest(Collections.singletonList("basic_mode_move"), shooterColor),
+                new PositionSelectedRequest(new Position(2, 2), shooterColor)
+        );
+
+        // shoot through controller
+        testController.startShootInteraction(shooterColor, testedWeapon.getBehaviour());
+        waitForShootInteractionToEnd(testController.getShootInteraction());
+
+        // very that everyone in yellow rooms has been damaged
+        assertPlayerStatus(
+                mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY),
+                Arrays.asList(
+                        PlayerColor.PURPLE,
+                        PlayerColor.PURPLE,
+                        PlayerColor.PURPLE
+                ),
+                Collections.emptyList(),
+                new Position(2, 2)
+        );
+    }
+
+    @Test
     public void testShotgunMarioShootsDorian() {
         // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
