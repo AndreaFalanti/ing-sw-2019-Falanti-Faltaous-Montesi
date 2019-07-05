@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 /**
  * Behaviour for returning all targets that a given observer can see
  *  NB. the observer is considered the shooter if not specified
- *
  * @author Stefano Montesi
  */
 public class CanSee extends Behaviour {

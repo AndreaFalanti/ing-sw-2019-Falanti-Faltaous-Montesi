@@ -81,9 +81,10 @@ public class RmiConnection implements Connection {
     private static final Logger logger = Logger.getLogger(RmiConnection.class.getName());
 
     // static constants
-    public static final String RMI_STATION_REGISTRY_ID = "$station";
-    private static final int ACCEPTATION_MAILBOX_ADDRESS = 0;
+    public static final String RMI_STATION_REGISTRY_ID = "station";
     static final int RMI_PORT = 4568;
+    public static final String RMI_STATION_REGISTRY_URL = "rmi://192.168.1.210:" + RMI_PORT + "/" + RMI_STATION_REGISTRY_ID;
+    private static final int ACCEPTATION_MAILBOX_ADDRESS = 0;
 
     // fields
     private final int mAddress;
@@ -104,7 +105,7 @@ public class RmiConnection implements Connection {
             Registry registry = LocateRegistry.createRegistry(RMI_PORT);
 
             // create station
-            registry.bind(RMI_STATION_REGISTRY_ID, new RmiStation());
+            registry.bind(RMI_STATION_REGISTRY_URL, new RmiStation());
 
         } catch (RemoteException|AlreadyBoundException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
@@ -177,7 +178,7 @@ public class RmiConnection implements Connection {
         try {
             station =
                     (RmiStationRemote) LocateRegistry.getRegistry(RMI_PORT)
-                            .lookup(RMI_STATION_REGISTRY_ID);
+                            .lookup(RMI_STATION_REGISTRY_URL);
         } catch (RemoteException|NotBoundException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             // force shutdown if something is wrong

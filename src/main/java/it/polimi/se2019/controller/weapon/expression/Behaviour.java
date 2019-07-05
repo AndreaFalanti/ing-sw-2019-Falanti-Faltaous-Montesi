@@ -7,7 +7,6 @@ import java.util.Map;
 
 /**
  * Modified expression that encapsulates access to a hash map of subexpressions
- *
  * @author Stefano Montesi
  */
 public abstract class Behaviour extends Expression {

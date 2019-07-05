@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 /**
  * Return all targets standing in a given room (color)
- *
  * @author Stefano Montesi
  */
 public class AllInRoom extends Behaviour {
@@ -18,6 +17,10 @@ public class AllInRoom extends Behaviour {
 
     }
 
+    /**
+     * Constructs the behaviour with using the given subexpressions
+     * @param color the color of the desired room
+     */
     public AllInRoom(Expression color) {
         putSub("color", color);
     }
