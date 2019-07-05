@@ -68,7 +68,7 @@ public class LoginScreen {
     }
 
     @FXML
-    public void initialize () throws IOException {
+    public void initialize () {
         socketRadioButton.setUserData(SOCKET_TYPE);
         rmiRadioButton.setUserData(RMI_TYPE);
 
@@ -80,9 +80,12 @@ public class LoginScreen {
             mNetworkSettings = gson.fromJson(jsonReader, NetworkSettings.class);
         } catch (FileNotFoundException e) {
             mNetworkSettings = gson.fromJson(Jsons.get("configurations/connection"), NetworkSettings.class);
-            FileWriter fileWriter = new FileWriter(jarPath + "connections.json");
-            fileWriter.write(Jsons.get("configurations/connection"));
-            fileWriter.close();
+            try (FileWriter fileWriter = new FileWriter(jarPath + "connections.json")) {
+                fileWriter.write(Jsons.get("configurations/connection"));
+            }
+            catch (IOException e1) {
+                logger.severe(e1.getMessage());
+            }
         }
     }
 
