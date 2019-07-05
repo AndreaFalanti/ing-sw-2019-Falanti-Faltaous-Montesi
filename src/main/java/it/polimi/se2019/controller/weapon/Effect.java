@@ -70,8 +70,8 @@ public class Effect {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Effect effect = (Effect) o;
-        return mPriority.equals(effect.mPriority) &&
-                mOptional.equals(effect.mOptional) &&
+        return Objects.equals(mPriority, effect.mPriority) &&
+                Objects.equals(mOptional, effect.mOptional) &&
                 Objects.equals(mId, effect.mId) &&
                 Objects.equals(mName, effect.mName) &&
                 Objects.equals(mCost, effect.mCost);
