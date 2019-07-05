@@ -1,4 +1,4 @@
-# Progetto Ingegneria Softaware
+# Progetto Ingegneria Software
 
 > Realizzazione del gioco da tavolo Adrenalina in formato digitale con Java.
 
@@ -14,9 +14,9 @@
     3. timerDelay: valore in millisecondi dopo il quale una partita con almeno 3 giocatori starta se non al completo.
     4. useControllerTimer: valore booleano.
 
-### Istruzioni per avviare il client grafico
+### Istruzioni per avviare il client grafico (GUI):
 
-* Scompattare lo zip adrenalina-server.zip.
+* Scompattare lo zip adrenalina-gui.zip.
 * Avviare attraverso comando "java -jar adrenalina-gui.jar".
 * è possibile configurare i parametri di connessione del client grafico cambiando i parametri dell'apposito file di configurazione estratto dallo zip. I parametri nel file sono:
     1. host: ip del server.
@@ -24,10 +24,7 @@
     3. rmiPort: porta di connessione rmi.
 
 
-### Istruzioni per avviare il client grafico
+### Istruzioni per avviare l'interfaccia da terminale (CLI):
 
 * Avviare attraverso comando "java -jar adrenalina-cli.jar".
-* È possibile configurare i parametri di connessione del client grafico cambiando i parametri dell'apposito file di configurazione estratto dallo zip. I parametri nel file sono:
-    1. host: ip del server.
-    2. socketPort: porta di connessione socket.
-    3. rmiPort: porta di connessione rmi.
+* Verranno richiesti host e porta direttamente durante la selezione della connessione.
