@@ -2,6 +2,11 @@ package it.polimi.se2019.controller;
 
 import it.polimi.se2019.view.request.*;
 
+/**
+ * Interface that provides handler methods for all request messages
+ *
+ * @author Andrea Falanti
+ */
 public interface RequestHandler {
     void handle(ValidPositionRequest request);
     void handle(TargetsSelectedRequest request);

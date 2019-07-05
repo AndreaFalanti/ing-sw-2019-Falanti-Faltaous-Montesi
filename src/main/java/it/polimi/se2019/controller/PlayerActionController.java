@@ -16,6 +16,11 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Sub-controller that handle all action performs and relative errors
+ *
+ * @author Andrea Falanti
+ */
 public class PlayerActionController implements InvalidActionResponseHandler {
     private Controller mMainController;
     private View mRequestingView;

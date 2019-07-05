@@ -4,6 +4,11 @@ import it.polimi.se2019.model.PlayerColor;
 
 import java.util.SortedMap;
 
+/**
+ * Update message with final leaderboard, sent to views
+ *
+ * @author Andrea Falanti
+ */
 public class EndGameUpdate implements Update {
     private SortedMap<PlayerColor, Integer> mLeaderboard;
 

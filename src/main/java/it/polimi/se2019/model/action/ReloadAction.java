@@ -11,6 +11,11 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
+/**
+ * Action for performing a weapon reload
+ *
+ * @author Andrea Falanti
+ */
 public class ReloadAction implements CostlyAction {
     private int mWeaponIndex;
     private boolean[] mDiscardPowerUp = {false, false, false};

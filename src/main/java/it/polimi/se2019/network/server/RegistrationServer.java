@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Server class that handle player registrations and place them in right queues
+ *
+ * @author Andrea Falanti
+ */
 public class RegistrationServer implements ConnectionRegister {
     private static final Logger logger = Logger.getLogger(RegistrationServer.class.getName());
 

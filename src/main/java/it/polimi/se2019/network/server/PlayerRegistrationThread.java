@@ -4,6 +4,12 @@ import it.polimi.se2019.network.connection.Connection;
 
 import java.util.logging.Logger;
 
+/**
+ * Thread used only for registering players to server. Ask for a username and checks that it's
+ * available.
+ *
+ * @author Andrea Falanti
+ */
 public class PlayerRegistrationThread extends Thread {
     private static final Logger logger = Logger.getLogger(PlayerRegistrationThread.class.getName());
 

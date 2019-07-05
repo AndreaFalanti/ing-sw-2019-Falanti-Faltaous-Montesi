@@ -4,6 +4,11 @@ import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.network.connection.Connection;
 import it.polimi.se2019.view.VirtualView;
 
+/**
+ * Struct that contains player connection data
+ *
+ * @author Andrea Falanti
+ */
 public class PlayerConnection {
     private VirtualView mVirtualView;
     private String mUsername;

@@ -11,6 +11,11 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
+/**
+ * Action for performing consecutively a move and a shoot interaction
+ *
+ * @author Andrea Falanti
+ */
 public class MoveShootAction implements ShootLeadingAction {
     private MoveAction mMoveAction;
     private ShootAction mShootAction;

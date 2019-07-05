@@ -14,6 +14,12 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * Thread used to initialize a game room. Start it's creation after game is full of player or after
+ * a certain amount of time set in timer
+ *
+ * @author Andrea Falanti, Stefano Montesi
+ */
 public class GameThread extends Thread {
     private static final Logger logger = Logger.getLogger(GameThread.class.getName());
     public static final int MAXIMUM_PLAYER = 5;

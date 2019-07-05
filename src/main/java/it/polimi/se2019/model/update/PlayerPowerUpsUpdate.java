@@ -3,6 +3,11 @@ package it.polimi.se2019.model.update;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.PowerUpCard;
 
+/**
+ * Update message with player's powerUps info, sent to views
+ *
+ * @author Andrea Falanti
+ */
 public class PlayerPowerUpsUpdate implements Update {
     private PlayerColor mPlayerColor;
     private PowerUpCard[] mPowerUpCards;

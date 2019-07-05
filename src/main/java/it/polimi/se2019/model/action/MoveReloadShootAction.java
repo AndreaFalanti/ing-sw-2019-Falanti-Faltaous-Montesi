@@ -10,6 +10,11 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
+/**
+ * Action for performing consecutively move, reload and shoot interaction (final frenzy only)
+ *
+ * @author Andrea Falanti
+ */
 public class MoveReloadShootAction implements ShootLeadingAction {
     private MoveShootAction mMoveShootAction;
     private ReloadAction mReloadAction;

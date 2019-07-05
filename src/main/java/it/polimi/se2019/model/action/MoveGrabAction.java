@@ -10,6 +10,11 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
+/**
+ * Action for performing consecutively a move and a grab action
+ *
+ * @author Andrea Falanti
+ */
 public class MoveGrabAction implements Action {
     private MoveAction mMoveAction;
     private GrabAction mGrabAction;

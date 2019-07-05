@@ -1,5 +1,10 @@
 package it.polimi.se2019.model.update;
 
+/**
+ * Update message with remaining actions info, sent to views
+ *
+ * @author Andrea Falanti
+ */
 public class RemainingActionsUpdate implements Update {
     private int mRemainingActions;
 

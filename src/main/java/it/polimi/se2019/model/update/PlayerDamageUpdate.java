@@ -2,6 +2,11 @@ package it.polimi.se2019.model.update;
 
 import it.polimi.se2019.model.PlayerColor;
 
+/**
+ * Update message with player's damage taken info, sent to views
+ *
+ * @author Andrea Falanti
+ */
 public class PlayerDamageUpdate implements Update {
     private PlayerColor mDamagedPlayerColor;
     private PlayerColor[] mDamageTaken;

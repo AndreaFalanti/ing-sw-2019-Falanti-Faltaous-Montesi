@@ -5,6 +5,11 @@ import it.polimi.se2019.view.ResponseHandler;
 
 import java.util.Set;
 
+/**
+ * Response used to notify view of a needed target selection
+ *
+ * @author Andrea Falanti
+ */
 public class PickTargetsResponse implements Response {
     private int mMinTargets;
     private int mMaxTargets;

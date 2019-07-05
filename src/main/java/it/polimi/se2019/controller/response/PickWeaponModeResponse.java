@@ -3,6 +3,11 @@ package it.polimi.se2019.controller.response;
 import it.polimi.se2019.controller.weapon.Effect;
 import it.polimi.se2019.view.ResponseHandler;
 
+/**
+ * Response used to notify view of a needed weapon mode selection
+ *
+ * @author Andrea Falanti
+ */
 public class PickWeaponModeResponse implements Response {
     private Effect mEffect1;
     private Effect mEffect2;

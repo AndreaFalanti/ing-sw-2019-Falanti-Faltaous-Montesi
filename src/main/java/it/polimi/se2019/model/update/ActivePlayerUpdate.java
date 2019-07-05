@@ -2,6 +2,11 @@ package it.polimi.se2019.model.update;
 
 import it.polimi.se2019.model.PlayerColor;
 
+/**
+ * Update message with turn info, sent to views
+ *
+ * @author Andrea Falanti
+ */
 public class ActivePlayerUpdate implements Update {
     private PlayerColor mPlayerColor;
     private int mTurnNumber;

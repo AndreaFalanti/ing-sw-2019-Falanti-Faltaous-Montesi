@@ -5,7 +5,11 @@ import it.polimi.se2019.model.update.BoardTileUpdate;
 
 import java.util.Arrays;
 
-
+/**
+ * Represent a spawn tile present in a board
+ *
+ * @author Andrea Falanti, Stefano Montesi
+ */
 public class SpawnTile extends Tile {
     private Weapon[] mWeapons = new Weapon[MAX_WEAPONS];
     public static final int MAX_WEAPONS = 3;

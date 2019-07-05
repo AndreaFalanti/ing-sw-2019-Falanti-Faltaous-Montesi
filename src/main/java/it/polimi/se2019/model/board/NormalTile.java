@@ -7,7 +7,11 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
-
+/**
+ * Representation of a normal tile in board
+ *
+ * @author Stefano Montesi, Andrea Falanti
+ */
 public class NormalTile extends Tile {
     // normal tiles contain an ammo card
     private AmmoCard mAmmoCard;

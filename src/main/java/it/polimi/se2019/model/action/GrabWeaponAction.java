@@ -12,6 +12,11 @@ import it.polimi.se2019.model.board.Tile;
 
 import java.util.Optional;
 
+/**
+ * Action for performing a weapon grab in place
+ *
+ * @author Andrea Falanti
+ */
 public class GrabWeaponAction implements GrabAction, CostlyAction {
     private int mWeaponGrabbedIndex;
     private Integer mWeaponToExchangeIndex;

@@ -2,6 +2,11 @@ package it.polimi.se2019.network.server;
 
 import java.util.logging.Logger;
 
+/**
+ * Main class of server jar. Expect socket port and rmi port as command line arguments.
+ *
+ * @author Andrea Falanti
+ */
 public class LaunchServer {
     private static final Logger logger = Logger.getLogger(LaunchServer.class.getName());
 

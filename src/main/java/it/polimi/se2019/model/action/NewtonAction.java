@@ -7,6 +7,11 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
+/**
+ * Action for performing newton powerUp behaviour
+ *
+ * @author Andrea Falanti
+ */
 public class NewtonAction implements Action {
     private PlayerColor mTarget;
     private Position mDestination;

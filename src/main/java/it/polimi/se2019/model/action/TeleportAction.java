@@ -7,6 +7,11 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
+/**
+ * Action for performing a teleport powerUp behaviour
+ *
+ * @author Andrea Falanti
+ */
 public class TeleportAction implements Action {
     private Position mDestination;
     private int mTeleportIndex;
