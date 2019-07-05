@@ -5,6 +5,7 @@ import it.polimi.se2019.model.Game;
 
 /**
  * Expression that evaluates to the position of the specified (through subexpression) player.
+ * @author Stefano Montesi
  */
 public class Pos extends Behaviour {
     // required for Gson; should never be called by the user

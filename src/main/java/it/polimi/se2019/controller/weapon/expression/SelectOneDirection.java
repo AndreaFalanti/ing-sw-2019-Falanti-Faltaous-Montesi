@@ -6,6 +6,7 @@ import it.polimi.se2019.view.View;
 
 /**
  * Behaviour that takes a direction from player input
+ * @author Stefano Montesi
  */
 public class SelectOneDirection extends Behaviour {
     /**

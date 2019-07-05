@@ -5,6 +5,10 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Behaviour that evaluates to the difference of two sets passed as subexpressions
+ * @author Stefano Montesi
+ */
 public class Difference extends Behaviour {
     // necessary for Gson; should never be used
     public Difference() {

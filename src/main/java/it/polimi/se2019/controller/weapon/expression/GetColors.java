@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 /**
  * Behaviour for retrieving the colors of the tiles from a given range
+ * @author Stefano Montesi
  */
 public class GetColors extends Behaviour {
     /**

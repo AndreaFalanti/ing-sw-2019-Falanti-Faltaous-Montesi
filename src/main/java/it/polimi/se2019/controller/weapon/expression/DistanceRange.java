@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 /**
  * Behaviour that evaluates to a range visible as a ring around a given origin.
  * The ring's internal and external radii, along with its origin, are specified as subexpressions.
- *
  * @author Stefano Montesi
  */
 public class DistanceRange extends Behaviour {

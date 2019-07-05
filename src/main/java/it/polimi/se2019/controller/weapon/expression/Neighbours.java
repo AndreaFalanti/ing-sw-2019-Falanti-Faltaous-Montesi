@@ -5,6 +5,7 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 /**
  * Behaviour that evaluates to a set containing the players standing in the same tile
  * of {@code who}
+ * @author Stefano Montesi
  */
 public class Neighbours extends Behaviour {
     // required for Gson; should never be called by the user

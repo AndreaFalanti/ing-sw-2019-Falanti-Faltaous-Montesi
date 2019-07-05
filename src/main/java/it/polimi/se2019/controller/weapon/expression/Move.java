@@ -7,6 +7,7 @@ import static it.polimi.se2019.controller.weapon.ShootInteraction.move;
 
 /**
  * Behaviour that evaluates to nothing and moves the specified targets in the specified position
+ * @author Stefano Montesi
  */
 public class Move extends Behaviour {
     // required for Gson; should never be called by the user

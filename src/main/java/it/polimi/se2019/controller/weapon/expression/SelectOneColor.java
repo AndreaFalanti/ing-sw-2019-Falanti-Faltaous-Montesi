@@ -7,6 +7,7 @@ import it.polimi.se2019.view.View;
 
 /**
  * Behaviour that takes a color from layer input
+ * @author Stefano Montesi
  */
 public class SelectOneColor extends Behaviour {
     /**

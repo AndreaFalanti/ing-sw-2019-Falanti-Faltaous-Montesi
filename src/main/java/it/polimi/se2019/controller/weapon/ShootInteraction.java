@@ -23,6 +23,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+/**
+ * A subcontroller dedicated to shoot interactions
+ * @author Stefano Montesi
+ */
 public class ShootInteraction {
     // logger
     private Logger mLogger = Logger.getLogger(getClass().getName());

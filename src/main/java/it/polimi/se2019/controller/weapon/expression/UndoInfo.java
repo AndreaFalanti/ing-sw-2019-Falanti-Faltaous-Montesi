@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 /**
  * Class recording information to undo a game state
  * @author Stefano Montesi
+ * @author Andrea Falanti
  */
 public class UndoInfo {
     private static class PlayerUndoInfo {

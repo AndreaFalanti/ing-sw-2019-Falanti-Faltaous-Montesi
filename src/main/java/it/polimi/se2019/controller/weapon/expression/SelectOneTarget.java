@@ -4,6 +4,7 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 
 /**
  * Behaviour that takes a one target from player input
+ * @author Stefano Montesi
  */
 public class SelectOneTarget extends Behaviour {
     // required for Gson; should never be called by the user

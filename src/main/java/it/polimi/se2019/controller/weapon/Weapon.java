@@ -12,6 +12,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Representation of a Weapon
+ * @author Stefano Montesi
+ */
 public class Weapon {
     private String mName;
     private AmmoValue mReloadCost;

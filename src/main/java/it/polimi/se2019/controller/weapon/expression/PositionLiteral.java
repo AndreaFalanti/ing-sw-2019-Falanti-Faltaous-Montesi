@@ -7,6 +7,7 @@ import java.util.Set;
 
 /**
  * Literal containing a Position value
+ * @author Stefano Montesi
  */
 public class PositionLiteral extends Literal<Position> {
     public PositionLiteral(Position contents) {

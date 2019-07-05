@@ -4,6 +4,7 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 
 /**
  * Expression symbolizing that an evaluation has been done. Kind of like a void return type.
+ * @author Stefano Montesi
  */
 public class Done extends Behaviour {
     /**

@@ -629,6 +629,9 @@ public class WeaponsTest {
     public void testFlamethrowerBarbecueModeSmurfetteRoastsSomeMore() {
         // instantiate controller
         Controller testController = new Controller(mLuigiHidesFromYellowParty, mPlayerViewMocks);
+        mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.BLUE)
+                .setAmmo(new AmmoValue(0, 1, 0))
+                .addPowerUp(new PowerUpCard(PowerUpType.TAGBACK_GRENADE, new AmmoValue(0, 1, 0)));
         mLuigiHidesFromYellowParty.getPlayerFromColor(PlayerColor.GREY).move(new Position(2, 1));
 
         // instantiate weapon
@@ -640,6 +643,8 @@ public class WeaponsTest {
         mockSelections(testController,
                 // roast Stones, Dorian and then Luigi
                 new WeaponModeSelectedRequest("in_barbecue_mode", shooterColor),
+                new PowerUpDiscardedRequest(new boolean[]{ false, true, false, false }, shooterColor),
+                new PowerUpDiscardedRequest(new boolean[]{ true, false, false, false }, shooterColor),
                 new DirectionSelectedRequest(Direction.NORTH, shooterColor),
                 new TargetsSelectedRequest(Collections.singleton(PlayerColor.GREEN), shooterColor)
         );

@@ -5,10 +5,19 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.view.View;
 
+/**
+ * Expression representing the selection of one between two weapon modes
+ * @author Stefano Montesi
+ */
 public class XorEffect extends Expression {
     private Effect mLhs;
     private Effect mRhs;
 
+    /**
+     * Evaluates expression
+     * @param context context used for evaluation
+     * @return result of evaluation
+     */
     @Override
     public final Expression eval(ShootContext context) {
         ShootInteraction interaction = context.getInteraction();

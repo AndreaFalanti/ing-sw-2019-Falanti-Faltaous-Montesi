@@ -9,6 +9,7 @@ import java.util.Objects;
 
 /**
  * Used for storing information about effect priorities and costs
+ * @author Stefano Montesi
  */
 public class Effect {
     // unique identifier

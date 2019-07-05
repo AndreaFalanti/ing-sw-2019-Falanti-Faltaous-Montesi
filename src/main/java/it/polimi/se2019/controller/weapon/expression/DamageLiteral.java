@@ -4,6 +4,7 @@ import it.polimi.se2019.model.Damage;
 
 /**
  * A terminal expression containing a damage literal
+ * @author Stefano Montesi
  */
 public class DamageLiteral extends Literal<Damage> {
     public DamageLiteral(Damage contents) {

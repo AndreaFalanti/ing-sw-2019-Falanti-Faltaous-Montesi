@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 /**
  * Behaviour that evaluates to the range visible by an hypothetical observer standing on
  * at a specified position (store in the {@code origin} subexpression)
+ * @author Stefano Montesi
  */
 public class GetVisibleRange extends Behaviour {
     private static final String ORIGIN = "origin";

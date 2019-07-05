@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 /**
  * Expression for chaining two expression ranges
+ * @author Stefano Montesi
  */
 public class Chain extends Behaviour {
     // necessary for Gson; should never be used

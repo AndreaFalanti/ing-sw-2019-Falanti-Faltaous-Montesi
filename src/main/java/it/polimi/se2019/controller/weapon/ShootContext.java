@@ -14,6 +14,10 @@ import it.polimi.se2019.view.request.Request;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
+/** Parameter boundle passed to every Expression.eval method. Contains contextual information about the
+ * current shoot interaction, the game and also a scope with remembered information from the interpreter.
+ * @author Stefano Montesi
+ */
 public class ShootContext {
     // statics
     private static final String MISSING_PLAYER_MSG = "Shooter is not present among provided list of players!";

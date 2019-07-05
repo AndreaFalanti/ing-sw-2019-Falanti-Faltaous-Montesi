@@ -11,7 +11,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Singleton containing all weapons
+ * Singleton which can load all weapons
+ * @author Stefano Montesi
  */
 public class Weapons {
     private static final String PATH_TO_WEAPONS_RESOURCES_FOLDER = Jsons.PATH_TO_JSON_RESOURCES_FOLDER + "weapons/real/";

@@ -10,6 +10,9 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ *  Connection that uses sockets
+ */
 public class SocketConnection implements Connection {
     private static final Logger logger = Logger.getLogger(SocketConnection.class.getName());
 
@@ -36,6 +39,11 @@ public class SocketConnection implements Connection {
         }
     }
 
+    /**
+     * Starts a thread that listens for connections
+     * @param port port on which the connections are accepted
+     * @param connectionConsumer custom consumer that consumes the accepted connections
+     */
     public static void startAccepting(int port, Consumer<Connection> connectionConsumer) {
         new Thread(() -> {
             try (
@@ -50,11 +58,21 @@ public class SocketConnection implements Connection {
         }).start();
     }
 
+    /**
+     * Wraps a socket in a socket connection
+     * @param socket the socket to be wrapped
+     * @return the wrapper socket connection
+     */
     public static SocketConnection from(Socket socket) {
         return new SocketConnection(socket);
     }
 
-    public static SocketConnection accept(ServerSocket serverSocket) {
+    /**
+     * Accepts a connection
+     * @param serverSocket the server socket used to accept the connection
+     * @return the accepted connection
+     */
+    private static SocketConnection accept(ServerSocket serverSocket) {
         SocketConnection result = null;
         try {
             result = new SocketConnection(serverSocket.accept());
@@ -66,6 +84,12 @@ public class SocketConnection implements Connection {
         return result;
     }
 
+    /**
+     * establishes a connection
+     * @param serverHost host on which the connection is established
+     * @param port the port on which the connection is established
+     * @return the established connection
+     */
     public static SocketConnection establish(String serverHost, int port) {
         SocketConnection result = null;
         try {

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 /**
  * Behaviour that negates the selection of a given set of targets
+ * @author Stefano Montesi
  */
 public class NegateTargets extends Behaviour {
     // required for Gson; should never be called by the user
