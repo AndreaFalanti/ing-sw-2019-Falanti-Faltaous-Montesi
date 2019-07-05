@@ -53,20 +53,29 @@ public class LoginCLI {
             }
         } while (!validCmd);
 
+        System.out.println("Host:");
+        System.out.println(">> ");
+        Scanner hostScan =new Scanner(System.in);
+        String host = hostScan.nextLine();
+
+        System.out.println("Port:");
+        System.out.println(">> ");
+        Scanner portScan = new Scanner(System.in);
+        int port = portScan.nextInt();
         ClientNetworkHandler mNetworkHandler;
         boolean isValid=false;
         switch (result) {
             case 1:
                 mNetworkHandler = new NetworkHandler(
                         view,
-                        SocketConnection.establish("localhost", 4567)
+                        SocketConnection.establish(host,port )
                 );
 
                 break;
             case 2:
                 mNetworkHandler = new NetworkHandler(
                         view,
-                        RmiConnection.establish("localhost", 4568)
+                        RmiConnection.establish(host, port)
                 );
                 break;
             default:
