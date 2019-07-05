@@ -26,7 +26,7 @@ public class AcceptationServer {
      */
     public void startServer() {
         // initialize rmi
-        RmiConnection.init();
+        RmiConnection.init("localhost", 4568);
 
         // start accepting rmi and socket connections
         Consumer<Connection> connectionHandler = connection -> {
@@ -34,8 +34,8 @@ public class AcceptationServer {
             new PlayerRegistrationThread(connection, mRegistrationServer).start();
         };
 
-        SocketConnection.startAccepting(connectionHandler, mSocketPort);
-        RmiConnection.startAccepting(connectionHandler);
+        SocketConnection.startAccepting(4567, connectionHandler);
+        RmiConnection.startAccepting(4568, connectionHandler);
     }
 }
 

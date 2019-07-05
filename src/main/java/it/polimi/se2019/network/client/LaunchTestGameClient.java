@@ -15,7 +15,7 @@ public class LaunchTestGameClient {
         print("Pick connection type: ");
         Connection connection =
                 input().equals("rmi") ?
-                        RmiConnection.establish() :
+                        RmiConnection.establish("localhost", 4568) :
                         SocketConnection.establish("localhost", 4567);
 
         // create view and register message sending to server

@@ -118,7 +118,7 @@ public class LoginScreen {
                 if (mNetworkHandler == null || mActualType != RMI_TYPE) {
                     mNetworkHandler = new NetworkHandler(
                             mView,
-                            RmiConnection.establish()
+                            RmiConnection.establish("localhost", 4568)
                     );
                 }
                 mActualType = RMI_TYPE;

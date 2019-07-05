@@ -66,7 +66,7 @@ public class LoginCLI {
             case 2:
                 mNetworkHandler = new NetworkHandler(
                         view,
-                        RmiConnection.establish()
+                        RmiConnection.establish("localhost", 4568)
                 );
                 break;
             default:

@@ -81,41 +81,51 @@ public class RmiConnection implements Connection {
     private static final Logger logger = Logger.getLogger(RmiConnection.class.getName());
 
     // static constants
-    public static final String RMI_STATION_REGISTRY_ID = "station";
-    static final int RMI_PORT = 4568;
-    public static final String RMI_STATION_REGISTRY_URL = "rmi://192.168.1.210:" + RMI_PORT + "/" + RMI_STATION_REGISTRY_ID;
+    private static final String RMI_STATION_REGISTRY_ID = "station";
     private static final int ACCEPTATION_MAILBOX_ADDRESS = 0;
+
+    // statics set by init
+    private static String rmiServerHost;
 
     // fields
     private final int mAddress;
     private final int mPenPalAddress;
+    private final String mServerHost;
+    private final int mPort;
 
     // constructor
-    private RmiConnection(int address, int penPalAddress) {
+    private RmiConnection(String serverHost, int port, int address, int penPalAddress) {
+        mPort = port;
         mAddress = address;
+        mServerHost = serverHost;
         mPenPalAddress = penPalAddress;
     }
 
-    public static void init() {
+    public static void init(String serverHost, int port) {
         try {
+            rmiServerHost = serverHost;
+
             // set the server ip address
-            System.setProperty("java.rmi.server.hostname", "192.168.1.210");
+            System.setProperty("java.rmi.server.hostname", serverHost);
 
             // create registry
-            Registry registry = LocateRegistry.createRegistry(RMI_PORT);
+            Registry registry = LocateRegistry.createRegistry(port);
 
             // create station
-            registry.bind(RMI_STATION_REGISTRY_URL, new RmiStation());
+            registry.bind(
+                    "rmi://" + serverHost + ":" + port + "/" + RMI_STATION_REGISTRY_ID,
+                    new RmiStation()
+            );
 
         } catch (RemoteException|AlreadyBoundException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
-    public static void startAccepting(Consumer<Connection> connectionConsumer) {
+    public static void startAccepting(int port, Consumer<Connection> connectionConsumer) {
         new Thread(() -> {
             while (true) {
-                connectionConsumer.accept(accept());
+                connectionConsumer.accept(accept(port));
             }
         }).start();
     }
@@ -124,17 +134,16 @@ public class RmiConnection implements Connection {
      * Waits for a connection to be established and accepts it, returning one of its acceptor endpoint
      * @return RmiConnection created
      */
-    public static RmiConnection accept() {
+    public static RmiConnection accept(int port) {
         RmiConnection result = null;
         try {
-            RmiStationRemote station = getStation();
+            RmiStationRemote station = getStation(rmiServerHost, port);
 
             int acceptorAddress = station.generateUniqueAddress();
 
             logger.log(Level.INFO, "Accepting rmi connections on {0}", acceptorAddress);
             String rawHandshakeMessage = station.retrieveMessage(ACCEPTATION_MAILBOX_ADDRESS);
 
-            // TODO: include something else to decorate the accepted address
             int acceptedAddress = Integer.parseInt(rawHandshakeMessage);
 
             station.addMailbox(acceptedAddress);
@@ -142,18 +151,18 @@ public class RmiConnection implements Connection {
 
             logger.log(Level.INFO, "Accepted connection: {0} - {1}",
                     new Object[]{ acceptorAddress, acceptedAddress });
-            result = new RmiConnection(acceptorAddress, acceptedAddress);
+            result = new RmiConnection(rmiServerHost, port, acceptorAddress, acceptedAddress);
         } catch (RemoteException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
         return result;
     }
 
-    public static RmiConnection establish() {
+    public static RmiConnection establish(String host, int port) {
 
         RmiConnection result = null;
         try {
-            RmiStationRemote station = getStation();
+            RmiStationRemote station = getStation(host, port);
 
             int addressToAccept = station.generateUniqueAddress();
 
@@ -165,20 +174,20 @@ public class RmiConnection implements Connection {
 
             logger.log(Level.INFO, "Established connection: {0} - {1}",
                     new Object[]{ addressToAccept, acceptorAddress });
-            result = new RmiConnection(addressToAccept, acceptorAddress);
+            result = new RmiConnection(host, port, addressToAccept, acceptorAddress);
         } catch (RemoteException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
         return result;
     }
 
-    private static RmiStationRemote getStation() {
+    private static RmiStationRemote getStation(String host, int port) {
         RmiStationRemote station = null;
 
         try {
             station =
-                    (RmiStationRemote) LocateRegistry.getRegistry(RMI_PORT)
-                            .lookup(RMI_STATION_REGISTRY_URL);
+                    (RmiStationRemote) LocateRegistry.getRegistry(port)
+                            .lookup("rmi://" + host + ":" + port + "/" + RMI_STATION_REGISTRY_ID);
         } catch (RemoteException|NotBoundException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             // force shutdown if something is wrong
@@ -191,7 +200,7 @@ public class RmiConnection implements Connection {
     @Override
     public void sendMessage(String message) {
         try {
-            getStation().storeMessage(mPenPalAddress, message);
+            getStation(mServerHost, mPort).storeMessage(mPenPalAddress, message);
         } catch (RemoteException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
@@ -202,7 +211,7 @@ public class RmiConnection implements Connection {
         String message = null;
 
         try {
-            message = getStation().retrieveMessage(mAddress);
+            message = getStation(mServerHost, mPort).retrieveMessage(mAddress);
         } catch (RemoteException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }

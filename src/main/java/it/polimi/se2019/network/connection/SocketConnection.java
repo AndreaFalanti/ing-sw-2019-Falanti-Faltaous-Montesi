@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,10 +34,10 @@ public class SocketConnection implements Connection {
         }
     }
 
-    public static void startAccepting(Consumer<Connection> connectionConsumer, int socketPort) {
+    public static void startAccepting(int port, Consumer<Connection> connectionConsumer) {
         new Thread(() -> {
             try (
-                    ServerSocket serverSocket = new ServerSocket(socketPort)
+                    ServerSocket serverSocket = new ServerSocket(port)
             ) {
                 while (true) {
                     connectionConsumer.accept(accept(serverSocket));
@@ -65,11 +64,11 @@ public class SocketConnection implements Connection {
         return result;
     }
 
-    public static SocketConnection establish(String host, int port) {
+    public static SocketConnection establish(String serverHost, int port) {
         SocketConnection result = null;
         try {
-            result = new SocketConnection(new Socket(host, port));
-            Object[] logObjects = {host, port};
+            result = new SocketConnection(new Socket(serverHost, port));
+            Object[] logObjects = {serverHost, port};
             logger.log(Level.INFO, "Established connection with server [{0}, {1}]", logObjects);
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
@@ -78,18 +77,11 @@ public class SocketConnection implements Connection {
         return result;
     }
 
-    public SocketAddress getRemoteSocketAdress() {
-        return mSocket.getRemoteSocketAddress();
-    }
-
     @Override
     public void sendMessage(String message) {
         synchronized (mWriteLock) {
             if (mSocket.isClosed())
                 throw new IllegalStateException("Socket is closed!");
-
-            // TODO: block with filter
-            // logger.log(Level.INFO, "sending message: {0}", message);
 
             mOut.println(message);
             mOut.flush();
@@ -108,15 +100,6 @@ public class SocketConnection implements Connection {
             } catch (IOException e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
-
-            // if result is null, the other connection endpoint has disconnected abruptly
-            if (result == null) {
-                // TODO: handle this gracefully
-                throw new UnsupportedOperationException("WIP");
-            }
-
-            // TODO: block this with filter
-            // logger.log(Level.INFO, "Received message: {0}", result);
 
             return result;
         }

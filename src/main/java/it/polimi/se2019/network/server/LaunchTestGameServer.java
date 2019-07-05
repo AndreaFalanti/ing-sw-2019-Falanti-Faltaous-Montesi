@@ -33,7 +33,7 @@ public class LaunchTestGameServer {
                 8
         );
 
-        RmiConnection.init();
+        RmiConnection.init("localhost", 4568);
 
         Controller controller = null;
         try (
@@ -46,21 +46,21 @@ public class LaunchTestGameServer {
                                     PlayerColor.PURPLE,
                                     new VirtualView(
                                             PlayerColor.PURPLE,
-                                            RmiConnection.accept()
+                                            RmiConnection.accept(4568)
                                     )
                             ),
                             new Pair<>(
                                     PlayerColor.GREEN,
                                     new VirtualView(
                                             PlayerColor.GREEN,
-                                            RmiConnection.accept()
+                                            RmiConnection.accept(4568)
                                     )
                             ),
                             new Pair<>(
                                     PlayerColor.BLUE,
                                     new VirtualView(
                                             PlayerColor.BLUE,
-                                            RmiConnection.accept()
+                                            RmiConnection.accept(4568)
                                     )
                             )
                     )
