@@ -87,6 +87,7 @@ public class PlayerActionController implements InvalidActionResponseHandler {
         Optional<InvalidActionResponse> response = action.getErrorResponse(mMainController.getGame());
         if(!response.isPresent()) {
             mMainController.getTurnTimer().cancel();
+            mMainController.getTurnTimer().purge();
 
             if (action.leadToAShootInteraction()) {
                 UndoInfo shootUndoInfo = new UndoInfo(

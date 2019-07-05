@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 public class Controller implements Observer<Request>, RequestHandler {
     // messages constants
     public static final String NO_ACTIONS_REMAINING_ERROR_MSG = "Can't proceed further with shoot! Undoing action...";
-    private static final boolean DONT_USE_TIMER = true;
 
     private static final Logger logger = Logger.getLogger(Controller.class.getName());
 
@@ -39,14 +38,21 @@ public class Controller implements Observer<Request>, RequestHandler {
     private PlayerColor mExpectedPlayingPlayer;
     private Timer mTurnTimer = new Timer();
 
+    private boolean mDontUseTimer = true;
+
     // constructors
     public Controller(Game game, Map<PlayerColor, View> playerViews) {
+        this(game, playerViews, false);
+    }
+
+    public Controller(Game game, Map<PlayerColor, View> playerViews, boolean useTimer) {
         mGame = game;
         mPlayerViews = playerViews;
         mPlayerActionController = new PlayerActionController(this);
         mShootInteraction = new ShootInteraction(mGame, mPlayerViews);
 
         mPlayerNotSpawnedCounter = playerViews.size();
+        mDontUseTimer = useTimer;
 
         // observe view (Request)
         playerViews.values().stream()
@@ -55,6 +61,7 @@ public class Controller implements Observer<Request>, RequestHandler {
                 // make views observe game (Update)
                 .forEach(mGame::registerAll);
     }
+
 
     // getters
     public Game getGame() {
@@ -355,8 +362,6 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void handle(DisconnectionRequest request) {
-        System.out.println("HEWLLO!!!");
-
         mPlayerViews.entrySet().stream()
                 .peek(entry -> System.out.println((entry.getKey())))
                 .map(Map.Entry::getValue)
@@ -409,7 +414,7 @@ public class Controller implements Observer<Request>, RequestHandler {
      */
     void setTimerTask () {
         mTurnTimer = new Timer();
-        if (DONT_USE_TIMER) {
+        if (mDontUseTimer) {
             return;
         }
 

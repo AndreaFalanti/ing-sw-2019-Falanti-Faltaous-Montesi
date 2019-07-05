@@ -36,6 +36,10 @@ public class ShootAction implements ShootLeadingAction {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
 
+        if (mWeaponIndex < 0 || mWeaponIndex >= 3) {
+            return Optional.of(new MessageActionResponse("Invalid weapon index selected"));
+        }
+
         Weapon weapon = game.getActivePlayer().getWeapon(mWeaponIndex);
         if (weapon == null) {
             return Optional.of(new MessageActionResponse("Invalid weapon index selected"));

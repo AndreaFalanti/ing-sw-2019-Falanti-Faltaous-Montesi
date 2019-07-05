@@ -21,10 +21,6 @@ public class ReloadAction implements CostlyAction {
     private boolean[] mDiscardPowerUp = {false, false, false};
 
     public ReloadAction (int weaponIndex) {
-        if (weaponIndex < 0 || weaponIndex >= 3) {
-            throw new IllegalArgumentException("Illegal weapon index in Reload action");
-        }
-
         mWeaponIndex = weaponIndex;
     }
 
@@ -65,8 +61,11 @@ public class ReloadAction implements CostlyAction {
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         Player player = game.getActivePlayer();
 
-        Weapon weaponToReload = player.getWeapon(mWeaponIndex);
+        if (mWeaponIndex < 0 || mWeaponIndex >= 3) {
+            return Optional.of(new MessageActionResponse("Invalid weapon index selected"));
+        }
 
+        Weapon weaponToReload = player.getWeapon(mWeaponIndex);
         // can't reload an already loaded weapon or a null weapon
         if (weaponToReload == null) {
             return Optional.of(new MessageActionResponse("Invalid weapon index selected"));

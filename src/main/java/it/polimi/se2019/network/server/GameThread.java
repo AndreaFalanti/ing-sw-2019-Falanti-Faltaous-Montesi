@@ -44,6 +44,7 @@ public class GameThread extends Thread {
         int boardNum;
         int killNum;
         long timerDelay;
+        boolean useControllerTimer;
     }
 
     public GameThread (List<PlayerConnection> players) {
@@ -55,6 +56,7 @@ public class GameThread extends Thread {
         try {
             JsonReader jsonReader = new JsonReader(new FileReader(jarPath + "gameSettings.json"));
             mGameSettings = gson.fromJson(jsonReader, GameSettings.class);
+            jsonReader.close();
         } catch (FileNotFoundException e) {
             mGameSettings = gson.fromJson(Jsons.get("configurations/gameSettings"), GameSettings.class);
 
@@ -64,6 +66,8 @@ public class GameThread extends Thread {
             catch (IOException e1) {
                 logger.severe(e1.getMessage());
             }
+        } catch (IOException e) {
+            logger.severe(e.getMessage());
         }
 
         Timer mTimer = new Timer();
@@ -153,7 +157,8 @@ public class GameThread extends Thread {
                         .collect(Collectors.toMap(
                                 View::getOwnerColor,
                                 view -> view
-                        ))
+                        )),
+                mGameSettings.useControllerTimer
         );
 
         logger.info("Game created successfully");

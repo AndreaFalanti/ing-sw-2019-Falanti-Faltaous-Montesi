@@ -17,7 +17,7 @@ public class TeleportAction implements Action {
     private int mTeleportIndex;
 
     public TeleportAction(int index) {
-        if (index < 0 || index >= 3) {
+        if (index < 0 || index > 3) {
             throw new IllegalArgumentException("invalid powerUp index");
         }
 
@@ -46,6 +46,8 @@ public class TeleportAction implements Action {
 
     @Override
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
+
+
         PowerUpCard powerUpCard = game.getActivePlayer().getPowerUpCard(mTeleportIndex);
 
         if (powerUpCard == null) {

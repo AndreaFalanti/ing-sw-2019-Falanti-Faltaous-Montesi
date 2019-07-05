@@ -78,6 +78,7 @@ public class LoginScreen {
         try {
             JsonReader jsonReader = new JsonReader(new FileReader(jarPath + "connection.json"));
             mNetworkSettings = gson.fromJson(jsonReader, NetworkSettings.class);
+            jsonReader.close();
         } catch (FileNotFoundException e) {
             mNetworkSettings = gson.fromJson(Jsons.get("configurations/connection"), NetworkSettings.class);
             try (FileWriter fileWriter = new FileWriter(jarPath + "connections.json")) {
@@ -86,6 +87,8 @@ public class LoginScreen {
             catch (IOException e1) {
                 logger.severe(e1.getMessage());
             }
+        } catch (IOException e) {
+            logger.severe(e.getMessage());
         }
     }
 
@@ -121,7 +124,7 @@ public class LoginScreen {
                 if (mNetworkHandler == null || mActualType != RMI_TYPE) {
                     mNetworkHandler = new NetworkHandler(
                             mView,
-                            RmiConnection.establish("localhost", 4568)
+                            RmiConnection.establish(mNetworkSettings.host, mNetworkSettings.rmiPort)
                     );
                 }
                 mActualType = RMI_TYPE;
