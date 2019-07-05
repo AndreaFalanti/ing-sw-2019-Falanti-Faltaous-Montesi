@@ -1,0 +1,26 @@
+VirtualView {
+    onDisconnect() {
+        notify(new DisconnectionRequest(color))
+    }
+    onReconnect() {
+        notify(new ReconnectionRequest(color))
+    }
+}
+
+Controller {
+    handle(DisconnectionReq req) {
+        disconnectedPlayers.add(req.color);
+    }
+
+    handle(ReconnectionReq req) {
+        disconnectedPlayers.remove(req.color);
+    }
+}
+
+ActionController {
+    exec(game) {
+        // timer runs out
+        mainController.game.getPlayer(activePlayer.color).suspend();
+    }
+}
+

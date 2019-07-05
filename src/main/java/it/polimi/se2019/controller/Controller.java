@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 public class Controller implements Observer<Request>, RequestHandler {
     // messages constants
     public static final String NO_ACTIONS_REMAINING_ERROR_MSG = "Can't proceed further with shoot! Undoing action...";
+    public static final boolean DONT_USE_TIMER = true;
 
     private static final Logger logger = Logger.getLogger(Controller.class.getName());
 
@@ -329,6 +330,40 @@ public class Controller implements Observer<Request>, RequestHandler {
         continueShootInteraction(request);
     }
 
+    @Override
+    public void handle(ReconnectionRequest request) {
+        View reconnectedView = mPlayerViews.get(request.getViewColor());
+
+        mPlayerViews.values().stream()
+                .filter(view -> view != reconnectedView)
+                .forEach(view -> view.showMessage(
+                        String.format(
+                                "%s has reconnected...",
+                                mGame.getPlayerFromColor(request.getViewColor()).getName()
+                        )
+                ));
+
+        reconnectedView.reinitialize(
+                mGame.extractViewInitializationInfo(request.getViewColor())
+        );
+        reconnectedView.showMessage("You have been reconnected!");
+    }
+
+    @Override
+    public void handle(DisconnectionRequest request) {
+        System.out.println("HEWLLO!!!");
+
+        mPlayerViews.entrySet().stream()
+                .peek(entry -> System.out.println((entry.getKey())))
+                .map(Map.Entry::getValue)
+                .forEach(view -> view.showMessage(
+                String.format(
+                        "%s has disconnected...",
+                        mGame.getPlayerFromColor(request.getViewColor()).getName()
+                )
+        ));
+    }
+
     /**
      * Try to start next turn of the game, handling initial spawn if needed
      */
@@ -370,6 +405,10 @@ public class Controller implements Observer<Request>, RequestHandler {
      */
     void setTimerTask () {
         mTurnTimer = new Timer();
+        if (DONT_USE_TIMER) {
+            return;
+        }
+
         mTurnTimer.schedule(new TimerTask() {
             @Override
             public void run() {
