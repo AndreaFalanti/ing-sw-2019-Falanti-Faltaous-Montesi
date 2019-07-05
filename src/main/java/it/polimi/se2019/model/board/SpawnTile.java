@@ -1,10 +1,15 @@
 package it.polimi.se2019.model.board;
 
 import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.model.update.BoardTileUpdate;
 
 import java.util.Arrays;
 
-
+/**
+ * Represent a spawn tile present in a board
+ *
+ * @author Andrea Falanti, Stefano Montesi
+ */
 public class SpawnTile extends Tile {
     private Weapon[] mWeapons = new Weapon[MAX_WEAPONS];
     public static final int MAX_WEAPONS = 3;
@@ -24,6 +29,7 @@ public class SpawnTile extends Tile {
         for (int i = 0; i < mWeapons.length; i++) {
             if (mWeapons[i] == null) {
                 mWeapons[i] = value;
+                notify(new BoardTileUpdate(this));
                 return;
             }
         }
@@ -81,6 +87,7 @@ public class SpawnTile extends Tile {
     public Weapon grabWeapon(int index) {
         Weapon grabbedCard = mWeapons[index];
         mWeapons[index] = null;
+        notify(new BoardTileUpdate(this));
         return grabbedCard;
     }
 

@@ -5,6 +5,11 @@ import it.polimi.se2019.controller.WeaponIndexStrategy;
 import it.polimi.se2019.model.action.GrabAction;
 import it.polimi.se2019.model.board.TileColor;
 
+/**
+ * Action error message thrown when player is required to select a weapon
+ *
+ * @author Andrea Falanti
+ */
 public class SelectWeaponRequiredActionResponse extends MessageActionResponse {
     // null if player's hand
     private TileColor mColor;
@@ -13,7 +18,7 @@ public class SelectWeaponRequiredActionResponse extends MessageActionResponse {
 
     public SelectWeaponRequiredActionResponse(String message, TileColor color,
                                               WeaponIndexStrategy strategy, GrabAction grabAction) {
-        super(message);
+        super(message, false);
         mColor = color;
         mStrategy = strategy;
         mGrabAction = grabAction;

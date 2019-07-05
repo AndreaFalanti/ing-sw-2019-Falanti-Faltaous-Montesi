@@ -3,6 +3,11 @@ package it.polimi.se2019.model.update;
 import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.model.PlayerColor;
 
+/**
+ * Update message with player's weapon info, sent to views
+ *
+ * @author Andrea Falanti
+ */
 public class PlayerWeaponsUpdate implements Update {
     private PlayerColor mPlayerColor;
     private Weapon[] mWeapons;

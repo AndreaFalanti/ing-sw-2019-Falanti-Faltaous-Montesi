@@ -9,6 +9,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
+/**
+ * GUI controller of player panes of opponent players of the one owning this GUI view
+ *
+ * @author Andrea Falanti
+ */
 public class OtherPlayerPane extends PlayerPane {
     @FXML
     private Button switchButton;

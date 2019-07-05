@@ -1,7 +1,12 @@
 package it.polimi.se2019.view.gui;
 
-import it.polimi.se2019.network.client.ClientNetworkHandler;
-import it.polimi.se2019.network.client.SocketNetworkHandler;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+import it.polimi.se2019.network.client.NetworkHandler;
+import it.polimi.se2019.network.connection.RmiConnection;
+import it.polimi.se2019.network.connection.SocketConnection;
+import it.polimi.se2019.util.JarPath;
+import it.polimi.se2019.util.Jsons;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -9,11 +14,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * GUI login screen, starting scene of the GUI application
+ *
+ * @author Andrea Falanti
+ */
 public class LoginScreen {
     @FXML
     private TextField usernameTextField;
@@ -37,8 +49,9 @@ public class LoginScreen {
     private static final int RMI_TYPE = 1;
 
     private GraphicView mView;
-    private ClientNetworkHandler mNetworkHandler;
+    private NetworkHandler mNetworkHandler;
     private int mActualType = -1;
+    private NetworkSettings mNetworkSettings;
 
     public GraphicView getView() {
         return mView;
@@ -48,13 +61,38 @@ public class LoginScreen {
         mView = view;
     }
 
+    private class NetworkSettings {
+        String host;
+        int socketPort;
+        int rmiPort;
+    }
+
     @FXML
     public void initialize () {
         socketRadioButton.setUserData(SOCKET_TYPE);
         rmiRadioButton.setUserData(RMI_TYPE);
+
+        Gson gson = new Gson();
+        String jarPath = JarPath.getJarPath();
+
+        try {
+            JsonReader jsonReader = new JsonReader(new FileReader(jarPath + "connection.json"));
+            mNetworkSettings = gson.fromJson(jsonReader, NetworkSettings.class);
+            jsonReader.close();
+        } catch (FileNotFoundException e) {
+            mNetworkSettings = gson.fromJson(Jsons.get("configurations/connection"), NetworkSettings.class);
+            try (FileWriter fileWriter = new FileWriter(jarPath + "connections.json")) {
+                fileWriter.write(Jsons.get("configurations/connection"));
+            }
+            catch (IOException e1) {
+                logger.severe(e1.getMessage());
+            }
+        } catch (IOException e) {
+            logger.severe(e.getMessage());
+        }
     }
 
-    public void login () throws IOException {
+    public void login () {
         String username = usernameTextField.getText();
         RadioButton radioButton = (RadioButton) network.getSelectedToggle();
 
@@ -75,25 +113,34 @@ public class LoginScreen {
         switch ((int)radioButton.getUserData()) {
             case SOCKET_TYPE:
                 if (mNetworkHandler == null || mActualType != SOCKET_TYPE) {
-                    mNetworkHandler = new SocketNetworkHandler(mView,
-                            new Socket("localhost", 4567));
+                    mNetworkHandler = new NetworkHandler(
+                            mView,
+                            SocketConnection.establish(mNetworkSettings.host, mNetworkSettings.socketPort)
+                    );
                     mActualType = SOCKET_TYPE;
-                }
-
-                if (mNetworkHandler.sendUsername(username)) {
-                    mView.setNetworkHandler(mNetworkHandler);
-                    ((SocketNetworkHandler)mNetworkHandler).activateGameMessageReception();
-                    waitingForPlayers();
-                }
-                else {
-                    errorLabel.setText(USERNAME_ALREADY_TAKEN);
                 }
                 break;
             case RMI_TYPE:
-                // TODO
+                if (mNetworkHandler == null || mActualType != RMI_TYPE) {
+                    mNetworkHandler = new NetworkHandler(
+                            mView,
+                            RmiConnection.establish(mNetworkSettings.host, mNetworkSettings.rmiPort)
+                    );
+                }
+                mActualType = RMI_TYPE;
                 break;
             default:
                 throw new IllegalArgumentException("Connection type not recognised");
+        }
+
+        if (mNetworkHandler.sendUsername(username)) {
+            mView.setNetworkHandler(mNetworkHandler);
+            mNetworkHandler.startReceivingMessages();
+
+            waitingForPlayers();
+        }
+        else {
+            errorLabel.setText(USERNAME_ALREADY_TAKEN);
         }
     }
 

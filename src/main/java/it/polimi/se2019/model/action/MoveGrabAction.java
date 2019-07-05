@@ -10,6 +10,11 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
+/**
+ * Action for performing consecutively a move and a grab action
+ *
+ * @author Andrea Falanti
+ */
 public class MoveGrabAction implements Action {
     private MoveAction mMoveAction;
     private GrabAction mGrabAction;
@@ -50,7 +55,7 @@ public class MoveGrabAction implements Action {
 
     @Override
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
-        // can't perform "costly" actions if they are no more available in this turn
+        // can't perform "costly" actions if there are no more available in this turn
         if (game.getRemainingActions() == 0) {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
         }
@@ -60,9 +65,14 @@ public class MoveGrabAction implements Action {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
         }
 
+        Optional<InvalidActionResponse> response = mMoveAction.getErrorResponse(game);
+        if (response.isPresent()) {
+            return response;
+        }
+
         Player player = game.getPlayerFromColor(mMoveAction.getTarget());
 
-        Optional<InvalidActionResponse> response = mGrabAction.getErrorMessageAtPos(game, mMoveAction.getDestination());
+        response = mGrabAction.getErrorMessageAtPos(game, mMoveAction.getDestination());
         if (response.isPresent()) {
             return response;
         }
@@ -95,5 +105,10 @@ public class MoveGrabAction implements Action {
     @Override
     public boolean isComposite() {
         return true;
+    }
+
+    @Override
+    public boolean leadToAShootInteraction() {
+        return false;
     }
 }

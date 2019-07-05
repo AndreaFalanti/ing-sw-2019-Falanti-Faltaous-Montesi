@@ -5,6 +5,7 @@ import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.PowerUpCard;
+import it.polimi.se2019.model.action.MoveReloadShootAction;
 import it.polimi.se2019.model.action.MoveShootAction;
 import it.polimi.se2019.model.action.ReloadAction;
 import it.polimi.se2019.model.board.Board;
@@ -25,6 +26,12 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * GUI controller of the main game scene, interact with all sub-controllers of the scene to handle game
+ * interactions and display correct data on the screen
+ *
+ * @author Andrea Falanti
+ */
 public class MainScreen extends Observable<Request> {
     @FXML
     private Pane playerPane;
@@ -39,9 +46,15 @@ public class MainScreen extends Observable<Request> {
     @FXML
     private VBox chatBox;
     @FXML
+    private ScrollPane scrollLogger;
+    @FXML
     private VBox otherPlayerBoardsBox;
     @FXML
-    private VBox buttonBox;
+    private Pane buttonBox;
+    @FXML
+    private Pane normalActionsBox;
+    @FXML
+    private Pane frenzyActionsBox;
     @FXML
     private Button powerUpDiscardButton;
     @FXML
@@ -50,6 +63,8 @@ public class MainScreen extends Observable<Request> {
     private Pane directionButtonsPane;
     @FXML
     private Pane roomColorButtonsPane;
+    @FXML
+    private Pane ammoColorButtonsPane;
     @FXML
     private VBox effectsBox;
     @FXML
@@ -66,6 +81,8 @@ public class MainScreen extends Observable<Request> {
     private Button targetsUndoButton;
     @FXML
     private Button roomsUndoButton;
+    @FXML
+    private Button ammoUndoButton;
 
 
     private static final Logger logger = Logger.getLogger(MainScreen.class.getName());
@@ -76,6 +93,7 @@ public class MainScreen extends Observable<Request> {
     private static final int DIRECTION_TAB = 3;
     private static final int TARGETS_TAB = 4;
     private static final int ROOM_TAB = 5;
+    private static final int AMMO_TAB = 6;
 
     private static final double LOADED_OPACITY = 1;
     private static final double UNLOADED_OPACITY = 0.4;
@@ -97,6 +115,7 @@ public class MainScreen extends Observable<Request> {
 
     private List<Button> mUndoWeaponButtons;
     private EnumMap<TileColor, Button> mRoomButtons = new EnumMap<>(TileColor.class);
+    private EnumMap<TileColor, Button> mAmmoButtons = new EnumMap<>(TileColor.class);
 
 
     public BoardPane getBoardController() {
@@ -109,10 +128,6 @@ public class MainScreen extends Observable<Request> {
 
     public GraphicView getView() {
         return mView;
-    }
-
-    public Button getUndoButton() {
-        return undoButton;
     }
 
     public void setClientColor (PlayerColor color) {
@@ -135,18 +150,29 @@ public class MainScreen extends Observable<Request> {
         mUndoWeaponButtons.add(targetsUndoButton);
         mUndoWeaponButtons.add(directionsUndoButton);
         mUndoWeaponButtons.add(roomsUndoButton);
+        mUndoWeaponButtons.add(ammoUndoButton);
 
         setupDirectionButtonsBehaviour();
         setupRoomColorButtonsBehaviour();
+        setupAmmoColorButtonsBehaviour();
         setWeaponTabsUndoButtonsBehaviour();
 
         resetAllPowerUpsBehaviourToDefault();
     }
 
+    public void activateUndoButtonWithBehaviour (Runnable executableFunction) {
+        undoButton.setDisable(false);
+        undoButton.setOnMouseClicked(event -> {
+            executableFunction.run();
+            undoButton.setDisable(true);
+        });
+    }
+
 
     /**
      * Load player board of given color
-     * @param ownerColor Player color
+     * @param ownerColor View owner player color
+     * @param players Players to initialize
      * @throws IOException Thrown if fxml is not found
      */
     public void loadPlayerBoards(PlayerColor ownerColor, List<Player> players) throws IOException {
@@ -160,6 +186,12 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Initialize player board of the owner of the view
+     * @param ownerColor Owner player color
+     * @param player Owner's player data
+     * @throws IOException Thrown if fxml is not found
+     */
     private void initializeMainPlayerBoard (PlayerColor ownerColor, Player player) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/playerPane.fxml"));
         Pane newLoadedPane =  loader.load();
@@ -169,13 +201,7 @@ public class MainScreen extends Observable<Request> {
         playerController.setMainScreen(this);
 
         playerController.setupBoardImage(ownerColor);
-        playerController.setPlayerName(player.getName());
-        playerController.updateAmmo(player.getAmmo());
-        playerController.setScore(player.getScore());
-
-        if (player.isBoardFlipped()) {
-            playerController.flipBoard();
-        }
+        initializeCommonPlayerBoardInfo(player, playerController);
 
         // update damage, marks and deaths
         updateDamageMarksAndDeaths(player, playerController);
@@ -183,6 +209,11 @@ public class MainScreen extends Observable<Request> {
         playerPane.getChildren().add(newLoadedPane);
     }
 
+    /**
+     * Initialize opponent player board
+     * @param player Opponent player data
+     * @throws IOException Thrown if fxml is not found
+     */
     private void initializeOpponentPlayerBoard (Player player) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/otherPlayerPane.fxml"));
         Pane newLoadedPane =  loader.load();
@@ -191,13 +222,12 @@ public class MainScreen extends Observable<Request> {
         mPlayerControllers.put(player.getColor(), otherPlayerController);
 
         otherPlayerController.setMainScreen(this);
+
         otherPlayerController.setupBoardImage(player.getColor());
-        otherPlayerBoardsBox.getChildren().add(newLoadedPane);
-
-        // test methods
-        otherPlayerController.updateAmmo(player.getAmmo());
-
+        initializeCommonPlayerBoardInfo(player, otherPlayerController);
         updateDamageMarksAndDeaths(player, otherPlayerController);
+
+        otherPlayerBoardsBox.getChildren().add(newLoadedPane);
 
         ((OtherPlayerPane)otherPlayerController).updatePlayerWeapons(player.getWeapons());
 
@@ -210,10 +240,30 @@ public class MainScreen extends Observable<Request> {
         ((OtherPlayerPane)otherPlayerController).updatePowerUpNum(actualCardsNum);
     }
 
-    private void updateDamageMarksAndDeaths (Player player, PlayerPane playerController) {
-        for (PlayerColor color : player.getDamageTaken()) {
-            playerController.addDamageTokens(color, 1);
+    /**
+     * Set various player board info, like name, ammo, score and also flip board if necessary
+     * @param player Player data
+     * @param playerController Player board controller
+     */
+    private void initializeCommonPlayerBoardInfo (Player player, PlayerPane playerController) {
+        playerController.setPlayerName(player.getName());
+        playerController.updateAmmo(player.getAmmo());
+        playerController.setScore(player.getScore());
+        playerController.eraseDamage();
+
+        if (player.isBoardFlipped()) {
+            playerController.flipBoard();
         }
+    }
+
+    /**
+     * Update player board damage, marks and deaths on initialization
+     * @param player Player data
+     * @param playerController Player board controller
+     */
+    private void updateDamageMarksAndDeaths (Player player, PlayerPane playerController) {
+        playerController.updateDamageTokens(player.getDamageTaken());
+
         for (int i = 0; i < player.getDeathsNum(); i++) {
             playerController.addDeath();
         }
@@ -226,6 +276,14 @@ public class MainScreen extends Observable<Request> {
 
     /**
      * Load game board
+     * @param board Board to initialize
+     * @param targetKills Kills target of the game
+     * @param activePlayerColor Actual active player
+     * @param remainingActions Remaining actions in this turn
+     * @param turnNumber Actual turn number
+     * @param players Players in the game
+     * @param kills Actual kills done
+     * @param overkills Actual overkills done
      * @throws IOException Thrown if fxml is not found
      */
     public void initializeBoardAndInfo(Board board, int targetKills, PlayerColor activePlayerColor,
@@ -267,38 +325,20 @@ public class MainScreen extends Observable<Request> {
         boardPane.getChildren().add(newLoadedPane);
     }
 
-
-
-    /**
-     * Change weapon image appearence, based on its loaded status
-     * @param index Weapon index
-     * @param value true if loaded, false otherwise
-     */
-    public void setWeaponLoadStatus (int index, boolean value) {
-        ImageView weaponView = (ImageView)weaponBox.getChildren().get(index);
-        if (value) {
-            weaponView.setOpacity(1);
-        }
-        else {
-            weaponView.setOpacity(0.4);
-        }
-    }
-
     /**
      * Update spawn's weapon box with latest model changes
      * @param ids Weapon ids
+     * @param loaded Weapon's load status
      */
-    public void updateWeaponBox (String[] ids) {
-        if (ids.length != 3) {
-            throw new IllegalArgumentException("need 3 powerUp ids to update");
-        }
-
+    public void updateWeaponBox (String[] ids, boolean[] loaded) {
         for (int i = 0; i < ids.length; i++) {
             ImageView weaponImageView = (ImageView)weaponBox.getChildren().get(i);
 
             if (ids[i] != null) {
                 Image weaponImage = new Image(GuiResourcePaths.WEAPON_CARD + ids[i] + ".png");
                 weaponImageView.setImage(weaponImage);
+                double opacity = loaded[i] ? LOADED_OPACITY : UNLOADED_OPACITY;
+                weaponImageView.setOpacity(opacity);
             }
             else {
                 weaponImageView.setImage(null);
@@ -317,7 +357,6 @@ public class MainScreen extends Observable<Request> {
             if (ids[i] != null) {
                 Image powerUpImage = new Image(GuiResourcePaths.POWER_UP_CARD + ids[i] + ".png");
                 powerUpImageView.setImage(powerUpImage);
-                setPowerUpDefaultBehaviour(powerUpImageView, i);
                 powerUpImageView.setDisable(false);
             }
             else {
@@ -327,6 +366,9 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Reset all powerUps behaviour to default regular powerUp use
+     */
     private void resetAllPowerUpsBehaviourToDefault () {
         for (int i = 0; i < powerUpGrid.getChildren().size(); i++) {
             setPowerUpDefaultBehaviour((ImageView) powerUpGrid.getChildren().get(i), i);
@@ -341,7 +383,7 @@ public class MainScreen extends Observable<Request> {
     private void setPowerUpDefaultBehaviour(ImageView powerUp, int index) {
         powerUp.setOnMouseClicked(event -> {
             if (powerUp.getImage() != null) {
-                logToChat("Using powerUp with index: " + index);
+                logToChat("Using powerUp with index: " + index, false);
                 notify(new UsePowerUpRequest(index, mView.getOwnerColor()));
                 powerUp.setDisable(true);
             }
@@ -351,11 +393,18 @@ public class MainScreen extends Observable<Request> {
     /**
      * Log message to both GUI and console
      * @param message Message to log
+     * @param error Is this message an error?
      */
-    public void logToChat (String message) {
+    public void logToChat(String message, boolean error) {
         logger.info(message);
         Label label = new Label(message);
+        if (error) {
+            label.setTextFill(Paint.valueOf("RED"));
+        }
+
         chatBox.getChildren().add(label);
+        //automatically scroll to last element
+        scrollLogger.setVvalue(1d);
     }
 
     /**
@@ -389,7 +438,7 @@ public class MainScreen extends Observable<Request> {
 
         mBoardController.setupInteractiveGridForMoveAction();
 
-        undoButton.setOnMouseClicked(event -> {
+        activateUndoButtonWithBehaviour(() -> {
             disableBoardButtonGrid();
             setEnableStatusActionButtonBox(true);
         });
@@ -404,7 +453,7 @@ public class MainScreen extends Observable<Request> {
 
         mBoardController.setupInteractiveGridForGrabAction();
 
-        undoButton.setOnMouseClicked(event -> {
+        activateUndoButtonWithBehaviour(() -> {
             disableBoardButtonGrid();
             setEnableStatusActionButtonBox(true);
         });
@@ -412,17 +461,32 @@ public class MainScreen extends Observable<Request> {
 
     /**
      * Activate interactive board button grid for shoot action
+     * @param frenzy Is a frenzy reload shoot?
      */
-    public void activateButtonGridForShoot () {
+    public void activateButtonGridForShoot (boolean frenzy) {
         activateBoardButtonGrid();
         setEnableStatusActionButtonBox(false);
 
-        mBoardController.setupInteractiveGridForShootAction(weaponBox);
+        mBoardController.setupInteractiveGridForShootAction(weaponBox, frenzy);
 
-        undoButton.setOnMouseClicked(event -> {
+        activateUndoButtonWithBehaviour(() -> {
             disableBoardButtonGrid();
             setEnableStatusActionButtonBox(true);
         });
+    }
+
+    /**
+     * Activate board button grid for normal shoot
+     */
+    public void activateButtonGridForNormalShoot () {
+        activateButtonGridForShoot(false);
+    }
+
+    /**
+     * Activate board button grid for frenzy reload shoot
+     */
+    public void activateButtonGridForFrenzyReloadShoot () {
+        activateButtonGridForShoot(true);
     }
 
     /**
@@ -430,6 +494,7 @@ public class MainScreen extends Observable<Request> {
      * @param pos Selected position for ShootAction
      */
     public void setShootOnWeapon (Position pos) {
+        logToChat("Select weapon for shoot", false);
         GuiUtils.setBoxEnableStatus(weaponBox,true);
         setEnableStatusActionButtonBox(false);
 
@@ -437,7 +502,7 @@ public class MainScreen extends Observable<Request> {
             setShootingBehaviourOnWeapon(weaponBox.getChildren().get(i), i, pos);
         }
 
-        undoButton.setOnMouseClicked(event -> {
+        activateUndoButtonWithBehaviour(() -> {
             GuiUtils.setBoxEnableStatus(weaponBox,false);
             setEnableStatusActionButtonBox(true);
         });
@@ -447,6 +512,7 @@ public class MainScreen extends Observable<Request> {
      * Enable weapon box and set reload behaviour on weapon images
      */
     public void setReloadOnWeapon () {
+        logToChat("Select weapon to reload", false);
         GuiUtils.setBoxEnableStatus(weaponBox,true);
         setEnableStatusActionButtonBox(false);
 
@@ -454,9 +520,68 @@ public class MainScreen extends Observable<Request> {
             setReloadBehaviourOnWeapon(weaponBox.getChildren().get(i), i);
         }
 
-        undoButton.setOnMouseClicked(event -> {
+        activateUndoButtonWithBehaviour(() -> {
             GuiUtils.setBoxEnableStatus(weaponBox,false);
             setEnableStatusActionButtonBox(true);
+        });
+    }
+
+    public void setReloadShootOnWeapon (Position pos) {
+        setReloadOnWeapon();
+
+        // override on click behaviour
+        for (int i = 0; i < weaponBox.getChildren().size(); i++) {
+            setReloadShootBehaviourOnWeapon(weaponBox.getChildren().get(i), i, pos);
+        }
+    }
+
+    /**
+     * Set shoot behaviour on weapon images
+     * @param weapon Weapon image
+     * @param index Weapon index
+     * @param pos ShootAction position
+     */
+    private void setShootingBehaviourOnWeapon (Node weapon, int index, Position pos) {
+        weapon.setOnMouseClicked(event -> {
+            logToChat("Shooting with weapon of index: " + index, false);
+            GuiUtils.setBoxEnableStatus(weaponBox,false);
+            setEnableStatusActionButtonBox(true);
+
+            notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index), mView.getOwnerColor()));
+        });
+    }
+
+    /**
+     * Set reload behaviour on weapon images
+     * @param weapon Weapon image
+     * @param index Weapon index
+     */
+    private void setReloadBehaviourOnWeapon (Node weapon, int index) {
+        weapon.setOnMouseClicked(event -> {
+            logToChat("Reload weapon of index: " + index, false);
+            GuiUtils.setBoxEnableStatus(weaponBox,false);
+            setEnableStatusActionButtonBox(true);
+
+            notify(new ActionRequest(new ReloadAction(index), mView.getOwnerColor()));
+        });
+    }
+
+    private void setReloadShootBehaviourOnWeapon (Node weapon, int reloadIndex, Position pos) {
+        weapon.setOnMouseClicked(event -> {
+            logToChat("Reload weapon of index: " + reloadIndex, false);
+
+            logToChat("Select weapon for shoot", false);
+            for (int i = 0; i < weaponBox.getChildren().size(); i++) {
+                int shootIndex = i;
+                weaponBox.getChildren().get(i).setOnMouseClicked(event1 -> {
+                    logToChat("Complete Reload-Shoot with weapon of index: " + reloadIndex, false);
+                    GuiUtils.setBoxEnableStatus(weaponBox,false);
+                    setEnableStatusActionButtonBox(true);
+
+                    notify(new ActionRequest(new MoveReloadShootAction(mClientColor, pos, shootIndex, reloadIndex),
+                            mView.getOwnerColor()));
+                });
+            }
         });
     }
 
@@ -471,7 +596,7 @@ public class MainScreen extends Observable<Request> {
             setIndexForwardingOnWeapon(weaponBox.getChildren().get(i), i);
         }
 
-        undoButton.setOnMouseClicked(event -> {
+        activateUndoButtonWithBehaviour(() -> {
             GuiUtils.setBoxEnableStatus(weaponBox,false);
             setEnableStatusActionButtonBox(true);
         });
@@ -508,28 +633,38 @@ public class MainScreen extends Observable<Request> {
             finalizePowerUpInteraction();
         });
 
-        undoButton.setOnMouseClicked(event -> finalizePowerUpInteraction());
+        activateUndoButtonWithBehaviour(this::finalizePowerUpInteraction);
     }
 
+    /**
+     * Method called at start of every powerUp interaction
+     */
     private void initializePowerUpInteraction () {
-        tabPane.getSelectionModel().select(ACTIONS_TAB);
+        returnToActionTab();
         GuiUtils.setBoxEnableStatus(powerUpGrid, true);
         setEnableStatusActionButtonBox(false);
         powerUpDiscardButton.setDisable(false);
     }
 
+    /**
+     * Method called at end of every powerUp interaction
+     */
     private void finalizePowerUpInteraction () {
         GuiUtils.setBoxEnableStatus(powerUpGrid,false);
         powerUpGrid.setDisable(false);
         setEnableStatusActionButtonBox(true);
         resetAllPowerUpsBehaviourToDefault();
         powerUpDiscardButton.setDisable(true);
-        GuiUtils.setBoxEnableStatus(powerUpGrid, true);
+
         for (Node node : powerUpGrid.getChildren()) {
             node.setOpacity(LOADED_OPACITY);
         }
     }
 
+    /**
+     * Setup powerUp grid to start a multiple selection of powerUps (Targeting scopes and Tagback grenade usages)
+     * @param indexes Valid powerUp indexes
+     */
     public void setupPowerUpSelection (List<Integer> indexes) {
         initializePowerUpInteraction();
         powerUpDiscardButton.setText("Use");
@@ -537,6 +672,7 @@ public class MainScreen extends Observable<Request> {
 
         for (Node node : powerUpGrid.getChildren()) {
             node.setOpacity(UNLOADED_OPACITY);
+            node.setDisable(true);
         }
 
         for (Integer index : indexes) {
@@ -552,8 +688,6 @@ public class MainScreen extends Observable<Request> {
                         powerUp.setOpacity(LOADED_OPACITY);
                         mPowerUpUsedCache.add(index);
                     }
-
-                    powerUpDiscardButton.setDisable(mPowerUpUsedCache.isEmpty());
                 });
             }
         }
@@ -564,72 +698,30 @@ public class MainScreen extends Observable<Request> {
             finalizePowerUpInteraction();
         });
 
-        undoButton.setOnMouseClicked(event -> {
-            powerUpDiscardButton.setText("Discard");
-            finalizePowerUpInteraction();
-        });
+        undoButton.setDisable(true);
     }
 
+    /**
+     * Setup powerUp grid for selecting a powerUp card discarded to respawn
+     */
     public void setupRespawnPowerUpSelection () {
         initializePowerUpInteraction();
+        powerUpDiscardButton.setDisable(true);
 
         for (int x = 0; x < POWER_UPS_GRID_COLUMNS; x++) {
             for (int y = 0; y < POWER_UPS_GRID_ROWS; y++) {
                 Node powerUp = GuiUtils.getNodeFromGridPane(powerUpGrid, x, y);
-
-                int i = x;
-                int j = y;
                 if (powerUp != null) {
-                    powerUp.setOnMouseClicked(event -> notify(new RespawnPowerUpRequest(
-                            i + j * POWER_UPS_GRID_COLUMNS, mView.getOwnerColor())));
+                    int index = x + y * POWER_UPS_GRID_COLUMNS;
+
+                    powerUp.setOnMouseClicked(event -> {
+                        logToChat("Using powerUp of index " + index + " for respawn", false);
+                        notify(new RespawnPowerUpRequest(index, mView.getOwnerColor()));
+                        finalizePowerUpInteraction();
+                    });
                 }
             }
         }
-
-        finalizePowerUpInteraction();
-    }
-
-    /**
-     * Set shoot behaviour on weapon images
-     * @param weapon Weapon image
-     * @param index Weapon index
-     * @param pos ShootAction position
-     */
-    private void setShootingBehaviourOnWeapon (Node weapon, int index, Position pos) {
-        weapon.setOnMouseClicked(event -> {
-            if (weapon.getOpacity() == LOADED_OPACITY) {
-                logToChat("Shooting with weapon of index: " + index);
-                setWeaponLoadStatus(index, false);
-                GuiUtils.setBoxEnableStatus(weaponBox,false);
-                setEnableStatusActionButtonBox(true);
-
-                notify(new ActionRequest(new MoveShootAction(mClientColor, pos, index), mView.getOwnerColor()));
-            }
-            else {
-                logToChat("Can't shoot with unloaded weapon");
-            }
-        });
-    }
-
-    /**
-     * Set reload behaviour on weapon images
-     * @param weapon Weapon image
-     * @param index Weapon index
-     */
-    private void setReloadBehaviourOnWeapon (Node weapon, int index) {
-        weapon.setOnMouseClicked(event -> {
-            if (weapon.getOpacity() == UNLOADED_OPACITY) {
-                logToChat("Reload weapon of index: " + index);
-                setWeaponLoadStatus(index, true);
-                GuiUtils.setBoxEnableStatus(weaponBox,false);
-                setEnableStatusActionButtonBox(true);
-
-                notify(new ActionRequest(new ReloadAction(index), mView.getOwnerColor()));
-            }
-            else {
-                logToChat("Can't reload an already loaded weapon");
-            }
-        });
     }
 
     /**
@@ -638,9 +730,13 @@ public class MainScreen extends Observable<Request> {
      * @param index Index to set in notification
      */
     private void setIndexForwardingOnWeapon(Node weapon, int index) {
-        weapon.setOnMouseClicked(event ->
-            notify(new WeaponSelectedRequest(index, mView.getOwnerColor()))
-        );
+        weapon.setOnMouseClicked(event -> {
+            logToChat("Switching weapon of index: " + index , false);
+            GuiUtils.setBoxEnableStatus(weaponBox,false);
+            setEnableStatusActionButtonBox(true);
+
+            notify(new WeaponSelectedRequest(index, mView.getOwnerColor()));
+        });
     }
 
     /**
@@ -651,12 +747,16 @@ public class MainScreen extends Observable<Request> {
         for (int i = 0; i < directions.length; i++) {
             final int index = i;
             directionButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
-                logToChat("Selected direction: " + directions[index].toString());
+                logToChat("Selected direction: " + directions[index].toString(), false);
                 notify(new DirectionSelectedRequest(directions[index], mView.getOwnerColor()));
+                returnToActionTab();
             });
         }
     }
 
+    /**
+     * Setup room tab button behaviours. When clicked they will notify controller with selected room color.
+     */
     private void setupRoomColorButtonsBehaviour () {
         TileColor[] tileColors = TileColor.values();
         for (int i = 0; i < tileColors.length; i++) {
@@ -664,27 +764,67 @@ public class MainScreen extends Observable<Request> {
             mRoomButtons.put(tileColors[i], (Button)roomColorButtonsPane.getChildren().get(i));
 
             roomColorButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
-                logToChat("Selected room: " + tileColors[index].toString());
+                logToChat("Selected room: " + tileColors[index].toString(), false);
                 notify(new RoomSelectedRequest(tileColors[index], mView.getOwnerColor()));
+                returnToActionTab();
             });
         }
     }
 
+    /**
+     * Setup ammo tab button behaviours. When clicked they will notify controller with selected ammo color.
+     */
+    private void setupAmmoColorButtonsBehaviour () {
+        TileColor[] ammoColors = {TileColor.RED, TileColor.YELLOW, TileColor.BLUE};
+        for (int i = 0; i < ammoColors.length; i++) {
+            final int index = i;
+            mAmmoButtons.put(ammoColors[i], (Button)ammoColorButtonsPane.getChildren().get(i));
+
+            ammoColorButtonsPane.getChildren().get(i).setOnMouseClicked(event -> {
+                logToChat("Selected ammo color: " + ammoColors[index].toString(), false);
+                notify(new AmmoColorSelectedRequest(ammoColors[index], mView.getOwnerColor()));
+                returnToActionTab();
+            });
+        }
+    }
+
+    /**
+     * Activate direction tab
+     */
     public void activateDirectionTab () {
         activateWeaponRelatedTab(DIRECTION_TAB);
     }
 
+    /**
+     * Activate room tab, deactivate all color buttons that are not valid in the interaction
+     * @param possibleColors Valid room colors
+     */
     public void activateRoomTab (Set<TileColor> possibleColors) {
         activateWeaponRelatedTab(ROOM_TAB);
-        TileColor[] tileColors = TileColor.values();
 
-        for (TileColor tileColor : tileColors) {
-            for (Button button : mRoomButtons.values()) {
-                button.setDisable(!possibleColors.contains(tileColor));
-            }
+        for (Map.Entry<TileColor, Button> entry : mRoomButtons.entrySet()) {
+            entry.getValue().setDisable(!possibleColors.contains(entry.getKey()));
         }
     }
 
+    /**
+     * Activate ammo tab, deactivate all color buttons that are not valid in the interaction
+     * @param possibleColors Valid ammo colors
+     */
+    public void activateAmmoTab (Set<TileColor> possibleColors) {
+        activateWeaponRelatedTab(AMMO_TAB);
+
+        for (Map.Entry<TileColor, Button> entry : mAmmoButtons.entrySet()) {
+            entry.getValue().setDisable(!possibleColors.contains(entry.getKey()));
+        }
+    }
+
+    /**
+     * Activate target tab and customize it with received data
+     * @param possibleTargets Valid targets
+     * @param minTargets Min targets to select
+     * @param maxTargets Max targets to select
+     */
     public void activateTargetsTab (Set<PlayerColor> possibleTargets, int minTargets, int maxTargets) {
         activateWeaponRelatedTab(TARGETS_TAB);
         targetsBox.getChildren().clear();
@@ -695,7 +835,7 @@ public class MainScreen extends Observable<Request> {
         targetsOkButton.setDisable(true);
 
         Label title;
-        String labelText = (minTargets == maxTargets) ? "Select " + minTargets + "target" :
+        String labelText = (minTargets == maxTargets) ? "Select " + minTargets + " target" :
                 "Select from " + minTargets + " to " + maxTargets + " targets";
         title = new Label(labelText);
 
@@ -718,11 +858,11 @@ public class MainScreen extends Observable<Request> {
                     radioButton.setSelected(select);
                     mTargetSelectedCache[index] = select;
                     String text = select ? "Selected: " : "Deselected: ";
-                    logToChat(text + radioButton.getText());
+                    logToChat(text + radioButton.getText(), false);
                 }
                 else {
                     mTargetSelectedCache[index] = false;
-                    logToChat("Deselected: " + radioButton.getText());
+                    logToChat("Deselected: " + radioButton.getText(), false);
                 }
 
                 targetsOkButton.setDisable(!checkTargetSelectionRestriction(minTargets, maxTargets));
@@ -744,6 +884,11 @@ public class MainScreen extends Observable<Request> {
         });
     }
 
+    /**
+     * Activate effect tab for choosing a weapon mode in a shoot interaction
+     * @param effect1 First shoot mode
+     * @param effect2 Second shoot mode
+     */
     public void activateEffectsTabForWeaponMode (Effect effect1, Effect effect2) {
         activateWeaponRelatedTab(EFFECTS_TAB);
         effectsBox.getChildren().clear();
@@ -758,15 +903,23 @@ public class MainScreen extends Observable<Request> {
             radioButton.setUserData(effect.getId());
             radioButton.setToggleGroup(toggleGroup);
 
+            radioButton.setOnMouseClicked(event -> effectsOkButton.setDisable(false));
+
             addToggleAndInsertInEffectsPane(child, radioButton);
         }
 
-        effectsOkButton.setOnMouseClicked(event ->
+        effectsOkButton.setOnMouseClicked(event -> {
             notify(new WeaponModeSelectedRequest(
-                    (String) toggleGroup.getSelectedToggle().getUserData(), mView.getOwnerColor()))
-        );
+                    (String) toggleGroup.getSelectedToggle().getUserData(), mView.getOwnerColor()));
+            returnToActionTab();
+        });
     }
 
+    /**
+     * Activate effects tab for choosing secondary effects
+     * @param priorityMap Map of all effects, associated with their priority
+     * @param possibleEffects Valid effects to use right now
+     */
     public void activateEffectsTabForEffects(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
         activateWeaponRelatedTab(EFFECTS_TAB);
         effectsBox.getChildren().clear();
@@ -811,6 +964,11 @@ public class MainScreen extends Observable<Request> {
         });
     }
 
+    /**
+     * Add toggle to effect pane and finalize its creation
+     * @param anchorPane Effect pane
+     * @param toggle Toggle to insert
+     */
     private void addToggleAndInsertInEffectsPane(AnchorPane anchorPane, Node toggle) {
         anchorPane.getChildren().add(toggle);
         AnchorPane.setBottomAnchor(toggle, 5d);
@@ -820,6 +978,12 @@ public class MainScreen extends Observable<Request> {
         VBox.setVgrow(anchorPane, Priority.ALWAYS);
     }
 
+    /**
+     * Create an effect pane, customized with effect info received
+     * @param effect Effect data
+     * @param enabled Should this pane be enabled?
+     * @return Created effect pane
+     */
     private AnchorPane createEffectPane (Effect effect, boolean enabled) {
         AnchorPane anchorPane = new AnchorPane();
 
@@ -848,8 +1012,12 @@ public class MainScreen extends Observable<Request> {
         return anchorPane;
     }
 
+    /**
+     * Activate board interactive button grid for a position selection
+     * @param possiblePositions Valid positions to select
+     */
     public void activatePositionSelection (Set<Position> possiblePositions) {
-        logToChat("Choose a position for weapon effect");
+        logToChat("Choose a position", false);
         mBoardController.setupInteractiveGridForChoosingPosition(possiblePositions);
     }
 
@@ -873,6 +1041,9 @@ public class MainScreen extends Observable<Request> {
         return count;
     }
 
+    /**
+     * Set default undo behaviour to all undo buttons in weapons related tabs
+     */
     private void setWeaponTabsUndoButtonsBehaviour () {
         for (Button button : mUndoWeaponButtons) {
             button.setOnMouseClicked(event -> {
@@ -882,21 +1053,76 @@ public class MainScreen extends Observable<Request> {
         }
     }
 
+    /**
+     * Return to action tab, deactivating all other panes except player info tab
+     */
     public void returnToActionTab() {
         for (int i = 0; i < tabPane.getTabs().size(); i++) {
             tabPane.getTabs().get(i).setDisable(i != ACTIONS_TAB && i != PLAYERS_TAB);
         }
-        tabPane.getSelectionModel().selectFirst();
+
+        if (!tabPane.getSelectionModel().isSelected(PLAYERS_TAB)) {
+            tabPane.getSelectionModel().selectFirst();
+        }
     }
 
+    /**
+     * Activate a specific weapon related tab, deactivating all the others in the process,
+     * except player info tab (easier to check target for strategy)
+     * @param index Tab index to activate
+     */
     private void activateWeaponRelatedTab (int index) {
         for (int i = 0; i < tabPane.getTabs().size(); i++) {
-            tabPane.getTabs().get(i).setDisable(i != index);
+            tabPane.getTabs().get(i).setDisable(i != index && i != PLAYERS_TAB);
         }
         tabPane.getSelectionModel().select(index);
     }
 
+    /**
+     * Send turn end notification
+     */
     public void endTurn () {
+        logToChat("Ending turn", false);
         notify(new TurnEndRequest(mView.getOwnerColor()));
+    }
+
+    /**
+     * Set action box accordingly to game status (frenzy or normal)
+     * @param isFrenzy Is game in frenzy mode?
+     */
+    public void switchActionBox (boolean isFrenzy) {
+        normalActionsBox.setVisible(!isFrenzy);
+        frenzyActionsBox.setVisible(isFrenzy);
+
+        if (isFrenzy) {
+            for (PlayerPane pane : mPlayerControllers.values()) {
+                pane.setFrenzyActionTile();
+            }
+        }
+    }
+
+    /**
+     * Enable view for active playing
+     */
+    public void activateView () {
+        returnToActionTab();
+        setEnableStatusActionButtonBox(true);
+        if (powerUpGrid.isDisabled()) {
+            resetAllPowerUpsBehaviourToDefault();
+            powerUpGrid.setDisable(false);
+        }
+        undoButton.setDisable(true);
+    }
+
+    /**
+     * Disable view while waiting for owner's turn
+     */
+    public void deactivateView () {
+        returnToActionTab();
+        GuiUtils.setBoxEnableStatus(powerUpGrid, false);
+        GuiUtils.setBoxEnableStatus(weaponBox, false);
+        setEnableStatusActionButtonBox(false);
+        powerUpDiscardButton.setDisable(true);
+        undoButton.setDisable(true);
     }
 }

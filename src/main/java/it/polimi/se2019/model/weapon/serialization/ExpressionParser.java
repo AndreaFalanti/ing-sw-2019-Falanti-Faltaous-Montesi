@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static it.polimi.se2019.controller.weapon.ShootContext.SPECIAL_VAR_PREVIOUSLY_SELECTED;
+
 /**
  * Exists to parse pretty (more readable) definition of expression in json into that can be more
  * easily serialized by the Gson library
@@ -20,6 +22,7 @@ import java.util.Set;
 public class ExpressionParser implements JsonDeserializer<Expression> {
     private static final String EXPRESSION_PACKAGE_NAME = "it.polimi.se2019.controller.weapon.expression";
     private static final String STORE_KEYWORD = "store";
+    private static final String EXCLUDE_PREVIOUS_SELECTIONS_KEYWORD = "exclude_previous_selections";
     private static final String EXPR_KEYWORD = "expr";
     private static final Set<String> PROHIBITED_KEYWORDS = new HashSet<>(Arrays.asList(
             "subs",
@@ -27,7 +30,8 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
     ));
     private static final Set<String> RESERVED_KEYWORDS = new HashSet<>(Arrays.asList(
             EXPR_KEYWORD,
-            STORE_KEYWORD
+            STORE_KEYWORD,
+            EXCLUDE_PREVIOUS_SELECTIONS_KEYWORD
     ));
     private static final Set<String> TRIVIALLY_DESERIALIZABLE_EXPRESSION_TYPES = new HashSet<>(Arrays.asList(
             "XorEffect",
@@ -75,7 +79,6 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
     }
 
     // identifies a behavioural expression
-    // TODO: makes this better at identifying wrong behaviours
     private static boolean isBehaviour(JsonElement raw) {
         return raw.isJsonObject() &&
                 raw.getAsJsonObject().has(EXPR_KEYWORD);
@@ -189,9 +192,19 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
                 result.putSub(subName, parse(jSub, context));
         }
 
-        // decorate with store expression if necessary
+        // decorate with expression excluding previous selections if specified
+        if (jExpression.has(EXCLUDE_PREVIOUS_SELECTIONS_KEYWORD)) {
+            result = new Difference(
+                    result,
+                    new Load(
+                            new StringLiteral(SPECIAL_VAR_PREVIOUSLY_SELECTED)
+                    )
+            );
+        }
+
+        // decorate with store expression if specified
         if (jExpression.has(STORE_KEYWORD)) {
-            return new Store(
+            result = new Store(
                     new StringLiteral(jExpression.get(STORE_KEYWORD).getAsString()),
                     result
             );
@@ -205,7 +218,7 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
                 new Gson().toJsonTree(reader.toString()),
                 new JsonDeserializationContext() {
                     @Override
-                    public <T> T deserialize(JsonElement jsonElement, Type type) throws JsonParseException {
+                    public <T> T deserialize(JsonElement jsonElement, Type type) {
                         throw new UnsupportedOperationException("This should not happen...");
                     }
                 }

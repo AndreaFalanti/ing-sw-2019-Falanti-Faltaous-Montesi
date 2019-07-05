@@ -2,10 +2,13 @@ package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.controller.weapon.expression.Expression;
+import it.polimi.se2019.controller.weapon.expression.UndoInfo;
 import it.polimi.se2019.model.*;
+import it.polimi.se2019.model.action.AmmoPayment;
 import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.Direction;
 import it.polimi.se2019.model.board.TileColor;
+import it.polimi.se2019.util.ArrayUtils;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
@@ -17,8 +20,13 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+/**
+ * A subcontroller dedicated to shoot interactions
+ * @author Stefano Montesi
+ */
 public class ShootInteraction {
     // logger
     private Logger mLogger = Logger.getLogger(getClass().getName());
@@ -30,6 +38,10 @@ public class ShootInteraction {
 
     // fields
     private boolean mOccupied = false;
+    private PlayerColor mActivePlayerColor;
+
+
+    // containers
     private final BlockingQueue<Request> mRequests = new LinkedBlockingQueue<>();
     private final Object mLock = new Object();
     private final Map<PlayerColor, View> mPlayerViews;
@@ -51,6 +63,9 @@ public class ShootInteraction {
     public Object getLock() {
         return mLock;
     }
+    public PlayerColor getActivePlayerColor() {
+        return mActivePlayerColor;
+    }
 
     // trivial setters
     public void putRequest(Request request) {
@@ -67,14 +82,15 @@ public class ShootInteraction {
      * @param shooter the shooter
      * @param weaponBehaviour the weapon behaviour used to shoot
      */
-    public void exec(Game game, PlayerColor shooter, Expression weaponBehaviour) {
+    public void exec(Game game, PlayerColor shooter, Expression weaponBehaviour, UndoInfo undoInfo) {
         // announce that thread is occupied
         mOccupied = true;
+        mActivePlayerColor = mGame.getActivePlayer().getColor();
 
         mLogger.info("Starting shoot interaction thread...");
         new Thread(() -> {
             // evaluate shoot expression
-            ShootContext context = new ShootContext(game, mPlayerViews.get(shooter), shooter, this);
+            ShootContext context = new ShootContext(game, mPlayerViews.get(shooter), shooter, undoInfo, this);
             try {
                 weaponBehaviour.eval(context);
             } catch (UndoShootInteractionException e) {
@@ -89,6 +105,8 @@ public class ShootInteraction {
                 synchronized (mLock) {
                     mLock.notifyAll();
                 }
+
+                context.getView().confirmEndOfInteraction();
             }
 
             // announce end of shoot interaction
@@ -111,61 +129,42 @@ public class ShootInteraction {
 
     // inflict damage
     public void inflictDamage(Game game, PlayerColor inflicter, Set<PlayerColor> inflicted, Damage amount) {
-        Board board = game.getBoard();
-        Player inflicterPlayer = game.getPlayerFromColor(inflicter);
-        View inflicterView = mPlayerViews.get(inflicter);
+        // do not inflict damage if there are no targets
+        if (inflicted.isEmpty())
+            return;
 
+        // log
         mLogger.log(Level.INFO,
                 "{0} inflicting {1} damage to {2}",
                 new Object[]{inflicter, amount, inflicted}
         );
 
+        // notify inflicter player of damage interaction
+        mPlayerViews.get(inflicter).showMessage(String.format(
+                "You inflicted %s damage to %s!",
+                amount.toCompactString(), inflicted
+        ));
+
         // handle targeting scope activation
-        if (amount.getDamage() > 0) {
-            Set<Integer> possibleIndices = inflicterPlayer.getPowerUpIndices(PowerUpType.TARGETING_SCOPE);
-
-            possibleIndices.forEach(index -> {
-                // the activation of each scope is requested individually from the user
-                inflicterView.showMessage(
-                        "You can use your targeting scope on one of the selected targets! Select it in the powerup " +
-                                "menu to use it."
-                );
-
-                if (requestPowerupActivation(
-                        inflicter, PowerUpType.TARGETING_SCOPE.toString(), index)
-                ) {
-                    useTargetingScope(inflicter, inflicted, index);
-                }
-            });
-        }
+        handleTargetingScope(inflicter, inflicted, amount);
 
         inflicted.stream()
+                // notify inflicted player of damage interaction
+                .peek(singularInflicted -> mPlayerViews.get(singularInflicted)
+                        .showMessage(String.format(
+                                "You have been inflicted %s points of damage by %s!",
+                                amount.toCompactString(), game.getPlayerFromColor(inflicter).getName()
+                        ))
+                )
+
                 // actually do damage to inflicted player
                 .peek(singularInflicted ->
                         game.handleDamageInteraction(inflicter, singularInflicted, amount))
 
                 // handle tagback activation
-                .forEach(singularInflicted -> {
-                    Player inflictedPlayer = game.getPlayerFromColor(singularInflicted);
-                    View inflictedView = mPlayerViews.get(singularInflicted);
-
-                    if (board.canSee(inflictedPlayer.getPos(), inflicterPlayer.getPos())) {
-                        Set<Integer> possibleIndices = inflictedPlayer.getPowerUpIndices(PowerUpType.TAGBACK_GRENADE);
-
-                        possibleIndices.forEach(index -> {
-                            inflictedView.showMessage(
-                                    "You can use your tagback grenade on " + inflicterPlayer.getName() + "!" +
-                                            "Select it from the powerup menu to use it."
-                            );
-
-                            if (requestPowerupActivation(
-                                    singularInflicted, PowerUpType.TAGBACK_GRENADE.toString(), index)
-                            ) {
-                                useTagbackGrenade(singularInflicted, inflicter, index);
-                            }
-                        });
-                    }
-                });
+                .forEach(singularInflicted ->
+                    handleTagbackGrenade(inflicter, singularInflicted)
+                );
     }
 
     // move player around
@@ -174,8 +173,12 @@ public class ShootInteraction {
     }
 
     // wait for a particular request
-    private Request waitForRequest(String requestName) {
+    private Request waitForRequest(String requestName, Runnable viewActivator) {
         mLogger.log(Level.INFO, "Shoot interaction waiting for {0} request", requestName);
+
+        // show the view corresponding with the requested request
+        //  NB. the "Request" here is treated more as a response from the view
+        viewActivator.run();
 
         // wait for request to be presented on the request queue by another thread
         Request request;
@@ -213,13 +216,17 @@ public class ShootInteraction {
     }
 
     // wait for a particular selection request
-    private <T> Stream<T> waitForSelectionRequestCheckingInput(View selectingView, Collection<T> possibleToSelect,
+    private <T> Stream<T> waitForSelectionRequestCheckingInput(View selectingView, Runnable viewActivator,
+                                                               Collection<T> possibleToSelect,
                                                                Function<Request, Stream<T>> selectionGetter,
                                                                String selectionDescriptor) {
         Request request;
         List<T> selection;
         while (true) {
-            request = waitForRequest(selectionDescriptor + " selection (among " + possibleToSelect + ")");
+            request = waitForRequest(
+                    selectionDescriptor + " selection (among " + possibleToSelect + ")",
+                    viewActivator
+            );
 
             selection = selectionGetter.apply(request)
                     .collect(Collectors.toList());
@@ -234,7 +241,7 @@ public class ShootInteraction {
                 break;
 
             // else report error and request input again
-            selectingView.reportError(String.format(
+            reportError(selectingView, String.format(
                     "Illegal %s selection made: %s\n" +
                             "Possible selection set: %s",
                     selectionDescriptor, selection, possibleToSelect
@@ -248,12 +255,13 @@ public class ShootInteraction {
     }
 
     // wait for a particular selection request
-    private <T> Stream<T> waitForSelectionRequestCheckingInputBounds(View selectingView, Collection<T> possibleToSelect,
+    private <T> Stream<T> waitForSelectionRequestCheckingInputBounds(View selectingView, Runnable viewActivator,
+                                                                     Collection<T> possibleToSelect,
                                                                      int min, int max, Function<Request, Stream<T>> selectionGetter,
                                                                      String selectionDescriptor) {
         // undo if selection cannot be performed...
         if (possibleToSelect.size() < min) {
-            selectingView.reportError(Controller.NO_ACTIONS_REMAINING_ERROR_MSG);
+            reportError(selectingView, Controller.NO_ACTIONS_REMAINING_ERROR_MSG);
             throw new UndoShootInteractionException();
         }
 
@@ -268,7 +276,8 @@ public class ShootInteraction {
 
         while (true) {
             List<T> selection = waitForSelectionRequestCheckingInput(
-                    selectingView, possibleToSelect,
+                    selectingView, viewActivator,
+                    possibleToSelect,
                     selectionGetter, selectionDescriptor
             )
                     .collect(Collectors.toList());
@@ -277,7 +286,7 @@ public class ShootInteraction {
                 return selection.stream();
 
             else
-                selectingView.reportError(String.format(
+                reportError(selectingView, String.format(
                         "Over-sized %s selection received: %d (max: %d)",
                         selectionDescriptor, selection.size(), max
                 ));
@@ -286,11 +295,12 @@ public class ShootInteraction {
 
 
     // wait for a particular selection request
-    private <T> Stream<T> waitForSelectionRequestSkippingObvious(View selectingView, Collection<T> possibleToSelect,
+    private <T> Stream<T> waitForSelectionRequestSkippingObvious(View selectingView, Runnable viewActivator,
+                                                                 Collection<T> possibleToSelect,
                                                                  int min, int max, Function<Request, Stream<T>> selectionGetter,
                                                                  String selectionDescriptor) {
         // attempt to skip selection request
-        if (min == max && possibleToSelect.size() == min) {
+        if (possibleToSelect.size() == min) {
             selectingView.showMessage(String.format(
                     "Skipping %s selection of %d",
                     selectionDescriptor, min
@@ -299,17 +309,93 @@ public class ShootInteraction {
         }
 
         return waitForSelectionRequestCheckingInputBounds(
-                selectingView, possibleToSelect, min, max,
+                selectingView, viewActivator,
+                possibleToSelect, min, max,
                 selectionGetter, selectionDescriptor
         );
     }
 
+    // manage payment
+    public void manageAmmoPayment(PlayerColor payingPlayerColor, AmmoValue costToPay, String thingsToPay,
+                                  Runnable selectThingsToPayAgain) {
+        Player payingPlayer = mGame.getPlayerFromColor(payingPlayerColor);
+        View payerView = mPlayerViews.get(payingPlayerColor);
+
+        mLogger.log(Level.INFO,
+                "proceeding with payment of {0}\n" +
+                        "Total cost to pay: {1}\n" +
+                        "Remaining ammo: {2}",
+                new Object[]{
+                        thingsToPay,
+                        costToPay,
+                        payingPlayer.getAmmo()
+                }
+        );
+
+        // if the effects cannot be payed, the selection is invalid. Ask it again
+        if (!AmmoPayment.canPayWithPowerUps(payingPlayer, costToPay)) {
+            reportError(payerView, "The effects you chose cost too much to activate!" +
+                    " Select less effects or undo the shoot interaction"
+            );
+
+            selectThingsToPayAgain.run(); return;
+        }
+
+        // if the user has enough ammo, make him pay without asking for powerup selection
+        else if (AmmoPayment.isValid(payingPlayer, costToPay, ArrayUtils.ofAll(false, 4))) {
+            payerView.showMessage("skipping powerup discard...");
+
+            AmmoPayment.payCost(payingPlayer, costToPay, ArrayUtils.ofAll(false, 4));
+        }
+
+        // otherwise a powerup discard is requested
+        else {
+            mLogger.log(Level.INFO, "starting poewrup discard interaction loop...");
+
+            while (true) {
+                boolean[] selectedPowerupsMask =
+                        selectPowerupsForPayment(payerView);
+                Set<Integer> selectedPowerupsIndices = IntStream.range(0, 4)
+                        .filter(i -> selectedPowerupsMask[i])
+                        .boxed()
+                        .collect(Collectors.toSet());
+                Set<PowerUpCard> selectedPowerups = selectedPowerupsIndices.stream()
+                        .map(payingPlayer::getPowerUpCard)
+                        .collect(Collectors.toSet());
+
+                // selection not valid
+                if (!AmmoPayment.isValid(
+                        payingPlayer,
+                        costToPay,
+                        selectedPowerupsMask
+                )) {
+                    reportError(payerView, String.format(
+                            "You cannot pay the selected effects (%s) with these powerups: %s",
+                            thingsToPay, selectedPowerups
+                    ));
+                }
+
+                // selection valid
+                else {
+                    mLogger.log(Level.INFO,
+                            "Player paying discarding powerups: {0}",
+                            selectedPowerups
+                    );
+
+                    AmmoPayment.payCost(payingPlayer, costToPay, selectedPowerupsMask);
+
+                    return;
+                }
+            }
+        }
+    }
+
     // select targets
     public Set<PlayerColor> selectTargets(View view, int min, int max, Set<PlayerColor> possibleTargets) {
-        view.showTargetsSelectionView(min, max, possibleTargets);
-
         return waitForSelectionRequestSkippingObvious(
-                view, possibleTargets, min, max,
+                view,
+                () -> view.showTargetsSelectionView(min, max, possibleTargets),
+                possibleTargets, min, max,
                 req -> ((TargetsSelectedRequest) req).getSelectedTargets().stream(),
                 "target"
         )
@@ -318,10 +404,10 @@ public class ShootInteraction {
 
     // select position
     public Position selectPosition(View view, Set<Position> range) {
-        view.showPositionSelectionView(range);
-
         return  waitForSelectionRequestSkippingObvious(
-                view, range, 1, 1,
+                view,
+                () -> view.showPositionSelectionView(range),
+                range, 1, 1,
                 req -> Stream.of(((PositionSelectedRequest) req).getPosition()),
                 "position"
         )
@@ -330,17 +416,15 @@ public class ShootInteraction {
     }
 
     // select effects
-    public List<String> selectEffects(View view,
-                                      SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
-        // select effects through view
-        view.showEffectsSelectionView(priorityMap, possibleEffects);
-
+    public List<String> selectEffects(View view, SortedMap<Integer, Set<Effect>> priorityMap,
+                                      Set<Effect> possibleEffects) {
         Set<String> possibleEffectIDs = possibleEffects.stream()
                 .map(Effect::getId)
                 .collect(Collectors.toSet());
 
         return waitForSelectionRequestCheckingInput(
                 view,
+                () -> view.showEffectsSelectionView(priorityMap, possibleEffects),
                 possibleEffectIDs,
                 req -> ((EffectsSelectedRequest) req).getSelectedEffects().stream(),
                 "effect"
@@ -350,11 +434,10 @@ public class ShootInteraction {
 
     // select modes
     public String selectWeaponMode(View view, Effect mode1, Effect mode2) {
-        // select effects through view
-        view.showWeaponModeSelectionView(mode1, mode2);
-
         return waitForSelectionRequestSkippingObvious(
-                view, Stream.of(mode1, mode2).map(Effect::getId).collect(Collectors.toSet()), 1, 1,
+                view,
+                () -> view.showWeaponModeSelectionView(mode1, mode2),
+                Stream.of(mode1, mode2).map(Effect::getId).collect(Collectors.toSet()), 1, 1,
                 req -> Stream.of(((WeaponModeSelectedRequest) req).getId()),
                 "mode"
         )
@@ -364,38 +447,57 @@ public class ShootInteraction {
 
     // select powerups for ammo payment
     public boolean[] selectPowerupsForPayment(View view) {
-        // select powerups to discard through view
-        view.showPowerUpsDiscardView();
-
         PowerUpDiscardedRequest request =
-                (PowerUpDiscardedRequest) waitForRequest("powerup discard request");
+                (PowerUpDiscardedRequest) waitForRequest(
+                        "powerup discard request",
+                        view::showPowerUpsDiscardView
+                );
 
         return request.getDiscarded();
     }
 
     // pick direction
     public Direction pickDirection(View view) {
-        view.showDirectionSelectionView();
 
         DirectionSelectedRequest request =
-                (DirectionSelectedRequest) waitForRequest("direction selection");
+                (DirectionSelectedRequest) waitForRequest(
+                        "direction selection",
+                        view::showDirectionSelectionView
+                );
 
         return request.getDirection();
     }
 
     // pick room color
     public TileColor pickRoomColor(View view, Set<TileColor> possibleColors) {
-        view.showRoomColorSelectionView(possibleColors);
-
         return waitForSelectionRequestSkippingObvious(
-                        view, possibleColors, 1, 1,
-                        req -> Stream.of(((RoomSelectedRequest) req).getColor()),
-                        "room color"
+                view,
+                () -> view.showRoomColorSelectionView(possibleColors),
+                possibleColors, 1, 1,
+                req -> Stream.of(((RoomSelectedRequest) req).getColor()),
+                "room color"
         )
                 .collect(Collectors.toList())
                 .get(0);
     }
 
+    // pick ammo color
+    private TileColor pickAmmoColor(View view, Set<TileColor> possibleColors) {
+        return waitForSelectionRequestSkippingObvious(
+                view,
+                () -> view.showAmmoColorSelectionView(possibleColors),
+                possibleColors, 1, 1,
+                req -> Stream.of(((AmmoColorSelectedRequest) req).getAmmoColor()),
+                "ammo color"
+        )
+                .collect(Collectors.toList())
+                .get(0);
+    }
+
+    // report error
+    private void reportError(View view, String message) {
+        view.showMessage(message);
+    }
 
     /************************/
     /* Powerup interactions */
@@ -404,11 +506,11 @@ public class ShootInteraction {
     // request a powerup activation
     private boolean requestPowerupActivation(PlayerColor activator, String powerupName, int index) {
         View view = mPlayerViews.get(activator);
-        view.showPowerUpSelectionView(Collections.singletonList(index));
 
         while (true) {
             Set<Integer> selectedIndices = waitForSelectionRequestCheckingInputBounds(
                     mPlayerViews.get(activator),
+                    () -> view.showPowerUpSelectionView(Collections.singletonList(index)),
                     Collections.singleton(index),
                     0, 1,
                     req -> ((PowerUpsSelectedRequest) req).getIndexes().stream(),
@@ -422,15 +524,97 @@ public class ShootInteraction {
             int selectedIndex = selectedIndices.iterator().next();
 
             if (selectedIndex != index) {
-                view.reportError("You can't use a " +
+                reportError(view, "You can't use a " +
                         mGame.getPlayerFromColor(activator).getPowerUpCard(selectedIndex).getType() +
                         " you can only use a " + powerupName
                 );
                 continue;
             }
 
-
             return true;
+        }
+    }
+
+    // handle targeting scope activation
+    private void handleTargetingScope(PlayerColor inflicter, Set<PlayerColor> inflicted, Damage damageInflicted) {
+        Player inflicterPlayer = mGame.getPlayerFromColor(inflicter);
+        View inflicterView = mPlayerViews.get(inflicter);
+
+        if (damageInflicted.getDamage() > 0) {
+            Set<Integer> possibleIndices = inflicterPlayer.getPowerUpIndices(PowerUpType.TARGETING_SCOPE);
+
+            possibleIndices.forEach(index -> {
+                // check if the scope can be payed for
+                boolean[] scopeExcludedMask = ArrayUtils.from(IntStream.range(0, MAX_POWERUPS_IN_HAND)
+                        .mapToObj(i -> i != index && inflicterPlayer.getPowerUpCard(i) != null)
+                        .collect(Collectors.toList())
+                );
+
+                boolean canPay = Stream.of(TileColor.RED, TileColor.YELLOW, TileColor.BLUE)
+                        .map(AmmoValue::from)
+                        .anyMatch(ammo ->
+                                AmmoPayment.isValid(
+                                        inflicterPlayer,
+                                        ammo,
+                                        ArrayUtils.ofAll(false, 3)
+                                ) ||
+                                        AmmoPayment.isValid(
+                                                inflicterPlayer,
+                                                ammo,
+                                                scopeExcludedMask
+                                        )
+                        );
+
+                if (canPay) {
+                    // the activation of each scope is requested individually from the user
+                    inflicterView.showMessage(
+                            "You can use your targeting scope on one of the selected targets! Select it in the " +
+                                    "powerup menu to use it."
+                    );
+
+                    if (requestPowerupActivation(
+                            inflicter, PowerUpType.TARGETING_SCOPE.toString(), index)
+                    ) {
+                        useTargetingScope(inflicter, inflicted, index);
+                    }
+                }
+            });
+        }
+    }
+
+    // handle tagback grenade activation
+    private void handleTagbackGrenade(PlayerColor inflicter, PlayerColor inflicted) {
+        Player inflictedPlayer = mGame.getPlayerFromColor(inflicted);
+        Player inflicterPlayer = mGame.getPlayerFromColor(inflicter);
+        View inflictedView = mPlayerViews.get(inflicted);
+        View inflicterView = mPlayerViews.get(inflicter);
+        Board board = mGame.getBoard();
+
+        if (board.canSee(inflictedPlayer.getPos(), inflicterPlayer.getPos())) {
+            Set<Integer> possibleIndices = inflictedPlayer.getPowerUpIndices(PowerUpType.TAGBACK_GRENADE);
+
+            possibleIndices.forEach(index -> {
+                inflicterView.showMessage(
+                        inflictedPlayer.getName() + " is thinking..."
+                );
+
+                // pass control to tagback activator
+                mActivePlayerColor = inflicted;
+
+                inflictedView.showMessage(
+                        "You can use your tagback grenade on " + inflicterPlayer.getName() + "!" +
+                                "Select it from the powerup menu to use it."
+                );
+
+                if (requestPowerupActivation(
+                        inflicted, PowerUpType.TAGBACK_GRENADE.toString(), index
+                )) {
+                    useTagbackGrenade(inflicted, inflicter, index);
+                }
+
+                // give control back to shooter
+                mActivePlayerColor = inflicter;
+            });
         }
     }
 
@@ -440,12 +624,31 @@ public class ShootInteraction {
 
         mGame.handleDamageInteraction(inflicter, inflicted, new Damage(0, 1));
     }
-    private void useTargetingScope(PlayerColor inflicter, Set<PlayerColor> possibleTargets, int index) {
-        mGame.getPlayerFromColor(inflicter).discard(index);
 
-        PlayerColor selectedTarget = selectTargets(mPlayerViews.get(inflicter), 1, 1, possibleTargets)
+    // use targeting scope
+    private void useTargetingScope(PlayerColor inflicterColor, Set<PlayerColor> possibleTargets, int index) {
+        Player inflicter = mGame.getPlayerFromColor(inflicterColor);
+        View inflicterView = mPlayerViews.get(inflicterColor);
+
+        inflicter.discard(index);
+
+        // TODO: pick ammo color
+        manageAmmoPayment(
+                inflicterColor,
+                AmmoValue.from(pickAmmoColor(
+                        inflicterView,
+                        inflicter.getAmmo().getContainedColors()
+                )),
+                "targeting scope",
+                () -> mLogger.log(Level.SEVERE,
+                        "{0} not able to pay for targeting scope even though previous checks" +
+                                "attested it was possible!")
+        );
+
+        PlayerColor selectedTarget = selectTargets(inflicterView, 1, 1, possibleTargets)
                 .iterator().next();
-        mGame.handleDamageInteraction(inflicter, selectedTarget, new Damage(0, 1));
+        mGame.handleDamageInteraction(inflicterColor, selectedTarget, new Damage(1, 0));
     }
+
 }
 

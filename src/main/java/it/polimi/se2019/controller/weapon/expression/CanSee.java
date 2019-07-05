@@ -8,16 +8,23 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Expression for returning all targets that a given observer can see
+ * Behaviour for returning all targets that a given observer can see
  *  NB. the observer is considered the shooter if not specified
+ * @author Stefano Montesi
  */
 public class CanSee extends Behaviour {
+    private static final String ORIGIN = "origin";
+
     public CanSee() {
-        putSub("origin", new You());
+        putSub(ORIGIN, new You());
     }
 
+    /**
+     * Constructs the behaviour with using the given subexpressions
+     * @param origin the origin of the visibility range to obtain
+     */
     public CanSee(Expression origin) {
-        putSub("origin", origin);
+        putSub(ORIGIN, origin);
     }
 
     /**
@@ -28,7 +35,7 @@ public class CanSee extends Behaviour {
     @Override
     public final Expression eval(ShootContext context) {
         Set<Position> visibleRange = new GetVisibleRange(
-                new Pos(getSub("origin").eval(context))
+                new Pos(getSub(ORIGIN).eval(context))
         ).eval(context).asRange();
         Set<Player> allPlayers = context.getPlayers();
 

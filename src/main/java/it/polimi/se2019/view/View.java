@@ -7,7 +7,7 @@ import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.request.Request;
 
-public abstract class View extends Observable<Request> implements Observer<Update>, RemoteView {
+public abstract class View extends Observable<Request> implements Observer<Update>, ViewInterface {
     // fields
     protected PlayerColor mOwnerColor;
     protected UpdateHandler mUpdateHandler;
@@ -15,6 +15,10 @@ public abstract class View extends Observable<Request> implements Observer<Updat
     // constructors
     public View(UpdateHandler updateHandler) {
         mUpdateHandler = updateHandler;
+    }
+
+    public View(PlayerColor ownerColor) {
+        mOwnerColor = ownerColor;
     }
 
     public View(PlayerColor ownerColor, UpdateHandler updateHandler) {
@@ -33,10 +37,6 @@ public abstract class View extends Observable<Request> implements Observer<Updat
     public void setOwnerColor(PlayerColor ownerColor) {
         mOwnerColor = ownerColor;
     }
-
-    // Actually handled in ResponseHandler, will be called directly from controller on view
-
-
 
     @Override
     public void update(Update update) {

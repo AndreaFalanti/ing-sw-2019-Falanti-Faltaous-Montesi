@@ -1,22 +1,32 @@
 package it.polimi.se2019.network.server;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.util.JarPath;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
-import it.polimi.se2019.view.ViewFactory;
+import it.polimi.se2019.view.VirtualView;
 
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
+/**
+ * Thread used to initialize a game room. Start it's creation after game is full of player or after
+ * a certain amount of time set in timer
+ *
+ * @author Andrea Falanti, Stefano Montesi
+ */
 public class GameThread extends Thread {
     private static final Logger logger = Logger.getLogger(GameThread.class.getName());
     public static final int MAXIMUM_PLAYER = 5;
@@ -25,14 +35,40 @@ public class GameThread extends Thread {
     private Controller mController;
     private List<PlayerConnection> mPlayerConnections;
     private boolean mStarted = false;
-    private int mRmiPort;
 
     private Random mRandom = new Random();
     private List<PlayerColor> mColors = new ArrayList<>(Arrays.asList(PlayerColor.values()));
+    private GameSettings mGameSettings;
 
-    public GameThread (List<PlayerConnection> players, int rmiPort){
+    private class GameSettings {
+        int boardNum;
+        int killNum;
+        long timerDelay;
+        boolean useControllerTimer;
+    }
+
+    public GameThread (List<PlayerConnection> players) {
         mPlayerConnections = new ArrayList<>(players);
-        mRmiPort = rmiPort;
+
+        String jarPath = JarPath.getJarPath();
+
+        Gson gson = new Gson();
+        try {
+            JsonReader jsonReader = new JsonReader(new FileReader(jarPath + "gameSettings.json"));
+            mGameSettings = gson.fromJson(jsonReader, GameSettings.class);
+            jsonReader.close();
+        } catch (FileNotFoundException e) {
+            mGameSettings = gson.fromJson(Jsons.get("configurations/gameSettings"), GameSettings.class);
+
+            try (FileWriter fileWriter = new FileWriter(jarPath + "gameSettings.json")) {
+                fileWriter.write(Jsons.get("configurations/gameSettings"));
+            }
+            catch (IOException e1) {
+                logger.severe(e1.getMessage());
+            }
+        } catch (IOException e) {
+            logger.severe(e.getMessage());
+        }
 
         Timer mTimer = new Timer();
         mTimer.schedule(new TimerTask() {
@@ -42,7 +78,7 @@ public class GameThread extends Thread {
                     startGameCreation();
                 }
             }
-        },10);
+        },mGameSettings.timerDelay);
     }
 
     public int getPlayersNum () {
@@ -53,56 +89,30 @@ public class GameThread extends Thread {
         return mStarted;
     }
 
-    // TODO: change this to handle the whole game
+    /**
+     * Initialize all client views and start first turn of the game
+     */
     @Override
     public void run() {
         // announce start of game thread
         logger.info("The game thread has begun!!");
 
-        InitializationInfo initInfo = mGame.extractViewInitializationInfo();
         for (Map.Entry<PlayerColor, View> entry : mController.getPlayerViews().entrySet()) {
-            initInfo.setOwnerColor(entry.getKey());
+            ((VirtualView)entry.getValue()).startReceivingMessages();
+            InitializationInfo initInfo = mGame.extractViewInitializationInfo(entry.getKey());
             entry.getValue().reinitialize(initInfo);
         }
 
         // start first turn, with proper message flow allow to go to game end.
         mController.handleNextTurn();
 
-        /*
-        mGame.getPlayers().stream().filter(pl -> pl.getName().equals("Mario")).findAny().get()
-                .move(new Position(3, 2));
-        mGame.getPlayers().stream().filter(pl -> pl.getName().equals("Luigi")).findAny().get()
-                .move(new Position(2, 0));
-        mGame.getPlayers().stream().filter(pl -> pl.getName().equals("Smurfette")).findAny().get()
-                .move(new Position(2, 0));
-
-        // start random shoot interaction
-        mController.startShootInteraction(
-                mPlayerConnections.stream()
-                        .filter(pc -> pc.getUsername().equals("Mario"))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("Mario is needed to test server..."))
-                        .getColor(),
-                Weapons.get("heatseeker").getBehaviour()
-        );
-
-        // wait for shoot interaction to be done
-        ShootInteraction interaction = mController.getShootInteraction();
-        while (interaction.isOccupied()) {
-            synchronized (interaction.getLock()) {
-                try {
-                    interaction.getLock().wait();
-                } catch (InterruptedException e) {
-                    System.out.println("Test thread interrupted while waiting for shoot interaction to finish...");
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }*/
-
         // announce end of game thread
-        System.out.println("The game thread has ended!");
+        logger.info("The game thread has ended!");
     }
 
+    /**
+     * Create new game, inserting all connected players and initializing their virtual views
+     */
     public synchronized void startGameCreation () {
         mStarted = true;
         logger.info("Starting game creation ...");
@@ -118,64 +128,55 @@ public class GameThread extends Thread {
             mColors.remove(randomIndex);
         }
 
-        Board board = Board.fromJson(Jsons.get("boards/game/board1"));
-        int killsTarget = 8;
+        Board board = Board.fromJson(Jsons.get("boards/game/board" + mGameSettings.boardNum));
 
-        initializeGame(board, players, killsTarget);
+        initializeGame(board, players, mGameSettings.killNum);
     }
 
+    /**
+     * Initialize game with given parameters
+     * @param board Selected board
+     * @param players Connected players
+     * @param killsTarget Kills target of the game
+     */
     private void initializeGame (Board board, List<Player> players, int killsTarget) {
-        Registry registry = null;
-        try {
-            registry = LocateRegistry.getRegistry(mRmiPort);
-        } catch (RemoteException e) {
-            throw new IllegalStateException("Could not locate registry for server during game init");
-        }
-
         mGame = new Game(board, players, killsTarget);
 
-        final EnumMap<PlayerColor, View> viewMap = new EnumMap<>(PlayerColor.class);
-
-        mController = new Controller(mGame, viewMap);
-
-        for (PlayerConnection playerConnection : mPlayerConnections) {
-            switch (playerConnection.getType()) {
-                case SOCKET:
-                    playerConnection.setVirtualView(ViewFactory.createSocketVirtualView(
-                            playerConnection.getSocket(), playerConnection.getColor()));
-                    viewMap.put(playerConnection.getColor(), playerConnection.getVirtualView());
-                    break;
-                case RMI:
-                    // TODO: make player select view type
-
-                    View stub = null;
-                    String viewColor = playerConnection.getColor().getPascalName();
-                    try {
-                        stub = (View) registry.lookup(viewColor);
-                    } catch (RemoteException | NotBoundException e) {
-                        throw new IllegalStateException("exception while performing lookup of "
-                                + viewColor + " view on server");
-                    }
-                    viewMap.put(playerConnection.getColor(), stub);
-                    playerConnection.setVirtualView(stub);
-                    break;
-                default:
-                    logger.severe("Invalid connection type");
-                    throw new IllegalArgumentException("Invalid connection type");
-            }
-
-            mGame.register(playerConnection.getVirtualView());
-            playerConnection.getVirtualView().register(mController);
-        }
+        mController = new Controller(
+                mGame,
+                mPlayerConnections.stream()
+                        .peek(pc ->
+                            pc.setVirtualView(new VirtualView(
+                                    pc.getColor(), pc.getConnection()
+                            ))
+                        )
+                        .map(PlayerConnection::getVirtualView)
+                        // start sending pings from all virtual views to clients
+                        .peek(VirtualView::startCheckingForDisconnection)
+                        // collect all views and put them inside controller as normal views
+                        .collect(Collectors.toMap(
+                                View::getOwnerColor,
+                                view -> view
+                        )),
+                mGameSettings.useControllerTimer
+        );
 
         logger.info("Game created successfully");
         start();
     }
 
+    /**
+     * Add player to game initialization
+     * @param playerConnection Player data
+     */
     public void addPlayer (PlayerConnection playerConnection) {
         mPlayerConnections.add(playerConnection);
     }
 
+    /**
+     * Remove player from game
+     * @param playerConnection Player data
+     */
     public void removePlayer (PlayerConnection playerConnection) {
         mPlayerConnections.remove(playerConnection);
     }

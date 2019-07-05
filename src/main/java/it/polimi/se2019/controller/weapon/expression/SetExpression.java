@@ -4,12 +4,17 @@ import com.google.gson.annotations.SerializedName;
 import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.board.TileColor;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Expression representing a set of expressions
+ * @author Stefano Montesi
+ */
 public class SetExpression extends Expression {
     @SerializedName("subs")
     private final Set<Expression> mSubexpressions;
@@ -33,7 +38,7 @@ public class SetExpression extends Expression {
      * Converts {@code this} into a set
      * @return a set containing {@code this}'s subexpressions
      */
-    public Set<Expression> asSet() {
+    Set<Expression> asSet() {
         return mSubexpressions;
     }
 
@@ -90,6 +95,13 @@ public class SetExpression extends Expression {
     public Set<Position> asRange() {
         return stream()
                 .map(Expression::asPosition)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<TileColor> asColors() {
+         return stream()
+                .map(Expression::asColor)
                 .collect(Collectors.toSet());
     }
 

@@ -1,5 +1,6 @@
 package it.polimi.se2019.controller;
 
+import it.polimi.se2019.controller.weapon.Weapon;
 import it.polimi.se2019.controller.weapon.Weapons;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.GrabAmmoAction;
@@ -77,7 +78,9 @@ public class ControllerTest {
         assertNotNull(activePlayer.getPowerUpCard(0));
         assertNotNull(activePlayer.getPowerUpCard(1));
 
-        activePlayer.addWeapon(Weapons.get("sledgehammer"));
+        Weapon sledgehammer = Weapons.get("sledgehammer");
+        sledgehammer.setLoaded(false);
+        activePlayer.addWeapon(sledgehammer);
         assertFalse(activePlayer.getWeapon(0).isLoaded());
 
         // reset all ammo to 0
@@ -139,18 +142,22 @@ public class ControllerTest {
 
         controller.handle(new TurnEndRequest(PlayerColor.BLUE));
         assertEquals(1, game.getTurnNumber());
-        // they should be asked for respawn, giving them a powerUp card
+        // yellow player should be asked to respawn, giving him a powerUp card
         assertNotNull(yellowPlayer.getPowerUpCard(0));
-        assertNotNull(greyPlayer.getPowerUpCard(0));
-
-        controller.handle(new RespawnPowerUpRequest(0, PlayerColor.GREY));
         assertNull(greyPlayer.getPowerUpCard(0));
-        // still waiting for yellowPlayer respawn
-        assertEquals(1, game.getTurnNumber());
-
 
         controller.handle(new RespawnPowerUpRequest(0, PlayerColor.YELLOW));
         assertNull(yellowPlayer.getPowerUpCard(0));
+        // still waiting for greyPlayer respawn
+        assertEquals(1, game.getTurnNumber());
+        // make sure to add a death when respawning
+        assertEquals(1, yellowPlayer.getDeathsNum());
+        // grey player should be asked to respawn, giving him a powerUp card
+        assertNotNull(greyPlayer.getPowerUpCard(0));
+
+
+        controller.handle(new RespawnPowerUpRequest(0, PlayerColor.GREY));
+        assertNull(greyPlayer.getPowerUpCard(0));
 
         // new turn started because all player have respawned
         assertEquals(2, game.getTurnNumber());
@@ -192,8 +199,10 @@ public class ControllerTest {
         assertNull(cards[1]);
         // now player complete its spawn, flag remains to true
         assertTrue(controller.isActivePlayerSpawnedThisTurn());
-        // and skip an erroneous turn start
+        // and skip an erroneous turn start that would change player
         assertEquals(1, game.getTurnNumber());
+        // make sure to not add a death when spawning first time
+        assertEquals(0, game.getActivePlayer().getDeathsNum());
 
         // pass turn, same thing for yellow player
         controller.handle(new TurnEndRequest(PlayerColor.BLUE));
@@ -225,6 +234,7 @@ public class ControllerTest {
         controller.setPlayerNotSpawnedCounter(0);
 
         // use teleport powerUp
+        controller.setExpectedPlayingPlayer(PlayerColor.BLUE);
         controller.handle(new UsePowerUpRequest(0, PlayerColor.BLUE));
         // expect a position
         Position targetPosition = new Position(2, 0);

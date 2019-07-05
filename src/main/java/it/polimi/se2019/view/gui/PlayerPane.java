@@ -15,7 +15,11 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.EnumMap;
 
-
+/**
+ * GUI controller of main player pane, namely the owner of this view
+ *
+ * @author Andrea Falanti
+ */
 public class PlayerPane {
     @FXML
     protected ImageView playerBoard;
@@ -78,6 +82,12 @@ public class PlayerPane {
         actionTile.setImage(actionImage);
     }
 
+    public void setFrenzyActionTile () {
+        Image actionImage = new Image(GuiResourcePaths.ACTION_TILE + "Flipped"
+                + mPlayerBoardColor.getPascalName() + ".png");
+        actionTile.setImage(actionImage);
+    }
+
     /**
      * Setup a board of given player color
      * @param color Color of the board
@@ -100,13 +110,15 @@ public class PlayerPane {
 
     /**
      * Add damage tokens to this board
-     * @param color Color of player that dealt the damage
-     * @param quantity Number of tokens to add
+     * @param colors Damage token array of colors
      */
-    public void addDamageTokens (PlayerColor color, int quantity) {
-        Image tokenImage = new Image(GuiResourcePaths.DAMAGE_TOKEN + color.getPascalName() + ".png");
-
-        for (int i = 0; i < quantity; i++) {
+    public void updateDamageTokens (PlayerColor[] colors) {
+        eraseDamage();
+        for (PlayerColor color : colors) {
+            if (color == null) {
+                break;
+            }
+            Image tokenImage = new Image(GuiResourcePaths.DAMAGE_TOKEN + color.getPascalName() + ".png");
             GuiUtils.addImageViewToBox(damageTokensBox, mDamageTokenHeight, mDamageTokenWidth, tokenImage);
         }
     }
@@ -147,6 +159,10 @@ public class PlayerPane {
      * @param value Marks num to set
      */
     public void updateMarkLabel (PlayerColor color, int value) {
+        // gui haven't a mark label for player's own color, but info from model have it
+        if (color == mPlayerBoardColor) {
+            return;
+        }
         mMarksNumLabels.get(color).setText("x" + value);
     }
 

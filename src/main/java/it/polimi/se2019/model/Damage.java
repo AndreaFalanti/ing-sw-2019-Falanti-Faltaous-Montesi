@@ -81,4 +81,12 @@ public class Damage {
                 ", mMarksNum=" + mMarksNum +
                 '}';
     }
+
+    public String toCompactString() {
+        if (mDamage == 0 && mMarksNum == 0)
+            return "0";
+
+        return (mDamage > 0 ? (mDamage + "d") : "") +
+                (mMarksNum > 0 ? (mMarksNum + "m") : "");
+    }
 }

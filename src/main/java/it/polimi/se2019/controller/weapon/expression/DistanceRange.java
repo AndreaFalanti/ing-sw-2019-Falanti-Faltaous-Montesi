@@ -7,37 +7,53 @@ import it.polimi.se2019.model.board.Board;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Behaviour that evaluates to a range visible as a ring around a given origin.
+ * The ring's internal and external radii, along with its origin, are specified as subexpressions.
+ * @author Stefano Montesi
+ */
 public class DistanceRange extends Behaviour {
+    private static final String ORIGIN = "origin";
+
+    // required for Gson; should never be called by the user
     public DistanceRange() {
-        putSub("origin", new Pos(new You()));
+        putSub(ORIGIN, new Pos(new You()));
     }
 
+    /**
+     * Constructs the behaviour with using the given subexpressions
+     * @param origin the origin of the ring
+     * @param min internal radius of the ring
+     * @param max external radius of the ring
+     */
     public DistanceRange(Expression origin, Expression min, Expression max) {
-        putSub("origin", origin);
+        putSub(ORIGIN, origin);
         putSub("min", min);
         putSub("max", max);
     }
 
+    /**
+     * Constructs the behaviour with using the given subexpressions
+     *  NB. the origin is set to the shooter's position as default
+     * @param min internal radius of the ring
+     * @param max external radius of the ring
+     */
     public DistanceRange(Expression min, Expression max) {
         putSub("min", min);
         putSub("max", max);
     }
 
-    // TODO: rephrase doc more succinctly...
     /**
-     *
-     * @param context used for board and shooter position
-     * @return RangeLiteral describing a "circular halo" that encircles the shooter position.
-     *         Said halo contains all positions that are a contained between a range of distances
-     *         from the shooter (the range is described by a minimum and a maximum distance, which are set
-     *         when {@code this}  is instantiated (see the constructor for more info)
+     * Evaluates expression
+     * @param context context used for evaluation
+     * @return result of evaluation
      */
     @Override
     public final Expression eval(ShootContext context) {
         Board board = context.getBoard();
 
         Set<Position> reachablePositions = board.getReachablePositions(
-                getSub("origin").eval(context).asPosition(),
+                getSub(ORIGIN).eval(context).asPosition(),
                 getSub("min").eval(context).asInt(),
                 getSub("max").eval(context).asInt()
         );

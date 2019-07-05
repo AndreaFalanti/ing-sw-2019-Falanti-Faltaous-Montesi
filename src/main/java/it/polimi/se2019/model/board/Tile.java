@@ -1,37 +1,46 @@
 package it.polimi.se2019.model.board;
 
-import com.google.gson.annotations.JsonAdapter;
-import it.polimi.se2019.model.board.serialization.DoorsDeserializer;
+import com.google.gson.annotations.SerializedName;
+import it.polimi.se2019.model.Position;
+import it.polimi.se2019.model.update.Update;
+import it.polimi.se2019.util.Observable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
-public abstract class Tile {
+public abstract class Tile extends Observable<Update> {
     private TileColor mColor = TileColor.BLUE;
-
-    @JsonAdapter(DoorsDeserializer.class)
-    private Integer mDoors = 0;
+    private Position mPosition = null;
+    @SerializedName("doors")
+    private Set<Direction> mDoorDirections;
 
     protected Tile() {}
 
-    protected Tile(TileColor color, int doors) {
+    protected Tile(TileColor color, Set<Direction> doors) {
         mColor = color;
-        mDoors = doors;
+        mDoorDirections = doors;
+    }
+
+    public Position getPosition() {
+        return mPosition;
+    }
+
+    public void setPosition(Position position) {
+        mPosition = position;
     }
 
     public abstract Tile deepCopy();
     public Tile finishDeepCopy(Tile childTile) {
-        Tile result = childTile;
+        childTile.mColor = mColor;
+        childTile.mPosition = mPosition;
+        childTile.mDoorDirections = mDoorDirections;
 
-        result.mColor = mColor;
-
-        return result;
+        return childTile;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mColor, mDoors);
+        return Objects.hash(mColor, mDoorDirections);
     }
 
     @Override
@@ -45,7 +54,7 @@ public abstract class Tile {
         Tile casted = (Tile) other;
 
         return mColor == casted.mColor &&
-                mDoors.intValue() == casted.mDoors.intValue();
+                mDoorDirections.equals(casted.mDoorDirections);
     }
 
     public TileColor getColor() {
@@ -53,25 +62,30 @@ public abstract class Tile {
     }
 
     public boolean[] getDoors() {
-        boolean[] doors = new boolean[4];
-        for (int i = 3; i >= 0; i--) {
-            //bitwise operation, 1 << i simply left shifts 1 of i positions to create correct masks.
-            doors[i] = (mDoors & (1 << i)) != 0;
+        boolean[] result = new boolean[] {false, false, false, false};
+
+        for (Direction direction : mDoorDirections) {
+            switch (direction) {
+                case NORTH:
+                    result[0] = true;
+                    break;
+                case EAST:
+                    result[1] = true;
+                    break;
+                case SOUTH:
+                    result[2] = true;
+                    break;
+                case WEST:
+                    result[3] = true;
+                    break;
+            }
         }
 
-        return doors;
+        return result;
     }
 
-    public List<Direction> getDoorsDirections() {
-        List<Direction> result = new ArrayList<>();
-        boolean[] doors = getDoors();
-
-        if (doors[3]) result.add(Direction.NORTH);
-        if (doors[2]) result.add(Direction.EAST);
-        if (doors[1]) result.add(Direction.SOUTH);
-        if (doors[0]) result.add(Direction.WEST);
-
-        return result;
+    public Set<Direction> getDoorsDirections() {
+        return mDoorDirections;
     }
 
     public abstract String getTileType();

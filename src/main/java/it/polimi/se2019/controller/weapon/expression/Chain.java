@@ -9,12 +9,20 @@ import java.util.stream.Collectors;
 
 /**
  * Expression for chaining two expression ranges
+ * @author Stefano Montesi
  */
 public class Chain extends Behaviour {
+    // necessary for Gson; should never be used
     public Chain() {
 
     }
 
+    /**
+     * Constructs the behaviour using the given subexpressions
+     * @param base base range on which the chaining of {@code chainFunc} is performed
+     * @param chainFunc behaviour retrieving a range and accepting an "origin" subexpression convertible
+     *                  to a PositionLiteral when evaluated.
+     */
     public Chain(Expression base, Expression chainFunc) {
         putSub("base", base);
         putSub("chainFunc", chainFunc);

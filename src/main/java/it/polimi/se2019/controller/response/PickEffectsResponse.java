@@ -6,6 +6,11 @@ import it.polimi.se2019.view.ResponseHandler;
 import java.util.Set;
 import java.util.SortedMap;
 
+/**
+ * Response used to notify view of a needed effect selection
+ *
+ * @author Andrea Falanti
+ */
 public class PickEffectsResponse implements Response {
     private SortedMap<Integer, Set<Effect>> mPriorityMap;
     private Set<Effect> mPossibleEffects;

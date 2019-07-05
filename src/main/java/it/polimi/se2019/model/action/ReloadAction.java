@@ -11,15 +11,16 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
+/**
+ * Action for performing a weapon reload
+ *
+ * @author Andrea Falanti
+ */
 public class ReloadAction implements CostlyAction {
     private int mWeaponIndex;
     private boolean[] mDiscardPowerUp = {false, false, false};
 
     public ReloadAction (int weaponIndex) {
-        if (weaponIndex < 0 || weaponIndex >= 3) {
-            throw new IllegalArgumentException("Illegal weapon index in Reload action");
-        }
-
         mWeaponIndex = weaponIndex;
     }
 
@@ -60,16 +61,22 @@ public class ReloadAction implements CostlyAction {
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         Player player = game.getActivePlayer();
 
-        Weapon weaponToReload = player.getWeapon(mWeaponIndex);
+        if (mWeaponIndex < 0 || mWeaponIndex >= 3) {
+            return Optional.of(new MessageActionResponse("Invalid weapon index selected"));
+        }
 
+        Weapon weaponToReload = player.getWeapon(mWeaponIndex);
         // can't reload an already loaded weapon or a null weapon
-        if (weaponToReload == null || weaponToReload.isLoaded()) {
-            return Optional.of(new MessageActionResponse("Weapon is null or already loaded"));
+        if (weaponToReload == null) {
+            return Optional.of(new MessageActionResponse("Invalid weapon index selected"));
+        }
+        if (weaponToReload.isLoaded()) {
+            return Optional.of(new MessageActionResponse("Weapon selected is already loaded"));
         }
 
         // reload action can be performed only on turn end if not composed in a final frenzy action
         if (!game.isFinalFrenzy() && game.getRemainingActions() != 0) {
-            return Optional.of(new MessageActionResponse(ActionResponseStrings.HACKED_MOVE));
+            return Optional.of(new MessageActionResponse("Can't reload weapon if there are still actions available"));
         }
 
         if (!AmmoPayment.isValid(player, weaponToReload.getReloadCost(), mDiscardPowerUp)) {
@@ -89,6 +96,11 @@ public class ReloadAction implements CostlyAction {
 
     @Override
     public boolean isComposite() {
+        return false;
+    }
+
+    @Override
+    public boolean leadToAShootInteraction() {
         return false;
     }
 }

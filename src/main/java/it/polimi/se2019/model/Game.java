@@ -6,11 +6,10 @@ import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.NormalTile;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.Tile;
-import it.polimi.se2019.model.update.ActivePlayerUpdate;
-import it.polimi.se2019.model.update.KillScoredUpdate;
-import it.polimi.se2019.model.update.Update;
+import it.polimi.se2019.model.update.*;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
+import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.InitializationInfo;
 
 import java.util.*;
@@ -18,7 +17,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
+/**
+ * Logical class used for handling various interaction between all model classes, that are frequently
+ * used in game actions.
+ *
+ * @author Andrea Falanti
+ */
 public class Game extends Observable<Update> {
     private Board mBoard;
     private List<Player> mPlayers;
@@ -45,7 +49,7 @@ public class Game extends Observable<Update> {
      * @param players List of players
      * @param killsToFinish Number of kills before triggering final frenzy
      * @throws IllegalArgumentException Thrown if board or players are null,
-     *          player size is < 3 or killsNum is negative
+     *          player size is minor of 3 or killsNum is negative
      */
     public Game(Board board, List<Player> players, int killsToFinish) {
         if (board == null || players == null || killsToFinish <= 0 || players.size() < 3) {
@@ -153,6 +157,7 @@ public class Game extends Observable<Update> {
     public void setPlayers(List<Player> players) {
         mPlayers = players;
     }
+
     //endregion
 
     /**
@@ -163,6 +168,7 @@ public class Game extends Observable<Update> {
         mTurnNumber++;
         if (isGameOver()) {
             distributeTotalKillsScore();
+            notify(new EndGameUpdate(getScoreLeaderboard()));
             return;
         }
 
@@ -175,7 +181,8 @@ public class Game extends Observable<Update> {
 
         mRemainingActions = calculateTurnActions();
 
-        notify(new ActivePlayerUpdate(getActivePlayer().getColor(), mRemainingActions, mTurnNumber));
+        notify(new ActivePlayerUpdate(getActivePlayer().getColor(), mTurnNumber, mFinalFrenzy));
+        notify(new RemainingActionsUpdate(mRemainingActions));
     }
 
     /**
@@ -358,10 +365,10 @@ public class Game extends Observable<Update> {
             getActivePlayer().addScore(1);
         }
 
-        //player with no damage or respawned player will always have board flipped
+        //player with no damage or killed player will always have board flipped
         if (mFinalFrenzy) {
             for (Player player : mPlayers) {
-                if (player.hasNoDamage()) {
+                if (player.hasNoDamage() || player.isDead()) {
                     player.flipBoard();
                 }
             }
@@ -370,6 +377,10 @@ public class Game extends Observable<Update> {
         refillAmmoTiles();
     }
 
+    /**
+     * Get all players' score paired with their colors
+     * @return Map with all player scores
+     */
     private Map<PlayerColor, Integer> getScoreMap () {
         Map<PlayerColor, Integer> playerScores = new EnumMap<>(PlayerColor.class);
         for (Player p : mPlayers) {
@@ -377,6 +388,19 @@ public class Game extends Observable<Update> {
         }
 
         return playerScores;
+    }
+
+    public SortedMap<PlayerColor, Integer> getScoreLeaderboard () {
+        return getScoreMap().entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (duplicatePlayer1, duplicatePlayer2) -> {
+                            throw new IllegalStateException("Found multiple players listed in score map!");
+                        },
+                        TreeMap::new
+                ));
     }
 
     /**
@@ -405,10 +429,25 @@ public class Game extends Observable<Update> {
         return winner;
     }
 
+    /**
+     * Decrease action counter
+     */
     public void decreaseActionCounter () {
         mRemainingActions--;
+        notify(new RemainingActionsUpdate(mRemainingActions));
     }
 
+    /**
+     * Increase action counter
+     */
+    public void increaseActionCounter () {
+        mRemainingActions++;
+        notify(new RemainingActionsUpdate(mRemainingActions));
+    }
+
+    /**
+     * Add ammo tile to all normal tiles that are empty
+     */
     private void refillAmmoTiles () {
         for (Tile tile : mBoard.getTiles()){
             if (tile != null && tile.getTileType().equals("normal")) {
@@ -437,9 +476,24 @@ public class Game extends Observable<Update> {
 
     /**
      * Produces info required to initialize a view with the state of this game
+     * @param ownerColor View owner color
      * @return info required to initialize a view with the state of this game
      */
-    public InitializationInfo extractViewInitializationInfo() {
-        return new InitializationInfo(this);
+    public InitializationInfo extractViewInitializationInfo(PlayerColor ownerColor) {
+        return new InitializationInfo(this, ownerColor);
+    }
+
+    /**
+     * Registers an observer to all observable components
+     * @param observer observer to register
+     */
+    public void registerAll(Observer<Update> observer) {
+        register(observer);
+        mPlayers.forEach(pl -> pl.register(observer));
+        mBoard.getTiles().forEach(tile -> {
+            if (tile != null) {
+                tile.register(observer);
+            }
+        });
     }
 }

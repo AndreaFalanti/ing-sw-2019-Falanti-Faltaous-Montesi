@@ -7,12 +7,17 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
+/**
+ * Action for performing a teleport powerUp behaviour
+ *
+ * @author Andrea Falanti
+ */
 public class TeleportAction implements Action {
     private Position mDestination;
     private int mTeleportIndex;
 
     public TeleportAction(int index) {
-        if (index < 0 || index >= 3) {
+        if (index < 0 || index > 3) {
             throw new IllegalArgumentException("invalid powerUp index");
         }
 
@@ -41,6 +46,8 @@ public class TeleportAction implements Action {
 
     @Override
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
+
+
         PowerUpCard powerUpCard = game.getActivePlayer().getPowerUpCard(mTeleportIndex);
 
         if (powerUpCard == null) {
@@ -57,6 +64,11 @@ public class TeleportAction implements Action {
 
     @Override
     public boolean isComposite() {
+        return false;
+    }
+
+    @Override
+    public boolean leadToAShootInteraction() {
         return false;
     }
 }

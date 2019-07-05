@@ -10,6 +10,21 @@ public enum Direction {
 
     Position mPosition;
 
+    public static Direction connectingDirection(Position from, Position to) {
+        Position dist = from.subtract(to);
+
+        if (dist.equals(new Position(0, -1)))
+            return SOUTH;
+        else if(dist.equals(new Position(1, 0)))
+            return WEST;
+        else if(dist.equals(new Position(0, 1)))
+            return NORTH;
+        else if(dist.equals(new Position(-1, 0)))
+            return EAST;
+        else
+            throw new IllegalArgumentException("Positions cannot be connected by direction!");
+    }
+
     Direction(Position position) {
         mPosition = position;
     }

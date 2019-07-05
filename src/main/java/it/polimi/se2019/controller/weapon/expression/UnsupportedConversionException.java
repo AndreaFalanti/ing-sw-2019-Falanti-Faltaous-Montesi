@@ -1,5 +1,8 @@
 package it.polimi.se2019.controller.weapon.expression;
 
+/**
+ * Exception launched when an unsupported conversion is attempted
+ */
 public class UnsupportedConversionException extends RuntimeException {
     public UnsupportedConversionException(String toConvert, String toConvertTo) {
         this(toConvert, toConvertTo, null);

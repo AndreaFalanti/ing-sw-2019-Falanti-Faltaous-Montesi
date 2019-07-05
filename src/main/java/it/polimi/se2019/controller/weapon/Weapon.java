@@ -5,12 +5,17 @@ import it.polimi.se2019.controller.weapon.expression.Behaviour;
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.AmmoValue;
 import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
+import it.polimi.se2019.util.Exclude;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Representation of a Weapon
+ * @author Stefano Montesi
+ */
 public class Weapon {
     private String mName;
     private AmmoValue mReloadCost;
@@ -20,6 +25,7 @@ public class Weapon {
     private boolean mLoaded;
 
     // weapon expression
+    @Exclude
     private Expression mBehaviour;
 
     // used in tests
@@ -37,8 +43,16 @@ public class Weapon {
     }
 
     public Weapon(String name, AmmoValue reloadCost, AmmoValue grabCost, String guiID) {
-        this (name, reloadCost, grabCost);
+        this(name, reloadCost, grabCost);
         mGuiID = guiID;
+    }
+
+    public Weapon(String name, AmmoValue reloadCost, AmmoValue grabCost, String guiID,
+                  boolean loaded, Expression behaviour) {
+        this(name, reloadCost, grabCost, guiID);
+
+        mLoaded = loaded;
+        mBehaviour = behaviour;
     }
 
     // trivial getters
@@ -81,10 +95,8 @@ public class Weapon {
         mLoaded = value;
     }
 
-    // TODO: add doc
-    // TODO: implement
     public Weapon deepCopy() {
-        throw new UnsupportedOperationException();
+        return new Weapon(mName, mReloadCost, mGrabCost, mGuiID, mLoaded, mBehaviour);
     }
 
     public static List<Weapon> returnDeckFromJson(String json) {

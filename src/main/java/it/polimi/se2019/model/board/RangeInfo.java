@@ -69,7 +69,7 @@ public class RangeInfo {
     public Set<Position> getVisitedPositions(int minDist, int maxDist) {
         return mDistances.entrySet().stream()
                 .filter(entry -> entry.getValue() <= maxDist && entry.getValue() >= minDist)
-                .map(entry -> entry.getKey())
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
     }
     public Set<Position> getVisitedPositions(int exactDist) {

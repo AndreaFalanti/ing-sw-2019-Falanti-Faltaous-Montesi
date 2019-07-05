@@ -9,6 +9,11 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
+/**
+ * Action for performing a move
+ *
+ * @author Andrea Falanti
+ */
 public class MoveAction implements Action {
     private PlayerColor mTarget;
     private Position mDestination;
@@ -60,15 +65,22 @@ public class MoveAction implements Action {
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         Position playerPos = game.getPlayerFromColor(mTarget).getPos();
 
-        // can't move player to its precedent position
-        if (playerPos.equals(mDestination)) {
-            return Optional.of(new MessageActionResponse("Can't move in your current position!"));
+        if (game.getBoard().isOutOfBounds(mDestination)) {
+            return Optional.of(new MessageActionResponse("Invalid tile selected"));
+        }
+        if (game.getBoard().getTileAt(mDestination) == null) {
+            return Optional.of(new MessageActionResponse("Invalid tile selected"));
         }
 
         if (mNormalMove) {
             // player can't move himself if out of actions
             if (game.getRemainingActions() == 0) {
                 return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
+            }
+
+            // can't move player to its precedent position
+            if (playerPos.equals(mDestination)) {
+                return Optional.of(new MessageActionResponse("Can't move in your current position!"));
             }
 
             // normal action is only set for active players to move themselves
@@ -98,11 +110,8 @@ public class MoveAction implements Action {
             return game.getBoard().getTileDistance(playerPos, mDestination) <= moveMaxDistance ?
                     Optional.empty() : Optional.of(new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE));
         }
-        else {
-            // maximum distance for "indirect" moves are 3 spaces
-            return game.getBoard().getTileDistance(playerPos, mDestination) <= 3 ?
-                    Optional.empty() : Optional.of(new MessageActionResponse("You can shift a player up to three tiles"));
-        }
+
+        return Optional.empty();
     }
 
     @Override
@@ -112,6 +121,11 @@ public class MoveAction implements Action {
 
     @Override
     public boolean isComposite() {
+        return false;
+    }
+
+    @Override
+    public boolean leadToAShootInteraction() {
         return false;
     }
 }

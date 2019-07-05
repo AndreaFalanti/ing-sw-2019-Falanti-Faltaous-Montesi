@@ -1,10 +1,17 @@
 package it.polimi.se2019.model.board;
 
 import it.polimi.se2019.model.AmmoCard;
+import it.polimi.se2019.model.update.BoardTileUpdate;
 
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
-
+/**
+ * Representation of a normal tile in board
+ *
+ * @author Stefano Montesi, Andrea Falanti
+ */
 public class NormalTile extends Tile {
     // normal tiles contain an ammo card
     private AmmoCard mAmmoCard;
@@ -21,14 +28,14 @@ public class NormalTile extends Tile {
      * @param color color of constructed tile
      */
     public NormalTile(TileColor color) {
-        super(color, 0);
+        super(color, Collections.emptySet());
     }
 
     /**
      * Constructs empty tile of given color and doors with no ammo card
      * @param color color of constructed tile
      */
-    public NormalTile(TileColor color, int doors) {
+    public NormalTile(TileColor color, Set<Direction> doors) {
         super(color, doors);
     }
 
@@ -42,6 +49,7 @@ public class NormalTile extends Tile {
      */
     public void setAmmoCard(AmmoCard value) {
         mAmmoCard = value;
+        notify(new BoardTileUpdate(this));
     }
 
     /**
@@ -99,6 +107,7 @@ public class NormalTile extends Tile {
     public AmmoCard grabAmmo() {
         AmmoCard grabbedItem = mAmmoCard;
         mAmmoCard = null;
+        notify(new BoardTileUpdate(this));
         return grabbedItem;
     }
 

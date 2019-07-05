@@ -28,7 +28,7 @@ public class GameTest {
      * Check that IllegalArgumentException is thrown for every case possible
      */
     @Test
-    public void testGameConstructorIllegalArgumentException () {
+    public void gameConstructorIllegalArgumentException () {
         ArrayList<Player> players = new ArrayList<>();
         fillPlayerList(players);
 

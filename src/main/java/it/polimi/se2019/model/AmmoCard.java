@@ -5,7 +5,11 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Representation of an ammo card
+ *
+ * @author Andrea Falanti
+ */
 public class AmmoCard {
     private AmmoValue mAmmoGain;
     private boolean mDrawPowerUp;

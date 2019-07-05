@@ -1,36 +1,26 @@
 package it.polimi.se2019.network.server;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
+import it.polimi.se2019.network.connection.Connection;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RegistrationServer implements ConnectionRegister, RegistrationRemote {
+/**
+ * Server class that handle player registrations and place them in right queues
+ *
+ * @author Andrea Falanti
+ */
+public class RegistrationServer implements ConnectionRegister {
     private static final Logger logger = Logger.getLogger(RegistrationServer.class.getName());
 
-    private int mRmiPort;
     private List<GameThread> mGames = new ArrayList<>();
     private List<PlayerConnection> mWaitingPlayers = new ArrayList<>();
     private List<PlayerConnection> mPlayersOnline = new ArrayList<>();
 
-    private Timer mTimer;
-
-    public RegistrationServer(int rmiPort) throws IOException {
-        mRmiPort = rmiPort;
-
-        Registry registry = LocateRegistry.createRegistry(rmiPort);
-        UnicastRemoteObject.exportObject(this, rmiPort);
-        registry.rebind("rmiServer", this);
-        logger.log(Level.INFO, "RMI initialized on port {0}\nexported modules:\nrmiServer", rmiPort);
-
+    public RegistrationServer() {
+        /*
         // print every 10 seconds the list of players connected
         mTimer = new Timer();
         mTimer.scheduleAtFixedRate(new TimerTask() {
@@ -39,9 +29,13 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
                 printConnectedPlayers();
             }
         },10000, 10000);
+        */
     }
 
-    private void printConnectedPlayers () {
+    /**
+     * Print all connected players on the server and evidence players still in waiting queue.
+     */
+    private void printConnectedPlayers() {
         StringBuilder log = new StringBuilder("Connected players:");
         for (PlayerConnection connection : mPlayersOnline) {
             log.append("\n" + connection.toString());
@@ -55,6 +49,12 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         logger.info(log.toString());
     }
 
+    /**
+     * Check if username is not already picked
+     *
+     * @param username Username to check
+     * @return True if available, false otherwise
+     */
     @Override
     public boolean isUsernameAvailable(String username) {
         if (username == null) {
@@ -70,6 +70,12 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         return true;
     }
 
+    /**
+     * Register a player connection to proper queues. If a starting game is not full of players, add this new player
+     * to it instead of adding it to waiting queue.
+     *
+     * @param connection Connection to register
+     */
     @Override
     public synchronized void registerConnection(PlayerConnection connection) {
         mWaitingPlayers.add(connection);
@@ -79,7 +85,7 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
 
         // if 3 or more players are connected, initialize game values and start timer for game creation
         if (mWaitingPlayers.size() >= 3) {
-            GameThread gameThread = new GameThread(mWaitingPlayers, mRmiPort);
+            GameThread gameThread = new GameThread(mWaitingPlayers);
             mGames.add(gameThread);
 
             mWaitingPlayers.clear();
@@ -102,23 +108,39 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
         }
     }
 
+    /**
+     * Deregister a player connection from the server queues
+     *
+     * @param connection PlayerConnection to deregister
+     */
     @Override
     public void deregisterConnection(PlayerConnection connection) {
         mWaitingPlayers.remove(connection);
         mPlayersOnline.remove(connection);
     }
 
+    /**
+     * Register a player to the server queues if username is valid
+     *
+     * @param username Player's username
+     * @return true if successfully registered, false if not
+     */
     @Override
-    public boolean registerPlayer(String username, ConnectionType type, Socket socket) {
+    public boolean registerPlayer(String username, Connection connection) {
         if (isUsernameAvailable(username)) {
-            PlayerConnection connection = new PlayerConnection(username, type, socket);
-            registerConnection(connection);
+            PlayerConnection playerConnection = new PlayerConnection(username, connection);
+            registerConnection(playerConnection);
             return true;
         }
 
         return false;
     }
 
+    /**
+     * Deregister a player from the server
+     *
+     * @param username Player's username
+     */
     @Override
     public void deregisterPlayer(String username) {
         for (PlayerConnection connection : mPlayersOnline) {
@@ -126,15 +148,5 @@ public class RegistrationServer implements ConnectionRegister, RegistrationRemot
                 deregisterConnection(connection);
             }
         }
-    }
-
-    @Override
-    public boolean registerPlayerRemote(String username) throws RemoteException {
-        return registerPlayer(username, ConnectionType.RMI, null);
-    }
-
-    @Override
-    public void deregisterPlayerRemote(String username) throws RemoteException {
-        deregisterPlayer(username);
     }
 }

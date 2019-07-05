@@ -2,31 +2,29 @@ package it.polimi.se2019.controller.weapon.expression;
 
 import it.polimi.se2019.controller.weapon.ShootContext;
 import it.polimi.se2019.controller.weapon.ShootInteraction;
-import it.polimi.se2019.model.Player;
-import it.polimi.se2019.model.board.Board;
 import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.view.View;
 
-import java.util.stream.Collectors;
-
+/**
+ * Behaviour that takes a color from layer input
+ * @author Stefano Montesi
+ */
 public class SelectOneColor extends Behaviour {
-    public SelectOneColor() {
-
-    }
-
+    /**
+     * Evaluates expression
+     * @param context context used for evaluation
+     * @return result of evaluation
+     */
     @Override
     public Expression eval(ShootContext context) {
         View view = context.getView();
-        Board board = context.getBoard();
         ShootInteraction interaction = context.getInteraction();
-        Player shooter = context.getShooter();
+
+        Expression from = getSub("from").eval(context);
 
         TileColor color = interaction.pickRoomColor(
                 view,
-                board.getRoomColors()
-                        .filter(clr -> board.getRoom(clr)
-                                .noneMatch(pos -> shooter.getPos().equals(pos)))
-                        .collect(Collectors.toSet())
+                from.asColors()
         );
 
         return new ColorLiteral(color);

@@ -2,10 +2,13 @@ package it.polimi.se2019.model.board;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.JsonAdapter;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.serialization.CustomTilesDeserializer;
+import it.polimi.se2019.util.AnnotationExclusionStrategy;
 import it.polimi.se2019.util.CustomFieldNamingStrategy;
+import it.polimi.se2019.util.Exclude;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 import java.util.*;
@@ -14,23 +17,27 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Board {
-
     // GSON used to deal with serialization/deserialization
-    private static Gson GSON = new GsonBuilder()
+    private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Tile.class, "type")
                 .registerSubtype(NormalTile.class, "normal")
                 .registerSubtype(SpawnTile.class, "spawn"))
             .setFieldNamingStrategy(new CustomFieldNamingStrategy())
+            .addDeserializationExclusionStrategy(new AnnotationExclusionStrategy())
+            .addSerializationExclusionStrategy(new AnnotationExclusionStrategy())
             .create();
 
     // width and height
-    int mWidth;
-    int mHeight;
+    private int mWidth;
+    private int mHeight;
+
+    private String mGuiID;
 
     // all the board tiles
     @JsonAdapter(CustomTilesDeserializer.class)
-    ArrayList<Tile> mTiles;
+    private ArrayList<Tile> mTiles;
 
+    @Exclude
     private EnumMap<TileColor, SpawnTile> mSpawnMap = new EnumMap<>(TileColor.class);
 
     // trivial getters
@@ -50,7 +57,11 @@ public class Board {
         return getWidth() * getHeight();
     }
 
-    public EnumMap<TileColor, SpawnTile> getSpawnMap() {
+    public String getGuiID() {
+        return mGuiID;
+    }
+
+    public Map<TileColor, SpawnTile> getSpawnMap() {
         return mSpawnMap;
     }
 
@@ -83,14 +94,28 @@ public class Board {
         }
     }
 
+    private void initializeTilePositions() {
+        List<Position> positions = posStream().collect(Collectors.toList());
+
+        IntStream.range(0, mTiles.size())
+                .filter(i -> mTiles.get(i) != null)
+                .forEach(i -> mTiles.get(i).setPosition(positions.get(i)));
+    }
+
     /**
      * Constructs a board parsing a json string
      * @param toParse the json string to parse
      * @return the constructed board object
      */
     public static Board fromJson(String toParse) {
+        return fromJson(new Gson().fromJson(toParse, JsonElement.class));
+    }
+
+    // TODO: add doc
+    public static Board fromJson(JsonElement toParse) {
         Board result = GSON.fromJson(toParse, Board.class);
         result.initializeSpawnMap();
+        result.initializeTilePositions();
         return result;
     }
 
@@ -102,6 +127,9 @@ public class Board {
         return GSON.toJson(this);
     }
 
+    // TODO: add doc
+    public JsonElement toJsonTree() { return GSON.toJsonTree(this); }
+
     /**
      *
      * @return string representation of the board
@@ -109,16 +137,6 @@ public class Board {
     @Override
     public String toString() {
         return toJson();
-    }
-
-    /**
-     * Returns a default constructed board builder
-     * @return the builder
-     * @deprecated will be substituted fully by json deserialization
-     */
-    @Deprecated
-    public static Builder initializer() {
-        return new Builder();
     }
 
     /**
@@ -215,21 +233,6 @@ public class Board {
         return mTiles.get(getIndexFromPosition(pos));
     }
 
-    /**
-     * Get tile position
-     * @param tile Selected tile
-     * @return Position of tile
-     */
-    public Position getTilePos (Tile tile) {
-        for (int i = 0; i < mTiles.size(); i++) {
-            if (tile.equals(mTiles.get(i))) {
-                return new Position(i%4, i/4);
-            }
-        }
-
-        throw new IllegalArgumentException("Tile not found");
-    }
-
     // TODO: write doc
     public void setTileAt (Position pos, Tile toSet) {
         mTiles.set(getIndexFromPosition(pos), toSet);
@@ -284,10 +287,7 @@ public class Board {
             return false;
 
         // observers can see inside their room
-        if (areInSameRoom(observerPos, observedPos))
-            return true;
-
-        return false;
+        return areInSameRoom(observerPos, observedPos);
     }
 
     /**
@@ -366,14 +366,8 @@ public class Board {
             return true;
 
         // can walk among tiles of different color if there's a door
-        if ((fromTile.getDoors()[0] && toTile.getDoors()[2]) ||
-                (fromTile.getDoors()[1] && toTile.getDoors()[3]) ||
-                (fromTile.getDoors()[2] && toTile.getDoors()[0]) ||
-                (fromTile.getDoors()[3] && toTile.getDoors()[1]))
-            return true;
-
-        // no other way
-        return false;
+        return (getTileAt(from).getDoorsDirections().contains(Direction.connectingDirection(from, to)) ||
+                getTileAt(to).getDoorsDirections().contains(Direction.connectingDirection(to, from)));
     }
 
     /**
@@ -412,7 +406,7 @@ public class Board {
      */
     public Stream<Position> posStream() {
         return IntStream.range(0, getWidth() * getHeight())
-                .mapToObj(i -> new Position(i / getWidth(), i % getWidth()));
+                .mapToObj(i -> new Position(i % getWidth(), i / getWidth()));
     }
 
     /**

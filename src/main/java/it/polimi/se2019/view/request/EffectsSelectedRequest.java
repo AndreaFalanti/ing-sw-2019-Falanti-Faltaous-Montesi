@@ -5,6 +5,11 @@ import it.polimi.se2019.model.PlayerColor;
 
 import java.util.List;
 
+/**
+ * Contains selected list of effects to send to controller
+ *
+ * @author Andrea Falanti
+ */
 public class EffectsSelectedRequest implements Request {
     private List<String> mEffects;
     private PlayerColor mViewColor;

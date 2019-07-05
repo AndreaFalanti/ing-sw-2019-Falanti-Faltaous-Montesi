@@ -5,7 +5,7 @@ import it.polimi.se2019.view.ResponseHandler;
 
 import java.util.List;
 
-
+//TODO: remove or implement this
 public class ValidMoveResponse implements Response {
 
     private List<Position> validPos;

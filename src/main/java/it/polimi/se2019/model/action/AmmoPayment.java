@@ -6,6 +6,11 @@ import it.polimi.se2019.model.PowerUpCard;
 
 import java.util.Arrays;
 
+/**
+ * Static utility class used to handle and verify ammo payments in actions and shoot interactions
+ *
+ * @author Andrea Falanti
+ */
 public final class AmmoPayment {
     // private constructor, avoids class instantiation
     private AmmoPayment() {

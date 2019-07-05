@@ -9,12 +9,18 @@ import java.util.stream.Collectors;
 
 /**
  * Expression for returning all targets standing in a given range
+ * @author Stefano Montesi
  */
 public class All extends Behaviour {
+    // Required for Gson; should never be used
     public All() {
 
     }
 
+    /**
+     * Constructs the behaviour with using the given subexpressions
+     * @param from range of positions from which targets are selected
+     */
     public All(Expression from) {
         putSub("from", from);
     }

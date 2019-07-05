@@ -8,10 +8,7 @@ import it.polimi.se2019.model.action.MoveAction;
 import it.polimi.se2019.model.action.MoveGrabAction;
 import it.polimi.se2019.model.board.*;
 import it.polimi.se2019.util.Observable;
-import it.polimi.se2019.view.request.ActionRequest;
-import it.polimi.se2019.view.request.Request;
-import it.polimi.se2019.view.request.UndoWeaponInteractionRequest;
-import it.polimi.se2019.view.request.WeaponSelectedRequest;
+import it.polimi.se2019.view.request.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -33,7 +30,14 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * GUI controller of the board pane displayed in main game screen
+ *
+ * @author Andrea Falanti
+ */
 public class BoardPane extends Observable<Request> {
+    @FXML
+    private ImageView boardImage;
     @FXML
     private HBox redSpawnWeaponBox;
     @FXML
@@ -169,8 +173,12 @@ public class BoardPane extends Observable<Request> {
      */
     public void movePawnToCoordinate(Position pos, PlayerColor color) {
         Circle pawn = mPawns.get(color);
-        pawn.setVisible(true);
-        mSquareControllers[pos.getX()][pos.getY()].addPawn(pawn);
+
+        // if a player is not spawned, shoot interaction could send a move update with null position
+        if (pos != null) {
+            pawn.setVisible(true);
+            mSquareControllers[pos.getX()][pos.getY()].addPawn(pawn);
+        }
     }
 
     /**
@@ -217,6 +225,9 @@ public class BoardPane extends Observable<Request> {
      * @throws IOException Thrown if square fxml is not found
      */
     public void initialize (Board board) throws IOException {
+        Image image = new Image(GuiResourcePaths.BOARD + board.getGuiID() + ".png");
+        boardImage.setImage(image);
+
         createPawns();
         createSpawnEnumMap();
         createBoardElements(board);
@@ -233,12 +244,12 @@ public class BoardPane extends Observable<Request> {
     }
 
     /**
-     * Test behavior of grid overlay buttons
+     * Test behaviour of grid overlay buttons
      * @param x Coordinate x in grid
      * @param y Coordinate y in grid
      */
     public void handleClickedPos (int x, int y) {
-        mMainController.logToChat("You clicked (" + x + ", " + y + ")");
+        mMainController.logToChat("You clicked (" + x + ", " + y + ")", false);
         switchButtonGridEnableStatus(false);
     }
 
@@ -316,21 +327,26 @@ public class BoardPane extends Observable<Request> {
     private void createBoardElements (Board board) throws IOException {
         for (int x = 0; x < BOARD_COLUMNS; x++) {
             for (int y = 0; y < BOARD_ROWS; y++) {
-                if (board.getTileAt(new Position(x, y)) != null) {
+                Tile tile = board.getTileAt(new Position(x, y));
+
+                if (tile != null) {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/boardSquare.fxml"));
                     Pane newLoadedPane =  loader.load();
 
                     BoardSquare squareController = loader.getController();
                     mSquareControllers[x][y] = squareController;
 
-                    Tile tile = board.getTileAt(new Position(x, y));
                     if (tile.getTileType().equals("normal")) {
-                        // TODO: get correct ammoCard id from tile
-                        squareController.addAmmoCardImage("042");
+                        String guiId = ((NormalTile)tile).getAmmoCard().getGuiID();
+                        squareController.addAmmoCardImage(guiId);
                     }
                     else {
-                        // TODO: get correct weaponCard ids from tile
-                        String[] ids = {"022", "023", "024"};
+                        Weapon[] weapons = ((SpawnTile)tile).getWeapons();
+                        String[] ids = new String[3];
+                        for (int i = 0; i < weapons.length; i++) {
+                            ids[i] = (weapons[i] != null) ? weapons[i].getGuiID() : null;
+                        }
+
                         updateWeaponsInSpawn(mSpawnBoxes.get(tile.getColor()), ids);
                     }
 
@@ -399,7 +415,7 @@ public class BoardPane extends Observable<Request> {
 
                 if (mInteractiveButtons[i][j] != null) {
                     mInteractiveButtons[i][j].setOnMouseClicked(event -> {
-                        mMainController.logToChat("Move Action in pos (" + x + ", " + y + ")");
+                        mMainController.logToChat("Move Action in pos (" + x + ", " + y + ")", false);
                         switchButtonGridEnableStatus(false);
                         mMainController.setEnableStatusActionButtonBox(true);
 
@@ -420,7 +436,7 @@ public class BoardPane extends Observable<Request> {
 
                 if (mInteractiveButtons[i][j] != null) {
                     mInteractiveButtons[i][j].setOnMouseClicked(event -> {
-                        mMainController.logToChat("Grab Action in pos (" + x + ", " + y + ")");
+                        mMainController.logToChat("Grab Action in pos (" + x + ", " + y + ")", false);
                         switchButtonGridEnableStatus(false);
                         mMainController.setEnableStatusActionButtonBox(true);
 
@@ -433,7 +449,7 @@ public class BoardPane extends Observable<Request> {
         }
     }
 
-    public void setupInteractiveGridForShootAction (Node weaponBox) {
+    public void setupInteractiveGridForShootAction (Node weaponBox, boolean reloadAndShoot) {
         for (int i = 0; i < BOARD_COLUMNS; i++) {
             for (int j = 0; j < BOARD_ROWS; j++) {
                 int x = i;
@@ -441,13 +457,20 @@ public class BoardPane extends Observable<Request> {
 
                 if (mInteractiveButtons[i][j] != null) {
                     mInteractiveButtons[i][j].setOnMouseClicked(event -> {
-                        mMainController.logToChat("Shoot Action pos set to: (" + x + ", " + y + ")");
+                        mMainController.logToChat("Shoot Action pos set to: (" + x + ", " + y + ")", false);
                         switchButtonGridEnableStatus(false);
-                        mMainController.setShootOnWeapon(new Position(x, y));
+
+                        Position position = new Position(x, y);
+                        if (reloadAndShoot) {
+                            mMainController.setReloadShootOnWeapon(position);
+                        }
+                        else {
+                            mMainController.setShootOnWeapon(position);
+                        }
                     });
                 }
 
-                mMainController.getUndoButton().setOnMouseClicked(event -> {
+                mMainController.activateUndoButtonWithBehaviour(() -> {
                     GuiUtils.setBoxEnableStatus(weaponBox, false);
                     mMainController.setEnableStatusActionButtonBox(true);
                 });
@@ -465,24 +488,37 @@ public class BoardPane extends Observable<Request> {
 
                 if (mInteractiveButtons[i][j] != null) {
                     mInteractiveButtons[i][j].setDisable(!possiblePosition.contains(new Position(i, j)));
+                    mInteractiveButtons[i][j].setVisible(possiblePosition.contains(new Position(i, j)));
 
                     mInteractiveButtons[i][j].setOnMouseClicked(event -> {
-                        mMainController.logToChat("Selected position: (" + x + ", " + y + ")");
-                        switchButtonGridEnableStatus(false);
-                        for (Button[] buttons : mInteractiveButtons) {
-                            for (Button button : buttons) {
-                                button.setDisable(false);
-                            }
-                        }
+                        mMainController.logToChat("Selected position: (" + x + ", " + y + ")", false);
+                        resetButtonGrid();
+
+                        notify(new PositionSelectedRequest(new Position(x, y), mMainController.getView().getOwnerColor()));
                     });
                 }
 
-                mMainController.getUndoButton().setOnMouseClicked(event -> {
+                mMainController.activateUndoButtonWithBehaviour(() -> {
+                    resetButtonGrid();
+
                     mMainController.returnToActionTab();
                     notify(new UndoWeaponInteractionRequest(mMainController.getView().getOwnerColor()));
                 });
             }
         }
+    }
+
+    private void resetButtonGrid () {
+        for (Button[] buttons : mInteractiveButtons) {
+            for (Button button : buttons) {
+                if (button != null) {
+                    button.setDisable(false);
+                    button.setVisible(true);
+                }
+            }
+        }
+
+        switchButtonGridEnableStatus(false);
     }
 
     public void enableSpawnWeaponBoxForSendingIndex(TileColor spawnColor) {
@@ -493,13 +529,17 @@ public class BoardPane extends Observable<Request> {
 
         for (int i = 0; i < selectedSpawn.getChildren().size(); i++) {
             final int index = i;
-            selectedSpawn.getChildren().get(i).setOnMouseClicked(event -> notify(
-                    new WeaponSelectedRequest(index, mMainController.getView().getOwnerColor())));
+            selectedSpawn.getChildren().get(i).setOnMouseClicked(event -> {
+                notify(new WeaponSelectedRequest(index, mMainController.getView().getOwnerColor()));
+                resetWeaponBoxToDefault(selectedSpawn);
+            });
         }
 
-        mMainController.getUndoButton().setOnMouseClicked(event -> {
-            GuiUtils.setBoxEnableStatus(selectedSpawn,false);
-            mMainController.setEnableStatusActionButtonBox(true);
-        });
+        mMainController.activateUndoButtonWithBehaviour(() -> resetWeaponBoxToDefault(selectedSpawn));
+    }
+
+    private void resetWeaponBoxToDefault (Node weaponBox) {
+        GuiUtils.setBoxEnableStatus(weaponBox,false);
+        mMainController.setEnableStatusActionButtonBox(true);
     }
 }

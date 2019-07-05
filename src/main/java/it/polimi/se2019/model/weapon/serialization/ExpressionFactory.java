@@ -11,6 +11,9 @@ import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 public class ExpressionFactory {
+    private ExpressionFactory() {
+    }
+
     // GSON used to deal with serialization
     // TODO: register all subtypes (maybe use generics to automate)
     static RuntimeTypeAdapterFactory<Expression> makeRuntimeTypeAdapterFactory() {
@@ -25,6 +28,8 @@ public class ExpressionFactory {
                 .registerSubtype(PositionLiteral.class, "PositionLiteral")
                 .registerSubtype(PickEffect.class, "PickEffect")
                 .registerSubtype(Move.class, "Move")
+                .registerSubtype(ColorLiteral.class, "ColorLiteral")
+                .registerSubtype(GetColors.class, "GetColors")
                 .registerSubtype(DistanceRange.class, "DistanceRange")
                 .registerSubtype(SetExpression.class, "SetExpression")
                 .registerSubtype(Load.class, "Load")
@@ -36,7 +41,6 @@ public class ExpressionFactory {
                 .registerSubtype(All.class, "All")
                 .registerSubtype(LastSelected.class, "LastSelected")
                 .registerSubtype(AllInRoom.class, "AllInRoom")
-                .registerSubtype(GetTargets.class, "GetTargets")
                 .registerSubtype(Others.class, "Others")
                 .registerSubtype(Chain.class, "Chain")
                 .registerSubtype(Do.class, "Do")

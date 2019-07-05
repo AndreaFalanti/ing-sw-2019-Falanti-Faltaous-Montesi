@@ -9,6 +9,7 @@ import java.util.List;
 public final class GameTestCaseBuilder {
     /**
      * Used to fill a list with valid players. [ORDER: blue, yellow, grey]
+     * @return Players initialized
      */
     public static List<Player> generatePlayerList() {
         List<Player> players = new ArrayList<>();

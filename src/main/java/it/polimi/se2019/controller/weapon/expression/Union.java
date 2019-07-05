@@ -5,6 +5,10 @@ import it.polimi.se2019.controller.weapon.ShootContext;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * A behaviour evaluating to the union
+ * @author Stefano Montesi
+ */
 public class Union extends Behaviour {
     public Union() {
 

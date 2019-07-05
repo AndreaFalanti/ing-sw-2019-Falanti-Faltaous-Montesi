@@ -5,7 +5,8 @@ import it.polimi.se2019.util.Jsons;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,7 +39,7 @@ public class BoardTest {
     public void instantiateExampleBoards() {
         // unit board (using setters)
         mExampleUnitBoard = new Board(1, 1);
-        mExampleUnitBoard.setTileAt(new Position(0, 0), new NormalTile(TileColor.BLUE, 0));
+        mExampleUnitBoard.setTileAt(new Position(0, 0), new NormalTile(TileColor.BLUE, Collections.emptySet()));
 
         // empty board
         mExampleEmptyBoard = new Board(3, 3);
@@ -139,11 +140,6 @@ public class BoardTest {
     }
 
     @Test
-    public void getTileDistance() {
-        //TODO: we need a valid board to test this method (at least 3 * 3)
-    }
-
-    @Test
     // TODO: experiment with parameterized tests for this
     public void testIsOutOfBounds() {
         Board board = new Board(3, 3);
@@ -170,6 +166,7 @@ public class BoardTest {
         assertTrue(mGameBoard1.canSee(new Position(2, 0), new Position(0, 0)));
 
         // cannot see green 1x1 room from white 1x1 room in the opposite corner
+        System.out.println(mGameBoard1.getTileAt(new Position(1, 2)).getDoorsDirections());
         assertFalse(mGameBoard1.canSee(new Position(1, 2), new Position(3, 0)));
     }
 
@@ -226,29 +223,57 @@ public class BoardTest {
     }
 
     @Test
+    public void testGetRangeInfoRealGame() {
+        RangeInfo rangeInfo = mGameBoard1.getRangeInfo(new Position(2, 0));
+
+        RangeInfo expected = RangeInfo.fromMatrix(new Position(2, 0),
+                new Integer[][]{
+                        { 2,  1,  0,  1},
+                        { 3,  4,  1,  2},
+                        {-1,  3,  2,  3}
+                },
+                new Integer[][]{
+                        {1, 1, 1, 1},
+                        {0, 0, 1, 1},
+                        {0, 0, 1, 1}
+                }
+        );
+
+        assertFalse(
+                mGameBoard1.getTileAt(new Position(0, 1))
+                        .getDoorsDirections().contains(Direction.SOUTH) &&
+                        mGameBoard1.getTileAt(new Position(1, 1))
+                                .getDoorsDirections().contains(Direction.NORTH)
+
+        );
+        assertEquals(expected, rangeInfo);
+    }
+
+
+    @Test
     public void testPosStream() {
         // generate
-        Set<Position> actual = mExampleSimpleWallBoard.posStream().collect(Collectors.toSet());
+        List<Position> actual = mExampleSimpleWallBoard.posStream().collect(Collectors.toList());
 
         // check
-        Set<Position> expected = Stream.of(
+        List<Position> expected = Stream.of(
                 new Position(0, 0),
-                new Position(0, 1),
-                new Position(0, 2),
-                new Position(0, 3),
                 new Position(1, 0),
-                new Position(1, 1),
-                new Position(1, 2),
-                new Position(1, 3),
                 new Position(2, 0),
-                new Position(2, 1),
-                new Position(2, 2),
-                new Position(2, 3),
                 new Position(3, 0),
+                new Position(0, 1),
+                new Position(1, 1),
+                new Position(2, 1),
                 new Position(3, 1),
+                new Position(0, 2),
+                new Position(1, 2),
+                new Position(2, 2),
                 new Position(3, 2),
+                new Position(0, 3),
+                new Position(1, 3),
+                new Position(2, 3),
                 new Position(3, 3)
-        ).collect(Collectors.toSet());
+        ).collect(Collectors.toList());
         assertEquals(expected, actual);
     }
 

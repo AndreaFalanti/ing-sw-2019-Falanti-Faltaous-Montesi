@@ -3,6 +3,11 @@ package it.polimi.se2019.view.request;
 import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.model.PlayerColor;
 
+/**
+ * Contains discarded powerUp index used to respawn, to send to controller
+ *
+ * @author Andrea Falanti
+ */
 public class RespawnPowerUpRequest implements Request {
     private int mIndex;
     private PlayerColor mViewColor;

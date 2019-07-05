@@ -6,10 +6,14 @@ import it.polimi.se2019.model.board.TileColor;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Representation of a powerUp card
+ *
+ * @author Andrea Falanti
+ */
 public class PowerUpCard {
-    private PowerUpType mType;
-    private AmmoValue mAmmoValue;
+    private final PowerUpType mType;
+    private final AmmoValue mAmmoValue;
     private String mGuiID;
 
     /**

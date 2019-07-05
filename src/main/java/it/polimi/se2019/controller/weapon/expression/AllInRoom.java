@@ -10,12 +10,17 @@ import java.util.stream.Collectors;
 
 /**
  * Return all targets standing in a given room (color)
+ * @author Stefano Montesi
  */
 public class AllInRoom extends Behaviour {
     public AllInRoom() {
 
     }
 
+    /**
+     * Constructs the behaviour with using the given subexpressions
+     * @param color the color of the desired room
+     */
     public AllInRoom(Expression color) {
         putSub("color", color);
     }
@@ -32,7 +37,7 @@ public class AllInRoom extends Behaviour {
 
         TileColor roomColor = getSub("color").eval(context).asColor();
         Set<Expression> playersInRoom = board.getRoom(roomColor)
-                .flatMap(pos -> players.stream().filter(pl -> pl.getPos().equals(pos)))
+                .flatMap(pos -> players.stream().filter(pl -> pl.isSpawned() && pl.getPos().equals(pos)))
                 .map(Player::getColor)
                 .map(TargetLiteral::new)
                 .map(l -> (Expression) l)

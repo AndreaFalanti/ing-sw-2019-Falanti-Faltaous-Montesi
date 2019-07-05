@@ -1,0 +1,6 @@
+{
+  "boardNum": 1,
+  "killNum": 4,
+  "timerDelay": 10000,
+  "useControllerTimer": true
+}

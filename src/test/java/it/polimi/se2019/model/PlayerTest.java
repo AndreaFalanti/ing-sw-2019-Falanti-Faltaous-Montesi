@@ -94,15 +94,6 @@ public class PlayerTest {
     }
 
     @Test
-    public void testIncrementDeaths() {
-        Player player1 = new Player("testPlayer",PlayerColor.BLUE);
-
-        player1.incrementDeaths();
-        assertEquals(1,player1.getDeathsNum());
-
-    }
-
-    @Test
     public void testAddWeapon() {
         Player player1 = new Player("testPlayer", PlayerColor.BLUE);
         Weapon weapon1 = Weapons.get("heatseeker");

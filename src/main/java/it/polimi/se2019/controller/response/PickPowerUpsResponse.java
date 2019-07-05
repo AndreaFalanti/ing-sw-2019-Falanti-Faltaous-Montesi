@@ -4,6 +4,11 @@ import it.polimi.se2019.view.ResponseHandler;
 
 import java.util.List;
 
+/**
+ * Response used to notify view of a needed powerUp selection
+ *
+ * @author Andrea Falanti
+ */
 public class PickPowerUpsResponse implements Response {
     private List<Integer> mIndexes;
 

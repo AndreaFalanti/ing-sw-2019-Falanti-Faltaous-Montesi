@@ -11,6 +11,11 @@ import it.polimi.se2019.model.board.Tile;
 
 import java.util.Optional;
 
+/**
+ * Action for performing a grab action of an ammo tile in place
+ *
+ * @author Andrea Falanti
+ */
 public class GrabAmmoAction implements GrabAction {
     @Override
     public void perform(Game game) {
@@ -39,6 +44,11 @@ public class GrabAmmoAction implements GrabAction {
 
     @Override
     public boolean isComposite() {
+        return false;
+    }
+
+    @Override
+    public boolean leadToAShootInteraction() {
         return false;
     }
 

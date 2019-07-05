@@ -3,6 +3,7 @@ package it.polimi.se2019.controller;
 
 import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.controller.weapon.expression.Expression;
+import it.polimi.se2019.controller.weapon.expression.UndoInfo;
 import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.action.CostlyAction;
 import it.polimi.se2019.model.action.MoveGrabAction;
@@ -10,20 +11,17 @@ import it.polimi.se2019.model.action.NewtonAction;
 import it.polimi.se2019.model.action.TeleportAction;
 import it.polimi.se2019.model.board.SpawnTile;
 import it.polimi.se2019.model.board.TileColor;
-import it.polimi.se2019.model.weapon.serialization.WeaponFactory;
-import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observer;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.request.*;
 
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Controller implements Observer<Request>, RequestHandler {
     // messages constants
-    public static final String NO_ACTIONS_REMAINING_ERROR_MSG = "No actions remaining! Undo and try again...";
+    public static final String NO_ACTIONS_REMAINING_ERROR_MSG = "Can't proceed further with shoot! Undoing action...";
 
     private static final Logger logger = Logger.getLogger(Controller.class.getName());
 
@@ -37,18 +35,35 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     private int mPlayerNotSpawnedCounter;
     private boolean mActivePlayerSpawnedThisTurn = false;
+    private PlayerColor mExpectedPlayingPlayer;
+    private Timer mTurnTimer = new Timer();
+
+    private boolean mDontUseTimer = true;
 
     // constructors
     public Controller(Game game, Map<PlayerColor, View> playerViews) {
+        this(game, playerViews, false);
+    }
+
+    public Controller(Game game, Map<PlayerColor, View> playerViews, boolean useTimer) {
         mGame = game;
         mPlayerViews = playerViews;
         mPlayerActionController = new PlayerActionController(this);
         mShootInteraction = new ShootInteraction(mGame, mPlayerViews);
 
         mPlayerNotSpawnedCounter = playerViews.size();
+        mDontUseTimer = useTimer;
+
+        // observe view (Request)
+        playerViews.values().stream()
+                // observe views (Request)
+                .peek(view -> view.registerAll(this))
+                // make views observe game (Update)
+                .forEach(mGame::registerAll);
     }
 
-    // trivial getters
+
+    // getters
     public Game getGame() {
         return mGame;
     }
@@ -63,6 +78,10 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     public ShootInteraction getShootInteraction() {
         return mShootInteraction;
+    }
+
+    public Timer getTurnTimer() {
+        return mTurnTimer;
     }
 
     public Object getShootInteractionLock() {
@@ -84,7 +103,7 @@ public class Controller implements Observer<Request>, RequestHandler {
         return mActivePlayerSpawnedThisTurn;
     }
 
-    // Setters
+    // setters
     public void setWeaponIndexStrategy(WeaponIndexStrategy weaponIndexStrategy) {
         mWeaponIndexStrategy = weaponIndexStrategy;
     }
@@ -93,12 +112,19 @@ public class Controller implements Observer<Request>, RequestHandler {
         mPlayerNotSpawnedCounter = playerNotSpawnedCounter;
     }
 
+    public void setExpectedPlayingPlayer(PlayerColor expectedPlayingPlayer) {
+        mExpectedPlayingPlayer = expectedPlayingPlayer;
+    }
+
     /*******************/
     /* control methods */
     /*******************/
-    // TODO: make this private and notify ShootRequest in weapon tests
     public void startShootInteraction(PlayerColor shooter, Expression weaponBehaviour) {
-        mShootInteraction.exec(mGame, shooter, weaponBehaviour);
+        mShootInteraction.exec(mGame, shooter, weaponBehaviour, new UndoInfo(shooter, mGame));
+    }
+
+    public void startShootInteraction(PlayerColor shooter, Expression weaponBehaviour, UndoInfo undoInfo) {
+        mShootInteraction.exec(mGame, shooter, weaponBehaviour, undoInfo);
     }
 
     private void continueShootInteraction(Request request) {
@@ -177,15 +203,6 @@ public class Controller implements Observer<Request>, RequestHandler {
     }
 
     @Override
-    public void handle(ShootRequest request) {
-        startShootInteraction(
-                request.getShooterColor(),
-                // TODO: substitute with Weapons.get() call
-                WeaponFactory.fromJson(Jsons.get("weapons/real/" + request.getWeaponID())).getBehaviour()
-        );
-    }
-
-    @Override
     public void handle(DirectionSelectedRequest request) {
         continueShootInteraction(request);
     }
@@ -250,22 +267,42 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void handle(RespawnPowerUpRequest request) {
-        Player respawningPlayer = mGame.getPlayerFromColor(request.getViewColor());
-        TileColor spawnColor = respawningPlayer.getPowerUpCard(request.getIndex()).getColor();
-        SpawnTile respawnTile = mGame.getBoard().getSpawnMap().get(spawnColor);
-        Position respawnPosition = mGame.getBoard().getTilePos(respawnTile);
+        if (!checkPowerUpValidity(request.getIndex())) {
+            View playerView = mPlayerViews.get(request.getViewColor());
+            playerView.reportError("Invalid power up index selected");
+            playerView.showRespawnPowerUpDiscardView();
+            return;
+        }
 
-        respawningPlayer.respawn(respawnPosition);
-        respawningPlayer.discard(request.getIndex());
+        respawnPlayer(request.getIndex(), request.getViewColor());
 
         if (areAllPlayersAlive()) {
             handleNextTurn();
         }
+        else {
+            sendRespawnNotificationToDeadPlayers();
+        }
+    }
+
+    private void respawnPlayer (int powerUpIndex, PlayerColor color) {
+        Player respawningPlayer = mGame.getPlayerFromColor(color);
+        TileColor spawnColor = respawningPlayer.getPowerUpCard(powerUpIndex).getColor();
+        SpawnTile respawnTile = mGame.getBoard().getSpawnMap().get(spawnColor);
+        Position respawnPosition = respawnTile.getPosition();
+
+        respawningPlayer.respawn(respawnPosition);
+        respawningPlayer.discard(powerUpIndex);
     }
 
     @Override
     public void handle(UsePowerUpRequest request) {
-        PowerUpType powerUpType = mGame.getActivePlayer().getPowerUpCard(request.getPowerUpIndex()).getType();
+        if (!checkPowerUpValidity(request.getPowerUpIndex())) {
+            mPlayerViews.get(request.getViewColor()).reportError("Invalid power up index selected");
+            return;
+        }
+
+        PowerUpCard powerUpCard = mGame.getActivePlayer().getPowerUpCard(request.getPowerUpIndex());
+        PowerUpType powerUpType = powerUpCard.getType();
         View playerView = mPlayerViews.get(request.getViewColor());
 
         switch (powerUpType) {
@@ -276,17 +313,22 @@ public class Controller implements Observer<Request>, RequestHandler {
                 break;
             case NEWTON:
                 mPlayerActionController.setCompletableNewtonAction(new NewtonAction(request.getPowerUpIndex()));
-                playerView.showMessage("Select target for newton");
-                playerView.showTargetsSelectionView(1, 1,
-                        mPlayerActionController.getAllTargetsExceptActivePlayer());
+                Set<PlayerColor> possibleTargets = mPlayerActionController.getAllTargetsExceptActivePlayer();
+                if (possibleTargets.isEmpty()) {
+                    playerView.reportError("No valid targets for newton!");
+                }
+                else {
+                    playerView.showMessage("Select target for newton");
+                    playerView.showTargetsSelectionView(1, 1, possibleTargets);
+                }
                 break;
             case TAGBACK_GRENADE:
                 logger.info("Tagback grenade can't be handled without proper event");
-                playerView.showMessage("Can't use tagback without taking damage");
+                playerView.reportError("Can't use tagback without taking damage");
                 break;
             case TARGETING_SCOPE:
                 logger.info("Targeting scope can't be handled without proper event");
-                playerView.showMessage("Can't use targeting scope outside a shooting interaction");
+                playerView.reportError("Can't use targeting scope outside a shooting interaction");
                 break;
             default:
                 logger.severe("Unknown powerUp type");
@@ -294,6 +336,46 @@ public class Controller implements Observer<Request>, RequestHandler {
         }
     }
 
+    @Override
+    public void handle(AmmoColorSelectedRequest request) {
+        continueShootInteraction(request);
+    }
+
+    @Override
+    public void handle(ReconnectionRequest request) {
+        View reconnectedView = mPlayerViews.get(request.getViewColor());
+
+        mPlayerViews.values().stream()
+                .filter(view -> view != reconnectedView)
+                .forEach(view -> view.showMessage(
+                        String.format(
+                                "%s has reconnected...",
+                                mGame.getPlayerFromColor(request.getViewColor()).getName()
+                        )
+                ));
+
+        reconnectedView.reinitialize(
+                mGame.extractViewInitializationInfo(request.getViewColor())
+        );
+        reconnectedView.showMessage("You have been reconnected!");
+    }
+
+    @Override
+    public void handle(DisconnectionRequest request) {
+        mPlayerViews.entrySet().stream()
+                .peek(entry -> System.out.println((entry.getKey())))
+                .map(Map.Entry::getValue)
+                .forEach(view -> view.showMessage(
+                String.format(
+                        "%s has disconnected...",
+                        mGame.getPlayerFromColor(request.getViewColor()).getName()
+                )
+        ));
+    }
+
+    /**
+     * Try to start next turn of the game, handling initial spawn if needed
+     */
     public void handleNextTurn () {
         // prevent another turn start if called after an initial spawn
         if (mActivePlayerSpawnedThisTurn) {
@@ -301,7 +383,7 @@ public class Controller implements Observer<Request>, RequestHandler {
         }
 
         if (mPlayerNotSpawnedCounter > 0) {
-            mGame.startNextTurn();
+            startNextTurn();
             Player player = mGame.getActivePlayer();
 
             // handle initial spawn
@@ -313,10 +395,55 @@ public class Controller implements Observer<Request>, RequestHandler {
             mPlayerNotSpawnedCounter--;
         }
         else {
-            mGame.startNextTurn();
+            startNextTurn();
         }
     }
 
+    /**
+     * Start next turn of the game
+     */
+    private void startNextTurn () {
+        mGame.startNextTurn();
+        mExpectedPlayingPlayer = mGame.getActivePlayer().getColor();
+
+        setTimerTask();
+    }
+
+    /**
+     * Suspend players for inactivity after a minute between an action and another
+     */
+    void setTimerTask () {
+        mTurnTimer = new Timer();
+        if (mDontUseTimer) {
+            return;
+        }
+
+        mTurnTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mPlayerViews.get(mExpectedPlayingPlayer).showMessage("SUSPENDED FOR INACTIVITY");
+
+                Player activePlayer = mGame.getActivePlayer();
+                if (activePlayer.getPos() == null) {
+                    boolean spawned = false;
+
+                    for (int i = 0; i < activePlayer.getPowerUps().length && !spawned; i++) {
+                        if (activePlayer.getPowerUpCard(i) != null) {
+                            respawnPlayer(i, activePlayer.getColor());
+                            spawned = true;
+                        }
+                    }
+                }
+
+                handle(new TurnEndRequest(mExpectedPlayingPlayer));
+            }
+        },60000);
+    }
+
+    /**
+     * Check if all players are alive
+     * @return true if all players are alive, false otherwise
+     */
     private boolean areAllPlayersAlive () {
         for (Player player : mGame.getPlayers()) {
             if (player.isDead()) {
@@ -327,13 +454,32 @@ public class Controller implements Observer<Request>, RequestHandler {
         return true;
     }
 
+    /**
+     * Send a respawn notification to first dead player found
+     */
     private void sendRespawnNotificationToDeadPlayers () {
         for (Player player : mGame.getPlayers()) {
             if (player.isDead()) {
                 player.addPowerUp(mGame.getPowerUpDeck().drawCard(), true);
                 mPlayerViews.get(player.getColor()).showRespawnPowerUpDiscardView();
+
+                mExpectedPlayingPlayer = player.getColor();
+                return;
             }
         }
+    }
+
+    /**
+     * Check if powerUp index is valid
+     * @param index PowerUp index
+     * @return true if valid, false otherwise
+     */
+    private boolean checkPowerUpValidity (int index) {
+        if (index < 0 || index > 3) {
+            return false;
+        }
+        PowerUpCard powerUpCard = mGame.getPlayerFromColor(mExpectedPlayingPlayer).getPowerUpCard(index);
+        return powerUpCard != null;
     }
 
     /*****************************************/
@@ -342,6 +488,13 @@ public class Controller implements Observer<Request>, RequestHandler {
 
     @Override
     public void update(Request message) {
-        message.handleMe(this);
+        PlayerColor activePlayer = isHandlingShootInteraction() ?
+                getShootInteraction().getActivePlayerColor() :
+                mExpectedPlayingPlayer;
+
+        if (!activePlayer.equals(message.getViewColor()))
+            mPlayerViews.get(message.getViewColor()).reportError("It's not your turn!");
+        else
+            message.handleMe(this);
     }
 }

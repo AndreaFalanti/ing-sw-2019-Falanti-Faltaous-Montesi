@@ -7,6 +7,11 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
+/**
+ * Action for performing newton powerUp behaviour
+ *
+ * @author Andrea Falanti
+ */
 public class NewtonAction implements Action {
     private PlayerColor mTarget;
     private Position mDestination;
@@ -51,7 +56,7 @@ public class NewtonAction implements Action {
     public void perform(Game game) {
         Player player = game.getPlayerFromColor(mTarget);
         player.move(mDestination);
-        player.discard(mNewtonIndex);
+        game.getActivePlayer().discard(mNewtonIndex);
     }
 
     @Override
@@ -78,6 +83,11 @@ public class NewtonAction implements Action {
 
     @Override
     public boolean isComposite() {
+        return false;
+    }
+
+    @Override
+    public boolean leadToAShootInteraction() {
         return false;
     }
 }

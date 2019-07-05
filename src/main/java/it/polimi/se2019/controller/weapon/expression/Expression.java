@@ -13,15 +13,27 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// TODO: refine doc
+/**
+ * Base class of the game subsystem used to describe weapon behaviours.
+ *
+ * The class (and its associated hierarchy) is based on the Interpreter Pattern, and thus
+ * has an abstract {@code eval(ShootContext)} method that subclasses can override.
+ *
+ * The API with which an Expression manages subexpressions (as intended in the Interpreter Pattern)
+ * is left as an implementation detail for the child classes.
+ *
+ * An Expression also provides a list of primitive conversion functions, that are used when an
+ * expression needs to be evaluated to a particular Java type. All of these functions throw an exception if not
+ * implemented in deriving classes.
+ *
+ * @author Stefano Montesi
+ */
 public abstract class Expression {
     // logger
-    protected static final Logger LOGGER = Logger.getLogger(Expression.class.getName());
+    static final Logger LOGGER = Logger.getLogger(Expression.class.getName());
 
-    /**
-     * Construct empty expression
-     */
-    protected Expression() {
+    // required for Gson; should never be called by the user
+    public Expression() {
 
     }
 
@@ -70,14 +82,12 @@ public abstract class Expression {
     /**
      * safely discard result of evaluated expression by issuing a warning
      */
-    protected static Expression discardEvalResult(Expression result) {
+    static void discardEvalResult(Expression result) {
         if (!result.isDone())
             LOGGER.log(Level.WARNING,
                     "{0} was discarded after evaluation!",
                     result.getClass().getSimpleName()
             );
-
-        return result;
     }
 
     /**
@@ -172,6 +182,14 @@ public abstract class Expression {
      */
     public TileColor asColor() {
         throw new UnsupportedConversionException(getClass().getSimpleName(), "Color");
+    }
+
+    /**
+     * Convert the expression to a set of color values (if possible)
+     * @return a set of color values representation of the expression
+     */
+    public Set<TileColor> asColors() {
+        throw new UnsupportedConversionException(getClass().getSimpleName(), "Colors");
     }
 }
 

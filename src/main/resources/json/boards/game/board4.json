@@ -1,26 +1,27 @@
 {
   "width": 4,
   "height": 3,
+  "guiID": "4",
   "tiles": [
     {
       "type": "normal",
       "doors": [
-        "east"
+        "EAST"
       ],
       "color": "RED"
     },
     {
       "type": "normal",
       "doors": [
-        "west",
-        "south"
+        "WEST",
+        "SOUTH"
       ],
       "color": "BLUE"
     },
     {
       "type": "spawn",
       "doors": [
-        "south"
+        "SOUTH"
       ],
       "color": "BLUE"
     },
@@ -30,58 +31,58 @@
     {
       "type": "spawn",
       "doors": [
-        "south"
+        "SOUTH"
       ],
       "color": "RED"
     },
     {
       "type": "normal",
       "doors": [
-        "south",
-        "north"
+        "SOUTH",
+        "NORTH"
       ],
       "color": "PURPLE"
     },
     {
       "type": "normal",
       "doors": [
-        "north",
-        "east"
+        "NORTH",
+        "EAST"
       ],
       "color": "PURPLE"
     },
     {
       "type": "normal",
       "doors": [
-        "west"
+        "WEST"
       ],
       "color": "YELLOW"
     },
     {
       "type": "normal",
       "doors": [
-        "north"
+        "NORTH"
       ],
       "color": "WHITE"
     },
     {
       "type": "normal",
       "doors": [
-        "north"
+        "NORTH"
       ],
       "color": "WHITE"
     },
     {
       "type": "normal",
       "doors": [
-        "east"
+        "EAST"
       ],
       "color": "WHITE"
     },
     {
       "type": "spawn",
       "doors": [
-        "west"
+        "WEST"
       ],
       "color": "YELLOW"
     }

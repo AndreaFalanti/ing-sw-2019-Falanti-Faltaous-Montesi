@@ -2,6 +2,11 @@ package it.polimi.se2019.model.update;
 
 import it.polimi.se2019.model.PlayerColor;
 
+/**
+ * Update message with flipped board flag info (related to final frenzy), sent to views
+ *
+ * @author Andrea Falanti
+ */
 public class PlayerBoardFlipUpdate implements Update {
     private PlayerColor mPlayerColor;
 

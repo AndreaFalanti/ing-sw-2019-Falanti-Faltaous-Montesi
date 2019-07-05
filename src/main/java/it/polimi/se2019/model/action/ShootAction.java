@@ -1,5 +1,7 @@
 package it.polimi.se2019.model.action;
 
+import it.polimi.se2019.controller.weapon.Weapon;
+import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.action.response.ActionResponseStrings;
 import it.polimi.se2019.model.action.response.InvalidActionResponse;
@@ -7,7 +9,12 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
-public class ShootAction implements Action {
+/**
+ * Action for performing a shoot action in place
+ *
+ * @author Andrea Falanti
+ */
+public class ShootAction implements ShootLeadingAction {
     private int mWeaponIndex;
 
     public ShootAction(int weaponIndex) {
@@ -20,13 +27,25 @@ public class ShootAction implements Action {
 
     @Override
     public void perform(Game game) {
-        throw new UnsupportedOperationException("WIP");
+        game.getActivePlayer().unloadWeaponForShooting(mWeaponIndex);
     }
 
     @Override
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
         if (game.getRemainingActions() == 0) {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
+        }
+
+        if (mWeaponIndex < 0 || mWeaponIndex >= 3) {
+            return Optional.of(new MessageActionResponse("Invalid weapon index selected"));
+        }
+
+        Weapon weapon = game.getActivePlayer().getWeapon(mWeaponIndex);
+        if (weapon == null) {
+            return Optional.of(new MessageActionResponse("Invalid weapon index selected"));
+        }
+        else if (!weapon.isLoaded()) {
+            return Optional.of(new MessageActionResponse("Trying to shoot with an unloaded weapon!"));
         }
 
         return Optional.empty();
@@ -40,5 +59,15 @@ public class ShootAction implements Action {
     @Override
     public boolean isComposite() {
         return false;
+    }
+
+    @Override
+    public boolean leadToAShootInteraction() {
+        return true;
+    }
+
+    @Override
+    public Expression getShotBehaviour(Game game) {
+        return game.getActivePlayer().getWeapon(mWeaponIndex).getBehaviour();
     }
 }

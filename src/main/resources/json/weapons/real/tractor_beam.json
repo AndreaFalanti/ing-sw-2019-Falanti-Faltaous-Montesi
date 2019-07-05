@@ -32,7 +32,21 @@
             "to": {
               "expr": "SelectOnePosition",
               "from": {
-                "expr": "GetVisibleRange"
+                "expr": "Intersect",
+                "lhs": {
+                  "expr": "GetVisibleRange"
+                },
+                "rhs": {
+                  "expr": "DistanceRange",
+                  "origin": {
+                    "expr": "Pos",
+                    "who": {
+                      "expr": "LastSelected"
+                    }
+                  },
+                  "min": 0,
+                  "max": 2
+                }
               }
             }
           },

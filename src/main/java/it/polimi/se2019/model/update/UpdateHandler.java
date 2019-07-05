@@ -2,6 +2,11 @@ package it.polimi.se2019.model.update;
 
 import it.polimi.se2019.util.AbstractHandler;
 
+/**
+ * Handler for update messages
+ *
+ * @author Andrea Falanti, Stefano Montesi
+ */
 public interface UpdateHandler extends AbstractHandler<Update> {
     default void handle(PlayerPositionUpdate update) {
         fallbackHandle(update);
@@ -34,6 +39,12 @@ public interface UpdateHandler extends AbstractHandler<Update> {
         fallbackHandle(update);
     }
     default void handle(PlayerRespawnUpdate update) {
+        fallbackHandle(update);
+    }
+    default void handle(RemainingActionsUpdate update) {
+        fallbackHandle(update);
+    }
+    default void handle(EndGameUpdate update) {
         fallbackHandle(update);
     }
 }

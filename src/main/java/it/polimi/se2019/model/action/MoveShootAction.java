@@ -1,5 +1,6 @@
 package it.polimi.se2019.model.action;
 
+import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
@@ -10,7 +11,12 @@ import it.polimi.se2019.model.action.response.MessageActionResponse;
 
 import java.util.Optional;
 
-public class MoveShootAction implements Action {
+/**
+ * Action for performing consecutively a move and a shoot interaction
+ *
+ * @author Andrea Falanti
+ */
+public class MoveShootAction implements ShootLeadingAction {
     private MoveAction mMoveAction;
     private ShootAction mShootAction;
 
@@ -35,9 +41,14 @@ public class MoveShootAction implements Action {
 
     @Override
     public Optional<InvalidActionResponse> getErrorResponse(Game game) {
-        // can't perform "costly" actions if they are no more available in this turn
+        // can't perform "costly" actions if there are no more available in this turn
         if (game.getRemainingActions() == 0) {
             return Optional.of(new MessageActionResponse(ActionResponseStrings.NO_ACTIONS_REMAINING));
+        }
+
+        Optional<InvalidActionResponse> response = mMoveAction.getErrorResponse(game);
+        if (response.isPresent()) {
+            return response;
         }
 
         Player player = game.getPlayerFromColor(mMoveAction.getTarget());
@@ -45,9 +56,11 @@ public class MoveShootAction implements Action {
 
         if (!game.isFinalFrenzy()) {
             if (!player.canMoveBeforeShooting()) {
-                return Optional.of(new MessageActionResponse("You can't move while shooting right now"));
+                maxShootMoves = 0;
             }
-            maxShootMoves = 1;
+            else {
+                maxShootMoves = 1;
+            }
         }
         else if (game.hasFirstPlayerDoneFinalFrenzy()) {
             maxShootMoves = 2;
@@ -55,10 +68,17 @@ public class MoveShootAction implements Action {
         else {
             maxShootMoves = 1;
         }
-            return game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) == maxShootMoves ?
-                    Optional.empty() : Optional.of(
-                            new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE + " while shooting")
-            );
+
+        if (game.getBoard().getTileDistance(player.getPos(), mMoveAction.getDestination()) > maxShootMoves) {
+            return Optional.of(new MessageActionResponse(ActionResponseStrings.ILLEGAL_TILE_DISTANCE + " while shooting"));
+        }
+
+        response = mShootAction.getErrorResponse(game);
+        if (response.isPresent()) {
+            return response;
+        }
+
+        return Optional.empty();
     }
 
     @Override
@@ -69,5 +89,15 @@ public class MoveShootAction implements Action {
     @Override
     public boolean isComposite() {
         return true;
+    }
+
+    @Override
+    public boolean leadToAShootInteraction() {
+        return true;
+    }
+
+    @Override
+    public Expression getShotBehaviour(Game game) {
+        return game.getActivePlayer().getWeapon(mShootAction.getWeaponIndex()).getBehaviour();
     }
 }

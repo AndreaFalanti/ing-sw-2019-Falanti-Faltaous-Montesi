@@ -3,17 +3,26 @@ package it.polimi.se2019.util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Observable<Message> {
-    private final List<Observer<Message>> mObservers = new ArrayList<>();
+public class Observable<T> {
+    @Exclude
+    private final List<Observer<T>> mObservers = new ArrayList<>();
 
-    public void register(Observer<Message> toRegister) {
+    public void register(Observer<T> toRegister) {
         mObservers.add(toRegister);
     }
-    public void unregister(Observer<Message> toUnregister) {
+    public void deregister(Observer<T> toUnregister) {
         mObservers.remove(toUnregister);
     }
 
-    public void notify(Message message) {//TODO change in protect
-        mObservers.forEach(observer -> observer.update(message));
+    public List<Observer<T>> getObservers() {
+        return mObservers;
+    }
+
+    protected void notify(T message) {
+
+        if (!mObservers.isEmpty())
+            mObservers
+                    .stream().peek(observer -> System.out.println(getClass().getSimpleName() + " is notifying " + observer.getClass().getSimpleName() + ": " + message))
+                    .forEach(observer -> observer.update(message));
     }
 }

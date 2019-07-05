@@ -2,7 +2,7 @@ package it.polimi.se2019.controller.weapon;
 
 import it.polimi.se2019.controller.weapon.expression.Expression;
 import it.polimi.se2019.controller.weapon.expression.SetExpression;
-import it.polimi.se2019.controller.weapon.expression.ShootUndoInfo;
+import it.polimi.se2019.controller.weapon.expression.UndoInfo;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
@@ -14,12 +14,17 @@ import it.polimi.se2019.view.request.Request;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
+/** Parameter boundle passed to every Expression.eval method. Contains contextual information about the
+ * current shoot interaction, the game and also a scope with remembered information from the interpreter.
+ * @author Stefano Montesi
+ */
 public class ShootContext {
     // statics
     private static final String MISSING_PLAYER_MSG = "Shooter is not present among provided list of players!";
 
     // special variables handled directly by expression other than Load and Look
     public static final String SPECIAL_VAR_LAST_SELECTED = "$last";
+    public static final String SPECIAL_VAR_PREVIOUSLY_SELECTED = "$last_all";
 
     // fields
     private Game mGame;
@@ -27,10 +32,11 @@ public class ShootContext {
     private PlayerColor mShooterColor;
     private Map<String, Expression> mScope;
     private ShootInteraction mShootInteraction;
-    private ShootUndoInfo mUndoInfo;
+    private UndoInfo mUndoInfo;
 
     // trivial constructor
-    public ShootContext(Game game, View view, PlayerColor shooterColor, ShootInteraction shootInteraction) {
+    public ShootContext(Game game, View view, PlayerColor shooterColor,
+                        UndoInfo undoInfo, ShootInteraction shootInteraction) {
         // safety check to assure that shooter is present among provided players
         List<Player> players = game.getPlayers();
         if (players.stream().noneMatch(pl -> pl.getColor() == shooterColor))
@@ -42,10 +48,11 @@ public class ShootContext {
         mShooterColor = shooterColor;
         mScope = new HashMap<>();
         mShootInteraction = shootInteraction;
-        mUndoInfo = new ShootUndoInfo(mGame);
+        mUndoInfo = undoInfo;
 
         // initialize special variables
         setVar(SPECIAL_VAR_LAST_SELECTED, new SetExpression());
+        setVar(SPECIAL_VAR_PREVIOUSLY_SELECTED, new SetExpression());
     }
 
     // trivial getters
@@ -89,7 +96,7 @@ public class ShootContext {
         return mShootInteraction.getRequestQueue();
     }
 
-    public ShootUndoInfo getUndoInfo() {
+    public UndoInfo getUndoInfo() {
         return mUndoInfo;
     }
 

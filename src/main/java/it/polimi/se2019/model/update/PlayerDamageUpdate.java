@@ -2,27 +2,26 @@ package it.polimi.se2019.model.update;
 
 import it.polimi.se2019.model.PlayerColor;
 
+/**
+ * Update message with player's damage taken info, sent to views
+ *
+ * @author Andrea Falanti
+ */
 public class PlayerDamageUpdate implements Update {
     private PlayerColor mDamagedPlayerColor;
-    private int mDamageTaken;
-    private PlayerColor mShooterPlayerColor;
+    private PlayerColor[] mDamageTaken;
 
-    public PlayerDamageUpdate(PlayerColor damagedPlayerColor, int damageTaken, PlayerColor shooterPlayerColor) {
+    public PlayerDamageUpdate(PlayerColor damagedPlayerColor, PlayerColor[] damageTaken) {
         mDamagedPlayerColor = damagedPlayerColor;
         mDamageTaken = damageTaken;
-        mShooterPlayerColor = shooterPlayerColor;
     }
 
     public PlayerColor getDamagedPlayerColor() {
         return mDamagedPlayerColor;
     }
 
-    public int getDamageTaken() {
+    public PlayerColor[] getDamageTaken() {
         return mDamageTaken;
-    }
-
-    public PlayerColor getShooterPlayerColor() {
-        return mShooterPlayerColor;
     }
 
     @Override

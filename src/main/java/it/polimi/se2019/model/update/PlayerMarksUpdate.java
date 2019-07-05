@@ -2,6 +2,11 @@ package it.polimi.se2019.model.update;
 
 import it.polimi.se2019.model.PlayerColor;
 
+/**
+ * Update message with player's marks info, sent to views
+ *
+ * @author Andrea Falanti
+ */
 public class PlayerMarksUpdate implements Update {
     private PlayerColor mTargetPlayerColor;
     private int mMarks;

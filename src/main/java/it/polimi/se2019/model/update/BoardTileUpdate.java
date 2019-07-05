@@ -3,13 +3,16 @@ package it.polimi.se2019.model.update;
 import it.polimi.se2019.model.Position;
 import it.polimi.se2019.model.board.Tile;
 
+/**
+ * Update message with a board's tile info, sent to views
+ *
+ * @author Andrea Falanti
+ */
 public class BoardTileUpdate implements Update {
     private Tile mTile;
-    private Position mTilePos;
 
-    public BoardTileUpdate(Tile tile, Position tilePos) {
+    public BoardTileUpdate(Tile tile) {
         mTile = tile;
-        mTilePos = tilePos;
     }
 
     public Tile getTile() {
@@ -17,7 +20,7 @@ public class BoardTileUpdate implements Update {
     }
 
     public Position getTilePos() {
-        return mTilePos;
+        return mTile.getPosition();
     }
 
     @Override

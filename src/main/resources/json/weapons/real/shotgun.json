@@ -19,13 +19,7 @@
               "to": {
                 "expr": "SelectOneTarget",
                 "from": {
-                  "expr": "All",
-                  "from": {
-                    "expr": "Pos",
-                    "who": {
-                      "expr": "You"
-                    }
-                  }
+                  "expr": "Neighbours"
                 }
               }
             }
@@ -40,14 +34,17 @@
                 "expr": "LastSelected"
               },
               "to": {
-                "expr": "Distance",
-                "origin": {
-                  "expr": "Pos",
-                  "who": {
-                    "expr": "LastSelected"
-                  }
-                },
-                "amount": 1
+                "expr": "SelectOnePosition",
+                "from": {
+                  "expr": "Distance",
+                  "origin": {
+                    "expr": "Pos",
+                    "who": {
+                      "expr": "LastSelected"
+                    }
+                  },
+                  "amount": 1
+                }
               }
             }
           }

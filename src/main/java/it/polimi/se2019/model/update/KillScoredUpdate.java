@@ -4,6 +4,11 @@ import it.polimi.se2019.model.PlayerColor;
 
 import java.util.Map;
 
+/**
+ * Update message with various info related to killtrack and scores, sent to views
+ *
+ * @author Andrea Falanti
+ */
 public class KillScoredUpdate implements Update {
     private PlayerColor mPlayerKilledColor;
     private PlayerColor mKillerColor;

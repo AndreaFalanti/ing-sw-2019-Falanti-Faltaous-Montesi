@@ -5,6 +5,11 @@ import it.polimi.se2019.model.PlayerColor;
 
 import java.util.List;
 
+/**
+ * Contains selected powerUp indexes that player wants to use, to send to controller
+ *
+ * @author Andrea Falanti
+ */
 public class PowerUpsSelectedRequest implements Request {
     private List<Integer> mIndexes;
     private PlayerColor mViewColor;

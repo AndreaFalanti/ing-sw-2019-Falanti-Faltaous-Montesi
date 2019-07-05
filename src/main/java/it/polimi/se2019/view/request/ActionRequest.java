@@ -4,6 +4,11 @@ import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.action.Action;
 
+/**
+ * Request an action perform to controller
+ *
+ * @author Andrea Falanti
+ */
 public class ActionRequest implements Request {
     private Action mAction;
     private PlayerColor mViewColor;

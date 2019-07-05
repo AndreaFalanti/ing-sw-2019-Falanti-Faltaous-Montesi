@@ -32,6 +32,7 @@
             "expr": "SelectOneTarget",
             "from": {
               "expr": "CanSee",
+              "exclude_previous_selections": true,
               "origin": {
                 "expr": "LastSelected"
               }
@@ -51,6 +52,7 @@
             "expr": "SelectOneTarget",
             "from": {
               "expr": "CanSee",
+              "exclude_previous_selections": true,
               "origin": {
                 "expr": "LastSelected"
               }

@@ -1,5 +1,6 @@
 package it.polimi.se2019.controller;
 
+import it.polimi.se2019.controller.weapon.expression.UndoInfo;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.Position;
@@ -15,6 +16,11 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Sub-controller that handle all action performs and relative errors
+ *
+ * @author Andrea Falanti
+ */
 public class PlayerActionController implements InvalidActionResponseHandler {
     private Controller mMainController;
     private View mRequestingView;
@@ -80,9 +86,30 @@ public class PlayerActionController implements InvalidActionResponseHandler {
 
         Optional<InvalidActionResponse> response = action.getErrorResponse(mMainController.getGame());
         if(!response.isPresent()) {
-            action.perform(mMainController.getGame());
-            if(action.consumeAction())
+            mMainController.getTurnTimer().cancel();
+            mMainController.getTurnTimer().purge();
+
+            if (action.leadToAShootInteraction()) {
+                UndoInfo shootUndoInfo = new UndoInfo(
+                        mMainController.getGame().getActivePlayer().getColor(),
+                        mMainController.getGame()
+                );
+
+                action.perform(mMainController.getGame());
+                mMainController.startShootInteraction(requestingView.getOwnerColor(),
+                        ((ShootLeadingAction) action).getShotBehaviour(mMainController.getGame()),
+                        shootUndoInfo);
+            }
+            else {
+                action.perform(mMainController.getGame());
+                requestingView.confirmEndOfInteraction();
+
+                mMainController.setTimerTask();
+            }
+
+            if (action.consumeAction()) {
                 mMainController.getGame().decreaseActionCounter();
+            }
         }
         else {
             mCachedAction = action;
@@ -92,7 +119,12 @@ public class PlayerActionController implements InvalidActionResponseHandler {
 
     @Override
     public void handle(MessageActionResponse actionResponse) {
-        mRequestingView.showMessage(actionResponse.getMessage());
+        if (actionResponse.isError()) {
+            mRequestingView.reportError(actionResponse.getMessage());
+        }
+        else {
+            mRequestingView.showMessage(actionResponse.getMessage());
+        }
     }
 
     @Override
@@ -134,7 +166,9 @@ public class PlayerActionController implements InvalidActionResponseHandler {
         Set<PlayerColor> playerColors = new HashSet<>();
 
         for(Player player : mMainController.getGame().getPlayers()) {
-            playerColors.add(player.getColor());
+            if (player.getPos() != null) {
+                playerColors.add(player.getColor());
+            }
         }
         playerColors.remove(mMainController.getGame().getActivePlayer().getColor());
 
