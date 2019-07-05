@@ -11,6 +11,8 @@ import it.polimi.se2019.network.connection.Connection;
 import it.polimi.se2019.network.connection.NetworkMessage;
 import it.polimi.se2019.network.connection.serialization.NetworkMessageFactory;
 import it.polimi.se2019.util.Observer;
+import it.polimi.se2019.view.request.DisconnectionRequest;
+import it.polimi.se2019.view.request.ReconnectionRequest;
 import it.polimi.se2019.view.request.Request;
 import it.polimi.se2019.view.request.serialization.RequestFactory;
 
@@ -165,15 +167,17 @@ public class VirtualView extends View {
                         // logger.log(Level.INFO, "checking for pong for {0} client", getOwnerColor());
 
                         // reconnect if pong is received after disconnection
-                        if (mIsDisconnected.get() && mHasReceivedPong.getAndSet(false)) {
+                        boolean hasReceivedPong = mHasReceivedPong.getAndSet(false);
+                        if (mIsDisconnected.get() && hasReceivedPong) {
                             logger.log(Level.WARNING, "{0} has reconnected!", mOwnerColor);
-                            sendResponse(new MessageResponse("You have been reconnected!", false));
                             mIsDisconnected.set(false);
+                            VirtualView.this.notify(new ReconnectionRequest(mOwnerColor));
                         }
                         // mark as disconnected if no pong is received
-                        else if (!mIsDisconnected.get() && !mHasReceivedPong.getAndSet(false)) {
+                        else if (!mIsDisconnected.get() && !hasReceivedPong) {
                             logger.log(Level.WARNING, "{0} client has disconnected!", mOwnerColor);
                             mIsDisconnected.set(true);
+                            VirtualView.this.notify(new DisconnectionRequest(mOwnerColor));
                         }
                     }
                 }, 0, PING_PERIOD
