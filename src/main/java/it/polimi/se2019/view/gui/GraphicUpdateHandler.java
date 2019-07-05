@@ -152,15 +152,17 @@ public class GraphicUpdateHandler implements UpdateHandler {
 
     @Override
     public void handle(EndGameUpdate update) {
-        mMainController.logToChat("///////////////////////", true);
-        String[] positions = {"1st", "2nd", "3rd", "4th", "5th"};
+        Platform.runLater(() -> {
+            mMainController.logToChat("///////////////////////", true);
+            String[] positions = {"1st", "2nd", "3rd", "4th", "5th"};
 
-        int counter = 0;
-        SortedMap<PlayerColor, Integer> leaderboard = update.getLeaderboard();
-        for (Map.Entry<PlayerColor, Integer> entry : leaderboard.entrySet()) {
-            mMainController.logToChat(positions[counter] + ") "
-                    + mMainController.getPlayerControllerFromColor(entry.getKey()).getPlayerUsername() + " score: "
-                    + entry.getValue(), false);
-        }
+            int counter = 0;
+            SortedMap<PlayerColor, Integer> leaderboard = update.getLeaderboard();
+            for (Map.Entry<PlayerColor, Integer> entry : leaderboard.entrySet()) {
+                mMainController.logToChat(positions[counter] + ") "
+                        + mMainController.getPlayerControllerFromColor(entry.getKey()).getPlayerUsername() + " score: "
+                        + entry.getValue(), false);
+            }
+        });
     }
 }

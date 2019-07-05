@@ -17,6 +17,8 @@ public class SocketConnection implements Connection {
     private PrintWriter mOut;
     private BufferedReader mIn;
 
+    private boolean mConnected = true;
+
     private final Object mReadLock = new Object();
     private final Object mWriteLock = new Object();
 
@@ -97,8 +99,12 @@ public class SocketConnection implements Connection {
             String result = null;
             try {
                 result = mIn.readLine();
+                mConnected = true;
             } catch (IOException e) {
-                logger.log(Level.WARNING, "{0} - Player disconnected", e.getMessage());
+                if (mConnected) {
+                    logger.log(Level.WARNING, "{0} - Player disconnected", e.getMessage());
+                    mConnected = false;
+                }
             }
 
             return result;

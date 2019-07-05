@@ -1102,14 +1102,21 @@ public class MainScreen extends Observable<Request> {
     }
 
     /**
-     * Change view status depending on active player in this turn
+     * Enable view for active playing
      */
     public void activateView () {
         returnToActionTab();
         setEnableStatusActionButtonBox(true);
+        if (powerUpGrid.isDisabled()) {
+            resetAllPowerUpsBehaviourToDefault();
+            powerUpGrid.setDisable(false);
+        }
         undoButton.setDisable(true);
     }
 
+    /**
+     * Disable view while waiting for owner's turn
+     */
     public void deactivateView () {
         returnToActionTab();
         GuiUtils.setBoxEnableStatus(powerUpGrid, false);
