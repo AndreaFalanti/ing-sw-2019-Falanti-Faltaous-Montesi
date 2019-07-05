@@ -8,6 +8,11 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+/**
+ * Main class of GUI
+ *
+ * @author Andrea Falanti
+ */
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {

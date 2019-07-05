@@ -12,6 +12,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * Representation of players in the game
+ *
+ * @author Andrea Falanti, Abanoub Faltaous
+ */
 public class Player extends Observable<Update> {
     private AmmoValue mAmmo;
     private PowerUpCard[] mPowerUpCards = new PowerUpCard[4];

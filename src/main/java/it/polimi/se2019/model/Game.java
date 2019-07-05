@@ -17,7 +17,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
+/**
+ * Logical class used for handling various interaction between all model classes, that are frequently
+ * used in game actions.
+ *
+ * @author Andrea Falanti
+ */
 public class Game extends Observable<Update> {
     private Board mBoard;
     private List<Player> mPlayers;

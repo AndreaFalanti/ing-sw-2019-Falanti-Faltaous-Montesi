@@ -1,5 +1,10 @@
 package it.polimi.se2019.view.gui;
 
+/**
+ * Final class used to store all various resource paths used in GUI
+ *
+ * @author Andrea Falanti
+ */
 public final class GuiResourcePaths {
     public static final String PLAYER_BOARD = "/images/playerBoards/playerBoard";
     public static final String ACTION_TILE = "/images/playerBoards/actionTile";

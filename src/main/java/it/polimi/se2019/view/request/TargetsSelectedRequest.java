@@ -5,6 +5,11 @@ import it.polimi.se2019.model.PlayerColor;
 
 import java.util.Set;
 
+/**
+ * Contains selected targets to send to controller
+ *
+ * @author Andrea Falanti
+ */
 public class TargetsSelectedRequest implements Request {
     private Set<PlayerColor> mSelectedTargets;
     private PlayerColor mViewColor;

@@ -23,6 +23,11 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.logging.Logger;
 
+/**
+ * View interface override for GUI
+ *
+ * @author Andrea Falanti
+ */
 public class GraphicView extends View {
     private static final Logger logger = Logger.getLogger(GraphicView.class.getName());
 

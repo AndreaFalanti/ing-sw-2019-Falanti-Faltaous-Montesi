@@ -13,6 +13,11 @@ import javafx.scene.layout.Pane;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * GUI login screen, starting scene of the GUI application
+ *
+ * @author Andrea Falanti
+ */
 public class LoginScreen {
     @FXML
     private TextField usernameTextField;

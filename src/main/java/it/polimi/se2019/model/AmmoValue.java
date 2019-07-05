@@ -10,6 +10,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Logical structure for representing all ammo values data in the game
+ *
+ * @author Andrea Falanti
+ */
 public class AmmoValue {
     private int mRed;
     private int mYellow;

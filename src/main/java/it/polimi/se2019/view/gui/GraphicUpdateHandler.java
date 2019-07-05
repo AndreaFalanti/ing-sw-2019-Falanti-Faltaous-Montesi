@@ -9,6 +9,11 @@ import javafx.application.Platform;
 import java.util.Map;
 import java.util.SortedMap;
 
+/**
+ * GUI update handler
+ *
+ * @author Andrea Falanti
+ */
 public class GraphicUpdateHandler implements UpdateHandler {
     private MainScreen mMainController;
 

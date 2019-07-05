@@ -4,6 +4,11 @@ import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.board.TileColor;
 
+/**
+ * Contains selected room color to send to controller
+ *
+ * @author Andrea Falanti
+ */
 public class RoomSelectedRequest implements Request {
     private TileColor mColor;
     private PlayerColor mViewColor;

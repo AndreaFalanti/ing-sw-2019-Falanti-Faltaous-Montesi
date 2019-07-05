@@ -7,6 +7,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 
+/**
+ * GUI controller of the content of a board tile, contained in board pane
+ *
+ * @author Andrea Falanti
+ */
 public class BoardSquare {
     @FXML
     private GridPane squareGrid;

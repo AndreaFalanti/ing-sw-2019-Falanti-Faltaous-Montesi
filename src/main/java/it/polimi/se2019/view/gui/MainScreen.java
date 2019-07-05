@@ -26,6 +26,12 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * GUI controller of the main game scene, interact with all sub-controllers of the scene to handle game
+ * interactions and display correct data on the screen
+ *
+ * @author Andrea Falanti
+ */
 public class MainScreen extends Observable<Request> {
     @FXML
     private Pane playerPane;

@@ -6,6 +6,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
+/**
+ * Static class to provide common GUI methods used in all GUI controllers
+ *
+ * @@author Andrea Falanti
+ */
 public final class GuiUtils {
     private GuiUtils () {}
 
@@ -25,6 +30,12 @@ public final class GuiUtils {
         return imageView;
     }
 
+    /**
+     * Set ImageView size to given parameters and set preserve ratio flag
+     * @param imageView ImageView selected
+     * @param height Height to set
+     * @param width Width to set
+     */
     public static void setupImageViewSize(ImageView imageView, int height, int width) {
         imageView.setFitHeight(height);
         imageView.setFitWidth(width);

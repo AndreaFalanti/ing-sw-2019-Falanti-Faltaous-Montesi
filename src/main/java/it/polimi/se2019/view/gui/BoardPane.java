@@ -30,6 +30,11 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * GUI controller of the board pane displayed in main game screen
+ *
+ * @author Andrea Falanti
+ */
 public class BoardPane extends Observable<Request> {
     @FXML
     private ImageView boardImage;

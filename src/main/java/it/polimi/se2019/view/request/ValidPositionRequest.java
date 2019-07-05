@@ -3,6 +3,11 @@ package it.polimi.se2019.view.request;
 import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.model.PlayerColor;
 
+/**
+ * Request valid positions to controller
+ *
+ * @author Andrea Falanti
+ */
 public class ValidPositionRequest implements Request {
     private PlayerColor mViewColor;
 

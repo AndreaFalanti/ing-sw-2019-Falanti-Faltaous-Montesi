@@ -12,6 +12,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
+/**
+ * Define view interface used in communications between controller and views
+ *
+ * @author Andrea Falanti, Stefano Montesi, Abanoub Faltaous
+ */
 public interface ViewInterface extends Observer<Update> {
 
      void showMessage(String message);

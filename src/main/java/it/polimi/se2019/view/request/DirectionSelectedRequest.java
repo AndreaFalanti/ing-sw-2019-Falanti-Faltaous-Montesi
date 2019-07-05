@@ -4,6 +4,11 @@ import it.polimi.se2019.controller.RequestHandler;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.board.Direction;
 
+/**
+ * Contains selected direction to send to controller
+ *
+ * @author Andrea Falanti
+ */
 public class DirectionSelectedRequest implements Request {
     private Direction mDirection;
     private PlayerColor mViewColor;

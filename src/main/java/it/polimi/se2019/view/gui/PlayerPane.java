@@ -15,7 +15,11 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.EnumMap;
 
-
+/**
+ * GUI controller of main player pane, namely the owner of this view
+ *
+ * @author Andrea Falanti
+ */
 public class PlayerPane {
     @FXML
     protected ImageView playerBoard;
