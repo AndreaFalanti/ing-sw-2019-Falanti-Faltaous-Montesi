@@ -267,13 +267,7 @@ public class Controller implements Observer<Request>, RequestHandler {
             return;
         }
 
-        Player respawningPlayer = mGame.getPlayerFromColor(request.getViewColor());
-        TileColor spawnColor = respawningPlayer.getPowerUpCard(request.getIndex()).getColor();
-        SpawnTile respawnTile = mGame.getBoard().getSpawnMap().get(spawnColor);
-        Position respawnPosition = respawnTile.getPosition();
-
-        respawningPlayer.respawn(respawnPosition);
-        respawningPlayer.discard(request.getIndex());
+        respawnPlayer(request.getIndex(), request.getViewColor());
 
         if (areAllPlayersAlive()) {
             handleNextTurn();
@@ -281,6 +275,16 @@ public class Controller implements Observer<Request>, RequestHandler {
         else {
             sendRespawnNotificationToDeadPlayers();
         }
+    }
+
+    private void respawnPlayer (int powerUpIndex, PlayerColor color) {
+        Player respawningPlayer = mGame.getPlayerFromColor(color);
+        TileColor spawnColor = respawningPlayer.getPowerUpCard(powerUpIndex).getColor();
+        SpawnTile respawnTile = mGame.getBoard().getSpawnMap().get(spawnColor);
+        Position respawnPosition = respawnTile.getPosition();
+
+        respawningPlayer.respawn(respawnPosition);
+        respawningPlayer.discard(powerUpIndex);
     }
 
     @Override
@@ -413,6 +417,19 @@ public class Controller implements Observer<Request>, RequestHandler {
             @Override
             public void run() {
                 mPlayerViews.get(mExpectedPlayingPlayer).showMessage("SUSPENDED FOR INACTIVITY");
+
+                Player activePlayer = mGame.getActivePlayer();
+                if (activePlayer.getPos() == null) {
+                    boolean spawned = false;
+
+                    for (int i = 0; i < activePlayer.getPowerUps().length && !spawned; i++) {
+                        if (activePlayer.getPowerUpCard(i) != null) {
+                            respawnPlayer(i, activePlayer.getColor());
+                            spawned = true;
+                        }
+                    }
+                }
+
                 handle(new TurnEndRequest(mExpectedPlayingPlayer));
             }
         },60000);

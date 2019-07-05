@@ -1060,7 +1060,10 @@ public class MainScreen extends Observable<Request> {
         for (int i = 0; i < tabPane.getTabs().size(); i++) {
             tabPane.getTabs().get(i).setDisable(i != ACTIONS_TAB && i != PLAYERS_TAB);
         }
-        tabPane.getSelectionModel().selectFirst();
+
+        if (!tabPane.getSelectionModel().isSelected(PLAYERS_TAB)) {
+            tabPane.getSelectionModel().selectFirst();
+        }
     }
 
     /**
@@ -1104,7 +1107,7 @@ public class MainScreen extends Observable<Request> {
     public void activateView () {
         returnToActionTab();
         setEnableStatusActionButtonBox(true);
-        undoButton.setDisable(false);
+        undoButton.setDisable(true);
     }
 
     public void deactivateView () {
