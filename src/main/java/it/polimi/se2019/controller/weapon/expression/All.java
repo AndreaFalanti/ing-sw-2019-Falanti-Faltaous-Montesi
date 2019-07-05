@@ -11,10 +11,15 @@ import java.util.stream.Collectors;
  * Expression for returning all targets standing in a given range
  */
 public class All extends Behaviour {
+    // Required for Gson; should never be used
     public All() {
 
     }
 
+    /**
+     *
+     * @param from
+     */
     public All(Expression from) {
         putSub("from", from);
     }

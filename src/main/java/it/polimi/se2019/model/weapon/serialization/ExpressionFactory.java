@@ -41,7 +41,6 @@ public class ExpressionFactory {
                 .registerSubtype(All.class, "All")
                 .registerSubtype(LastSelected.class, "LastSelected")
                 .registerSubtype(AllInRoom.class, "AllInRoom")
-                .registerSubtype(GetTargets.class, "GetTargets")
                 .registerSubtype(Others.class, "Others")
                 .registerSubtype(Chain.class, "Chain")
                 .registerSubtype(Do.class, "Do")

@@ -6,7 +6,15 @@ import it.polimi.se2019.model.board.Tile;
 
 import java.util.stream.Collectors;
 
+/**
+ * Behaviour for retrieving the colors of the tiles from a given range
+ */
 public class GetColors extends Behaviour {
+    /**
+     * Evaluates expression
+     * @param context context used for evaluation
+     * @return result of evaluation
+     */
     @Override
     public Expression eval(ShootContext context) {
         Board board = context.getBoard();

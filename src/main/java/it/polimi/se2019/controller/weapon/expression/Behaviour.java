@@ -1,27 +1,31 @@
 package it.polimi.se2019.controller.weapon.expression;
 
 import com.google.gson.annotations.SerializedName;
-import it.polimi.se2019.controller.weapon.ShootContext;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Modified expression that encapsulates access to a hash map of subexpressions
+ *
+ * @author Stefano Montesi
+ */
 public abstract class Behaviour extends Expression {
     // subexpressions evaluated before their parent expression and used in its evaluation
     @SerializedName("subs")
-    Map<String, Expression> mSubexpressions;
+    private Map<String, Expression> mSubexpressions;
 
-    // default constructor to fill in default values during deserialization
+    // basic constructor
     public Behaviour() {
         mSubexpressions = new HashMap<>();
     }
 
-    // trivial getters
-    public Map<String, Expression> getSubexpressions() {
-        return mSubexpressions;
-    }
-
-    // TODO: add doc
+    /**
+     * Retrieve a subexpression
+     *
+     * @param name name of the subexpression to retrieve
+     * @return subexpression coinciding with the specified name
+     */
     public Expression getSub(String name) {
         Expression result = mSubexpressions.get(name);
 
@@ -33,23 +37,16 @@ public abstract class Behaviour extends Expression {
         return result;
     }
 
-    // TODO: add doc
+    /**
+     * Inserts a subexpression
+     *
+     * @param name    name of the inserted subexpression (must be unique)
+     * @param subexpr subexpression to insert
+     * @return {@code this}
+     */
     public Expression putSub(String name, Expression subexpr) {
         mSubexpressions.put(name, subexpr);
         return this;
     }
-
-    // TODO: add doc
-    public Expression putSubs(Map<String, Expression> newSubs) {
-        mSubexpressions.putAll(newSubs);
-        return this;
-    }
-
-    // TODO: add doc
-    protected Expression handleSubDefaultValue(String subName, ShootContext context) {
-        throw new UnsupportedOperationException(
-                subName + " was not set in " + getClass().getSimpleName() + " expression and" +
-                        "has no assigned defaults."
-        );
-    }
 }
+

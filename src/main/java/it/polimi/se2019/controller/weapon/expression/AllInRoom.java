@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 /**
  * Return all targets standing in a given room (color)
+ *
+ * @author Stefano Montesi
  */
 public class AllInRoom extends Behaviour {
     public AllInRoom() {

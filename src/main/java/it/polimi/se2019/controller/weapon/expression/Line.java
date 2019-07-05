@@ -8,13 +8,25 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * Behaviour evaluating to a range shaped like a line segment starting at a specified origin and
+ * ending after a specified length going in a specified direction. A "minimum length" can also be provided
+ * to offset the beginning of the line by a certain amount.
+ * @author Stefano Montesi
+ */
 public class Line extends Behaviour {
+    // required for Gson; should never be called by the user
     public Line() {
         putSub("origin", new Pos(new You()));
         putSub("minLength", new IntLiteral(0));
         putSub("maxLength", new InfLiteral());
     }
 
+    /**
+     * Evaluates expression
+     * @param context context used for evaluation
+     * @return result of evaluation
+     */
     @Override
     public final Expression eval(ShootContext context) {
         Position origin = getSub("origin").eval(context).asPosition();
