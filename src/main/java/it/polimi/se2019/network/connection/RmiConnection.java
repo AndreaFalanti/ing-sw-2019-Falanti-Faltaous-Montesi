@@ -55,9 +55,25 @@ public class RmiConnection implements Connection {
                 message = mMailboxes.get(senderAddress).take();
             } catch (InterruptedException e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
+                Thread.currentThread().interrupt();
             }
 
             return message;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            RmiStation that = (RmiStation) o;
+            return mNextUniqueAddress == that.mNextUniqueAddress &&
+                    Objects.equals(mMailboxes, that.mMailboxes);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), mMailboxes, mNextUniqueAddress);
         }
     }
 
@@ -87,9 +103,7 @@ public class RmiConnection implements Connection {
             // create station
             registry.bind(RMI_STATION_REGISTRY_ID, new RmiStation());
 
-        } catch (RemoteException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-        } catch (AlreadyBoundException e) {
+        } catch (RemoteException|AlreadyBoundException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
@@ -104,7 +118,7 @@ public class RmiConnection implements Connection {
 
     /**
      * Waits for a connection to be established and accepts it, returning one of its acceptor endpoint
-     * @return
+     * @return RmiConnection created
      */
     public static RmiConnection accept() {
         RmiConnection result = null;
@@ -161,10 +175,10 @@ public class RmiConnection implements Connection {
             station =
                     (RmiStationRemote) LocateRegistry.getRegistry(RMI_PORT)
                             .lookup(RMI_STATION_REGISTRY_ID);
-        } catch (RemoteException e) {
+        } catch (RemoteException|NotBoundException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
-        } catch (NotBoundException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            // force shutdown if something is wrong
+            System.exit(0);
         }
 
         return station;

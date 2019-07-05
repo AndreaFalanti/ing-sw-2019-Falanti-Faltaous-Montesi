@@ -373,7 +373,7 @@ public class Controller implements Observer<Request>, RequestHandler {
         mTurnTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                mPlayerViews.get(mExpectedPlayingPlayer).reportError("SUSPENDED FOR INACTIVITY");
+                mPlayerViews.get(mExpectedPlayingPlayer).showMessage("SUSPENDED FOR INACTIVITY");
                 handle(new TurnEndRequest(mExpectedPlayingPlayer));
             }
         },60000);

@@ -211,7 +211,7 @@ public class Player extends Observable<Update> {
 
     /**
      * Get max grab distance of player. If it has at least 3 damage, unlock "adrenaline grab".
-     * @return 1 if damage < 3, 2 if >= 3
+     * @return 1 if damage is minor of 3, 2 if major or equal to 3
      */
     public int getMaxGrabDistance () {
         return (mDamageTaken[2] != null) ? 2 : 1;

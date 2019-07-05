@@ -150,7 +150,7 @@ public class AmmoValue {
     /**
      * Verify that every ammo type is bigger or equal than parameter passed.
      * @param value AmmoValue to confront with
-     * @return True if every ammo type is >= than the other respective one, false otherwise
+     * @return True if every ammo type is major or equal than the other respective one, false otherwise
      */
     public boolean isBiggerOrEqual (AmmoValue value) {
         return mRed >= value.mRed && mYellow >= value.mYellow && mBlue >= value.mBlue;

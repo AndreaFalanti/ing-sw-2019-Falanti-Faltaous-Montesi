@@ -165,7 +165,8 @@ public class MainScreen extends Observable<Request> {
 
     /**
      * Load player board of given color
-     * @param ownerColor Player color
+     * @param ownerColor View owner player color
+     * @param players Players to initialize
      * @throws IOException Thrown if fxml is not found
      */
     public void loadPlayerBoards(PlayerColor ownerColor, List<Player> players) throws IOException {
@@ -269,6 +270,14 @@ public class MainScreen extends Observable<Request> {
 
     /**
      * Load game board
+     * @param board Board to initialize
+     * @param targetKills Kills target of the game
+     * @param activePlayerColor Actual active player
+     * @param remainingActions Remaining actions in this turn
+     * @param turnNumber Actual turn number
+     * @param players Players in the game
+     * @param kills Actual kills done
+     * @param overkills Actual overkills done
      * @throws IOException Thrown if fxml is not found
      */
     public void initializeBoardAndInfo(Board board, int targetKills, PlayerColor activePlayerColor,
@@ -313,6 +322,7 @@ public class MainScreen extends Observable<Request> {
     /**
      * Update spawn's weapon box with latest model changes
      * @param ids Weapon ids
+     * @param loaded Weapon's load status
      */
     public void updateWeaponBox (String[] ids, boolean[] loaded) {
         for (int i = 0; i < ids.length; i++) {

@@ -10,7 +10,6 @@ import it.polimi.se2019.model.update.*;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
-import it.polimi.se2019.util.ResourceUtils;
 import it.polimi.se2019.view.InitializationInfo;
 
 import java.util.*;
@@ -45,7 +44,7 @@ public class Game extends Observable<Update> {
      * @param players List of players
      * @param killsToFinish Number of kills before triggering final frenzy
      * @throws IllegalArgumentException Thrown if board or players are null,
-     *          player size is < 3 or killsNum is negative
+     *          player size is minor of 3 or killsNum is negative
      */
     public Game(Board board, List<Player> players, int killsToFinish) {
         if (board == null || players == null || killsToFinish <= 0 || players.size() < 3) {
@@ -81,20 +80,6 @@ public class Game extends Observable<Update> {
         mPowerUpCardDeck = new Deck<>(powerUpCards);
 
         List<Weapon> weaponCards = Weapons.getAll();
-        System.out.println("\n\nWeapons.getNames: " + Weapons.getNames());
-        System.out.println("\n\ngetClass().getResource(weaponsDir): " + getClass().getResource("/json/weapons/real/"));
-        {
-            String path = "/json/weapons/real/heatseeker.json";
-            Scanner scanner = new Scanner(
-                    getClass().getResourceAsStream(path)
-            )
-                    .useDelimiter("\\A");
-            String test = scanner.hasNext() ? scanner.next() : "";
-            System.out.println("\n\nTEST with getClass: " + test);
-            System.out.println("\n\nTEST with ResourceUtils: " + test);
-        }
-        System.out.println("\n\nResourceUtils.loadResource(weaponsDir): " + ResourceUtils.loadResource("/json/weapons/real/"));
-        System.out.println("\n\nWeapons.getAll:\n\n" + Weapons.getAll());
         mWeaponDeck = new Deck<>(weaponCards, false);
 
         refillAmmoTiles();
@@ -486,6 +471,7 @@ public class Game extends Observable<Update> {
 
     /**
      * Produces info required to initialize a view with the state of this game
+     * @param ownerColor View owner color
      * @return info required to initialize a view with the state of this game
      */
     public InitializationInfo extractViewInitializationInfo(PlayerColor ownerColor) {
