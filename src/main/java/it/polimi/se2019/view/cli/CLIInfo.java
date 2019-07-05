@@ -5,6 +5,7 @@ import it.polimi.se2019.model.*;
 import it.polimi.se2019.model.board.*;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 import static it.polimi.se2019.view.cli.Colors.ANSI_RESET;
 import static it.polimi.se2019.view.cli.Colors.findColor;
@@ -118,7 +119,9 @@ public class CLIInfo {
         if(powerUpCards == null)
             mPlayersInfo.get(playerColor).setPowerUpsOtherPlayers(0);
         else
-            mPlayersInfo.get(playerColor).setPowerUpsOtherPlayers(Arrays.asList(powerUpCards).size());
+            mPlayersInfo.get(playerColor).setPowerUpsOtherPlayers((int)IntStream.range(0, powerUpCards.length)
+                                                                                .filter(Objects::nonNull)
+                                                                                .count());
     }
 
     public void updateMarks(PlayerColor targetColor, int marks, PlayerColor shooterColor){

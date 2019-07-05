@@ -20,8 +20,9 @@ public class CLIPlayer {
     private String mPlayerPos;
     private Map<String,Integer> mPlayerMarks = new HashMap<>();
     private List<String> mDamageTaken = new ArrayList<>();
-    private String mPlayerPowerUps;
+    private List<String> mPlayerPowerUps = new ArrayList<>();
     private int mDeathNum;
+    private int mValueOfDamage;
     private String mPlayerAmmo;
     private String mBoardFlipped;
 
@@ -59,7 +60,7 @@ public class CLIPlayer {
 
     public String getPlayerName(){return mPlayerName;}
 
-    public String getPlayerPowerUps(){return mPlayerPowerUps;}
+    public List<String> getPlayerPowerUps(){return mPlayerPowerUps;}
 
     public String getPlayerAmmo(){return mPlayerAmmo;}
 
@@ -81,6 +82,8 @@ public class CLIPlayer {
 
     public String getPlayerScore(){return mPlayerScore;}
 
+    public int getValueOfDamage(){return mValueOfDamage;}
+
     public String getBoardFlipped(){return mBoardFlipped;}
 
 
@@ -100,7 +103,7 @@ public class CLIPlayer {
     }
 
     public void setBoardFlipped(){
-        mBoardFlipped = "Is flipped";
+        mBoardFlipped = "true";
     }
 
     public void setAmmo(AmmoValue ammo){
@@ -111,18 +114,23 @@ public class CLIPlayer {
     }
 
     public void setPowerUpsOtherPlayers(int i){
-        mPlayerPowerUps = String.valueOf(i);
+        List<String> powerUps = new ArrayList<>();
+        powerUps.add(String.valueOf(i));
+        mPlayerPowerUps = powerUps;
     }
 
     public void setPowerUpsOwnerPlayer(PowerUpCard[] powerUpCards){
-        StringBuilder power = new StringBuilder();
+        List<String> powerUps = new ArrayList<>();
+
         int i=0;
         if (powerUpCards == null){
-            mPlayerPowerUps = "not have power up card !";
+            powerUps.add("not have power up card !");
+            mPlayerPowerUps = powerUps;
             return;
         }
-        power.append("PowerUpCard: ");
+
         for (PowerUpCard powerUpCard : powerUpCards) {
+            StringBuilder power = new StringBuilder();
             if(powerUpCard != null){
                 power.append(i);
                 power.append(")Name : ");
@@ -140,9 +148,9 @@ public class CLIPlayer {
                 power.append(SPACE+" ");
             }
               i++;
+            powerUps.add(power.toString());
         }
-
-        mPlayerPowerUps = power.toString();
+        mPlayerPowerUps = powerUps;
     }
 
     public void setDead(boolean isDead){
@@ -198,6 +206,7 @@ public class CLIPlayer {
     public List<String> countDamage(List<PlayerColor> colorPlayerThatDamage,int size,PlayerColor[] damage){
         List<String> damageInfo = new ArrayList<>();
         int count;
+        int sumDamage = 0;
         for (PlayerColor color : colorPlayerThatDamage) {
             StringBuilder shooter = new StringBuilder();
             count = 0;
@@ -213,7 +222,9 @@ public class CLIPlayer {
                 shooter.append(createSingleStringDamage(count,color));
             }
             damageInfo.add(shooter.toString());
+            sumDamage += count;
         }
+        mValueOfDamage = sumDamage;
         return damageInfo;
     }
 

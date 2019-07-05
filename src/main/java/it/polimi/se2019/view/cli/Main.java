@@ -67,6 +67,6 @@ public class Main {
 
         CLIView view = new CLIView(null);
         LoginCLI.log(view);
-        ((NetworkHandler)view.getNetworkHandler()).startReceivingMessages();
+        new Thread(() -> ((NetworkHandler)view.getNetworkHandler()).startReceivingMessages()).start();
     }
 }

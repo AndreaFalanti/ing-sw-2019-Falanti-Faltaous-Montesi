@@ -78,7 +78,7 @@ public class LoginCLI {
         while(!isValid){
             printLineToConsole("Choose username");
             username=scanner1.nextLine();
-            if (mNetworkHandler.sendUsername(username)) {
+            if ( !username.equals("") && mNetworkHandler.sendUsername(username)) {
                 view.setNetworkHandler(mNetworkHandler);
                 isValid=true;
             }

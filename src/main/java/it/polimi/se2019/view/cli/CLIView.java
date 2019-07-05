@@ -39,13 +39,12 @@ public class CLIView extends View {
     private static final String SHOWG                    =  "SHOWG" + SHOW + " what you can grab";
     private static final String PLAYERS                  =  "PLAYERS" + SHOW + " players";
     private static final String MYINFO                   =  "MYINFO" + SHOW + " your information";
-    private static final String WEAPONS                  =  "WEAPONS" + SHOW + " your weapons";
     private static final String BOARD                    =  "BOARD" + SHOW + " the board";
     private static final String KILL                     =  "KILL" + SHOW + " kills and overkills";
     private static final String UNDO                     =  "UNDO" + " to undo the current action" ;
     private static final String BACK                     =  "BACK" + " to go back" ;
-    private static final String HELP                     =  "HELP" + SHOW +" available commands";
-    private static final String QUIT                     =  "QUIT" + " to quit the game";//to delete is only for test
+    private static final int damageForMovingBeforeShooting = 6;
+
     private static final Logger logger = Logger.getLogger(CLIView.class.getName());
 
     private CLIInfo mCLIInfo = null;
@@ -92,13 +91,11 @@ public class CLIView extends View {
                 initInfo.getOverkills());
 
         ((CLIUpdateHandler)mUpdateHandler).setUpdateHandlerCLIInfo(this,mCLIInfo);
-        printLineToConsole("reinitialize CLI");
-
     }
 
     @Override
     public void confirmEndOfInteraction() {
-        availableCommands();
+        new Thread(() -> availableCommands()).start();
     }
 
     @Override
@@ -118,27 +115,24 @@ public class CLIView extends View {
         printLineToConsole("\t" + BACK);
         printLineToConsole("What do you want to do ?");
 
-        interact();
+        new Thread(() -> interact()).start();
     }
 
     public void simpleCommand(){
         printLineToConsole("These are the possible commands:");
         printLineToConsole("\t" + PLAYERS);
-        printLineToConsole("\t" + SHOWG);//to test
+        printLineToConsole("\t" + SHOWG);
         printLineToConsole("\t" + MYINFO);
-        printLineToConsole("\t" + WEAPONS);
         printLineToConsole("\t" + BOARD);
         printLineToConsole("\t" + UNDO);
-        printLineToConsole("\t" + HELP);
         printLineToConsole("\t" + BACK);
-        printLineToConsole("\t" + QUIT);
         printLineToConsole("What do you want to do ?");
-        interact();
+        new Thread(() -> interact()).start();
     }
 
     public void availableCommands(){
         printLineToConsole("Choose between ACTION and INFO (or directly the command):");
-        interact();
+        new Thread(() -> interact()).start();
     }
 
     public void commandAction (String command,String otherCommandPart) {
@@ -149,64 +143,60 @@ public class CLIView extends View {
                 case "move":
                     pos = parseDestination(otherCommandPart);
                     if(pos == null){
-                        availableCommands();
+                        new Thread(() -> availableCommands()).start();
                         return;
                     }
                     action = new MoveAction(mCLIInfo.getOwnerColor(), pos,true);
-                    logger.log(Level.INFO, "Action: MOVE  Pos: {0}", pos);
-
                     break;
                 case "grab":
                     pos = parseDestination(otherCommandPart);
                     if(pos == null){
-                        availableCommands();
+                        new Thread(() -> availableCommands()).start();
                         return;
                     }
                     action = new MoveGrabAction(mCLIInfo.getOwnerColor(), pos);
-                    logger.log(Level.INFO, "Action: GRAB  Pos: {0}", pos);
                     break;
                 case "shoot":
-                    pos = parseDestination(otherCommandPart);
-                    if(pos == null){
-                        availableCommands();
-                        return;
-                    }
                     index = parseWeaponToAct(true);
-                    action = new MoveShootAction(mCLIInfo.getOwnerColor(), pos, index);
-                    logger.log(Level.INFO, "Action: SHOOT  Pos: {0} ", pos);
+                    if(mCLIInfo.getOwner().getValueOfDamage()>=damageForMovingBeforeShooting ||
+                        mCLIInfo.getOwner().getBoardFlipped().equalsIgnoreCase("true")){
+                        pos = parseDestination(otherCommandPart);
+                        if(pos == null){
+                            new Thread(() -> availableCommands()).start();
+                            return;
+                        }
+                        action = new MoveShootAction(mCLIInfo.getOwnerColor(), pos, index);
+                    }
+                    else
+                        action = new ShootAction(index);
                     break;
                 case "use":
-                    printLineToConsole(mCLIInfo.getOwner().getPlayerPowerUps());
+                    for (String playerPowerUp : mCLIInfo.getOwner().getPlayerPowerUps()){
+                        printToConsole(playerPowerUp);
+                    }
                     index = parseInteger();
                     notify(new UsePowerUpRequest(index,mCLIInfo.getOwnerColor()));
-
                     break;
                 case "reloadshoot":
                     pos = parseDestination(otherCommandPart);
                     if(pos == null){
-                        availableCommands();
+                        new Thread(() -> availableCommands()).start();
                         return;
                     }
                     int indexReload = parseWeaponToAct(false);
                     index = parseWeaponToAct(true);
                     action = new MoveReloadShootAction(mCLIInfo.getOwnerColor(), pos, indexReload, index);
-                    logger.log(Level.INFO, "Action: RELOADSHOOT  Pos: {0}  ", pos);
-
                     break;
                 case "reload":
                     index = parseWeaponToAct(false);
                     action = new ReloadAction(index);
-                    logger.log(Level.INFO, "Action: RELOAD  index: {0}", index);
-                    break;
-                case "turn":
-                    notify(new TurnEndRequest(mCLIInfo.getOwnerColor()));
                     break;
                 default:
-                    availableCommands();
+                    new Thread(() -> availableCommands()).start();
                     break;
             }
 
-        if(action!=null&&!command.equalsIgnoreCase("use")){
+        if(action!=null&&!command.equalsIgnoreCase("use")&&!command.equalsIgnoreCase("turn")){
             notify(new ActionRequest(action,mCLIInfo.getOwnerColor()));
         }
 
@@ -266,8 +256,9 @@ public class CLIView extends View {
         int index =5;
         printToConsole("Type the index of the weapon you want between 0 and 2\n" +
                 mCLIInfo.getSpawnTiles().get(tileColor)+"\n");
-
+        index = parseInteger();
         while(index<0 || index>2){
+            printLineToConsole("Invalid index");
             index = parseInteger();
         }
         return index;
@@ -286,114 +277,133 @@ public class CLIView extends View {
 
     @Override
     public void showPowerUpsDiscardView() {
-        boolean[] discarded={false,false,false,false};
-        printLineToConsole("Choose one or more power ups to discard:\n" +
-                "(example 1 0 1 to discard first and third.\n" +
-                " Pay attention every number different from 1 is considered as 0) \n" +
-                mCLIInfo.getOwner().getPlayerPowerUps());
-        String indexes = requestAdditionalInfo(false);
-        String chosen = indexes.replaceAll("\\D","");
-        String[] index = chosen.split("");
+       new Thread(() -> {
+            boolean[] discarded={false,false,false,false};
+            printLineToConsole("Choose one or more power ups to discard:\n" +
+                    "(example 1 0 1 to discard first and third.\n" +
+                    " Pay attention every number different from 1 is considered as 0) \n" +
+                    mCLIInfo.getOwner().getPlayerPowerUps());
+            String indexes = requestAdditionalInfo(false);
+            String chosen = indexes.replaceAll("\\D","");
+            String[] index = chosen.split("");
 
-        for (int i = 0; i < index.length; i++){
-            if (index[i] != null && index[i].equals("1")) {
-                discarded[i]=true;
+            for (int i = 0; i < index.length; i++){
+                if (index[i] != null && index[i].equals("1")) {
+                    discarded[i]=true;
+                }
             }
-        }
-        notify(new PowerUpDiscardedRequest(discarded, mOwnerColor));
+            notify(new PowerUpDiscardedRequest(discarded, mOwnerColor));
+       }).start();
     }
 
     @Override
     public void showWeaponSelectionView(TileColor spawnColor) {
+    new Thread(() -> {
+                if(spawnColor!=null) {
+                    int weaponInfo = parseWeaponInformation(spawnColor);
+                    notify(new WeaponSelectedRequest(weaponInfo, mOwnerColor));
+                }
+                else{
 
-            if(spawnColor!=null) {
-                int weaponInfo = parseWeaponInformation(spawnColor);
-                notify(new WeaponSelectedRequest(weaponInfo, mOwnerColor));
-            }
-            else
-                notify(new WeaponSelectedRequest(parseWeaponInformation(), mOwnerColor));
+                    notify(new WeaponSelectedRequest(parseWeaponInformation(), mOwnerColor));
+                }
 
-
+        }).start();
     }
 
     @Override
     public void showValidPositions(List<Position> positions) {
-        printLineToConsole("These are possible positions: ");
-        for (Position pos : positions)
-            printLineToConsole(pos.toString());
+       new Thread(() -> {
+            printLineToConsole("These are possible positions: ");
+            for (Position pos : positions)
+                printLineToConsole(pos.toString());
+       }).start();
     }
 
     @Override
     public void showPowerUpSelectionView(List<Integer> indexes) {
 
-            List<Integer> powerUps= new ArrayList<>();
-            for (Integer powerUp : indexes) {
-                    printToConsole(String.valueOf(powerUp));
-            }
-            powerUps.add(parseInteger());
-            notify(new PowerUpsSelectedRequest(powerUps,mOwnerColor));
+           new Thread(() -> {
+                List<Integer> powerUps= new ArrayList<>();
+                printToConsole("Indexes: ");
+                for (Integer powerUp : indexes) {
+                        printToConsole(powerUp+" ");
+                }
+                printToConsole("\n");
+                powerUps.add(parseInteger());
+                notify(new PowerUpsSelectedRequest(powerUps,mOwnerColor));
+           }).start();
     }
 
     @Override
     public void showRoomColorSelectionView(Set<TileColor> possibleColors) {
+        new Thread(() -> {
 
-        TileColor tileColor = selectTileColor(possibleColors);
-        if(tileColor == null)
-            return;
-        notify(new RoomSelectedRequest(tileColor,mOwnerColor));
+            TileColor tileColor = selectTileColor(possibleColors);
+            if(tileColor == null)
+                return;
+            notify(new RoomSelectedRequest(tileColor,mOwnerColor));
 
+        }).start();
     }
 
     @Override
     public void showDirectionSelectionView() {
-        Direction direction = pickDirection();
-        if(direction == null)
-            return;
-        notify(new DirectionSelectedRequest(direction, getOwnerColor()));
+       new Thread(() -> {
+            Direction direction = pickDirection();
+            if(direction == null)
+                return;
+            notify(new DirectionSelectedRequest(direction, getOwnerColor()));
+       }).start();
     }
 
     @Override
     public void showPositionSelectionView(Set<Position> possiblePositions) {
 
-
-            Position pos = selectPosition(possiblePositions);
-            if(pos == null)
-                return;
-            notify(new PositionSelectedRequest(pos, getOwnerColor()));
+        new Thread(() -> {
+                Position pos = selectPosition(possiblePositions);
+                if(pos == null)
+                    return;
+                notify(new PositionSelectedRequest(pos, getOwnerColor()));
+        }).start();
 
     }
 
     @Override
     public void showTargetsSelectionView(int minToSelect, int maxToSelect, Set<PlayerColor> possibleTargets) {
-        Set<PlayerColor> targets = selectTargets(minToSelect,maxToSelect,possibleTargets);
-        if (targets == null)
-            return;
-        notify(new TargetsSelectedRequest(targets, getOwnerColor()) );
+       new Thread(() -> {
+            Set<PlayerColor> targets = selectTargets(minToSelect,maxToSelect,possibleTargets);
+            if (targets == null)
+                return;
+            notify(new TargetsSelectedRequest(targets, getOwnerColor()) );
+       }).start();
     }
 
     @Override
     public void showEffectsSelectionView(SortedMap<Integer, Set<Effect>> priorityMap, Set<Effect> possibleEffects) {
-        List<String> effects =new ArrayList<>();
-        printToConsole("Choose an effect: ");
-        for(Effect effect: possibleEffects)
-            printToConsole(effect.getId()+" ");
-        String effectChoosen = requestAdditionalInfo(true);
-        if(effectChoosen.equalsIgnoreCase("undo")){
-            deleteRequest();
-            return;
-        }
-        if(effectChoosen.equalsIgnoreCase("")){
+        new Thread(() -> {
+            List<String> effects =new ArrayList<>();
+            printToConsole("Choose an effect: ");
+            for(Effect effect: possibleEffects)
+                printToConsole(effect.getId()+" ");
+            String effectChoosen = requestAdditionalInfo(true);
+            if(effectChoosen.equalsIgnoreCase("undo")){
+                deleteRequest();
+                return;
+            }
+            if(effectChoosen.equalsIgnoreCase("")){
+                notify(new EffectsSelectedRequest(effects,mCLIInfo.getOwnerColor()));
+                return;
+            }
+            effects.add(effectChoosen);
             notify(new EffectsSelectedRequest(effects,mCLIInfo.getOwnerColor()));
-            return;
-        }
-        effects.add(effectChoosen);
-        notify(new EffectsSelectedRequest(effects,mCLIInfo.getOwnerColor()));
+        }).start();
     }
 
     @Override
     public void showWeaponModeSelectionView(Effect effect1, Effect effect2) {
 
-
+        new Thread(() -> {
             printLineToConsole("Choose one of these effects: "+effect1.getId()+" "+effect2.getId());
             String effect = requestAdditionalInfo(false);
             if(effect.equalsIgnoreCase("undo")){
@@ -401,6 +411,7 @@ public class CLIView extends View {
                 return;
             }
             notify(new WeaponModeSelectedRequest(effect, getOwnerColor()));
+        }).start();
 
     }
 
@@ -408,20 +419,26 @@ public class CLIView extends View {
     public void showRespawnPowerUpDiscardView() {
 
        new Thread(() -> {
-            printLineToConsole(mCLIInfo.getOwner().getPlayerPowerUps());
-            notify(new RespawnPowerUpRequest(parseInteger(), mOwnerColor));
-            if(mCLIInfo.getActivePlayer() == mCLIInfo.getOwnerColor())
-                availableCommands();
+           for (String playerPowerUp : mCLIInfo.getOwner().getPlayerPowerUps()){
+               printToConsole(playerPowerUp);
+           }
+            int index = parseInteger();
+            if(!mCLIInfo.getOwner().getPlayerPowerUps().get(index).contains(")Not a card")
+                    && mCLIInfo.getActivePlayer() == mCLIInfo.getOwnerColor())
+                new Thread(() -> availableCommands()).start();
+           notify(new RespawnPowerUpRequest(index, mOwnerColor));
        }).start();
 
     }
 
     @Override
     public void showAmmoColorSelectionView(Set<TileColor> possibleColors) {
-        TileColor chosen = selectTileColor(possibleColors);
-        if(chosen ==null)
-            return;
-        notify(new AmmoColorSelectedRequest(chosen,mCLIInfo.getOwnerColor()));
+        new Thread(() -> {
+            TileColor chosen = selectTileColor(possibleColors);
+            if(chosen ==null)
+                return;
+            notify(new AmmoColorSelectedRequest(chosen,mCLIInfo.getOwnerColor()));
+        }).start();
     }
 
     public TileColor selectTileColor(Set<TileColor> possibleColors){
@@ -490,14 +507,13 @@ public class CLIView extends View {
                                     printToConsole(s);
                                 break;
             case "showg"      : showGrabbable();break;
-            case "weapons"    : System.out.println(mCLIInfo.getOwner().getPlayerWeapons()); break;
             case "myinfo"     : ownerInfo();break;
             case "board"      : mCLIInfo.getBoard().addPlayers(mCLIInfo.getBoard().getBoardCLI(),mCLIInfo.getPlayersInfo()); break;
             case "help"       : break;
             case "back"       : break;
-            default           : printLineToConsole("quit");break;//to change
+            default           : ;break;//to change
         }
-        availableCommands();
+        new Thread(() -> availableCommands()).start();
     }
 
     public void ownerInfo(){
@@ -511,14 +527,14 @@ public class CLIView extends View {
                 "Is Dead ? " + mCLIInfo.getOwner().playerIsDead() + SPACE +
                 "Scores: " + mCLIInfo.getOwner().getPlayerScore() + SPACE +
                 "Position: " + mCLIInfo.getOwner().getPlayerPosition() + SPACE +
-                mCLIInfo.getOwner().getPlayerPowerUps() + SPACE +
+                "Power Up: "+ mCLIInfo.getOwner().getPlayerPowerUps() + SPACE +
                 "Number of deaths: " + mCLIInfo.getOwner().getPlayerDeaths() + SPACE +
                 "Is overkilled ? " + mCLIInfo.getOwner().playerIsOverkilled()+SPACE +
                 "Damage: ");
                 for(String s: mCLIInfo.getOwner().getPlayerDamage())
-                    System.out.print(s);
-                System.out.print(SPACE);
-                System.out.print("Weapons :   ");
+                    printToConsole(s);
+                printToConsole(SPACE);
+                printToConsole("Weapons :   ");
                 for(String weapon: mCLIInfo.getOwner().getPlayerWeapons())
                     printToConsole(weapon + " "+ mCLIInfo.getOwner().getWeaponsInfo().get(weapon)+" ");
         printToConsole("\n");
@@ -546,8 +562,8 @@ public class CLIView extends View {
                             "Weapons : " + player.getPlayerWeapons()+SPACE +
                             "Damage: ");
                             for(String s: player.getPlayerDamage())
-                                System.out.print(s);
-                            System.out.println();
+                                printToConsole(s);
+                            printToConsole("\n");
             }
         }
     }
@@ -676,26 +692,32 @@ public class CLIView extends View {
     @Override
     public void reportError(String error){
         printLineToConsole(error);
-        availableCommands();
+        if(!mCLIInfo.getOwner().getPlayerPosition().equals("not respawned")
+            && mCLIInfo.getOwnerColor() == mCLIInfo.getActivePlayer())
+            new Thread(() ->  availableCommands()).start();
 
     }
 
     public String requestAdditionalInfo(boolean isForShoot){
         Scanner scanner = new Scanner(System.in);
-        String command = "" ;
-        if(!isForShoot){
-            while (command.equals("")) {
-                command = scanner.nextLine();
+
+            String command = "" ;
+            if(!isForShoot){
+                while (command.equals("")) {
+                    command = scanner.nextLine();
+                }
+            }else{
+                command=scanner.nextLine();
             }
-        }else{
-            command=scanner.nextLine();
-        }
-        return command;
+            return command;
+
     }
 
     public void interact(){
-        String command = requestAdditionalInfo(false);
-        parseCommand(command);
+        new Thread(() -> {
+            String command = requestAdditionalInfo(false);
+            parseCommand(command);
+        }).start();
     }
 
 

@@ -83,7 +83,7 @@ public class CLIUpdateHandler implements UpdateHandler {
 
         if(mCLIInfo.getOwnerColor() == update.getPlayerColor() &&
         !mCLIInfo.getOwner().getPlayerPosition().equalsIgnoreCase("not respawned"))
-            cliView.availableCommands();
+            new Thread(() -> cliView.availableCommands()).start();
 
 
 
