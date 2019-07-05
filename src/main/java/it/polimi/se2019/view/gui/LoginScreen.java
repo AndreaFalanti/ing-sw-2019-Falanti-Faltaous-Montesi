@@ -1,8 +1,11 @@
 package it.polimi.se2019.view.gui;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.network.connection.RmiConnection;
 import it.polimi.se2019.network.connection.SocketConnection;
+import it.polimi.se2019.util.Jsons;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -10,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,6 +47,7 @@ public class LoginScreen {
     private GraphicView mView;
     private NetworkHandler mNetworkHandler;
     private int mActualType = -1;
+    private NetworkSettings mNetworkSettings;
 
     public GraphicView getView() {
         return mView;
@@ -52,10 +57,29 @@ public class LoginScreen {
         mView = view;
     }
 
+    private class NetworkSettings {
+        String host;
+        int socketPort;
+        int rmiPort;
+    }
+
     @FXML
-    public void initialize () {
+    public void initialize () throws IOException {
         socketRadioButton.setUserData(SOCKET_TYPE);
         rmiRadioButton.setUserData(RMI_TYPE);
+
+        Gson gson = new Gson();
+        File directory = new File("./");
+        System.out.println(directory.getAbsolutePath());
+        try {
+            JsonReader jsonReader = new JsonReader(new FileReader("../connection.json"));
+            mNetworkSettings = gson.fromJson(jsonReader, NetworkSettings.class);
+        } catch (FileNotFoundException e) {
+            mNetworkSettings = gson.fromJson(Jsons.get("configurations/connection"), NetworkSettings.class);
+            FileWriter fileWriter = new FileWriter("../connections.json");
+            fileWriter.write(Jsons.get("configurations/connection"));
+            fileWriter.close();
+        }
     }
 
     public void login () {
@@ -81,7 +105,7 @@ public class LoginScreen {
                 if (mNetworkHandler == null || mActualType != SOCKET_TYPE) {
                     mNetworkHandler = new NetworkHandler(
                             mView,
-                            SocketConnection.establish("localhost")
+                            SocketConnection.establish(mNetworkSettings.host, mNetworkSettings.socketPort)
                     );
                     mActualType = SOCKET_TYPE;
                 }

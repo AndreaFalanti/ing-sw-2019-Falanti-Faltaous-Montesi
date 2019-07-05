@@ -59,7 +59,7 @@ public class LoginCLI {
             case 1:
                 mNetworkHandler = new NetworkHandler(
                         view,
-                        SocketConnection.establish("localhost")
+                        SocketConnection.establish("localhost", 4567)
                 );
 
                 break;

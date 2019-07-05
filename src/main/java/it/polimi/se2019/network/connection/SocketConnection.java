@@ -12,8 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SocketConnection implements Connection {
-    public static final int SOCKET_PORT = 3456;
-
     private static final Logger logger = Logger.getLogger(SocketConnection.class.getName());
 
     private Socket mSocket;
@@ -37,10 +35,10 @@ public class SocketConnection implements Connection {
         }
     }
 
-    public static void startAccepting(Consumer<Connection> connectionConsumer) {
+    public static void startAccepting(Consumer<Connection> connectionConsumer, int socketPort) {
         new Thread(() -> {
             try (
-                    ServerSocket serverSocket = new ServerSocket(SOCKET_PORT)
+                    ServerSocket serverSocket = new ServerSocket(socketPort)
             ) {
                 while (true) {
                     connectionConsumer.accept(accept(serverSocket));
@@ -67,11 +65,11 @@ public class SocketConnection implements Connection {
         return result;
     }
 
-    public static SocketConnection establish(String host) {
+    public static SocketConnection establish(String host, int port) {
         SocketConnection result = null;
         try {
-            result = new SocketConnection(new Socket(host, SOCKET_PORT));
-            Object[] logObjects = {host, SOCKET_PORT};
+            result = new SocketConnection(new Socket(host, port));
+            Object[] logObjects = {host, port};
             logger.log(Level.INFO, "Established connection with server [{0}, {1}]", logObjects);
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);

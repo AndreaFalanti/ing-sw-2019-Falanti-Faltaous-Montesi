@@ -1,5 +1,7 @@
 package it.polimi.se2019.network.server;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import it.polimi.se2019.controller.Controller;
 import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
@@ -10,6 +12,10 @@ import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
 import it.polimi.se2019.view.VirtualView;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -31,9 +37,32 @@ public class GameThread extends Thread {
 
     private Random mRandom = new Random();
     private List<PlayerColor> mColors = new ArrayList<>(Arrays.asList(PlayerColor.values()));
+    private GameSettings mGameSettings;
+
+    private class GameSettings {
+        int boardNum;
+        int killNum;
+        long timerDelay;
+    }
 
     public GameThread (List<PlayerConnection> players) {
         mPlayerConnections = new ArrayList<>(players);
+
+        Gson gson = new Gson();
+        try {
+            JsonReader jsonReader = new JsonReader(new FileReader("../gameSettings.json"));
+            mGameSettings = gson.fromJson(jsonReader, GameSettings.class);
+        } catch (FileNotFoundException e) {
+            mGameSettings = gson.fromJson(Jsons.get("configurations/gameSettings"), GameSettings.class);
+            FileWriter fileWriter = null;
+            try {
+                fileWriter = new FileWriter("../gameSettings.json");
+                fileWriter.write(Jsons.get("configurations/connection"));
+                fileWriter.close();
+            } catch (IOException e1) {
+                logger.severe(e1.getMessage());
+            }
+        }
 
         Timer mTimer = new Timer();
         mTimer.schedule(new TimerTask() {
@@ -43,7 +72,7 @@ public class GameThread extends Thread {
                     startGameCreation();
                 }
             }
-        },10);
+        },mGameSettings.timerDelay);
     }
 
     public int getPlayersNum () {
@@ -93,11 +122,9 @@ public class GameThread extends Thread {
             mColors.remove(randomIndex);
         }
 
-        int boardID = mRandom.nextInt(4) + 1;
-        Board board = Board.fromJson(Jsons.get("boards/game/board" + boardID));
-        int killsTarget = 1;
+        Board board = Board.fromJson(Jsons.get("boards/game/board" + mGameSettings.boardNum));
 
-        initializeGame(board, players, killsTarget);
+        initializeGame(board, players, mGameSettings.killNum);
     }
 
     /**

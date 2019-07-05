@@ -1,0 +1,5 @@
+{
+  "host": "localhost",
+  "socketPort": 4567,
+  "rmiPort": 4568
+}

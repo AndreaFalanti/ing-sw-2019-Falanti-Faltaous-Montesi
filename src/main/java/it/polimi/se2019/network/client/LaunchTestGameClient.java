@@ -16,7 +16,7 @@ public class LaunchTestGameClient {
         Connection connection =
                 input().equals("rmi") ?
                         RmiConnection.establish() :
-                        SocketConnection.establish("localhost");
+                        SocketConnection.establish("localhost", 4567);
 
         // create view and register message sending to server
         print("Pick player color: ");

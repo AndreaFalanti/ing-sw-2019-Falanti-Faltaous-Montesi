@@ -12,9 +12,11 @@ public class AcceptationServer {
     private static final Logger logger = Logger.getLogger(AcceptationServer.class.getName());
 
     private RegistrationServer mRegistrationServer;
+    private int mSocketPort;
 
     public AcceptationServer(int socketPort, RegistrationServer registrationServer) {
         mRegistrationServer = registrationServer;
+        mSocketPort = socketPort;
 
         logger.log(Level.INFO, "Created server socket on port: {0}", socketPort);
     }
@@ -32,7 +34,7 @@ public class AcceptationServer {
             new PlayerRegistrationThread(connection, mRegistrationServer).start();
         };
 
-        SocketConnection.startAccepting(connectionHandler);
+        SocketConnection.startAccepting(connectionHandler, mSocketPort);
         RmiConnection.startAccepting(connectionHandler);
     }
 }
