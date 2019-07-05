@@ -5,7 +5,9 @@ import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.ResourceUtils;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -14,6 +16,30 @@ import java.util.stream.Collectors;
 public class Weapons {
     private static final String PATH_TO_WEAPONS_RESOURCES_FOLDER = Jsons.PATH_TO_JSON_RESOURCES_FOLDER + "weapons/real/";
     private static final String JSON_SUFFIX = ".json";
+
+    private static final Set<String> WEAPON_NAMES = new HashSet<>(Arrays.asList(
+            "lock_rifle",
+            "vortex_cannon",
+            "furnace",
+            "plasma_gun",
+            "heatseeker",
+            "whisper",
+            "hellion",
+            "zx-2",
+            "grenade_launcher",
+            "shotgun",
+            "rocket_launcher",
+            "shockwave",
+            "cyberblade",
+            "electroscythe",
+            "flamethrower",
+            "tractor_beam",
+            "thor",
+            "power_glove",
+            "railgun",
+            "sledgehammer",
+            "machine_gun"
+    ));
 
     private Weapons() {
     }
@@ -26,16 +52,13 @@ public class Weapons {
         );
     }
 
-    public static List<String> getNames() {
-        return Arrays.stream(ResourceUtils.loadResource(PATH_TO_WEAPONS_RESOURCES_FOLDER)
-                .split("\\n"))
-                .collect(Collectors.toList());
+    public static Set<String> getNames() {
+        return WEAPON_NAMES;
     }
 
     public static List<Weapon> getAll() {
-        return Arrays.stream(ResourceUtils.loadResource(PATH_TO_WEAPONS_RESOURCES_FOLDER)
-                .split("\\n"))
-                .map(path -> PATH_TO_WEAPONS_RESOURCES_FOLDER + path)
+        return WEAPON_NAMES.stream()
+                .map(name -> PATH_TO_WEAPONS_RESOURCES_FOLDER + name + JSON_SUFFIX)
                 .map(ResourceUtils::loadResource)
                 .map(WeaponFactory::fromJson)
                 .collect(Collectors.toList());

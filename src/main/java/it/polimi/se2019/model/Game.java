@@ -10,6 +10,7 @@ import it.polimi.se2019.model.update.*;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.util.Observable;
 import it.polimi.se2019.util.Observer;
+import it.polimi.se2019.util.ResourceUtils;
 import it.polimi.se2019.view.InitializationInfo;
 
 import java.util.*;
@@ -80,6 +81,20 @@ public class Game extends Observable<Update> {
         mPowerUpCardDeck = new Deck<>(powerUpCards);
 
         List<Weapon> weaponCards = Weapons.getAll();
+        System.out.println("\n\nWeapons.getNames: " + Weapons.getNames());
+        System.out.println("\n\ngetClass().getResource(weaponsDir): " + getClass().getResource("/json/weapons/real/"));
+        {
+            String path = "/json/weapons/real/heatseeker.json";
+            Scanner scanner = new Scanner(
+                    getClass().getResourceAsStream(path)
+            )
+                    .useDelimiter("\\A");
+            String test = scanner.hasNext() ? scanner.next() : "";
+            System.out.println("\n\nTEST with getClass: " + test);
+            System.out.println("\n\nTEST with ResourceUtils: " + test);
+        }
+        System.out.println("\n\nResourceUtils.loadResource(weaponsDir): " + ResourceUtils.loadResource("/json/weapons/real/"));
+        System.out.println("\n\nWeapons.getAll:\n\n" + Weapons.getAll());
         mWeaponDeck = new Deck<>(weaponCards, false);
 
         refillAmmoTiles();
