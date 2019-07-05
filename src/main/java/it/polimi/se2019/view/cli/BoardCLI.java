@@ -38,6 +38,7 @@ public class BoardCLI {
         System.out.print(message);
     }
 
+    //Constructor
     public BoardCLI(Board realBoard) {
         Tile tile;
         List<Tile> tBoard = new ArrayList<>();
@@ -60,10 +61,10 @@ public class BoardCLI {
 
 
         line0.append(firstLine(tiles));
-        line1.append(createFirst(0,tiles));
+        line1.append(createFirstAndSecond(0,tiles));
         if(tiles[LENGTH-1] == null)
             line1.replace(line1.lastIndexOf("|\n"),line1.lastIndexOf("\n"),addLastLine());
-        line2.append(createFirst(LENGTH,tiles));
+        line2.append(createFirstAndSecond(LENGTH,tiles));
         line3.append(lastLine(LENGTH *2,tiles));
         if(tiles[LENGTH*2]==null)
             thirdNull=true;
@@ -73,8 +74,8 @@ public class BoardCLI {
         board.add(line2);
         board.add(line3);
 
-
     }
+
 
     public String addLastLine(){
         StringBuilder line = new StringBuilder();
@@ -86,6 +87,12 @@ public class BoardCLI {
         return line.toString();
     }
 
+    /**
+     * to colleague two near tiles
+     * @param door boolean that indicates if there is a door on east,south
+     * @param i an int that indicates actual index on a line
+     * @return line created
+     */
     public StringBuilder colleague(boolean door, int i){
         StringBuilder line = new StringBuilder();
         boolean spaceDoor = false;
@@ -112,6 +119,11 @@ public class BoardCLI {
         return line;
     }
 
+    /**
+     *
+     * @param horizontal boolean indicates if it is an horizontal line
+     * @return a line
+     */
     public StringBuilder appendLines(boolean horizontal){
         StringBuilder line= new StringBuilder();
         line.append(ANSI_BLACK);
@@ -125,6 +137,13 @@ public class BoardCLI {
         return line;
     }
 
+    /**
+     *
+     * @param i an int that indicates actual index on a line
+     * @param indexTile indicates the first tile on a line
+     * @param tiles tiles of the board
+     * @return line
+     */
     public StringBuilder addSouthernDoors(int i,int indexTile,Tile[] tiles){
 
         StringBuilder line = new StringBuilder();
@@ -169,6 +188,11 @@ public class BoardCLI {
 
     }
 
+    /**
+     *
+     * @param tiles tile of the real board
+     * @return first line of the board
+     */
     public StringBuilder firstLine(Tile[] tiles){
         StringBuilder line = new StringBuilder();
         int indexLenght = LENGTH;
@@ -183,7 +207,13 @@ public class BoardCLI {
         return line;
     }
 
-    public StringBuilder createFirst(int indexTile, Tile[] tiles) {
+    /**
+     * create first and second row
+     * @param indexTile indicates the first tile on a line
+     * @param tiles tile of the real board
+     * @return first or second row of tile
+     */
+    public StringBuilder createFirstAndSecond(int indexTile, Tile[] tiles) {
         StringBuilder line = new StringBuilder();
 
         for (int j = 0; j <= HIGHCELL; j++) {
@@ -201,6 +231,12 @@ public class BoardCLI {
         return line;
     }
 
+    /**
+     * create last row of tile
+     * @param indicates the first tile on a line
+     * @param tiles tile of the real board
+     * @return last ROW
+     */
     public StringBuilder lastLine(int indexTile, Tile[] tiles){
         StringBuilder line = new StringBuilder();
         int indexValutation;
@@ -223,8 +259,14 @@ public class BoardCLI {
     }
 
 
-
-
+    /**
+     *
+     * @param i an int that indicates actual index on a line horizontally
+     * @param j an int that indicates actual index on a line vertically
+     * @param indexTile the first tile on a line
+     * @param tiles tile of the real board
+     * @return line of row
+     */
     public StringBuilder valutation(int i,int j,int indexTile,Tile[] tiles){
         StringBuilder line = new StringBuilder();
         if (tiles[(i-1)/ SIZECELL +indexTile].getColor().getPascalName()
@@ -240,6 +282,14 @@ public class BoardCLI {
         return line;
     }
 
+    /**
+     *valutation for first and second row
+     * @param i an int that indicates actual index on a line horizontally
+     * @param j an int that indicates actual index on a line vertically
+     * @param indexTile the first tile on a line
+     * @param tiles tile of the real board
+     * @return line of row
+     */
     public StringBuilder valutation2(int i,int j,int indexTile,Tile[] tiles){
         StringBuilder line = new StringBuilder();
         if (  i/ SIZECELL + indexTile != tiles.length && tiles[ i/ SIZECELL + indexTile] != null) {
