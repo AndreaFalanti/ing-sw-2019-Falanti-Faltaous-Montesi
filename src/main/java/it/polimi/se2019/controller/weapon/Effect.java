@@ -16,8 +16,8 @@ public class Effect {
 
     // meta information
     private String mName;
-    private int mPriority;
-    private boolean mOptional;
+    private Integer mPriority;
+    private Boolean mOptional;
     private AmmoValue mCost;
 
     @Exclude
@@ -37,15 +37,18 @@ public class Effect {
     }
 
     public String getName() {
+        if (mName == null)
+            throw new IllegalStateException("Effects must have a name!");
+
         return mName;
     }
 
     public int getPriority() {
-        return mPriority;
+        return mPriority == null ? 0 : mPriority;
     }
 
     public boolean isOptional() {
-        return mOptional;
+        return mOptional == null ? false : mOptional;
     }
 
     public AmmoValue getCost() {
@@ -66,8 +69,8 @@ public class Effect {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Effect effect = (Effect) o;
-        return mPriority == effect.mPriority &&
-                mOptional == effect.mOptional &&
+        return mPriority.equals(effect.mPriority) &&
+                mOptional.equals(effect.mOptional) &&
                 Objects.equals(mId, effect.mId) &&
                 Objects.equals(mName, effect.mName) &&
                 Objects.equals(mCost, effect.mCost);

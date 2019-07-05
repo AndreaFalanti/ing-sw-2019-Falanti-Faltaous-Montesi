@@ -79,7 +79,6 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
     }
 
     // identifies a behavioural expression
-    // TODO: makes this better at identifying wrong behaviours
     private static boolean isBehaviour(JsonElement raw) {
         return raw.isJsonObject() &&
                 raw.getAsJsonObject().has(EXPR_KEYWORD);
