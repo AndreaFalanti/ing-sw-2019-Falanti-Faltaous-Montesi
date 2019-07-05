@@ -5,6 +5,9 @@ import java.util.Scanner;
 public class InteractionUtils {
     private static Scanner mStdIn = new Scanner(System.in);
 
+    private InteractionUtils() {
+    }
+
     public static String input(String message) {
         print(message);
 

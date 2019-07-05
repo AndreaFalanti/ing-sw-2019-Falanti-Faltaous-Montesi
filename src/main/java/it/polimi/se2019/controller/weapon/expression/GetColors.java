@@ -7,9 +7,6 @@ import it.polimi.se2019.model.board.Tile;
 import java.util.stream.Collectors;
 
 public class GetColors extends Behaviour {
-    public GetColors() {
-    }
-
     @Override
     public Expression eval(ShootContext context) {
         Board board = context.getBoard();

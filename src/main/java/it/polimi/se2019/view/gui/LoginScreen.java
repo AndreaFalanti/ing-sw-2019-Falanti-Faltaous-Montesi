@@ -76,7 +76,7 @@ public class LoginScreen {
                 if (mNetworkHandler == null || mActualType != SOCKET_TYPE) {
                     mNetworkHandler = new NetworkHandler(
                             mView,
-                            SocketConnection.establish("192.168.43.166")
+                            SocketConnection.establish("localhost")
                     );
                     mActualType = SOCKET_TYPE;
                 }

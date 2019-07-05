@@ -1,6 +1,5 @@
 package it.polimi.se2019.network.server;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 
 public class LaunchServer {
@@ -8,7 +7,7 @@ public class LaunchServer {
 
     public static final String RMI_SERVER_ID = "rmiServer";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         if (args.length != 2) {
             logger.warning("Provide ports in cmd");
             return;

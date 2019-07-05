@@ -374,7 +374,7 @@ public class Controller implements Observer<Request>, RequestHandler {
             @Override
             public void run() {
                 mPlayerViews.get(mExpectedPlayingPlayer).reportError("SUSPENDED FOR INACTIVITY");
-                handleNextTurn();
+                handle(new TurnEndRequest(mExpectedPlayingPlayer));
             }
         },60000);
     }

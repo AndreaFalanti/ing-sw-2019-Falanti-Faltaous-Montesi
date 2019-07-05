@@ -12,6 +12,9 @@ import it.polimi.se2019.util.CustomFieldNamingStrategy;
 
 
 public class WeaponFactory {
+    private WeaponFactory() {
+    }
+
     // GSON used to deal with serialization/deserialization
     static Gson makeGsonDeserializer() {
         return new GsonBuilder()

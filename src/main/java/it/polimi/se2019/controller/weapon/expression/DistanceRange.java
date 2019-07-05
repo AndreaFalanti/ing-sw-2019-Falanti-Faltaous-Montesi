@@ -8,12 +8,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DistanceRange extends Behaviour {
+    private static final String ORIGIN = "origin";
+    
     public DistanceRange() {
-        putSub("origin", new Pos(new You()));
+        putSub(ORIGIN, new Pos(new You()));
     }
 
     public DistanceRange(Expression origin, Expression min, Expression max) {
-        putSub("origin", origin);
+        putSub(ORIGIN, origin);
         putSub("min", min);
         putSub("max", max);
     }
@@ -37,7 +39,7 @@ public class DistanceRange extends Behaviour {
         Board board = context.getBoard();
 
         Set<Position> reachablePositions = board.getReachablePositions(
-                getSub("origin").eval(context).asPosition(),
+                getSub(ORIGIN).eval(context).asPosition(),
                 getSub("min").eval(context).asInt(),
                 getSub("max").eval(context).asInt()
         );

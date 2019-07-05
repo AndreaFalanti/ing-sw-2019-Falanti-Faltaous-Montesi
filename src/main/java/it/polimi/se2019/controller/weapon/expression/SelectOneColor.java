@@ -6,9 +6,6 @@ import it.polimi.se2019.model.board.TileColor;
 import it.polimi.se2019.view.View;
 
 public class SelectOneColor extends Behaviour {
-    public SelectOneColor() {
-    }
-
     @Override
     public Expression eval(ShootContext context) {
         View view = context.getView();

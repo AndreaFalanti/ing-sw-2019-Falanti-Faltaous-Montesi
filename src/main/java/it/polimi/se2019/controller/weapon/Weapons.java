@@ -15,6 +15,9 @@ public class Weapons {
     private static final String PATH_TO_WEAPONS_RESOURCES_FOLDER = Jsons.PATH_TO_JSON_RESOURCES_FOLDER + "weapons/real/";
     private static final String JSON_SUFFIX = ".json";
 
+    private Weapons() {
+    }
+
     public static Weapon get(String id) {
         return WeaponFactory.fromJson(
                 ResourceUtils.loadResource(

@@ -219,7 +219,7 @@ public class ExpressionParser implements JsonDeserializer<Expression> {
                 new Gson().toJsonTree(reader.toString()),
                 new JsonDeserializationContext() {
                     @Override
-                    public <T> T deserialize(JsonElement jsonElement, Type type) throws JsonParseException {
+                    public <T> T deserialize(JsonElement jsonElement, Type type) {
                         throw new UnsupportedOperationException("This should not happen...");
                     }
                 }

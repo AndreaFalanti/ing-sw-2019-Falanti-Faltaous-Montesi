@@ -10,7 +10,7 @@ import java.util.List;
 public class PowerUpCard {
     private final PowerUpType mType;
     private final AmmoValue mAmmoValue;
-    private final String mGuiID = null;
+    private String mGuiID;
 
     /**
      *

@@ -6,10 +6,6 @@ import it.polimi.se2019.controller.weapon.ShootInteraction;
 import it.polimi.se2019.view.View;
 
 public class XorEffect extends Expression {
-    public XorEffect() {
-
-    }
-
     private Effect mLhs;
     private Effect mRhs;
 

@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
 
 public class AmmoValueDeserializer implements JsonDeserializer<AmmoValue> {
     @Override
-    public AmmoValue deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+    public AmmoValue deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) {
         return AmmoValue.from(jsonElement.getAsString())
                 .orElseThrow(() ->
                         new JsonParseException(

@@ -6,6 +6,9 @@ import com.google.gson.JsonObject;
 import java.util.Map;
 
 public class JsonUtils {
+    private JsonUtils() {
+    }
+
     public static JsonObject combineObjects(JsonObject lhs, JsonObject rhs) {
         JsonObject result = lhs.deepCopy();
 

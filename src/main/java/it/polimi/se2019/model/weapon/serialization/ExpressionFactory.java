@@ -11,6 +11,9 @@ import it.polimi.se2019.util.CustomFieldNamingStrategy;
 import it.polimi.se2019.util.gson.extras.typeadapters.RuntimeTypeAdapterFactory;
 
 public class ExpressionFactory {
+    private ExpressionFactory() {
+    }
+
     // GSON used to deal with serialization
     // TODO: register all subtypes (maybe use generics to automate)
     static RuntimeTypeAdapterFactory<Expression> makeRuntimeTypeAdapterFactory() {

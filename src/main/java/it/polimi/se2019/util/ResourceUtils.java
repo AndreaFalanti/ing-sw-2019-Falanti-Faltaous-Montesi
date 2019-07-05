@@ -9,8 +9,6 @@ public class ResourceUtils {
 
     }
 
-    private static final String PATH_DELIMITER = "/";
-
     public static String loadResource(String path) {
         Scanner scanner = new Scanner(
                 ResourceUtils.class.getResourceAsStream(path)

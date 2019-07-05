@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 public class Board {
     // GSON used to deal with serialization/deserialization
-    private static Gson GSON = new GsonBuilder()
+    private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Tile.class, "type")
                 .registerSubtype(NormalTile.class, "normal")
                 .registerSubtype(SpawnTile.class, "spawn"))
@@ -287,10 +287,7 @@ public class Board {
             return false;
 
         // observers can see inside their room
-        if (areInSameRoom(observerPos, observedPos))
-            return true;
-
-        return false;
+        return areInSameRoom(observerPos, observedPos);
     }
 
     /**
@@ -369,13 +366,8 @@ public class Board {
             return true;
 
         // can walk among tiles of different color if there's a door
-        if (getTileAt(from).getDoorsDirections().contains(Direction.connectingDirection(from, to)) ||
-                getTileAt(to).getDoorsDirections().contains(Direction.connectingDirection(to, from))
-        )
-            return true;
-
-        // no other way
-        return false;
+        return (getTileAt(from).getDoorsDirections().contains(Direction.connectingDirection(from, to)) ||
+                getTileAt(to).getDoorsDirections().contains(Direction.connectingDirection(to, from)));
     }
 
     /**

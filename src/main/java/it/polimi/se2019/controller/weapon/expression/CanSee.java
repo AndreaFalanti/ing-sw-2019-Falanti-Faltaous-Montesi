@@ -12,12 +12,14 @@ import java.util.stream.Collectors;
  *  NB. the observer is considered the shooter if not specified
  */
 public class CanSee extends Behaviour {
+    private static final String ORIGIN = "origin";
+
     public CanSee() {
-        putSub("origin", new You());
+        putSub(ORIGIN, new You());
     }
 
     public CanSee(Expression origin) {
-        putSub("origin", origin);
+        putSub(ORIGIN, origin);
     }
 
     /**
@@ -28,7 +30,7 @@ public class CanSee extends Behaviour {
     @Override
     public final Expression eval(ShootContext context) {
         Set<Position> visibleRange = new GetVisibleRange(
-                new Pos(getSub("origin").eval(context))
+                new Pos(getSub(ORIGIN).eval(context))
         ).eval(context).asRange();
         Set<Player> allPlayers = context.getPlayers();
 
