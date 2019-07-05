@@ -97,6 +97,9 @@ public class RmiConnection implements Connection {
 
     public static void init() {
         try {
+            // set the server ip address
+            System.setProperty("java.rmi.server.hostname", "192.168.1.210");
+
             // create registry
             Registry registry = LocateRegistry.createRegistry(RMI_PORT);
 
