@@ -7,6 +7,7 @@ import it.polimi.se2019.model.Game;
 import it.polimi.se2019.model.Player;
 import it.polimi.se2019.model.PlayerColor;
 import it.polimi.se2019.model.board.Board;
+import it.polimi.se2019.util.JarPath;
 import it.polimi.se2019.util.Jsons;
 import it.polimi.se2019.view.InitializationInfo;
 import it.polimi.se2019.view.View;
@@ -48,15 +49,16 @@ public class GameThread extends Thread {
     public GameThread (List<PlayerConnection> players) {
         mPlayerConnections = new ArrayList<>(players);
 
+        String jarPath = JarPath.getJarPath();
+
         Gson gson = new Gson();
         try {
-            JsonReader jsonReader = new JsonReader(new FileReader("../gameSettings.json"));
+            JsonReader jsonReader = new JsonReader(new FileReader(jarPath + "gameSettings.json"));
             mGameSettings = gson.fromJson(jsonReader, GameSettings.class);
         } catch (FileNotFoundException e) {
             mGameSettings = gson.fromJson(Jsons.get("configurations/gameSettings"), GameSettings.class);
-            FileWriter fileWriter = null;
             try {
-                fileWriter = new FileWriter("../gameSettings.json");
+                FileWriter fileWriter = new FileWriter(jarPath + "gameSettings.json");
                 fileWriter.write(Jsons.get("configurations/connection"));
                 fileWriter.close();
             } catch (IOException e1) {

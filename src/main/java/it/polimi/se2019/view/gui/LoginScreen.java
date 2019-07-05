@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonReader;
 import it.polimi.se2019.network.client.NetworkHandler;
 import it.polimi.se2019.network.connection.RmiConnection;
 import it.polimi.se2019.network.connection.SocketConnection;
+import it.polimi.se2019.util.JarPath;
 import it.polimi.se2019.util.Jsons;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -13,7 +14,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,14 +73,14 @@ public class LoginScreen {
         rmiRadioButton.setUserData(RMI_TYPE);
 
         Gson gson = new Gson();
-        File directory = new File("./");
-        System.out.println(directory.getAbsolutePath());
+        String jarPath = JarPath.getJarPath();
+
         try {
-            JsonReader jsonReader = new JsonReader(new FileReader("../connection.json"));
+            JsonReader jsonReader = new JsonReader(new FileReader(jarPath + "connection.json"));
             mNetworkSettings = gson.fromJson(jsonReader, NetworkSettings.class);
         } catch (FileNotFoundException e) {
             mNetworkSettings = gson.fromJson(Jsons.get("configurations/connection"), NetworkSettings.class);
-            FileWriter fileWriter = new FileWriter("../connections.json");
+            FileWriter fileWriter = new FileWriter(jarPath + "connections.json");
             fileWriter.write(Jsons.get("configurations/connection"));
             fileWriter.close();
         }
