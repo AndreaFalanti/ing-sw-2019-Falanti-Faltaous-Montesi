@@ -22,7 +22,6 @@ public class Observable<T> {
 
         if (!mObservers.isEmpty())
             mObservers
-                    .stream().peek(observer -> System.out.println(getClass().getSimpleName() + " is notifying " + observer.getClass().getSimpleName() + ": " + message))
                     .forEach(observer -> observer.update(message));
     }
 }
